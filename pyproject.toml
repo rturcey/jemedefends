@@ -1,0 +1,186 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "je-me-defends-backend"
+version = "0.1.0"
+description = "Je me défends - Aide aux particuliers pour les litiges de consommation"
+authors = [{name = "Your Name", email = "your.email@example.com"}]
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.104.1",
+    "uvicorn[standard]>=0.24.0",
+    "pydantic>=2.5.0",
+    "pydantic_settings>=2.10.1",
+    "pydantic[email]",
+    "itsdangerous==2.2.0",
+    "jinja2>=3.1.2",
+    "python-multipart>=0.0.6",
+    "python-jose[cryptography]>=3.3.0",
+    "stripe>=7.8.0",
+    "weasyprint>=61.2",
+    "pillow>=10.1.0",
+    "pytesseract>=0.3.10",
+    "python-magic>=0.4.27",
+    "httpx>=0.25.2",
+    "aiofiles>=23.2.1",
+    "python-dotenv>=1.0.0",
+    "asyncpg>=0.29.0",
+    "psycopg2-binary>=2.9.9",
+    "structlog>=23.2.0",
+    "sqlalchemy[asyncio]>=2.0.0",
+    "asyncpg>=0.29.0",
+    "rich>=13.7.0",
+    "typing-extensions>=4.8.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.3",
+    "pytest-asyncio>=0.21.1",
+    "ruff>=0.2.0",
+    "mypy>=1.7.1",
+    "sqlfluff==3.3.1",
+    "setuptools",
+]
+
+# Configuration Ruff (nouvelle syntaxe)
+[tool.ruff]
+target-version = "py312"
+line-length = 88
+
+# Règles de linting
+lint.select = ["E", "F", "I", "N", "W", "UP", "B", "C4", "SIM", "RUF"]
+lint.ignore = [
+    "E501",  # Line too long (géré par le formateur)
+    "N806",  # Variable in function should be lowercase (pour les noms comme UUID)
+    "N803",  # Argument name should be lowercase (pour les paramètres d'API)
+]
+
+# Configuration du formateur
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+
+# Configuration par fichier
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101"]  # Allow assert in tests
+"**/migrations/*" = ["E501"]  # Allow long lines in migrations
+
+# Configuration des imports
+[tool.ruff.lint.isort]
+known-first-party = ["app"]
+section-order = ["future", "standard-library", "third-party", "first-party", "local-folder"]
+
+# Configuration pydocstyle
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+# Configuration MyPy
+[tool.mypy]
+strict = true
+python_version = "3.12"
+warn_return_any = true
+warn_unused_configs = true
+disallow_any_generics = true
+disallow_subclassing_any = true
+disallow_untyped_calls = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+implicit_reexport = false
+strict_equality = true
+show_error_codes = true
+
+# Ignorer les imports manquants pour certains modules
+[[tool.mypy.overrides]]
+module = [
+    "tesseract.*",
+    "magic.*",
+    "weasyprint.*",
+    "stripe.*",
+    "sqlalchemy.*",
+    "asyncpg.*",
+    "psycopg2.*",
+    "structlog.*",
+]
+ignore_missing_imports = true
+
+# Configuration Pytest
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = "-ra -q --strict-markers"
+testpaths = [
+    "tests",
+]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+    "unit: marks tests as unit tests",
+]
+asyncio_mode = "auto"
+
+# Configuration de coverage
+[tool.coverage.run]
+source = ["app"]
+omit = [
+    "*/tests/*",
+    "*/migrations/*",
+    "app/db/generated/*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "if settings.DEBUG",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:",
+    'class .*\bProtocol\):',
+    '@(abc\.)?abstractmethod',
+]
+
+# Configuration Hatch
+[tool.hatch.build.targets.wheel]
+packages = ["app"]
+
+[tool.hatch.build]
+dev-mode-dirs = ["app"]
+
+# Groupes de dépendances (nouvelle syntaxe)
+[dependency-groups]
+dev = [
+    "setuptools>=80.9.0",
+    "pytest>=7.4.3",
+    "pytest-asyncio>=0.21.1",
+    "pytest-cov>=4.1.0",
+    "ruff>=0.2.0",
+    "mypy>=1.7.1",
+    "sqlfluff==3.3.1",
+]
+
+test = [
+    "pytest>=7.4.3",
+    "pytest-asyncio>=0.21.1",
+    "pytest-cov>=4.1.0",
+    "httpx>=0.25.2",
+]
+
+lint = [
+    "ruff>=0.2.0",
+    "mypy>=1.7.1",
+    "sqlfluff==3.3.1",
+]

@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Votre lettre est prête - Je me défends</title>
+    <meta name="description" content="Choisissez comment recevoir votre lettre de mise en demeure : version gratuite, PDF professionnel ou envoi direct.">
+    <link rel="stylesheet" href="/static/css/resultats.css">
+
+    <!-- Tailwind CSS (design identique à l’ancienne page) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+          theme: {
+            extend: {
+              animation: {
+                'fade-in': 'fadeIn 0.8s ease-out forwards',
+                'slide-up': 'slideUp 1s ease-out forwards',
+                'bounce-subtle': 'bounceSubtle 3s ease-in-out infinite',
+                'pulse-soft': 'pulseSoft 2s ease-in-out infinite',
+                'shine': 'shine 2s linear infinite',
+              },
+              keyframes: {
+                fadeIn: {'0%':{opacity:'0',transform:'translateY(30px)'},'100%':{opacity:'1',transform:'translateY(0)'}},
+                slideUp: {'0%':{opacity:'0',transform:'translateY(50px)'},'100%':{opacity:'1',transform:'translateY(0)'}},
+                bounceSubtle: {'0%,100%':{transform:'translateY(0)'},'50%':{transform:'translateY(-10px)'}},
+                pulseSoft: {'0%,100%':{transform:'scale(1)'},'50%':{transform:'scale(1.05)'}},
+                shine: {'0%':{left:'-100%'},'100%':{left:'100%'}}
+              }
+            }
+          }
+        }
+    </script>
+
+    <style>
+        /* Effet shine des CTA (design ancien) */
+        .shine-effect{position:relative;overflow:hidden}
+        .shine-effect::before{
+          content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;
+          background:linear-gradient(90deg,transparent,rgba(255,255,255,0.4),transparent);
+          transition:left .6s ease;
+        }
+        .shine-effect:hover::before{left:100%}
+
+        /* Cadre aperçu PDF (A4) */
+        .pdf-preview{
+          background:linear-gradient(135deg,#f8fafc 0%,#e2e8f0 100%);
+          border:2px solid #e2e8f0; position:relative; overflow:hidden;
+          aspect-ratio:210/297; /* ratio A4 */
+        }
+
+        /* Filigrane overlay (repris de la version récente) */
+        .watermark{
+          position:absolute; inset:0; pointer-events:none; z-index:10;
+          background-image:repeating-linear-gradient(
+            45deg, transparent, transparent 35px, rgba(239,68,68,.1) 35px, rgba(239,68,68,.1) 70px
+          );
+        }
+        .watermark::before{
+          content:"APERÇU NON VALABLE";
+          position:absolute; top:50%; left:50%;
+          transform:translate(-50%,-50%) rotate(-45deg);
+          font-weight:900; letter-spacing:.05em;
+          font-size:18px; color:rgba(239,68,68,.35);
+          text-shadow:0 0 4px rgba(255,255,255,.7);
+          white-space:nowrap;
+        }
+
+        /* Modales et signature (mêmes IDs/fonctions que ta version récente) */
+        .modal{position:fixed; inset:0; background:rgba(0,0,0,.5); display:none; align-items:center; justify-content:center; z-index:1000}
+        .modal.active{display:flex}
+        .modal-content{background:#fff; border-radius:1rem; max-width:90vw; max-height:90vh; overflow-y:auto; padding:2rem; margin:1rem; width:100%; max-width:640px}
+        .close-btn{background:none; border:none; font-size:1.5rem; cursor:pointer; color:#6b7280; padding:.5rem; border-radius:.5rem}
+        .close-btn:hover{background:#f3f4f6; color:#374151}
+
+        .signature-container{border:2px dashed #d1d5db; border-radius:.5rem; padding:1rem; background:#fafafa}
+        .signature-canvas{width:100%; height:120px; border:2px solid #e5e7eb; background:#fff; border-radius:4px; cursor:crosshair}
+        .signature-canvas:hover{border-color:#3b82f6}
+        .signature-canvas.has-signature{border-color:#10b981}
+        /* Empêche le scroll/zoom de capter les events sur mobile */
+        .signature-canvas { touch-action: none; }
+        /* Optionnel : curseur crayon sympa */
+        .signature-canvas { cursor: crosshair; }
+        .loading{display:none;width:20px;height:20px;border:2px solid transparent;border-top:2px solid currentColor;border-radius:50%;animation:spin 1s linear infinite;margin-left:.5rem}
+        @keyframes spin{to{transform:rotate(360deg)}}
+    </style>
+</head>
+
+<body class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+<!-- Nav (avec logo) -->
+<nav class="bg-white/80 backdrop-blur-md border-b border-white/20 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-6 py-4">
+        <div class="flex items-center justify-between">
+            <a href="/" class="flex items-center gap-3">
+                <div class="p-2 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl shadow-lg transform -rotate-3">
+                    <img src="/static/images/logo_jemedefends.svg" alt="Logo Je me défends" class="w-8 h-8 brightness-0 invert transform rotate-3">
+                </div>
+                <h1 class="text-2xl font-black bg-gradient-to-r from-gray-900 to-blue-900 bg-clip-text text-transparent">
+                    Je me défends
+                </h1>
+            </a>
+            <div class="hidden md:flex items-center gap-2 text-sm text-gray-500">
+                <span class="inline-block w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+                Lettre générée
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Arrière-plan décoratif (design ancien) -->
+<div class="fixed inset-0 opacity-30 pointer-events-none">
+    <div class="absolute top-20 left-10 w-72 h-72 bg-emerald-500/20 rounded-full blur-3xl animate-pulse-soft"></div>
+    <div class="absolute bottom-20 right-10 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-pulse-soft" style="animation-delay:-3s;"></div>
+</div>
+
+<!-- Container principal -->
+<div class="relative z-10 max-w-7xl mx-auto p-6 pt-12">
+
+    <!-- Header -->
+    <div class="text-center mb-12 animate-fade-in">
+        <div class="relative inline-block">
+            <div class="absolute -inset-6 bg-gradient-to-r from-emerald-600/20 to-green-600/20 rounded-full blur-2xl opacity-70"></div>
+            <div class="relative flex items-center justify-center gap-4 mb-6">
+                <div class="p-4 bg-gradient-to-br from-emerald-600 to-green-600 rounded-2xl shadow-xl transform -rotate-3 animate-bounce-subtle">
+                    <svg class="w-12 h-12 text-white transform rotate-3" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                    </svg>
+                </div>
+                <h2 class="text-4xl md:text-6xl font-black text-gray-900">Votre lettre est prête !</h2>
+            </div>
+        </div>
+        <p class="text-xl text-gray-700 mb-4 font-semibold">Choisissez comment vous souhaitez <span class="text-emerald-600 font-bold">recevoir votre mise en demeure</span></p>
+        <p class="text-gray-500 font-medium">Optez pour la solution qui vous convient le mieux</p>
+    </div>
+
+    <!-- Messages (utilisé par resultats.js) -->
+    <div id="messages"></div>
+
+    <!-- Prévisualisation + détails (design identique, mais avec IFRAME fonctionnel) -->
+    <div class="mb-12 animate-slide-up" style="animation-delay:.2s;">
+        <div class="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/50 p-8">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center">📄 Aperçu de votre lettre personnalisée</h2>
+
+            <div class="grid lg:grid-cols-3 gap-8 items-start">
+                <!-- Aperçu PDF via iframe + filigrane -->
+                <div class="lg:col-span-1">
+                    <div class="pdf-preview rounded-2xl shadow-lg mx-auto max-w-xs">
+                        <div class="watermark"></div>
+                        <iframe
+                                src="/letters/{{ letter_id }}/preview?wm=1"
+                                title="Aperçu de votre lettre"
+                                class="w-full h-full border-0 bg-white"
+                        ></iframe>
+                    </div>
+                    <p class="text-center text-sm text-gray-600 mt-4">✨ Lettre générée avec vos informations</p>
+                </div>
+
+                <!-- Détails -->
+                <div class="lg:col-span-2 space-y-6">
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200">
+                            <h3 class="font-bold text-blue-900 mb-3 flex items-center gap-2">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                </svg>
+                                Votre lettre contient
+                            </h3>
+                            <ul class="text-blue-800 text-sm space-y-2">
+                                <li>✓ Vos coordonnées complètes</li>
+                                <li>✓ Informations du vendeur</li>
+                                <li>✓ Détails de l'achat</li>
+                                <li>✓ Description du problème</li>
+                                <li>✓ Références légales précises</li>
+                                <li>✓ Délai de 14 jours</li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-gradient-to-r from-emerald-50 to-green-50 rounded-2xl p-6 border border-emerald-200">
+                            <h3 class="font-bold text-emerald-900 mb-3 flex items-center gap-2">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                Basée sur la loi
+                            </h3>
+                            <ul class="text-emerald-800 text-sm space-y-2">
+                                <li>⚖️ Articles L. 217-3 et suivants</li>
+                                <li>📜 Code de la consommation</li>
+                                <li>🎯 Garantie de conformité</li>
+                                <li>💪 Valeur juridique reconnue</li>
+                                <li>🔒 Respect du formalisme</li>
+                                <li>📈 Optimisé pour réussir</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="bg-gradient-to-r from-amber-50 to-orange-50 rounded-2xl p-6 border border-amber-200">
+                        <h3 class="font-bold text-amber-900 mb-3 flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                            </svg>
+                            Conseils d'envoi
+                        </h3>
+                        <p class="text-amber-800 text-sm leading-relaxed">
+                            <strong>Recommandé :</strong> courrier recommandé avec AR ou email avec accusé de réception pour une preuve solide.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Plans -->
+    <div class="pricing-container mb-12">
+        <div class="grid lg:grid-cols-3 gap-8">
+            <!-- Gratuit -->
+            <div class="plan-card bg-white/60 rounded-3xl p-8 border-2 border-gray-200 relative animate-slide-up" style="animation-delay:.3s;">
+                <div class="absolute top-4 right-4">
+                    <span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm font-medium">Basique</span>
+                </div>
+                <div class="text-center mb-6">
+                    <div class="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-gray-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 01-1.447.894L12 15.382l-2.553 1.512A1 1 0 018 16V4z" clip-rule="evenodd"/></svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-2">Version gratuite</h3>
+                    <div class="text-4xl font-black text-gray-700 mb-2">0€</div>
+                    <p class="text-gray-600 text-sm">Lettre à compléter</p>
+                </div>
+                <ul class="space-y-3 mb-8">
+                    <li class="flex items-center gap-3 text-gray-700">
+                        <svg class="w-5 h-5 text-gray-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                        Contenu juridique complet
+                    </li>
+                    <li class="flex items-center gap-3 text-gray-700">
+                        <svg class="w-5 h-5 text-gray-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                        Format texte simple
+                    </li>
+                    <li class="flex items-center gap-3 text-gray-500">
+                        <svg class="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+                        <span class="line-through">Mise en page professionnelle</span>
+                    </li>
+                    <li class="flex items-center gap-3 text-gray-500">
+                        <svg class="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+                        <span class="line-through">Signature manuscrite à ajouter</span>
+                    </li>
+                    <li class="flex items-center gap-3 text-gray-500">
+                        <svg class="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+                        <span class="line-through">Impression à votre charge</span>
+                    </li>
+                </ul>
+                <button id="btn-free-download"
+                        class="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-4 px-6 rounded-2xl transition-all duration-300 border-2 border-gray-300">
+                    Télécharger gratuitement
+                </button>
+                <p class="text-xs text-gray-500 mt-3 text-center">⚠️ Vous devrez compléter et imprimer la lettre</p>
+            </div>
+
+            <!-- Premium (PDF) -->
+            <div class="plan-card bg-gradient-to-b from-blue-50 to-indigo-100 rounded-3xl p-8 border-4 border-blue-400 relative animate-slide-up" style="animation-delay:.4s;">
+                <div class="absolute -top-4 left-1/2 -translate-x-1/2 z-20">
+            <span class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-2 rounded-full text-sm font-bold shadow-lg animate-bounce-subtle whitespace-nowrap">
+              ⭐ RECOMMANDÉ
+            </span>
+                </div>
+                <div class="text-center mb-6">
+                    <div class="w-16 h-16 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                        <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4zM18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z"/></svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-blue-900 mb-2">PDF professionnel</h3>
+                    <div class="text-4xl font-black text-blue-700 mb-1">19€</div>
+                    <p class="text-blue-600 text-sm font-medium">Version mise en page</p>
+                </div>
+                <ul class="space-y-3 mb-8 text-blue-800">
+                    <li class="flex items-center gap-3">
+                        <svg class="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                        <strong>PDF haute qualité</strong>
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <svg class="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                        <strong>Mise en page professionnelle</strong>
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <svg class="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                        Prêt à imprimer & envoyer
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <svg class="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                        Téléchargement instantané
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <svg class="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                        Guide d'envoi inclus
+                    </li>
+                </ul>
+                <button id="btn-premium-pdf"
+                        onclick="window.showPdfModal ? showPdfModal() : document.getElementById('pdf-modal').classList.add('active')"
+                        class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-4 px-6 rounded-2xl transition-all duration-300 transform hover:-translate-y-1 hover:shadow-2xl shine-effect">
+            <span class="flex items-center justify-center gap-2">
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+              Obtenir le PDF professionnel
+            </span>
+                </button>
+                <p class="text-xs text-blue-700 mt-3 text-center font-medium">✨ Imprimez et envoyez immédiatement</p>
+            </div>
+
+            <!-- Premium Plus (postal) -->
+            <div class="plan-card bg-gradient-to-b from-purple-50 to-pink-100 rounded-3xl p-8 border-2 border-purple-300 relative animate-slide-up" style="animation-delay:.5s;">
+                <div class="absolute top-4 right-4">
+                    <span class="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-3 py-1 rounded-full text-sm font-medium">Premium</span>
+                </div>
+                <div class="text-center mb-6">
+                    <div class="w-16 h-16 bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                        <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/><path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/></svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-purple-900 mb-2">Envoi automatique</h3>
+                    <div class="text-4xl font-black text-purple-700 mb-2">39€</div>
+                    <p class="text-purple-600 text-sm">Service complet</p>
+                </div>
+                <ul class="space-y-3 mb-8 text-purple-800">
+                    <li class="flex items-center gap-3"><svg class="w-5 h-5 text-purple-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg><strong>Tout le service PDF</strong></li>
+                    <li class="flex items-center gap-3"><svg class="w-5 h-5 text-purple-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg><strong>Envoi courrier recommandé</strong></li>
+                    <li class="flex items-center gap-3"><svg class="w-5 h-5 text-purple-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Accusé de réception inclus</li>
+                    <li class="flex items-center gap-3"><svg class="w-5 h-5 text-purple-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Copie par email pour vous</li>
+                    <li class="flex items-center gap-3"><svg class="w-5 h-5 text-purple-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Suivi de livraison</li>
+                </ul>
+                <button id="btn-postal"
+                        onclick="window.showPostalModal ? showPostalModal() : document.getElementById('postal-modal').classList.add('active')"
+                        class="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold py-4 px-6 rounded-2xl transition-all duration-300 transform hover:-translate-y-1 hover:shadow-2xl shine-effect">
+            <span class="flex items-center justify-center gap-2">
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/><path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/></svg>
+              Envoi automatique
+            </span>
+                </button>
+                <p class="text-xs text-purple-700 mt-3 text-center">📬 Envoyé sous 24h, vous ne faites rien !</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Persuasion -->
+    <div class="bg-gradient-to-r from-amber-50 to-orange-50 rounded-3xl p-8 border-2 border-amber-200 mb-12 animate-slide-up" style="animation-delay:.6s;">
+        <div class="text-center mb-8">
+            <h2 class="text-3xl font-black text-amber-900 mb-4">⚡ Pourquoi choisir la version professionnelle ?</h2>
+            <p class="text-amber-800 text-lg">Maximisez vos chances de succès avec un document de qualité professionnelle</p>
+        </div>
+        <div class="grid md:grid-cols-3 gap-8">
+            <div class="text-center">
+                <div class="w-16 h-16 bg-emerald-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+                <h3 class="font-bold text-gray-900 mb-2">Meilleur impact</h3>
+                <p class="text-gray-700 text-sm">Les vendeurs prennent au sérieux les documents professionnels et répondent plus favorablement</p>
+            </div>
+            <div class="text-center">
+                <div class="w-16 h-16 bg-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/></svg>
+                </div>
+                <h3 class="font-bold text-gray-900 mb-2">Gain de temps</h3>
+                <p class="text-gray-700 text-sm">Fini les allers-retours à l'imprimante et la recherche de la bonne mise en page</p>
+            </div>
+            <div class="text-center">
+                <div class="w-16 h-16 bg-purple-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/></svg>
+                </div>
+                <h3 class="font-bold text-gray-900 mb-2">Crédibilité renforcée</h3>
+                <p class="text-gray-700 text-sm">Mise en page professionnelle qui inspire le respect et montre votre détermination</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Garanties -->
+    <div class="bg-gradient-to-r from-gray-50 to-slate-100 rounded-3xl p-8 border border-gray-200 text-center animate-slide-up" style="animation-delay:.8s;">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">🔒 Nos garanties</h2>
+        <div class="grid md:grid-cols-4 gap-6">
+            <div class="text-center">
+                <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                </div>
+                <h3 class="font-bold text-gray-900 text-sm">Paiement sécurisé</h3>
+                <p class="text-gray-600 text-xs">Stripe & PayPal</p>
+            </div>
+            <div class="text-center">
+                <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z"/><path fill-rule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z" clip-rule="evenodd"/></svg>
+                </div>
+                <h3 class="font-bold text-gray-900 text-sm">Satisfaction garantie</h3>
+                <p class="text-gray-600 text-xs">Remboursé si non satisfait</p>
+            </div>
+            <div class="text-center">
+                <div class="w-12 h-12 bg-purple-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/></svg>
+                </div>
+                <h3 class="font-bold text-gray-900 text-sm">Support inclus</h3>
+                <p class="text-gray-600 text-xs">Assistance par email</p>
+            </div>
+            <div class="text-center">
+                <div class="w-12 h-12 bg-amber-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+                <h3 class="font-bold text-gray-900 text-sm">Conformité légale</h3>
+                <p class="text-gray-600 text-xs">Validé par des juristes</p>
+            </div>
+        </div>
+        <p class="text-gray-600 text-sm mt-6">🏛️ Basé sur le Code de la consommation français • Valeur juridique reconnue</p>
+    </div>
+</div>
+
+<!-- Modale PDF (fonctionnalités récentes conservées) -->
+<div id="pdf-modal" class="modal">
+    <div class="modal-content">
+        <div class="flex items-center justify-between mb-6">
+            <h3 class="text-xl font-bold text-gray-900">📄 Finaliser votre PDF</h3>
+            <button class="close-btn" onclick="hidePdfModal()">×</button>
+        </div>
+
+        <div class="mb-4">
+            <label class="block font-semibold text-gray-700 mb-1">Email pour recevoir le PDF <span class="text-red-500">*</span></label>
+            <input type="email" id="pdf-email" class="w-full border-2 border-gray-200 rounded-md p-3 focus:border-blue-500 outline-none" placeholder="votre@email.com">
+            <p class="text-sm text-gray-500 mt-1">Nous vous enverrons le PDF par email une fois généré</p>
+        </div>
+
+        <div class="mb-4">
+            <label class="block font-semibold text-gray-700 mb-1">Votre signature <span class="text-red-500">*</span></label>
+            <div class="signature-container">
+                <canvas id="signature-canvas" class="signature-canvas"></canvas>
+                <div class="flex items-center justify-between mt-2">
+                    <p class="text-sm text-gray-500">Signez dans le cadre ci-dessus</p>
+                    <button type="button" class="text-blue-600 font-semibold text-sm" onclick="clearSignature()">Effacer</button>
+                </div>
+            </div>
+        </div>
+
+        <button id="preview-btn" class="w-full bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white font-bold py-3 rounded-lg mb-4 flex items-center justify-center gap-2"
+                onclick="generatePreview()" disabled>
+            <span id="preview-btn-text">Générer un aperçu</span>
+            <div id="preview-loading" class="loading"></div>
+        </button>
+
+        <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-4 mb-4">
+            <div class="flex items-center justify-between mb-1">
+                <span class="font-semibold text-blue-900">PDF professionnel</span>
+                <span class="text-2xl font-black text-blue-900">9€</span>
+            </div>
+            <p class="text-sm text-blue-700">Paiement sécurisé • Livraison immédiate par email</p>
+        </div>
+
+        <div class="flex gap-3">
+            <button class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-3 rounded-lg" onclick="hidePdfModal()">Annuler</button>
+            <button class="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-3 rounded-lg flex items-center justify-center gap-2"
+                    onclick="generatePdf()">
+                <span id="pdf-btn-text">Générer et payer</span>
+                <div id="pdf-loading" class="loading"></div>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Modale Postal -->
+<div id="postal-modal" class="modal">
+    <div class="modal-content">
+        <div class="flex items-center justify-between mb-6">
+            <h3 class="text-xl font-bold text-gray-900">📮 Service d'envoi postal</h3>
+            <button class="close-btn" onclick="hidePostalModal()">×</button>
+        </div>
+
+        <div class="mb-4">
+            <label class="block font-semibold text-gray-700 mb-1">Email pour le suivi <span class="text-red-500">*</span></label>
+            <input type="email" id="postal-email" class="w-full border-2 border-gray-200 rounded-md p-3 focus:border-blue-500 outline-none" placeholder="votre@email.com">
+            <p class="text-sm text-gray-500 mt-1">Nous vous tiendrons informé de l'envoi et de la livraison</p>
+        </div>
+
+        <div class="mb-4">
+            <label class="block font-semibold text-gray-700 mb-1">Votre signature <span class="text-red-500">*</span></label>
+            <div class="signature-container">
+                <canvas id="signature-canvas-postal" class="signature-canvas"></canvas>
+                <div class="flex items-center justify-between mt-2">
+                    <p class="text-sm text-gray-500">Signez dans le cadre ci-dessus</p>
+                    <button type="button" class="text-blue-600 font-semibold text-sm" onclick="clearSignaturePostal()">Effacer</button>
+                </div>
+            </div>
+        </div>
+
+        <button id="preview-btn-postal" class="w-full bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white font-bold py-3 rounded-lg mb-4 flex items-center justify-center gap-2"
+                onclick="generatePreviewPostal()" disabled>
+            <span id="preview-btn-postal-text">Générer un aperçu</span>
+            <div id="preview-postal-loading" class="loading"></div>
+        </button>
+
+        <div class="bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg p-4 mb-4">
+            <div class="font-semibold text-purple-900 mb-2">📦 Ce qui est inclus :</div>
+            <ul class="text-purple-800 text-sm space-y-1">
+                <li>✓ Impression professionnelle</li>
+                <li>✓ Envoi en recommandé avec AR</li>
+                <li>✓ Suivi en temps réel</li>
+                <li>✓ Accusé de réception numérisé</li>
+            </ul>
+        </div>
+
+        <div class="bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg p-4 mb-4">
+            <div class="flex items-center justify-between mb-1">
+                <span class="font-semibold text-purple-900">Service complet</span>
+                <span class="text-2xl font-black text-purple-900">39€</span>
+            </div>
+            <p class="text-sm text-purple-800">Paiement sécurisé • Envoi sous 24h ouvrées</p>
+        </div>
+
+        <div class="flex gap-3">
+            <button class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-3 rounded-lg" onclick="hidePostalModal()">Annuler</button>
+            <button class="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold py-3 rounded-lg flex items-center justify-center gap-2"
+                    onclick="generatePostal()">
+                <span id="postal-btn-text">Commander l'envoi</span>
+                <div id="postal-loading" class="loading"></div>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Modale Aperçu avec signature -->
+<div id="preview-modal" class="modal">
+    <div class="modal-content max-w-[800px]">
+        <div class="flex items-center justify-between mb-6">
+            <h3 class="text-xl font-bold text-gray-900">👁️ Aperçu avec votre signature</h3>
+            <button class="close-btn" onclick="hidePreviewModal()">×</button>
+        </div>
+
+        <div class="relative bg-white rounded-xl border border-gray-200 shadow-lg overflow-hidden mb-4">
+            <div class="watermark"></div>
+            <div id="generated-preview-content" class="p-6 text-sm text-gray-800 font-serif leading-6">
+                <!-- rempli par resultats.js -->
+            </div>
+        </div>
+
+        <div class="bg-amber-50 border-l-4 border-amber-400 rounded-lg p-4 mb-4">
+            <p class="text-amber-800 text-sm">
+                <strong>ℹ️ Ceci est un aperçu avec filigrane.</strong> Le PDF final sera sans filigrane et optimisé pour l’impression.
+            </p>
+        </div>
+
+        <div class="flex justify-end">
+            <button class="bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-3 px-4 rounded-lg" onclick="hidePreviewModal()">Fermer l'aperçu</button>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
+
+<!-- Remplacer la section script de resultats.html par ceci -->
+
+<!-- Modales de signature et prévisualisation -->
+<div id="signature-modal" class="modal-overlay fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden">
+        <!-- Header -->
+        <div class="flex items-center justify-between p-6 border-b border-gray-200">
+            <div>
+                <h3 class="text-xl font-bold text-gray-900">✍️ Ajouter votre signature</h3>
+                <p class="text-gray-600 text-sm mt-1">Dessinez votre signature dans la zone ci-dessous</p>
+            </div>
+            <button data-action="close-modal" class="text-gray-400 hover:text-gray-600 transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Content -->
+        <div class="p-6">
+            <!-- Canvas de signature -->
+            <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 mb-4 bg-gray-50">
+                <canvas
+                        id="signature-canvas"
+                        width="600"
+                        height="200"
+                        class="w-full h-48 bg-white rounded border cursor-crosshair touch-none"
+                        style="max-width: 100%;"
+                ></canvas>
+            </div>
+
+            <!-- Instructions -->
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <svg class="h-5 w-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <h4 class="text-sm font-medium text-blue-800">Instructions</h4>
+                        <div class="mt-1 text-sm text-blue-700">
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li>Utilisez votre souris ou votre doigt pour dessiner</li>
+                                <li>Écrivez de manière claire et lisible</li>
+                                <li>Utilisez le bouton "Effacer" pour recommencer</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Boutons d'action -->
+            <div class="flex gap-3">
+                <button
+                        id="clear-signature"
+                        class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-3 px-4 rounded-lg transition-colors"
+                >
+                    🗑️ Effacer
+                </button>
+                <button
+                        id="save-signature"
+                        class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg transition-colors"
+                >
+                    ✅ Sauvegarder
+                </button>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="px-6 py-4 bg-gray-50 border-t border-gray-200">
+            <div class="flex justify-end gap-3">
+                <button
+                        data-action="close-modal"
+                        class="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
+                >
+                    Annuler
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modale de prévisualisation -->
+<div id="preview-modal" class="modal-overlay fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
+        <!-- Header -->
+        <div class="flex items-center justify-between p-6 border-b border-gray-200">
+            <div>
+                <h3 class="text-xl font-bold text-gray-900">👀 Aperçu de votre lettre</h3>
+                <p class="text-gray-600 text-sm mt-1">Vérifiez le contenu avant de télécharger</p>
+            </div>
+            <button data-action="close-modal" class="text-gray-400 hover:text-gray-600 transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Content -->
+        <div class="flex-1 overflow-hidden">
+            <iframe
+                    id="preview-iframe"
+                    class="w-full h-[70vh] border-0"
+                    title="Aperçu de la lettre"
+            ></iframe>
+        </div>
+
+        <!-- Footer -->
+        <div class="px-6 py-4 bg-gray-50 border-t border-gray-200">
+            <div class="flex justify-between items-center">
+                <p class="text-sm text-gray-600">
+                    💡 Cet aperçu inclut un filigrane qui ne sera pas présent sur le PDF final
+                </p>
+                <div class="flex gap-3">
+                    <button
+                            data-action="close-modal"
+                            class="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
+                    >
+                        Fermer
+                    </button>
+                    <button
+                            id="download-from-preview"
+                            onclick="downloadPDF()"
+                            class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
+                    >
+                        📄 Télécharger PDF
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Mise à jour de la section prévisualisation -->
+<div class="lg:col-span-1">
+    <div class="pdf-preview rounded-2xl shadow-lg mx-auto max-w-xs">
+        <div class="pdf-content">
+            <div class="text-right mb-2 buyer-info">
+                <strong>[Vos coordonnées]</strong><br>
+                [Votre adresse]<br>
+                [Ville, Code postal]
+            </div>
+
+            <div class="mb-2 seller-info">
+                <strong>[Nom du vendeur]</strong><br>
+                [Adresse du vendeur]<br>
+                [Ville vendeur]
+            </div>
+
+            <div class="text-right mb-2 text-xs date-info">
+                [Ville], le [Date]
+            </div>
+
+            <div class="bg-blue-100 p-1 mb-2 rounded text-center">
+                <strong>MISE EN DEMEURE</strong><br>
+                <small>Garantie légale de conformité</small>
+            </div>
+
+            <div class="text-xs space-y-1">
+                <p>Madame, Monsieur,</p>
+                <p>Le <span class="font-semibold">[date d'achat]</span>, j'ai acheté auprès de votre établissement <span class="product-info font-semibold">[produit]</span> pour la somme de <span class="amount-info font-semibold">[prix]</span>...</p>
+                <p>Or, ce bien présente un défaut de conformité : <span class="defect-info font-semibold">[description du défaut]</span>...</p>
+                <div class="bg-yellow-100 p-1 rounded">
+                    <strong>Références légales :</strong> Articles L.217-3 et suivants du Code de la consommation
+                </div>
+                <p>Je vous mets en demeure de procéder...</p>
+            </div>
+
+            <div class="mt-2 text-right">
+                <div class="signature-preview border-t border-gray-300 pt-1 inline-block">
+                    Signature
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Boutons d'actions sous l'aperçu -->
+    <div class="mt-4 space-y-2">
+        <button
+                id="preview-btn"
+                class="w-full bg-blue-100 hover:bg-blue-200 text-blue-800 font-medium py-2 px-4 rounded-lg transition-colors text-sm"
+        >
+            👀 Voir l'aperçu complet
+        </button>
+        <button
+                id="open-signature-modal"
+                class="w-full bg-green-100 hover:bg-green-200 text-green-800 font-medium py-2 px-4 rounded-lg transition-colors text-sm"
+        >
+            ✍️ Ajouter ma signature
+        </button>
+    </div>
+
+    <p class="text-center text-sm text-gray-600 mt-4">
+        ✨ Lettre générée avec vos informations
+    </p>
+</div>
+
+<!-- JavaScript externe -->
+<script src="/static/js/resultats.js"></script>

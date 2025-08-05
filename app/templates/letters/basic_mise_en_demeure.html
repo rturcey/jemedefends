@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mise en demeure - Version gratuite</title>
+    <style>
+        body {
+          font-family: Arial, sans-serif;
+          font-size: 14px;
+          margin: 20px;
+          color: #000;
+          line-height: 1.5;
+        }
+        .addresses {
+          margin-bottom: 20px;
+        }
+        .right {
+          text-align: right;
+        }
+        .subject {
+          font-weight: bold;
+          margin: 20px 0;
+        }
+        .signature {
+          margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+<div class="addresses">
+    <div>
+        <strong>{{ buyer_name }}</strong><br>
+        {{ buyer_address }}<br>
+        {{ buyer_email }}<br>
+        {{ buyer_phone }}
+    </div>
+    <div class="right">
+        À l'attention de <strong>{{ seller_name }}</strong><br>
+        {{ seller_address }}
+    </div>
+</div>
+
+<div class="right">
+    Le {{ current_date }}
+</div>
+
+<div class="subject">
+    Objet : Mise en demeure pour non-conformité
+    <div>Réf. légales : Article L.217-3 et suivants du Code de la consommation</div>
+</div>
+
+<p>
+    Madame, Monsieur,
+</p>
+
+<p>
+    Le {{ purchase_date_formatted }}, j'ai acheté auprès de votre société le produit suivant :
+    <strong>{{ product_name }}</strong>{% if order_reference %} (commande n°{{ order_reference }}){% endif %},
+    pour un montant de {{ amount_formatted }}.
+</p>
+
+<p>
+    Or, ce bien présente aujourd'hui un défaut de conformité caractérisé par : {{ defect_description }}.
+</p>
+
+<p>
+    Conformément aux articles L.217-3 et suivants du Code de la consommation, je vous mets en demeure
+    de procéder, sans frais, à la réparation ou au remplacement de ce bien dans un délai de 14 jours
+    calendaires à compter de la réception du présent courrier.
+</p>
+
+<p>
+    Faute de réponse satisfaisante dans ce délai, je me réserve le droit d'engager toute action utile,
+    notamment auprès de la DGCCRF, d'associations de consommateurs ou par voie judiciaire.
+</p>
+
+<p>
+    Dans l'attente de votre retour rapide, je vous prie d'agréer, Madame, Monsieur,
+    l'expression de mes salutations distinguées.
+</p>
+
+<div class="signature">
+    <strong>{{ buyer_name }}</strong><br>
+    (Signature)
+</div>
+</body>
+</html>
