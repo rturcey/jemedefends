@@ -1,0 +1,120 @@
+<!-- Contenu mis à jour pour app/templates/letters/basic_mise_en_demeure.html -->
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mise en demeure - Version gratuite</title>
+    <style>
+        body {
+          font-family: 'Arial', sans-serif;
+          font-size: 14px;
+          margin: 20px;
+          color: #333;
+          line-height: 1.6;
+          max-width: 800px;
+        }
+        .header { margin-bottom: 30px; }
+        .addresses {
+          display: flex;
+          justify-content: space-between;
+          margin-bottom: 30px;
+        }
+        .buyer-info, .seller-info { width: 45%; }
+        .seller-info { text-align: right; }
+        .date { text-align: right; margin: 20px 0; font-weight: bold; }
+        .subject { font-weight: bold; margin: 30px 0; text-decoration: underline; }
+        .content p { margin: 15px 0; text-align: justify; }
+        .highlight { font-weight: bold; color: #d63384; }
+        .legal-ref { font-style: italic; color: #6c757d; }
+        .signature { margin-top: 40px; text-align: left; }
+        .signature-line { border-bottom: 1px solid #333; width: 200px; margin-top: 60px; }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div class="addresses">
+        <div class="buyer-info">
+            <strong>{{ letter.buyer_name }}</strong><br>
+            {{ letter.buyer_address }}<br>
+            {% if letter.buyer_email %}{{ letter.buyer_email }}<br>{% endif %}
+            {% if letter.buyer_phone %}{{ letter.buyer_phone }}{% endif %}
+        </div>
+        <div class="seller-info">
+            À l'attention de :<br>
+            <strong>{{ letter.seller_name }}</strong><br>
+            {{ letter.seller_address }}
+        </div>
+    </div>
+
+    <div class="date">
+        Le {{ current_date }}
+    </div>
+
+    <div class="subject">
+        <strong>Objet : Mise en demeure pour non-conformité</strong><br>
+        <span class="legal-ref">Réf. légales : Articles L.217-3 et L.217-7 du Code de la consommation</span>
+    </div>
+</div>
+
+<div class="content">
+    <p>Madame, Monsieur,</p>
+
+    <p>
+        Le <span class="highlight">{{ purchase_date_formatted }}</span>, j'ai acheté auprès de votre société le produit suivant :
+        <span class="highlight">{{ letter.product_name }}</span>{% if letter.order_reference %} (commande n°<span class="highlight">{{ letter.order_reference }}</span>){% endif %},
+        pour un montant de <span class="highlight">{{ product_price_formatted }}</span>.
+    </p>
+
+    <p>
+        Or, ce bien présente aujourd'hui un défaut de conformité caractérisé par :
+        <span class="highlight">{{ letter.defect_description }}</span>.
+    </p>
+
+    <p>
+        Conformément aux <strong>articles L.217-3 et suivants du Code de la consommation</strong>,
+        je vous mets en demeure de procéder, <strong>sans frais</strong>, à la réparation ou au remplacement
+        de ce bien dans un délai de <span class="highlight">14 jours calendaires</span> à compter de la
+        réception du présent courrier.
+    </p>
+
+    {# --- Charge de la preuve (art. L.217-7) --- #}
+    {% set _limit =
+        presumption_limit_months
+        | default( (12 if letter.used else 24) )
+            %}
+    {% if presumption_active is defined %}
+        {% set _presumption = presumption_active %}
+    {% else %}
+        {% set _presumption = true %}
+    {% endif %}
+    {% if _presumption %}
+        <p>
+            <strong>Charge de la preuve — art. L.217-7 :</strong>
+            le défaut étant apparu dans le délai de <strong>{{ _limit }} mois</strong> à compter de la délivrance,
+            il est <em>présumé exister au jour de celle-ci</em>. En conséquence, <strong>il vous appartient d'apporter la preuve contraire</strong>.
+        </p>
+    {% endif %}
+
+    <p>
+        <strong>Faute de réponse satisfaisante dans ce délai</strong>, je me réserve le droit d'engager
+        toute action utile, notamment auprès de la <strong>DGCCRF</strong>, d'associations de consommateurs
+        ou par voie judiciaire.
+    </p>
+
+    <p>
+        Dans l'attente de votre retour rapide, je vous prie d'agréer, Madame, Monsieur,
+        l'expression de mes salutations distinguées.
+    </p>
+</div>
+
+<div class="signature">
+    <p><strong>{{ letter.buyer_name }}</strong></p>
+    <div class="signature-line"></div>
+    <p><em>(Signature manuscrite)</em></p>
+</div>
+
+</body>
+</html>

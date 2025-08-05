@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Mise en demeure gratuite – Garantie légale 2 ans</title>
+    <meta name="description" content="Produit en panne ou non conforme ? Générez une mise en demeure conforme au Code de la consommation en 3 minutes. Gratuit, PDF téléchargeable." />
+    <link rel="canonical" href="{{ request.url }}" />
+
+    <!-- Open Graph / Twitter -->
+    <meta property="og:title" content="Mise en demeure gratuite – Garantie légale 2 ans" />
+    <meta property="og:description" content="Produit en panne, non conforme ou SAV qui s’éternise ? Générez votre mise en demeure en 3 minutes." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="{{ request.url }}" />
+    <meta property="og:image" content="/static/og/og-image-jemedefends-1200x630.png" />
+    <meta property="og:image:alt" content="Je me défends — Mise en demeure gratuite pour garantie légale" />
+    <meta name="twitter:image:alt" content="Je me défends — Mise en demeure gratuite pour garantie légale" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Mise en demeure gratuite – Garantie légale" />
+    <meta name="twitter:description" content="Faites valoir vos droits en 3 minutes. Réparation, remplacement ou remboursement prévus par la loi." />
+
+    <!-- Preloads basiques -->
+    <link rel="prefetch" href="/eligibilite" as="document" />
+    <link rel="preload" href="/static/images/logo_jemedefends.svg" as="image" type="image/svg+xml" fetchpriority="high" />
+    <link rel="preconnect" href="/static/fonts" crossorigin>
+    <link rel="preload" href="/static/fonts/inter-regular.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/static/fonts/inter-bold.woff2" as="font" type="font/woff2" crossorigin>
+
+    <!-- Tailwind compilé (pas de CDN) -->
+    <link rel="preload" as="style" href="/static/css/app.css" />
+    <link rel="stylesheet" href="/static/css/app.css" />
+
+    <!-- CSS critique minimal : padding du main selon hauteur nav + marge d’ancre -->
+    <style>
+        :root { --hero-gap: 16px; }
+        main { padding-top: var(--nav-height, 64px); }
+        :target { scroll-margin-top: calc(var(--nav-height, 64px) + 8px); }
+        .reveal { opacity: 0; transform: translateY(24px); transition: opacity .6s ease, transform .6s ease; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        .skip-link:focus { position: fixed; top: .75rem; left: .75rem; background: #fff; color: #1d4ed8; padding: .5rem .75rem; border-radius: .375rem; box-shadow: 0 1px 2px rgba(0,0,0,.1); }
+        @media (max-width: 768px) { .hero-title { font-size: 2rem; } }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+<a href="#main" class="skip-link sr-only focus:not-sr-only">Aller au contenu</a>
+
+<header>
+    <!-- Navigation fixe (hauteur auto) -->
+    <nav id="site-nav" class="bg-white/80 backdrop-blur-md border-b border-white/20 fixed top-0 left-0 right-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 py-1.5">
+            <div class="flex items-center justify-between">
+                <!-- Logo -->
+                <a href="/" class="flex items-center gap-2" aria-label="Je me défends – Accueil">
+                    <img src="/static/images/logo_jemedefends.svg" alt="Je me défends – logo"
+                         class="w-36 md:w-40" width="160" height="40" />
+                </a>
+
+                <!-- Menu desktop (compact pour rester à la même hauteur) -->
+                <ul class="hidden md:flex items-center gap-6 text-slate-700 font-medium">
+                    <li><a href="#hero" class="hover:text-blue-600 transition-colors">Accueil</a></li>
+                    <li><a href="#comment-ca-marche" class="hover:text-blue-600 transition-colors">Comment ça marche</a></li>
+                    <li><a href="#eligibilite" class="hover:text-blue-600 transition-colors">Éligibilité</a></li>
+                    <li><a href="#pourquoi-ca-marche" class="hover:text-blue-600 transition-colors">Pourquoi ça marche</a></li>
+                    <li><a href="#references" class="hover:text-blue-600 transition-colors">Références</a></li>
+                    <li><a href="#faq" class="hover:text-blue-600 transition-colors">FAQ</a></li>
+                </ul>
+
+                <!-- CTA compact pour matcher la hauteur -->
+                <a href="/eligibilite"
+                   class="hidden md:inline-block bg-blue-600 hover:bg-blue-700 text-white py-1.5 px-3 rounded-lg font-semibold shadow-lg transition-transform hover:-translate-y-0.5 text-sm md:text-base">
+                    🚀 Tester mon éligibilité
+                </a>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<main id="main">
+    <!-- HERO : ne dépasse pas l’écran (100vh - nav - gap) -->
+    <section id="hero"
+             class="relative flex items-center overflow-hidden scroll-mt-20"
+             style="min-height: calc(100vh - var(--nav-height, 64px) - var(--hero-gap, 16px));">
+        <!-- décor -->
+        <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+            <div class="absolute top-20 left-10 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl"></div>
+        </div>
+
+        <div class="relative z-10 max-w-6xl mx-auto px-6 py-6 md:py-8">
+            <!-- ⬇️ grille asymétrique : gauche 1.35fr / droite 0.65fr, + gap -->
+            <div class="grid grid-cols-1 items-center gap-10 lg:gap-14
+                lg:grid-cols-[1.30fr_0.70fr] xl:grid-cols-[1.30fr_0.70fr]">
+
+                <!-- Colonne gauche (plus large) -->
+                <div class="space-y-6 lg:pr-6 xl:pr-10">
+                    <div class="inline-flex items-center gap-2 bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-semibold">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/>
+                        </svg>
+                        Articles L.217-3 et s. — Code de la consommation
+                    </div>
+
+                    <h1 class="hero-title text-2xl md:text-4xl lg:text-5xl font-extrabold leading-[1.15] tracking-tight text-slate-900 max-w-[26ch]" style="text-wrap: balance">
+                        Un problème avec un achat ?
+                        <span class="block text-amber-500 font-extrabold">Mise en demeure en 3&nbsp;minutes.</span>
+                    </h1>
+
+                    <p class="text-base md:text-lg text-slate-700 font-medium max-w-[62ch]">
+                        Générez une mise en demeure conforme au Code de la consommation.
+                    </p>
+                    <p class="hidden sm:block text-base md:text-lg text-slate-600 leading-relaxed max-w-[70ch]">
+                        Panne, défaut, usure anormale, livraison non conforme, SAV qui s’éternise…
+                        <span class="font-semibold text-blue-700">La garantie légale de conformité s’applique</span> :
+                        réparation, remplacement ou remboursement selon les cas.
+                    </p>
+
+                    <div class="flex flex-col sm:flex-row gap-3 pt-2">
+                        <a href="/eligibilite"
+                           class="group bg-blue-600 hover:bg-blue-700 text-white font-semibold md:font-bold py-2.5 px-4 rounded-xl transition-all hover:-translate-y-0.5 shadow-lg text-center">
+            <span class="inline-flex items-center gap-2">
+              🚀 Tester mon éligibilité
+              <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+              </svg>
+            </span>
+                        </a>
+
+                        <a href="/exemple-lettre"
+                           class="inline-flex items-center gap-2 border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-medium py-2 px-3 rounded-lg">
+                            📄 Voir un exemple
+                        </a>
+                    </div>
+
+                    <p class="text-sm text-slate-500">Aucun compte requis • PDF téléchargeable • Service de base gratuit</p>
+                </div>
+
+                <!-- Colonne droite (réduite) : pills SEO + gradient plus compact -->
+                <div class="relative lg:justify-self-end lg:max-w-[26rem] xl:max-w-[30rem] gap-3.5">
+                    <!-- gradient d’ancrage plus étroit -->
+                    <div aria-hidden="true" class="pointer-events-none absolute -inset-y-8 -right-8 w-[420px] max-w-[55vw]">
+                        <div class="h-full w-full"
+                             ></div>
+                    </div>
+
+                    <h2 class="sr-only">Problèmes courants couverts par la garantie légale</h2>
+
+                    <nav aria-label="Problèmes courants" class="relative z-10 grid gap-3">
+                        <!-- Les pills ont un padding un peu réduit -->
+                        <a href="/eligibilite?categorie=smartphone"
+                           title="Mise en demeure – smartphone en panne (garantie légale)"
+                           class="group rounded-2xl p-[1px] bg-gradient-to-r from-blue-200 to-indigo-200 hover:from-blue-300 hover:to-indigo-300 transition">
+            <span class="flex items-center justify-between rounded-2xl bg-white/80 backdrop-blur px-3.5 py-2.5 shadow-sm hover:shadow-[0_10px_30px_rgba(37,99,235,0.12)]">
+              <span class="flex items-center gap-3"><span class="text-2xl" aria-hidden="true">📱</span><span class="font-semibold text-slate-900">Smartphone en panne</span></span>
+              <svg class="w-5 h-5 text-slate-400 group-hover:text-blue-600 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            </span>
+                        </a>
+
+                        <a href="/eligibilite?categorie=electromenager"
+                           title="Mise en demeure – électroménager défaillant (garantie légale)"
+                           class="group rounded-2xl p-[1px] bg-gradient-to-r from-emerald-200 to-teal-200 hover:from-emerald-300 hover:to-teal-300 transition">
+            <span class="flex items-center justify-between rounded-2xl bg-white/80 backdrop-blur px-3.5 py-2.5 shadow-sm hover:shadow-[0_10px_30px_rgba(16,185,129,0.14)]">
+              <span class="flex items-center gap-3"><span class="text-2xl" aria-hidden="true">🔥</span><span class="font-semibold text-slate-900">Électroménager défaillant</span></span>
+              <svg class="w-5 h-5 text-slate-400 group-hover:text-emerald-600 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            </span>
+                        </a>
+
+                        <a href="/eligibilite?categorie=chaussures-vetements"
+                           title="Mise en demeure – chaussures ou vêtements non conformes"
+                           class="group rounded-2xl p-[1px] bg-gradient-to-r from-fuchsia-200 to-pink-200 hover:from-fuchsia-300 hover:to-pink-300 transition">
+            <span class="flex items-center justify-between rounded-2xl bg-white/80 backdrop-blur px-3.5 py-2.5 shadow-sm hover:shadow-[0_10px_30px_rgba(217,70,239,0.14)]">
+              <span class="flex items-center gap-3"><span class="text-2xl" aria-hidden="true">👟</span><span class="font-semibold text-slate-900">Chaussures &amp; vêtements</span></span>
+              <svg class="w-5 h-5 text-slate-400 group-hover:text-fuchsia-600 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            </span>
+                        </a>
+
+                        <a href="/eligibilite?categorie=auto"
+                           title="Mise en demeure – produits auto / accessoires défectueux"
+                           class="group rounded-2xl p-[1px] bg-gradient-to-r from-amber-200 to-orange-200 hover:from-amber-300 hover:to-orange-300 transition">
+            <span class="flex items-center justify-between rounded-2xl bg-white/80 backdrop-blur px-3.5 py-2.5 shadow-sm hover:shadow-[0_10px_30px_rgba(245,158,11,0.16)]">
+              <span class="flex items-center gap-3"><span class="text-2xl" aria-hidden="true">🚗</span><span class="font-semibold text-slate-900">Auto &amp; accessoires</span></span>
+              <svg class="w-5 h-5 text-slate-400 group-hover:text-amber-600 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            </span>
+                        </a>
+
+                        <a href="/eligibilite?categorie=mobilier"
+                           title="Mise en demeure – mobilier cassé ou non conforme"
+                           class="group rounded-2xl p-[1px] bg-gradient-to-r from-sky-200 to-cyan-200 hover:from-sky-300 hover:to-cyan-300 transition">
+            <span class="flex items-center justify-between rounded-2xl bg-white/80 backdrop-blur px-3.5 py-2.5 shadow-sm hover:shadow-[0_10px_30px_rgba(56,189,248,0.14)]">
+              <span class="flex items-center gap-3"><span class="text-2xl" aria-hidden="true">🛋️</span><span class="font-semibold text-slate-900">Mobilier</span></span>
+              <svg class="w-5 h-5 text-slate-400 group-hover:text-sky-600 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            </span>
+                        </a>
+
+                        <a href="/eligibilite?categorie=high-tech"
+                           title="Mise en demeure – high-tech (console, drone, appareil photo…)"
+                           class="group rounded-2xl p-[1px] bg-gradient-to-r from-violet-200 to-blue-200 hover:from-violet-300 hover:to-blue-300 transition">
+            <span class="flex items-center justify-between rounded-2xl bg-white/80 backdrop-blur px-3.5 py-2.5 shadow-sm hover:shadow-[0_10px_30px_rgba(99,102,241,0.14)]">
+              <span class="flex items-center gap-3"><span class="text-2xl" aria-hidden="true">🎮</span><span class="font-semibold text-slate-900">Objets high-tech</span></span>
+              <svg class="w-5 h-5 text-slate-400 group-hover:text-violet-600 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            </span>
+                        </a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+
+        <!-- CTA mobile flottant -->
+        <div class="fixed bottom-4 left-4 right-4 z-50 md:hidden">
+            <a href="/eligibilite" class="block w-full bg-green-600 text-white text-center py-3 rounded-lg font-semibold shadow-lg">
+                ⚡ Agir maintenant
+            </a>
+        </div>
+    </section>
+
+
+    <!-- Ça vous est déjà arrivé ? -->
+    <section class="py-20 bg-white relative">
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-blue-50/50 to-transparent" aria-hidden="true"></div>
+        <div class="relative z-10 max-w-7xl mx-auto px-6">
+            <div class="text-center mb-12 reveal">
+                <h2 class="text-4xl md:text-5xl font-black text-slate-900 mb-4">Ça vous est déjà arrivé ?</h2>
+                <p class="text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed">Ces situations sont courantes. <strong class="text-blue-600">Vous avez des droits.</strong></p>
+            </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="bg-gradient-to-br from-red-50 to-pink-50 rounded-3xl p-8 border-2 border-red-100 transition-all reveal"><div class="text-6xl mb-4 text-center">💻</div><h3 class="text-xl font-bold text-slate-900 mb-2 text-center">Ordinateur qui plante</h3><p class="text-slate-700 text-center">Votre laptop freeze après 6 mois ? <strong class="text-red-600">La garantie légale couvre 2 ans.</strong></p></div>
+                <div class="bg-gradient-to-br from-purple-50 to-indigo-50 rounded-3xl p-8 border-2 border-purple-100 transition-all reveal"><div class="text-6xl mb-4 text-center">👕</div><h3 class="text-xl font-bold text-slate-900 mb-2 text-center">Vêtements défectueux</h3><p class="text-slate-700 text-center">Couture qui lâche… <strong class="text-purple-600">Le vendeur doit reprendre.</strong></p></div>
+                <div class="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-3xl p-3 sm:p-8 border-2 border-blue-100 transition-all reveal"><div class="text-6xl mb-4 text-center">🎧</div><h3 class="text-xl font-bold text-slate-900 mb-2 text-center">Électronique en panne</h3><p class="text-slate-700 text-center">Casque, montre, tablette… <strong class="text-blue-600">2 ans de protection.</strong></p></div>
+                <div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-3xl p-8 border-2 border-green-100 transition-all reveal"><div class="text-6xl mb-4 text-center">🏠</div><h3 class="text-xl font-bold text-slate-900 mb-2 text-center">Électroménager</h3><p class="text-slate-700 text-center">Lave-linge, frigo… <strong class="text-green-600">Couverts aussi.</strong></p></div>
+                <div class="bg-gradient-to-br from-orange-50 to-amber-50 rounded-3xl p-8 border-2 border-orange-100 transition-all reveal"><div class="text-6xl mb-4 text-center">🛋️</div><h3 class="text-xl font-bold text-slate-900 mb-2 text-center">Mobilier</h3><p class="text-slate-700 text-center">Canapé qui s'affaisse… <strong class="text-orange-600">Meubles inclus.</strong></p></div>
+                <div class="bg-gradient-to-br from-pink-50 to-rose-50 rounded-3xl p-8 border-2 border-pink-100 transition-all reveal"><div class="text-6xl mb-4 text-center">🎮</div><h3 class="text-xl font-bold text-slate-900 mb-2 text-center">Objets high-tech</h3><p class="text-slate-700 text-center">Console, drone, appareil photo… <strong class="text-pink-600">Vos droits s'appliquent.</strong></p></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Comment ça marche -->
+    <section id="comment-ca-marche" class="py-20 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 relative scroll-mt-20">
+        <div class="absolute inset-0 opacity-30" aria-hidden="true"></div>
+        <div class="relative z-10 max-w-7xl mx-auto px-6">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <div class="space-y-8 reveal">
+                    <h2 class="text-4xl md:text-5xl font-black text-slate-900 leading-tight">La solution est simple :</h2>
+                    <div class="space-y-6">
+                        <p class="text-xl text-slate-700 leading-relaxed"><strong class="text-blue-700">Une lettre de mise en demeure professionnelle</strong> qui rappelle les obligations légales.</p>
+                        <div class="bg-white/90 rounded-2xl p-6 border border-blue-200/50 shadow">
+                            <ul class="space-y-3">
+                                <li class="flex items-center gap-3 text-slate-800"><span class="w-2.5 h-2.5 bg-green-500 rounded-full"></span><strong>Garantie légale de conformité (2 ans)</strong></li>
+                                <li class="flex items-center gap-3 text-slate-800"><span class="w-2.5 h-2.5 bg-green-500 rounded-full"></span><strong>Réparation, remplacement ou remboursement</strong></li>
+                                <li class="flex items-center gap-3 text-slate-800"><span class="w-2.5 h-2.5 bg-green-500 rounded-full"></span><strong>Sans frais pour le consommateur</strong></li>
+                                <li class="flex items-center gap-3 text-slate-800"><span class="w-2.5 h-2.5 bg-green-500 rounded-full"></span><strong>Étape préalable utile avant procédure</strong></li>
+                            </ul>
+                        </div>
+                        <p class="text-lg text-slate-600 italic">Un outil efficace, reconnu par le droit de la consommation.</p>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-3xl p-8 shadow-2xl border border-white reveal">
+                    <div class="space-y-6">
+                        <div class="flex items-center gap-4 p-4 rounded-2xl bg-gradient-to-r from-blue-50 to-indigo-50">
+                            <div class="w-12 h-12 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full flex items-center justify-center text-white font-black text-xl shadow">1</div>
+                            <div><h4 class="font-bold text-slate-900">Testez votre éligibilité</h4><p class="text-slate-600 text-sm">6 questions en 2 minutes</p></div>
+                        </div>
+                        <div class="flex items-center gap-4 p-4 rounded-2xl bg-gradient-to-r from-emerald-50 to-green-50">
+                            <div class="w-12 h-12 bg-gradient-to-r from-emerald-600 to-green-600 rounded-full flex items-center justify-center text-white font-black text-xl shadow">2</div>
+                            <div><h4 class="font-bold text-slate-900">Générez votre lettre</h4><p class="text-slate-600 text-sm">Formulation conforme</p></div>
+                        </div>
+                        <div class="flex items-center gap-4 p-4 rounded-2xl bg-gradient-to-r from-amber-50 to-orange-50">
+                            <div class="w-12 h-12 bg-gradient-to-r from-amber-600 to-orange-600 rounded-full flex items-center justify-center text-white font-black text-xl shadow">3</div>
+                            <div><h4 class="font-bold text-slate-900">Envoyez au vendeur</h4><p class="text-slate-600 text-sm">Email ou recommandé</p></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA principal -->
+    <section id="eligibilite" class="py-20 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 relative overflow-hidden scroll-mt-20">
+        <div class="absolute inset-0" aria-hidden="true"></div>
+        <div class="relative z-10 max-w-6xl mx-auto px-6 text-center text-white">
+            <div class="space-y-8 reveal">
+                <h2 class="text-4xl md:text-6xl font-black leading-tight">Ne laissez plus <span class="bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">ignorer vos droits</span> !</h2>
+                <p class="text-xl md:text-2xl opacity-90 max-w-4xl mx-auto leading-relaxed">Générez votre mise en demeure gratuitement. <strong>Options premium</strong> disponibles pour plus de commodité.</p>
+                <div class="grid md:grid-cols-3 gap-6 my-10 max-w-4xl mx-auto">
+                    <div class="bg-white/10 rounded-3xl p-6 border border-white/20"><div class="text-4xl md:text-5xl font-black text-yellow-300 mb-1">2 ans</div><div class="text-white/90 font-semibold">Garantie légale</div><div class="text-white/70 text-sm">Protection automatique</div></div>
+                    <div class="bg-white/10 rounded-3xl p-6 border border-white/20"><div class="text-4xl md:text-5xl font-black text-green-300 mb-1">3 min</div><div class="text-white/90 font-semibold">Temps de création</div><div class="text-white/70 text-sm">Rapide et efficace</div></div>
+                    <div class="bg-white/10 rounded-3xl p-6 border border-white/20"><div class="text-4xl md:text-5xl font-black text-blue-300 mb-1">Gratuit</div><div class="text-white/90 font-semibold">Service de base</div><div class="text-white/70 text-sm">Toujours accessible</div></div>
+                </div>
+                <div class="space-y-3">
+                    <a href="/eligibilite" class="inline-flex items-center gap-3 bg-white text-blue-700 font-black py-5 px-10 rounded-3xl text-xl md:text-2xl transition-transform hover:-translate-y-1 shadow-xl"><span class="text-3xl">💪</span> Tester mon éligibilité maintenant<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg></a>
+                    <p class="text-white/80 text-sm max-w-2xl mx-auto"><strong>Service de base gratuit</strong> • Options premium : PDF professionnel et envoi postal automatique</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pourquoi ça marche -->
+    <section id="pourquoi-ca-marche" class="py-20 bg-white scroll-mt-20">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-12 reveal">
+                <h2 class="text-4xl md:text-5xl font-black text-slate-900 mb-4">Pourquoi ça marche ?</h2>
+                <p class="text-xl text-slate-600 max-w-3xl mx-auto">La mise en demeure formalise votre réclamation et engage la responsabilité du vendeur.</p>
+            </div>
+            <div class="grid lg:grid-cols-3 gap-8">
+                <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-3xl p-8 border-2 border-blue-100 text-center reveal">
+                    <div class="w-20 h-20 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full mx-auto mb-6 flex items-center justify-center"><svg class="w-10 h-10 text-white" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
+                    <h3 class="text-2xl font-bold text-slate-900 mb-2">Base légale solide</h3>
+                    <p class="text-slate-700 mb-4">Articles L. 217-3 et suivants du Code de la consommation. <strong>La loi est de votre côté.</strong></p>
+                    <div class="bg-white rounded-xl p-4 border border-blue-200"><p class="text-sm text-blue-800 font-semibold">« Le vendeur est tenu de livrer un bien conforme au contrat »</p></div>
+                </div>
+                <div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-3xl p-8 border-2 border-green-100 text-center reveal">
+                    <div class="w-20 h-20 bg-gradient-to-r from-green-600 to-emerald-600 rounded-full mx-auto mb-6 flex items-center justify-center"><svg class="w-10 h-10 text-white" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 0 0118 0z"/></svg></div>
+                    <h3 class="text-2xl font-bold text-slate-900 mb-2">Efficacité prouvée</h3>
+                    <p class="text-slate-700 mb-4">La plupart des entreprises privilégient l’accord amiable face au risque judiciaire.</p>
+                    <div class="bg-white rounded-xl p-4 border border-green-200"><p class="text-sm text-green-800 font-semibold">Démarche claire, traçable</p></div>
+                </div>
+                <div class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-3xl p-8 border-2 border-purple-100 text-center reveal">
+                    <div class="w-20 h-20 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full mx-auto mb-6 flex items-center justify-center"><svg class="w-10 h-10 text-white" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg></div>
+                    <h3 class="text-2xl font-bold text-slate-900 mb-2">Simplicité maximale</h3>
+                    <p class="text-slate-700 mb-4">Plus besoin d’avocat pour les réclamations simples. <strong>Génération automatique claire.</strong></p>
+                    <div class="bg-white rounded-xl p-4 border border-purple-200"><p class="text-sm text-purple-800 font-semibold">Formulation précise</p></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Références légales (alignées avec les autres titres) -->
+    <section id="references" class="py-16 bg-slate-50 scroll-mt-20" tabindex="-1">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-10">
+                <h2 class="text-4xl md:text-5xl font-black text-slate-900 mb-4">Références légales</h2>
+                <p class="text-xl text-slate-600">Textes officiels sur la garantie légale de conformité.</p>
+            </div>
+
+            <div class="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <a href="https://www.service-public.fr/particuliers/vosdroits/F11094" target="_blank" rel="noopener"
+                   class="group block rounded-2xl bg-white border border-slate-200 hover:border-blue-300 shadow-sm hover:shadow transition-all p-5">
+                    <div class="flex items-start gap-4">
+                        <div class="shrink-0 w-10 h-10 rounded-xl bg-blue-100 text-blue-700 grid place-items-center">
+                            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 5h18v2H3V5zm3 4h12v10H6V9zm2 2v6h8v-6H8z"/></svg>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-slate-900 group-hover:text-blue-700">Garantie légale de conformité</h3>
+                            <p class="mt-1 text-sm text-slate-600">Fiche Service-Public.fr</p>
+                            <span class="mt-2 inline-flex items-center gap-1 text-blue-700 text-sm font-medium">
+                Consulter la fiche
+                <svg class="w-4 h-4 transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5-5 5M6 12h12"/></svg>
+              </span>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000043750417" target="_blank" rel="noopener"
+                   class="group block rounded-2xl bg-white border border-slate-200 hover:border-blue-300 shadow-sm hover:shadow transition-all p-5">
+                    <div class="flex items-start gap-4">
+                        <div class="shrink-0 w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 grid place-items-center">
+                            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4h10l1 2h3v2h-2v10a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8H3V6h3l1-2zm0 4v10h10V8H7z"/></svg>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-slate-900 group-hover:text-blue-700">Code de la consommation — L.217-3</h3>
+                            <p class="mt-1 text-sm text-slate-600">Obligation de délivrer un bien conforme</p>
+                            <span class="mt-2 inline-flex items-center gap-1 text-blue-700 text-sm font-medium">
+                Voir l’article
+                <svg class="w-4 h-4 transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5-5 5M6 12h12"/></svg>
+              </span>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000043750421" target="_blank" rel="noopener"
+                   class="group block rounded-2xl bg-white border border-slate-200 hover:border-blue-300 shadow-sm hover:shadow transition-all p-5">
+                    <div class="flex items-start gap-4">
+                        <div class="shrink-0 w-10 h-10 rounded-xl bg-amber-100 text-amber-700 grid place-items-center">
+                            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3a9 9 0 1 1 0 18A9 9 0 0 1 12 3zm1 5h-2v5l4 2 .8-1.6-2.8-1.4V8z"/></svg>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-slate-900 group-hover:text-blue-700">Code de la consommation — L.217-7</h3>
+                            <p class="mt-1 text-sm text-slate-600">Présomption de non-conformité (24&nbsp;mois)</p>
+                            <span class="mt-2 inline-flex items-center gap-1 text-blue-700 text-sm font-medium">
+                Voir l’article
+                <svg class="w-4 h-4 transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5-5 5M6 12h12"/></svg>
+              </span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="py-20 bg-gradient-to-br from-slate-50 via-gray-50 to-blue-50 scroll-mt-20">
+        <div class="max-w-4xl mx-auto px-6">
+            <div class="text-center mb-12 reveal">
+                <h2 class="text-4xl md:text-5xl font-black text-slate-900 mb-4">Questions fréquentes</h2>
+                <p class="text-xl text-slate-600">Tout ce qu'il faut savoir sur vos droits de consommateur.</p>
+            </div>
+
+            <div class="space-y-4">
+                <details class="bg-white rounded-2xl shadow border border-gray-100 overflow-hidden reveal">
+                    <summary class="px-8 py-6 cursor-pointer font-bold focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600">
+                        Qu'est-ce que la garantie légale de conformité ?
+                    </summary>
+                    <div class="px-8 pb-6 text-slate-700">
+                        C’est une protection légale : tout produit vendu par un professionnel doit être conforme à l’usage attendu.
+                        Elle dure <strong>2 ans à compter de la livraison</strong> et couvre les défauts/pannes.
+                        Le vendeur doit réparer, remplacer ou rembourser <strong>sans frais</strong>.
+                        <a href="/eligibilite"
+                           class="inline-flex items-center gap-1 font-semibold text-blue-700
+          hover:text-blue-800 hover:underline underline-offset-4 decoration-2
+          focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 rounded">
+                            Tester mon éligibilité
+                        </a>
+
+                    </div>
+                </details>
+
+                <details class="bg-white rounded-2xl shadow border border-gray-100 overflow-hidden reveal">
+                    <summary class="px-8 py-6 cursor-pointer font-bold focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600">
+                        Le service est-il vraiment gratuit ?
+                    </summary>
+                    <div class="px-8 pb-6 text-slate-700">
+                        <strong>Oui, le service de base est gratuit.</strong> Vous testez votre éligibilité et obtenez le contenu de la lettre.
+                        Des options premium existent : PDF professionnel, envoi recommandé, suivi de dossier…
+                    </div>
+                </details>
+
+                <details class="bg-white rounded-2xl shadow border border-gray-100 overflow-hidden reveal">
+                    <summary class="px-8 py-6 cursor-pointer font-bold focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600">
+                        Combien de temps ai-je pour agir ?
+                    </summary>
+                    <div class="px-8 pb-6 text-slate-700">
+                        La garantie légale dure <strong>2 ans à compter de la livraison</strong>. Pour certains biens (occasion, contenus numériques),
+                        les modalités peuvent varier. Le test d’éligibilité vous donne une réponse personnalisée.
+                    </div>
+                </details>
+
+                <details class="bg-white rounded-2xl shadow border border-gray-100 overflow-hidden reveal">
+                    <summary class="px-8 py-6 cursor-pointer font-bold focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600">
+                        Qui a la charge de la preuve ?
+                    </summary>
+                    <div class="px-8 pb-6 text-slate-700">
+                        Pendant <strong>24 mois</strong> après la délivrance (<strong>12 mois</strong> pour un bien d’occasion),
+                        tout défaut de conformité apparu est <em>présumé</em> exister dès la délivrance :
+                        <strong>c’est au vendeur de prouver le contraire</strong>.
+                        <span class="block mt-2 text-sm text-slate-500">Référence : Code de la consommation, art. L.217-7.</span>
+                    </div>
+                </details>
+
+                <details class="bg-white rounded-2xl shadow border border-gray-100 overflow-hidden reveal">
+                    <summary class="px-8 py-6 cursor-pointer font-bold focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600">
+                        Et si le vendeur ne répond pas ?
+                    </summary>
+                    <div class="px-8 pb-6 text-slate-700">
+                        La mise en demeure constitue une <strong>preuve de votre démarche</strong>. Sans réponse, vous pouvez saisir le
+                        médiateur de la consommation, contacter une association de consommateurs, ou envisager une action en justice.
+                    </div>
+                </details>
+
+                <!-- longue traîne -->
+                <details class="bg-white rounded-2xl shadow border border-gray-100 overflow-hidden reveal">
+                    <summary class="px-8 py-6 cursor-pointer font-bold focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600">
+                        Mon téléphone est tombé en panne après 18 mois, ai-je un recours ?
+                    </summary>
+                    <div class="px-8 pb-6 text-slate-700">
+                        <strong>Oui.</strong> La garantie légale de conformité couvre votre téléphone pendant
+                        <strong>2 ans après l’achat</strong>. Le vendeur doit le réparer, le remplacer ou vous
+                        rembourser, même si la garantie commerciale est expirée.
+                    </div>
+                </details>
+
+                <details class="bg-white rounded-2xl shadow border border-gray-100 overflow-hidden reveal">
+                    <summary class="px-8 py-6 cursor-pointer font-bold focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600">
+                        Le magasin me renvoie vers le fabricant : est-ce légal ?
+                    </summary>
+                    <div class="px-8 pb-6 text-slate-700">
+                        <strong>Non.</strong> La garantie légale met le vendeur en première ligne : il ne peut pas vous renvoyer vers le fabricant.
+                        Référez-vous aux articles L.217-3 et suivants du Code de la consommation.
+                        <a href="/eligibilite"
+                           class="inline-flex items-center gap-1 font-semibold text-blue-700
+          hover:text-blue-800 hover:underline underline-offset-4 decoration-2
+          focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 rounded">
+                            Tester mon éligibilité
+                        </a>
+
+
+                    </div>
+                </details>
+
+                <details class="bg-white rounded-2xl shadow border border-gray-100 overflow-hidden reveal">
+                    <summary class="px-8 py-6 cursor-pointer font-bold focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600">
+                        Machine à laver en panne après 1 an : que faire si le vendeur refuse ?
+                    </summary>
+                    <div class="px-8 pb-6 text-slate-700">
+                        Votre lave-linge est couvert 2 ans par la garantie légale. Si le vendeur refuse :
+                        <ol class="list-decimal ml-6 mt-2 space-y-1">
+                            <li>Générez la mise en demeure (3 min)</li>
+                            <li>Envoyez-la par email ou recommandé</li>
+                            <li>Laissez un délai raisonnable de réponse</li>
+                            <li>Sans réponse : médiateur, association de consommateurs ou action en justice</li>
+                        </ol>
+                    </div>
+                </details>
+            </div>
+        </div>
+    </section>
+</main>
+
+<!-- Footer -->
+<footer class="bg-gray-900 text-white py-16">
+    <div class="max-w-7xl mx-auto px-6">
+        <div class="grid md:grid-cols-4 gap-8">
+            <div class="md:col-span-2">
+                <div class="flex items-center gap-3 mb-6">
+                    <img src="/static/images/logo_seul_jemedefends.png" alt="Je me défends – logo"
+                             class="w-10 h-10"
+                             width="32" height="32" loading="lazy" decoding="async" />
+                    <h3 class="text-2xl font-black">Je me défends</h3>
+                </div>
+                <p class="text-slate-400 leading-relaxed mb-6 max-w-md">Votre allié pour faire valoir vos droits de consommateur. Service accessible, transparent et efficace.</p>
+                <p class="text-sm text-slate-500 font-medium">Mes droits, simplement.</p>
+                <div class="mt-6 text-slate-400 text-sm">Informations juridiques : la mise en demeure rappelle les obligations du vendeur au titre des articles L. 217-3 et suivants du Code de la consommation. Ce service ne remplace pas un conseil juridique personnalisé.</div>
+            </div>
+            <div>
+                <h4 class="text-lg font-bold mb-4">Liens utiles</h4>
+                <ul class="space-y-2">
+                    <li><a href="/eligibilite" class="text-slate-400 hover:text-white transition-colors">Test d’éligibilité</a></li>
+                    <li><a href="#comment-ca-marche" class="text-slate-400 hover:text-white transition-colors">Comment ça marche</a></li>
+                    <li><a href="/mentions-legales" class="text-slate-400 hover:text-white transition-colors">Mentions légales</a></li>
+                    <li><a href="/politique-confidentialite" class="text-slate-400 hover:text-white transition-colors">Politique de confidentialité</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-lg font-bold mb-4">Contact</h4>
+                <ul class="space-y-2">
+                    <li class="text-slate-400"><span class="block font-medium">Email</span> contact@jemedefends.fr</li>
+                    <li class="text-slate-400"><span class="block font-medium">Support</span> Réponse rapide par mail pour les options payantes</li>
+                </ul>
+            </div>
+        </div>
+        <div class="border-top border-gray-800 mt-12 pt-8 text-center">
+            <p class="text-slate-500">&copy; 2025 Je me défends. Tous droits réservés. <span class="mx-2">•</span> Service fondé sur le Code de la consommation français.</p>
+        </div>
+    </div>
+</footer>
+
+<!-- Données structurées Schema.org -->
+<script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "LegalService",
+        "name": "Je me défends",
+        "url": "https://jemedefends.fr",
+        "logo": "https://jemedefends.fr/static/images/logo_jemedefends.svg",
+        "description": "Service gratuit de mise en demeure pour garantie légale de conformité",
+        "areaServed": { "@type": "Country", "name": "France" },
+        "priceRange": "Gratuit"
+    }
+</script>
+
+<script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "HowTo",
+        "name": "Comment faire une mise en demeure pour garantie légale",
+        "step": [
+            { "@type": "HowToStep", "name": "Test d'éligibilité", "text": "Répondez à 6 questions sur votre achat" },
+            { "@type": "HowToStep", "name": "Génération de la lettre", "text": "Remplissez le formulaire avec vos informations" },
+            { "@type": "HowToStep", "name": "Envoi au vendeur", "text": "Envoyez par email ou recommandé" }
+        ],
+        "totalTime": "PT3M"
+    }
+</script>
+
+<script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://jemedefends.fr" },
+            { "@type": "ListItem", "position": 2, "name": "Test éligibilité garantie", "item": "https://jemedefends.fr/eligibilite" }
+        ]
+    }
+</script>
+
+<script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "Qu'est-ce que la garantie légale de conformité ?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "La garantie légale protège l'acheteur pendant 2 ans à compter de la livraison. Le vendeur doit réparer, remplacer ou rembourser sans frais."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Le service est-il gratuit ?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Le service de base est gratuit. Des options premium sont proposées (PDF pro, envoi recommandé, suivi de dossier)."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Qui a la charge de la preuve ?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Pendant 24 mois après la livraison (12 mois pour un bien d'occasion), le défaut est présumé exister dès la délivrance : c'est au vendeur de prouver le contraire (Code de la consommation, art. L.217-7)."
+                }
+            }
+        ]
+    }
+</script>
+
+<!-- Scripts inline -->
+<script>
+    // Ajuste le padding-top du main en fonction de la hauteur réelle du nav (hauteur auto)
+    (function () {
+      function setNavHeightVars() {
+        var nav = document.getElementById("site-nav");
+        var main = document.querySelector("main");
+        if (!nav || !main) return;
+        var h = nav.offsetHeight;
+        main.style.setProperty("--nav-height", h + "px");
+      }
+      window.addEventListener("load", setNavHeightVars, { once: true });
+      window.addEventListener("resize", setNavHeightVars);
+    })();
+
+    // Smooth scrolling (UX)
+    document.querySelectorAll('a[href^="#"]').forEach(function (anchor) {
+      anchor.addEventListener('click', function (e) {
+        var id = anchor.getAttribute('href');
+        var target = document.querySelector(id);
+        if (!target) return;
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+
+    // Intersection Observer pour reveal
+    (function () {
+      var reveals = document.querySelectorAll('.reveal');
+      if ('IntersectionObserver' in window) {
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) { if (entry.isIntersecting) entry.target.classList.add('active'); });
+        }, { threshold: 0.15 });
+        reveals.forEach(function (el) { io.observe(el); });
+      } else {
+        reveals.forEach(function (el) { el.classList.add('active'); });
+      }
+    })();
+
+    console.log('💪 Je me défends — Défendez vos droits de consommateur !');
+</script>
+</body>
+</html>

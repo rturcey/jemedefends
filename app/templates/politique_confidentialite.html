@@ -1,0 +1,264 @@
+<!-- ===================================================== -->
+<!-- =========================
+  JE ME DÉFENDS — POLITIQUE DE CONFIDENTIALITÉ
+  Version: finale (usage minimal sans traçage, Stancer comme PSP)
+  Dernière mise à jour : 16 août 2025
+  ========================= -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Politique de confidentialité – Je me défends</title>
+    <meta name="description" content="Politique de confidentialité Je me défends : données collectées, finalités, bases légales, Stancer, droits RGPD, sécurité, cookies (strictement nécessaires)." />
+    <link rel="canonical" href="{{ request.url }}" />
+
+    <!-- Open Graph / Twitter -->
+    <meta property="og:title" content="Politique de confidentialité – Je me défends" />
+    <meta property="og:description" content="Traitements de données, destinataires, durées, droits RGPD, sécurité, cookies nécessaires uniquement." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="{{ request.url }}" />
+    <meta property="og:image" content="/static/og/og-image-jemedefends-1200x630.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- CSP (en-tête HTTP recommandé) -->
+    <!-- Voir page Mentions légales -->
+
+    <!-- Prefetch / Preload -->
+    <link rel="preload" href="/static/images/logo_jemedefends.svg" as="image" type="image/svg+xml" fetchpriority="high" />
+
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        const prefersReduced2 = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        tailwind.config = {
+          theme: {
+            extend: {
+              animation: prefersReduced2 ? {} : {
+                'fade-in': 'fadeIn .6s ease-out forwards',
+                'slide-up': 'slideUp .7s ease-out forwards'
+              },
+              keyframes: prefersReduced2 ? {} : {
+                fadeIn: { '0%': {opacity:0, transform:'translateY(16px)'}, '100%': {opacity:1, transform:'translateY(0)'} },
+                slideUp: { '0%': {opacity:0, transform:'translateY(24px)'}, '100%': {opacity:1, transform:'translateY(0)'} }
+              }
+            }
+          }
+        }
+    </script>
+    <style>
+        .reveal { opacity: 0; transform: translateY(24px); transition: opacity .6s ease, transform .6s ease; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        .skip-link:focus { position: fixed; top: .75rem; left: .75rem; background: #fff; color: #1d4ed8; padding: .5rem .75rem; border-radius: .375rem; box-shadow: 0 1px 2px rgba(0,0,0,.1); }
+        .badge { display:inline-block; font-weight:700; font-size:.75rem; padding:.25rem .5rem; border-radius:.5rem; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+<a href="#main" class="skip-link sr-only focus:not-sr-only">Aller au contenu</a>
+
+<header>
+    <!-- Navigation -->
+    <nav class="bg-white/80 backdrop-blur-md fixed top-0 left-0 right-0 z-50 border-b border-slate-200/40">
+        <div class="max-w-7xl mx-auto px-6 py-2 flex items-center justify-between">
+            <a href="/" class="flex items-center gap-3" aria-label="Je me défends – Accueil">
+                <img src="/static/images/logo_jemedefends.svg" alt="Je me défends – logo balance" class="w-40 md:w-48" width="192" height="48" />
+            </a>
+            <ul class="hidden md:flex gap-8 text-gray-700 font-semibold">
+                <li><a href="/" class="hover:text-blue-600 transition-colors">Accueil</a></li>
+                <li><a href="/eligibilite" class="hover:text-blue-600 transition-colors">Éligibilité</a></li>
+                <li><a href="/mentions-legales" class="hover:text-blue-600 transition-colors">Mentions légales</a></li>
+                <li><a href="/politique-confidentialite" class="text-blue-700">Politique de confidentialité</a></li>
+            </ul>
+            <a href="/eligibilite" class="hidden md:inline-block bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg font-bold shadow-lg transition-transform hover:-translate-y-0.5">🚀 Tester mon éligibilité</a>
+        </div>
+    </nav>
+</header>
+
+<main id="main" class="pt-[72px]">
+    <!-- Hero / Titre -->
+    <section class="relative py-20 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 text-white">
+        <div class="max-w-7xl mx-auto px-6">
+            <h1 class="text-4xl md:text-6xl font-black leading-tight reveal">Politique de confidentialité</h1>
+            <p class="mt-4 text-white/80 reveal">Dernière mise à jour : <time datetime="2025-08-16">16 août 2025</time></p>
+            <p class="mt-2 text-white/80 reveal"><span class="badge bg-white/15 border border-white/25">Usage minimal sans traçage</span> <span class="badge bg-white/15 border border-white/25 ml-2">Paiements via Stancer</span></p>
+        </div>
+    </section>
+
+    <!-- Contenu -->
+    <section class="py-16 bg-white">
+        <div class="max-w-4xl mx-auto px-6 space-y-10">
+
+            <div class="reveal">
+                <h2 class="text-2xl md:text-3xl font-black text-gray-900 mb-4">Responsable du traitement</h2>
+                <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 leading-relaxed text-gray-800">
+                    <p><strong>Richard TURCEY</strong> – Micro-entreprise <strong>Turcey</strong></p>
+                    <p>Adresse : 2 rue André Bouillar, 40220 Tarnos, France</p>
+                    <p>Email : <a href="mailto:contact@jemedefends.fr" class="text-blue-700 hover:underline">contact@jemedefends.fr</a></p>
+                    <p>Délégué à la protection des données (DPO) : <em>non désigné</em></p>
+                </div>
+            </div>
+
+            <div class="reveal">
+                <h2 class="text-2xl md:text-3xl font-black text-gray-900 mb-4">Données que nous traitons</h2>
+                <div class="prose prose-slate max-w-none">
+                    <ul>
+                        <li><strong>Identité & contact</strong> : nom, prénom, adresse email, adresse postale (si nécessaire pour l’édition de documents).</li>
+                        <li><strong>Données de dossier</strong> : informations relatives à votre litige (description factuelle, pièces jointes que vous importez).</li>
+                        <li><strong>Données techniques minimales</strong> : journaux serveur (logs) et cookies strictement nécessaires au fonctionnement (voir Cookies).</li>
+                        <li><strong>Paiement</strong> : les données de carte ne transitent pas par nos serveurs. Elles sont traitées directement par <strong>Stancer</strong>.</li>
+                    </ul>
+                    <p>Nous ne collectons <strong>aucune</strong> donnée sensible au sens de l’article 9 du RGPD (ex. santé, opinions, etc.). Merci de ne pas transmettre de données sensibles dans les champs libres.</p>
+                </div>
+            </div>
+
+            <div class="reveal grid md:grid-cols-2 gap-6">
+                <div class="bg-white border border-blue-100 rounded-2xl p-6 shadow-sm">
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">Finalités</h3>
+                    <ul class="list-disc list-inside text-gray-800 space-y-1">
+                        <li>Fourniture du service (tests, génération de lettres, stockage facultatif de projets).</li>
+                        <li>Gestion de la relation utilisateur (support, suivi, facturation le cas échéant).</li>
+                        <li>Sécurité et intégrité du site (prévention des abus, journalisation technique).</li>
+                        <li>Respect d’obligations légales et comptables.</li>
+                    </ul>
+                </div>
+                <div class="bg-white border border-emerald-100 rounded-2xl p-6 shadow-sm">
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">Bases légales (art. 6 RGPD)</h3>
+                    <ul class="list-disc list-inside text-gray-800 space-y-1">
+                        <li><strong>Exécution d’un contrat</strong> : mise à disposition des fonctionnalités demandées.</li>
+                        <li><strong>Intérêt légitime</strong> : sécurité, amélioration du service (sans profilage, sans publicité).</li>
+                        <li><strong>Obligation légale</strong> : comptabilité, lutte contre la fraude, conservation de preuves.</li>
+                        <li><strong>Consentement</strong> : uniquement lorsque requis (ex. newsletter si activée – non activée par défaut).</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="reveal">
+                <h2 class="text-2xl md:text-3xl font-black text-gray-900 mb-4">Destinataires & sous‑traitants</h2>
+                <div class="prose prose-slate max-w-none">
+                    <p>Les données sont destinées à l’éditeur et, lorsque nécessaire, à des prestataires agissant pour notre compte :</p>
+                    <ul>
+                        <li><strong>Hébergement</strong> : Scaleway (France / UE).</li>
+                        <li><strong>Paiement</strong> : Stancer (prestataire de services de paiement – France). Nous ne recevons jamais les numéros de carte ; Stancer les traite comme responsable conjugué/sous‑traitant selon les opérations de paiement.</li>
+                        <li><strong>Messagerie</strong> : votre email pour échanges de support (fournisseur à préciser selon votre configuration technique).</li>
+                    </ul>
+                    <p>Pas de cession de données à des fins marketing. Pas de transfert hors UE/EEE hors nécessité documentée et avec garanties adéquates (clauses contractuelles types le cas échéant).</p>
+                </div>
+            </div>
+
+            <div class="reveal grid md:grid-cols-2 gap-6">
+                <div class="bg-white border border-amber-100 rounded-2xl p-6 shadow-sm">
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">Durées de conservation</h3>
+                    <ul class="list-disc list-inside text-gray-800 space-y-1">
+                        <li><strong>Compte / relation</strong> : 3 ans après le dernier contact actif (si compte/échanges).</li>
+                        <li><strong>Documents générés</strong> : 5 ans (sauf suppression demandée si légalement possible).</li>
+                        <li><strong>Facturation</strong> : 10 ans (obligation comptable).</li>
+                        <li><strong>Logs techniques</strong> : 6 à 12 mois (sécurité, diagnostic).</li>
+                    </ul>
+                </div>
+                <div class="bg-white border border-rose-100 rounded-2xl p-6 shadow-sm">
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">Sécurité</h3>
+                    <ul class="list-disc list-inside text-gray-800 space-y-1">
+                        <li>Hébergement en UE, chiffrement en transit (HTTPS), cloisonnement des environnements.</li>
+                        <li>Accès restreints, gestion des secrets, sauvegardes raisonnables.</li>
+                        <li>Paiements traités sur des pages sécurisées Stancer (nous ne stockons pas les cartes).</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="reveal">
+                <h2 class="text-2xl md:text-3xl font-black text-gray-900 mb-4">Cookies & traceurs</h2>
+                <div class="prose prose-slate max-w-none">
+                    <p><strong>Pas de cookies de mesure d’audience ni de publicité.</strong> Nous utilisons uniquement des cookies ou stockages <em>strictement nécessaires</em> au fonctionnement (ex. conservation d’un état d’interface, anti‑CSRF). Certaines préférences peuvent être stockées côté navigateur via <code>localStorage</code> (non soumis au consentement lorsqu’indispensable).</p>
+                    <p>Vous pouvez configurer votre navigateur pour bloquer les cookies non essentiels. Le site reste utilisable, sous réserve des fonctionnalités qui en dépendent.</p>
+                </div>
+            </div>
+
+            <div class="reveal">
+                <h2 class="text-2xl md:text-3xl font-black text-gray-900 mb-4">Vos droits (RGPD)</h2>
+                <div class="prose prose-slate max-w-none">
+                    <ul>
+                        <li>Droit d’accès, de rectification, d’effacement.</li>
+                        <li>Droit d’opposition et de limitation.</li>
+                        <li>Droit à la portabilité (le cas échéant).</li>
+                        <li>Directives sur le sort des données post‑mortem.</li>
+                    </ul>
+                    <p>Pour exercer vos droits : <a href="mailto:contact@jemedefends.fr" class="text-blue-700 hover:underline">contact@jemedefends.fr</a>. Réponse sous 1 mois (prolongeable en cas de complexité). Vous pouvez saisir la <a href="https://www.cnil.fr" class="text-blue-700 hover:underline" rel="noopener">CNIL</a> si nécessaire.</p>
+                </div>
+            </div>
+
+            <div class="reveal">
+                <h2 class="text-2xl md:text-3xl font-black text-gray-900 mb-4">Paiements via Stancer</h2>
+                <div class="prose prose-slate max-w-none">
+                    <p>Les paiements en ligne sont assurés par <strong>Stancer</strong>, prestataire de services de paiement. Lors d’un paiement, vous êtes redirigé(e) vers une interface sécurisée opérée par Stancer ; nous ne collectons ni ne stockons vos données de carte. Stancer traite vos données de paiement pour exécuter la transaction, lutter contre la fraude et satisfaire à ses obligations réglementaires.</p>
+                    <p>Pour en savoir plus, consultez la documentation de Stancer et sa politique de confidentialité sur leur site.</p>
+                </div>
+            </div>
+
+            <div class="reveal">
+                <h2 class="text-2xl md:text-3xl font-black text-gray-900 mb-4">Transferts hors UE</h2>
+                <div class="prose prose-slate max-w-none">
+                    <p>Nous visons un hébergement et des traitements au sein de l’UE. Si un transfert hors UE devait intervenir (ex. prestataire spécifique), il serait encadré par un mécanisme reconnu (décision d’adéquation, clauses contractuelles types) et vous en seriez informé.</p>
+                </div>
+            </div>
+
+            <div class="reveal">
+                <h2 class="text-2xl md:text-3xl font-black text-gray-900 mb-4">Mises à jour</h2>
+                <div class="prose prose-slate max-w-none">
+                    <p>La présente politique peut être mise à jour pour refléter des évolutions légales ou techniques. En cas de changement majeur, une information claire sera fournie sur le site. La date de mise à jour figure en tête du document.</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+</main>
+
+<footer class="bg-gray-900 text-white py-16">
+    <div class="max-w-7xl mx-auto px-6">
+        <div class="grid md:grid-cols-4 gap-8">
+            <div class="md:col-span-2">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="p-3 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl shadow -rotate-3">
+                        <img src="/static/images/logo_jemedefends.svg" alt="Je me défends – logo" class="w-8 h-8 brightness-0 invert rotate-3" width="32" height="32" />
+                    </div>
+                    <h3 class="text-2xl font-black">Je me défends</h3>
+                </div>
+                <p class="text-gray-400 leading-relaxed mb-6 max-w-md">Votre allié pour faire valoir vos droits de consommateur. Service accessible, transparent et efficace.</p>
+                <p class="text-sm text-gray-500 font-medium">Mes droits, simplement.</p>
+            </div>
+            <div>
+                <h4 class="text-lg font-bold mb-4">Liens utiles</h4>
+                <ul class="space-y-2">
+                    <li><a href="/eligibilite" class="text-gray-400 hover:text-white transition-colors">Test d'éligibilité</a></li>
+                    <li><a href="/mentions-legales" class="text-gray-400 hover:text-white transition-colors">Mentions légales</a></li>
+                    <li><a href="/politique-confidentialite" class="text-white">Politique de confidentialité</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-lg font-bold mb-4">Contact</h4>
+                <ul class="space-y-2">
+                    <li class="text-gray-400"><span class="block font-medium">Email</span> contact@jemedefends.fr</li>
+                    <li class="text-gray-400"><span class="block font-medium">Adresse</span> 2 rue André Bouillar, 40220 Tarnos, France</li>
+                </ul>
+            </div>
+        </div>
+        <div class="mt-12 pt-8 text-center border-t border-gray-800">
+            <p class="text-gray-500">&copy; 2025 Je me défends. Tous droits réservés.</p>
+        </div>
+    </div>
+</footer>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const reveals = document.querySelectorAll('.reveal');
+      if ('IntersectionObserver' in window) {
+        const io = new IntersectionObserver((entries) => {
+          entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); });
+        }, { threshold: 0.15 });
+        reveals.forEach(el => io.observe(el));
+      } else {
+        reveals.forEach(el => el.classList.add('active'));
+      }
+    });
+</script>
+</body>
+</html>

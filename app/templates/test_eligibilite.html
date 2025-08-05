@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Test d'éligibilité - Je me défends</title>
+    <meta name="description" content="Testez votre éligibilité à la garantie légale de conformité en quelques questions simples." />
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+          theme: {
+            extend: {
+              animation: {
+                // Entrées légères
+                'fade-in-sm': 'fadeInSm 260ms var(--ease-out) both',
+                'fade-up-sm': 'fadeUpSm 320ms var(--ease-out) both',
+                'slide-fade-right-sm': 'slideFadeRightSm 320ms var(--ease-out) both',
+                'scale-in-sm': 'scaleInSm 280ms var(--ease-out) both',
+                // Barre de progression
+                'grow-bar': 'growBar 600ms var(--ease-out) forwards',
+              },
+              keyframes: {
+                fadeInSm: {
+                  '0%':   { opacity: '0' },
+                  '100%': { opacity: '1' }
+                },
+                fadeUpSm: {
+                  '0%':   { opacity: '0', transform: 'translateY(10px)' },
+                  '100%': { opacity: '1', transform: 'translateY(0)' }
+                },
+                slideFadeRightSm: {
+                  '0%':   { opacity: '0', transform: 'translateX(12px)' },
+                  '100%': { opacity: '1', transform: 'translateX(0)' }
+                },
+                scaleInSm: {
+                  '0%':   { opacity: '0', transform: 'scale(0.98)' },
+                  '100%': { opacity: '1', transform: 'scale(1)' }
+                },
+                growBar: {
+                  '0%':   { width: 'var(--from, 0%)' },
+                  '100%': { width: 'var(--to, 0%)' }
+                }
+              }
+            }
+          }
+        }
+    </script>
+    <style>
+        :root { --ease-out: cubic-bezier(.22,.61,.36,1); } /* out-quart doux */
+        #question-number span { color: white !important; }
+
+        /* Accessibilité : réduit les animations si l'utilisateur le souhaite */
+        @media (prefers-reduced-motion: reduce) {
+          * { animation: none !important; transition: none !important; }
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+
+<!-- Navigation fixe (compacte) -->
+<nav class="bg-white/80 backdrop-blur-md border-b border-white/20 sticky top-0 z-50">
+    <div class="max-w-6xl mx-auto px-4 py-1.5">
+        <div class="flex items-center justify-between">
+            <a href="/" class="flex items-center gap-2">
+                <img src="/static/images/logo_jemedefends.svg" alt="Je me défends" class="w-36 md:w-40">
+            </a>
+        </div>
+    </div>
+</nav>
+
+<!-- Container principal (compact) -->
+<div class="max-w-3xl mx-auto px-4 py-6 md:py-8" id="main-container">
+
+    <!-- Section Questionnaire -->
+    <div id="questionnaire-section">
+        <!-- Header animé (léger) -->
+        <div class="text-center mb-6 md:mb-8 motion-safe:animate-fade-up-sm" data-stagger>
+            <div class="relative inline-block">
+                <div class="relative flex items-center justify-center gap-3 mb-2">
+                    <div class="p-2.5 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl shadow-md" data-stagger>
+                        <svg class="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <h1 class="text-2xl md:text-4xl font-extrabold text-gray-900 leading-tight" data-stagger>
+                        Test d'éligibilité
+                    </h1>
+                </div>
+            </div>
+            <p class="text-base md:text-lg text-gray-700 font-semibold" data-stagger>
+                Puis-je utiliser la <span class="text-blue-600 font-bold">garantie légale de conformité</span> ?
+            </p>
+            <p class="text-sm md:text-base text-gray-500 font-medium" data-stagger>Répondez pas à pas pour le savoir</p>
+        </div>
+
+        <!-- Barre de progression (douce) -->
+        <div class="mb-6 md:mb-8 motion-safe:animate-slide-fade-right-sm">
+            <div class="flex justify-between text-xs md:text-sm font-semibold text-gray-600 mb-2">
+                <span id="progress-text">Question 1 sur 6</span>
+                <span id="progress-percent">0% terminé</span>
+            </div>
+            <div class="relative w-full bg-gray-200/60 rounded-full h-2 shadow-inner">
+                <div id="progress-bar" class="absolute top-0 left-0 h-full bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full will-change-[width]" style="width: 0%">
+                    <div class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 w-3 h-3 bg-white border border-blue-500 rounded-full"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card de question (entrée légère + will-change) -->
+        <div id="question-card" class="relative bg-white/85 backdrop-blur-sm rounded-2xl shadow-xl border border-white/60 p-5 md:p-6 mb-6 md:mb-8 transform will-change-transform motion-safe:animate-scale-in-sm">
+
+            <div class="relative flex items-start gap-4 md:gap-5 mb-5">
+                <div id="question-number" class="flex-shrink-0 w-12 h-12 md:w-14 md:h-14 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg" data-stagger>
+                    <span class="text-xl md:text-2xl">1</span>
+                </div>
+                <div class="flex-grow pt-0.5">
+                    <h2 id="question-title" class="text-xl md:text-2xl font-bold text-gray-900 mb-2 leading-snug motion-safe:animate-fade-in-sm" data-stagger>
+                        Avez-vous acheté ce produit à un vendeur professionnel ?
+                    </h2>
+                    <p id="question-description" class="text-gray-600 text-sm md:text-base leading-relaxed motion-safe:animate-fade-in-sm" data-stagger>
+                        La garantie légale ne s'applique qu'aux achats auprès d'entreprises, magasins ou sites marchands.
+                    </p>
+                    <div id="burden-tip" class="hidden mt-3 text-sm md:text-[15px] leading-relaxed">
+                        <div class="inline-flex items-start gap-2 bg-blue-50 text-blue-900 border border-blue-200 rounded-lg px-3 py-2">
+                            <svg class="w-4 h-4 mt-0.5 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor"><path d="M9 2a7 7 0 100 14A7 7 0 009 2zM8 6h2v5H8V6zm0 6h2v2H8v-2z"/></svg>
+                            <p>
+                                <strong>Bon à savoir :</strong> si le défaut apparaît dans les <strong>24 mois</strong>
+                                (<strong>12 mois</strong> pour un bien d’occasion), il est <em>présumé</em> exister au jour de la délivrance :
+                                <strong>c’est au vendeur d’apporter la preuve contraire</strong> (C. consom., art. L.217-7).
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Options de réponse (stagger léger) -->
+            <div class="grid md:grid-cols-2 gap-4" id="answer-options">
+                <button class="answer-btn group relative p-4 rounded-xl border-2 border-emerald-200 bg-gradient-to-br from-emerald-50 to-green-50 hover:from-emerald-100 hover:to-green-100 hover:border-emerald-300 transition-[transform,box-shadow,border-color,background-color] duration-200 text-left hover:shadow-md motion-safe:animate-fade-in-sm" data-stagger data-answer="true">
+                    <div class="flex items-center gap-3 mb-1.5">
+                        <div class="p-1.5 bg-emerald-500 rounded-lg shadow">
+                            <svg class="w-5 h-5 text-white" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                        <span class="font-extrabold text-lg text-emerald-800">OUI</span>
+                    </div>
+                    <p class="text-emerald-700 leading-relaxed text-sm md:text-[15px]" id="yes-label">
+                        Oui, c'était une entreprise / magasin / site marchand
+                    </p>
+                </button>
+
+                <button class="answer-btn group relative p-4 rounded-xl border-2 border-red-200 bg-gradient-to-br from-red-50 to-orange-50 hover:from-red-100 hover:to-orange-100 hover:border-red-300 transition-[transform,box-shadow,border-color,background-color] duration-200 text-left hover:shadow-md motion-safe:animate-fade-in-sm" data-stagger data-answer="false">
+                    <div class="flex items-center gap-3 mb-1.5">
+                        <div class="p-1.5 bg-red-500 rounded-lg shadow">
+                            <svg class="w-5 h-5 text-white" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                        <span class="font-extrabold text-lg text-red-800">NON</span>
+                    </div>
+                    <p class="text-red-700 leading-relaxed text-sm md:text-[15px]" id="no-label">
+                        Non, c'était un particulier (Leboncoin, Vinted, etc.)
+                    </p>
+                </button>
+            </div>
+        </div>
+
+        <!-- Bouton de retour (léger) -->
+        <div class="text-center motion-safe:animate-fade-up-sm" id="back-section">
+            <button id="restart-btn" class="group inline-flex items-center gap-2 text-gray-500 hover:text-gray-700 font-medium px-4 py-2 rounded-full hover:bg-white/60 backdrop-blur-sm transition duration-200 border border-transparent hover:border-gray-200 text-sm" style="display: none;">
+                <svg class="w-4 h-4 group-hover:-translate-x-0.5 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                </svg>
+                Recommencer le test
+            </button>
+        </div>
+    </div>
+
+    <!-- Section Résultats -->
+    <div id="result-section" style="display: none;">
+        <!-- Header des résultats (léger) -->
+        <div class="text-center mb-6 md:mb-8 motion-safe:animate-fade-up-sm" data-stagger>
+            <div class="relative inline-block">
+                <div class="relative flex items-center justify-center gap-3 mb-2">
+                    <div id="result-icon" class="p-2.5 rounded-xl shadow-md" data-stagger>
+                        <svg class="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                    <h1 class="text-2xl md:text-3xl font-extrabold bg-gradient-to-r from-gray-900 via-gray-800 to-gray-700 bg-clip-text text-transparent" data-stagger>
+                        Résultat
+                    </h1>
+                </div>
+            </div>
+            <p class="text-sm md:text-base text-gray-600 font-medium" data-stagger>Test d'éligibilité • Garantie légale de conformité</p>
+        </div>
+
+        <!-- Card de résultat (entrée légère + will-change) -->
+        <div id="result-card" class="relative rounded-2xl p-5 md:p-6 mb-8 border shadow-xl transform will-change-transform motion-safe:animate-scale-in-sm">
+            <div class="relative flex items-start gap-4 md:gap-5">
+                <div id="result-main-icon" class="flex-shrink-0 p-3 rounded-xl shadow" data-stagger>
+                    <svg class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                    </svg>
+                </div>
+
+                <div class="flex-grow">
+                    <h2 id="result-title" class="text-2xl md:text-3xl font-extrabold mb-2" data-stagger>
+                        🎉 Vous êtes éligible !
+                    </h2>
+
+                    <div id="result-content" class="space-y-4">
+                        <!-- Contenu injecté dynamiquement -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript -->
+<script>
+    // =============================
+    // Données des questions
+    // =============================
+    const questions = [
+      {
+        id: 'seller',
+        title: 'Avez-vous acheté ce produit à un vendeur professionnel ?',
+        description: 'La garantie légale ne s\'applique qu\'aux achats auprès d\'entreprises, magasins ou sites marchands.',
+        yesLabel: 'Oui, c\'était une entreprise / magasin / site marchand',
+        noLabel: 'Non, c\'était un particulier (Leboncoin, Vinted, etc.)',
+        yesNextId: 'usage',
+        noNextId: 'ineligible',
+        noAlternatives: [
+          {
+            title: 'Recours pour vice caché',
+            description: 'Si le produit avait un défaut invisible mais grave au moment de l\'achat, vous pourriez avoir un recours.',
+            action: 'Consultez un avocat spécialisé ou une association de consommateurs pour une analyse personnalisée.'
+          }
+        ]
+      },
+      {
+        id: 'usage',
+        title: 'Est-ce un achat fait pour un usage personnel ?',
+        description: 'La garantie ne couvre que les achats de consommateurs pour un usage privé.',
+        yesLabel: 'Oui, c\'était pour moi, ma famille ou un usage privé',
+        noLabel: 'Non, c\'est pour mon activité professionnelle',
+        yesNextId: 'product_type',
+        noNextId: 'ineligible',
+        noAlternatives: [
+          {
+            title: 'Garantie commerciale ou contractuelle',
+            description: 'Vérifiez si le contrat ou les conditions générales prévoient des garanties spécifiques.',
+            action: 'Relisez vos conditions d\'achat ou contactez le service client du vendeur.'
+          }
+        ]
+      },
+      {
+        id: 'product_type',
+        title: 'Le produit est-il un bien matériel ?',
+        description: 'La garantie ne couvre que les biens mobiliers (objets physiques).',
+        yesLabel: 'Un objet concret (téléphone, électroménager, meuble, etc.)',
+        noLabel: 'Un service, logiciel, bien immatériel ou logement',
+        yesNextId: 'location',
+        noNextId: 'ineligible',
+        noAlternatives: [
+          {
+            title: 'Manquement contractuel',
+            description: 'Pour un service défaillant, vous pouvez invoquer un manquement aux obligations contractuelles.',
+            action: 'Contactez une association de consommateurs pour vous aider à formuler votre réclamation.'
+          }
+        ]
+      },
+      {
+        id: 'location',
+        title: 'L\'achat a-t-il eu lieu dans l\'Union européenne ?',
+        description: 'Ou livraison en France par un site de l\'UE.',
+        yesLabel: 'Oui, achat ou livraison UE',
+        noLabel: 'Non, achat hors UE (Chine, USA, UK, etc.)',
+        yesNextId: 'timing',
+        noNextId: 'ineligible',
+        noAlternatives: [
+          {
+            title: 'Conditions générales du vendeur',
+            description: 'Si le vendeur s\'engageait à livrer en France, des recours peuvent exister selon ses conditions.',
+            action: 'Étudiez les conditions générales de votre commande ou consultez une association de consommateurs.'
+          }
+        ]
+      },
+      {
+        id: 'timing',
+        title: 'L\'achat date-t-il de moins de 2 ans ?',
+        description: 'La garantie légale dure 2 ans à partir de la livraison.',
+        yesLabel: 'Oui, c\'est dans les 2 dernières années',
+        noLabel: 'Non, c\'était il y a plus de 2 ans',
+        yesNextId: 'defect',
+        noNextId: 'ineligible',
+        noAlternatives: [
+          {
+            title: 'Garantie commerciale',
+            description: 'Vérifiez si une garantie constructeur ou commerciale est encore active.',
+            action: 'Consultez vos documents d\'achat ou contactez directement le fabricant.'
+          },
+          {
+            title: 'Vice caché',
+            description: 'Si le défaut était invisible à l\'achat, le délai peut être différent.',
+            action: 'Cette procédure est complexe : consultez un avocat ou une association de consommateurs.'
+          }
+        ]
+      },
+      {
+        id: 'defect',
+        title: 'Le produit présente-t-il un problème important ?',
+        description: 'Défaut de fonctionnement, non-conformité à la commande, ou impossibilité d\'usage normal.',
+        yesLabel: 'Oui, il ne fonctionne pas / ne correspond pas / est inutilisable',
+        noLabel: 'Non, c\'est un détail mineur ou de l\'usure normale',
+        yesNextId: 'eligible',
+        noNextId: 'ineligible',
+        noAlternatives: [
+          {
+            title: 'Négociation amiable',
+            description: 'Une négociation avec le vendeur peut aboutir, surtout pour un produit récent.',
+            action: 'Tentez d\'abord un contact direct avec le service client du vendeur.'
+          }
+        ]
+      }
+    ];
+
+    // =============================
+    // État & éléments DOM
+    // =============================
+    let currentQuestionIndex = 0;
+    let answers = {};
+    let isAnimating = false;
+
+    const elements = {
+      questionSection: document.getElementById('questionnaire-section'),
+      resultSection: document.getElementById('result-section'),
+      progressText: document.getElementById('progress-text'),
+      progressPercent: document.getElementById('progress-percent'),
+      progressBar: document.getElementById('progress-bar'),
+      questionNumber: document.getElementById('question-number'),
+      questionTitle: document.getElementById('question-title'),
+      questionDescription: document.getElementById('question-description'),
+      yesLabel: document.getElementById('yes-label'),
+      noLabel: document.getElementById('no-label'),
+      answerButtons: document.querySelectorAll('.answer-btn'),
+      restartBtn: document.getElementById('restart-btn'),
+      restartFinalBtn: document.getElementById('restart-final-btn'), // existe dans la section dons d'origine, pas ici, on garde le handler safe
+      backSection: document.getElementById('back-section'),
+      questionCard: document.getElementById('question-card')
+    };
+
+    // =============================
+    // Utilitaires (animations)
+    // =============================
+    function applyStagger(root) {
+      const nodes = root.querySelectorAll('[data-stagger]');
+      nodes.forEach((el, i) => {
+        el.style.animationDelay = `${40 * i}ms`;
+      });
+    }
+
+    // =============================
+    // Initialisation
+    // =============================
+    function init() {
+      updateProgress();
+      displayCurrentQuestion();
+      setupEventListeners();
+    }
+
+    function setupEventListeners() {
+      elements.answerButtons.forEach(btn => {
+        btn.addEventListener('click', handleAnswer);
+      });
+
+      elements.restartBtn.addEventListener('click', resetTest);
+      if (elements.restartFinalBtn) {
+        elements.restartFinalBtn.addEventListener('click', resetTest);
+      }
+    }
+
+    // =============================
+    // Progression (anim douce)
+    // =============================
+    function updateProgress() {
+      const progress = (currentQuestionIndex / questions.length) * 100;
+      const questionNumber = currentQuestionIndex + 1;
+
+      elements.progressText.textContent = `Question ${questionNumber} sur ${questions.length}`;
+      elements.progressPercent.textContent = `${Math.round(progress)}% terminé`;
+
+      const bar = elements.progressBar;
+      const from = parseFloat(bar.style.width) || 0;
+      bar.style.setProperty('--from', `${from}%`);
+      bar.style.setProperty('--to', `${progress}%`);
+      // reset animation
+      bar.style.animation = 'none';
+      void bar.offsetWidth; // reflow
+      bar.style.animation = 'growBar 600ms var(--ease-out) forwards';
+      // fallback
+      bar.style.width = `${progress}%`;
+    }
+
+    // =============================
+    // Affichage question
+    // =============================
+    function displayCurrentQuestion() {
+      if (currentQuestionIndex >= questions.length) return;
+
+      const question = questions[currentQuestionIndex];
+
+      const burdenTip = document.getElementById('burden-tip');
+    if (burdenTip) {
+      burdenTip.classList.toggle('hidden', questions[currentQuestionIndex].id !== 'timing');
+    }
+
+      elements.questionNumber.querySelector('span').textContent = currentQuestionIndex + 1;
+      elements.questionTitle.textContent = question.title;
+      elements.questionDescription.textContent = question.description;
+      elements.yesLabel.textContent = question.yesLabel;
+      elements.noLabel.textContent = question.noLabel;
+
+      elements.restartBtn.style.display = currentQuestionIndex > 0 ? 'inline-flex' : 'none';
+
+      // Applique un léger stagger aux éléments visibles
+      applyStagger(elements.questionCard);
+    }
+
+    // =============================
+    // Gestion réponse
+    // =============================
+    function handleAnswer(event) {
+      if (isAnimating) return;
+
+      const answer = event.currentTarget.dataset.answer === 'true';
+      const question = questions[currentQuestionIndex];
+
+      answers[question.id] = answer;
+      isAnimating = true;
+
+      // Transition micro (sans secousse)
+      elements.questionCard.style.transform = 'scale(0.99)';
+      elements.questionCard.style.opacity = '0.9';
+
+      setTimeout(() => {
+        const nextId = answer ? question.yesNextId : question.noNextId;
+
+        if (nextId === 'eligible') {
+          showResult(true);
+        } else if (nextId === 'ineligible') {
+          showResult(false, question);
+        } else {
+          currentQuestionIndex++;
+          updateProgress();
+          displayCurrentQuestion();
+
+          // Reset
+          elements.questionCard.style.transform = 'scale(1)';
+          elements.questionCard.style.opacity = '1';
+          isAnimating = false;
+        }
+      }, 220);
+    }
+
+    // =============================
+    // Résultat
+    // =============================
+    function showResult(isEligible, currentQuestion = null) {
+      elements.questionSection.style.display = 'none';
+      elements.resultSection.style.display = 'block';
+
+      const resultIcon = document.getElementById('result-icon');
+      const resultMainIcon = document.getElementById('result-main-icon');
+      const resultCard = document.getElementById('result-card');
+      const resultTitle = document.getElementById('result-title');
+      const resultContent = document.getElementById('result-content');
+
+      // Bloc associations (UNIQUEMENT si non éligible)
+      const associationsBlock = `
+        <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-4 border border-blue-200/60 shadow-sm">
+          <h3 class="font-bold text-blue-900 mb-3 flex items-center gap-2 text-base" data-stagger>
+            <svg class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+              <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z"/>
+            </svg>
+            Besoin d’accompagnement ?
+          </h3>
+          <div class="grid sm:grid-cols-2 gap-3">
+            <a href="https://www.quechoisir.org" target="_blank" rel="noopener"
+              class="group bg-white/70 rounded-lg p-3 border border-blue-100 hover:border-blue-300 transition flex items-center justify-between" data-stagger>
+              <div>
+                <div class="font-bold text-blue-900">UFC-Que Choisir</div>
+                <div class="text-blue-800 text-sm">Conseil juridique / accompagnement</div>
+              </div>
+              <svg class="w-4 h-4 text-blue-700 group-hover:translate-x-0.5 transition" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5-5 5M6 12h12"/>
+              </svg>
+            </a>
+            <a href="https://www.60millions-mag.com" target="_blank" rel="noopener"
+              class="group bg-white/70 rounded-lg p-3 border border-blue-100 hover:border-blue-300 transition flex items-center justify-between" data-stagger>
+              <div>
+                <div class="font-bold text-blue-900">60 Millions de consommateurs</div>
+                <div class="text-blue-800 text-sm">Guides pratiques / modèles</div>
+              </div>
+              <svg class="w-4 h-4 text-blue-700 group-hover:translate-x-0.5 transition" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5-5 5M6 12h12"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+      `;
+
+      if (isEligible) {
+        // ÉLIGIBLE
+        resultIcon.className = 'p-2.5 bg-emerald-500 rounded-2xl shadow-xl transform rotate-3';
+        resultIcon.innerHTML = '<svg class="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>';
+
+        resultMainIcon.className = 'flex-shrink-0 p-3 bg-emerald-500 rounded-xl shadow';
+        resultMainIcon.innerHTML = '<svg class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>';
+
+        resultCard.className = 'relative bg-gradient-to-br from-emerald-50 via-green-50 to-emerald-100 border-emerald-200/50 rounded-2xl p-5 md:p-6 mb-8 border shadow-xl transform will-change-transform motion-safe:animate-scale-in-sm';
+
+        resultTitle.className = 'text-2xl md:text-3xl font-extrabold mb-2 text-emerald-900';
+        resultTitle.textContent = '🎉 Vous êtes éligible !';
+
+        resultContent.innerHTML = `
+          <p class="text-emerald-800 text-base md:text-lg leading-relaxed font-medium mb-4" data-stagger>
+            <span class="inline-block bg-emerald-200 px-2.5 py-0.5 rounded-full font-bold mr-2">Excellente nouvelle !</span>
+            Vous avez droit à la garantie légale de conformité.
+            Le vendeur doit <strong>réparer, remplacer ou rembourser</strong> votre produit <strong>sans frais</strong>.
+          </p>
+
+          <div class="bg-white/80 backdrop-blur-sm rounded-xl p-4 md:p-5 border border-emerald-200/50 shadow mb-4" data-stagger>
+            <h3 class="font-bold text-emerald-900 mb-3 flex items-center gap-2.5 text-base md:text-lg">
+              <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+              </svg>
+              Comment procéder ?
+            </h3>
+            <div class="space-y-3">
+              <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-3">
+                <p class="text-emerald-800">
+                  <span class="font-semibold">Option rapide :</span> appelez le vendeur ou passez en magasin en premier lieu.
+                </p>
+              </div>
+              <div class="bg-white border-2 border-emerald-300 rounded-lg p-3">
+                <p class="text-emerald-900 font-semibold mb-1.5">🎯 Méthode recommandée : mise en demeure officielle</p>
+                <ul class="text-emerald-700 text-sm space-y-1">
+                  <li>✓ Formulation juridique précise</li>
+                  <li>✓ Références légales adaptées</li>
+                  <li>✓ Force probante en cas de litige</li>
+                  <li>✓ Taux de réussite optimisé</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <a href="/formulaire" class="group w-full bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white font-bold py-4 md:py-5 px-6 rounded-xl transition-all duration-200 flex items-center justify-center gap-3 shadow-lg hover:shadow-xl" data-stagger>
+            <svg class="w-6 h-6 group-hover:scale-110 transition-transform duration-200" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            Générer ma lettre de mise en demeure gratuite
+            <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+            </svg>
+          </a>
+        `;
+
+      } else {
+        // NON ÉLIGIBLE (associations visibles)
+        resultIcon.className = 'p-2.5 bg-amber-500 rounded-2xl shadow-xl transform rotate-3';
+        resultIcon.innerHTML = '<svg class="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>';
+
+        resultMainIcon.className = 'flex-shrink-0 p-3 bg-amber-500 rounded-xl shadow';
+        resultMainIcon.innerHTML = '<svg class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>';
+
+        resultCard.className = 'relative bg-gradient-to-br from-amber-50 via-orange-50 to-red-50 border-orange-200/50 rounded-2xl p-5 md:p-6 mb-8 border shadow-xl transform will-change-transform motion-safe:animate-scale-in-sm';
+
+        resultTitle.className = 'text-2xl md:text-3xl font-extrabold mb-2 text-amber-900';
+        resultTitle.textContent = '❌ Vous n\'êtes pas éligible';
+
+        let alternativesHtml = '';
+        if (currentQuestion && currentQuestion.noAlternatives) {
+          alternativesHtml = `
+            <div class="bg-white/80 backdrop-blur-sm rounded-xl p-4 md:p-5 border border-amber-200/50 shadow mb-4" data-stagger>
+              <h3 class="font-bold text-amber-900 mb-3 flex items-center gap-2.5 text-base md:text-lg">
+                <svg class="w-6 h-6" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 0 0-.867.5 1 1 0 1 1-1.731-1A3 3 0 0 1 13 8a3.001 3.001 0 0 1-2 2.83V11a1 1 0 1 1-2 0v-1a1 1 0 0 1 1-1 1 1 0 1 0 0-2zm0 8a1 1 0 1 0 0-2 1 1 0 0 0 0 2z" clip-rule="evenodd"/>
+                </svg>
+                Alternatives possibles
+              </h3>
+              <div class="space-y-3">
+                ${currentQuestion.noAlternatives.map((alt) => `
+                  <div class="relative pl-5 border-l-4 border-amber-300 bg-amber-50/50 rounded-r-lg p-3" data-stagger>
+                    <h4 class="font-bold text-amber-900 mb-1.5">${alt.title}</h4>
+                    <p class="text-amber-800 text-sm mb-2 leading-relaxed">${alt.description}</p>
+                    ${alt.action ? `<p class="text-amber-700 text-sm font-medium bg-amber-100 px-3 py-2 rounded-md italic">💡 ${alt.action}</p>` : ''}
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          `;
+        }
+
+        resultContent.innerHTML = `
+          <p class="text-amber-900 text-base md:text-lg leading-relaxed font-medium mb-4" data-stagger>
+            <span class="inline-block bg-amber-200 px-2.5 py-0.5 rounded-full font-bold mr-2">Ne vous découragez pas !</span>
+            Votre situation ne correspond pas aux critères de la garantie légale,
+            mais il existe d'autres recours possibles.
+          </p>
+
+          ${alternativesHtml}
+          ${associationsBlock}
+
+          <div class="bg-gray-50 rounded-xl p-4 md:p-5 border border-gray-200/50 shadow-sm mt-4" data-stagger>
+            <p class="text-gray-700 text-center font-medium text-sm md:text-base">
+              <strong>Notre service se concentre actuellement sur la garantie légale de conformité.</strong><br/>
+              <span class="text-sm">Nous espérons couvrir d’autres recours prochainement.</span>
+            </p>
+          </div>
+        `;
+      }
+
+      // Stagger sur la section résultat
+      applyStagger(elements.resultSection);
+
+      // Remonte en haut
+      setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 80);
+    }
+
+    // =============================
+    // Reset
+    // =============================
+    function resetTest() {
+      currentQuestionIndex = 0;
+      answers = {};
+      isAnimating = false;
+
+      elements.questionSection.style.display = 'block';
+      elements.resultSection.style.display = 'none';
+
+      elements.questionCard.style.transform = 'scale(1)';
+      elements.questionCard.style.opacity = '1';
+
+      updateProgress();
+      displayCurrentQuestion();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // =============================
+    // Go
+    // =============================
+    document.addEventListener('DOMContentLoaded', init);
+
+    // Console
+    console.log('💪 Je me défends - Test d\'éligibilité');
+    console.log('🎯 Basé sur les articles L. 217-3 et suivants du Code de la consommation');
+</script>
+</body>
+</html>
