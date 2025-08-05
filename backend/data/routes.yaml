@@ -1,0 +1,70 @@
+# Configuration des routes et pages à générer
+
+pages:
+  # Page pilier principale
+  - type: "pilier"
+    slug: "garantie-legale"
+    path: "garantie-legale"
+    data_key: null
+
+  # Catégories de produits
+  - type: "categorie"
+    slug: "electromenager"
+    path: "produits/electromenager"
+    data_key: "electromenager"
+
+  - type: "categorie"
+    slug: "smartphone"
+    path: "produits/smartphone"
+    data_key: "smartphone"
+
+  - type: "categorie"
+    slug: "informatique"
+    path: "produits/informatique"
+    data_key: "informatique"
+
+  # Produits spécifiques
+  - type: "produit"
+    slug: "iphone"
+    path: "produits/smartphone/iphone"
+    data_key: "iphone"
+    category: "smartphone"
+
+  - type: "produit"
+    slug: "lave-linge"
+    path: "produits/electromenager/lave-linge"
+    data_key: "lave_linge"
+    category: "electromenager"
+
+  # Enseignes
+  - type: "enseigne"
+    slug: "darty"
+    path: "enseignes/darty"
+    data_key: "darty"
+
+  - type: "enseigne"
+    slug: "amazon"
+    path: "enseignes/amazon"
+    data_key: "amazon"
+
+  # Marques
+  - type: "marque"
+    slug: "apple"
+    path: "marques/apple"
+    data_key: "apple"
+
+  - type: "marque"
+    slug: "samsung"
+    path: "marques/samsung"
+    data_key: "samsung"
+
+  # Types de pannes
+  - type: "panne"
+    slug: "ecran-casse"
+    path: "pannes/ecran-casse"
+    data_key: "ecran_casse"
+
+  - type: "panne"
+    slug: "batterie-defaillante"
+    path: "pannes/batterie-defaillante"
+    data_key: "batterie_defaillante"
