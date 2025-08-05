@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{ meta_title }}</title>
+    <meta name="description" content="{{ meta_description }}" />
+    <link rel="canonical" href="{{ canonical_url }}" />
+    {% if noindex %}
+        <meta name="robots" content="noindex,follow" />
+    {% endif %}
+
+    <!-- Open Graph / Twitter -->
+    <meta property="og:title" content="{{ meta_title }}" />
+    <meta property="og:description" content="{{ meta_description }}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="{{ canonical_url }}" />
+    <meta property="og:image" content="{{ base_url }}/static/og/og-image-jemedefends-1200x630.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Prefetch / Preload -->
+    <link rel="preload" href="/static/images/logo_jemedefends.svg" as="image" type="image/svg+xml" fetchpriority="high" />
+
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        tailwind.config = {
+          theme: {
+            extend: {
+              animation: prefersReduced ? {} : {
+                'fade-in': 'fadeIn .6s ease-out forwards',
+                'slide-up': 'slideUp .7s ease-out forwards'
+              },
+              keyframes: prefersReduced ? {} : {
+                fadeIn: { '0%': {opacity:0, transform:'translateY(16px)'}, '100%': {opacity:1, transform:'translateY(0)'} },
+                slideUp: { '0%': {opacity:0, transform:'translateY(24px)'}, '100%': {opacity:1, transform:'translateY(0)'} }
+              }
+            }
+          }
+        }
+    </script>
+    <style>
+        .reveal { opacity: 0; transform: translateY(24px); transition: opacity .6s ease, transform .6s ease; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        .skip-link:focus { position: fixed; top: .75rem; left: .75rem; background: #fff; color: #1d4ed8; padding: .5rem .75rem; border-radius: .375rem; box-shadow: 0 1px 2px rgba(0,0,0,.1); }
+        .toc-link { color: #475569; text-decoration: none; padding: 0.5rem 0.75rem; border-radius: 0.5rem; transition: all 0.2s; }
+        .toc-link:hover { background: #f1f5f9; color: #1e40af; }
+        .toc-link.active { background: #dbeafe; color: #1e40af; font-weight: 600; }
+        .key-facts { background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); }
+        .key-fact-item { position: relative; }
+        .key-fact-item::before { content: '✓'; color: #1d4ed8; font-weight: bold; margin-right: 0.5rem; }
+    </style>
+
+    <!-- Schema.org JSON-LD -->
+    {% if breadcrumb_schema %}
+        <script type="application/ld+json">
+      {{ breadcrumb_schema | tojson }}
+    </script>
+    {% endif %}
+
+    {% if faq_schema %}
+        <script type="application/ld+json">
+    {{ faq_schema | tojson }}
+    </script>
+    {% endif %}
+
+    {% if howto_schema %}
+        <script type="application/ld+json">
+    {{ howto_schema | tojson }}
+    </script>
+    {% endif %}
+</head>
+<body class="bg-slate-50 text-slate-900">
+<a href="#main" class="skip-link sr-only focus:not-sr-only">Aller au contenu</a>
+
+<header>
+    <!-- Navigation -->
+    <nav class="bg-white/80 backdrop-blur-md fixed top-0 left-0 right-0 z-50 border-b border-slate-200/40">
+        <div class="max-w-7xl mx-auto px-6 py-2 flex items-center justify-between">
+            <a href="/" class="flex items-center gap-3" aria-label="Je me défends – Accueil">
+                <img src="/static/images/logo_jemedefends.svg" alt="Je me défends – logo balance" class="w-40 md:w-48" width="192" height="48" />
+            </a>
+            <ul class="hidden md:flex gap-8 text-gray-700 font-semibold">
+                <li><a href="/" class="hover:text-blue-600 transition-colors">Accueil</a></li>
+                <li><a href="/eligibilite" class="hover:text-blue-600 transition-colors">Éligibilité</a></li>
+                <li><a href="/mentions-legales" class="hover:text-blue-600 transition-colors">Mentions légales</a></li>
+                <li><a href="/politique-confidentialite" class="hover:text-blue-600 transition-colors">Politique de confidentialité</a></li>
+            </ul>
+            <a href="/eligibilite" class="hidden md:inline-block bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg font-bold shadow-lg transition-transform hover:-translate-y-0.5">🚀 Tester mon éligibilité</a>
+        </div>
+    </nav>
+</header>
+
+<main id="main" class="pt-[72px]">
+    <!-- Hero / Titre -->
+    <section class="relative py-20 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 text-white">
+        <div class="max-w-7xl mx-auto px-6">
+            {% if breadcrumb_items %}
+                <nav aria-label="Fil d'Ariane" class="mb-6">
+                    <ol class="flex flex-wrap items-center gap-2 text-white/80 text-sm">
+                        <li><a href="/" class="hover:text-white transition-colors">Accueil</a></li>
+                        {% for item in breadcrumb_items %}
+                            <li class="flex items-center gap-2">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                                </svg>
+                                {% if loop.last %}
+                                    <span class="text-white font-medium">{{ item.name }}</span>
+                                {% else %}
+                                    <a href="{{ item.url }}" class="hover:text-white transition-colors">{{ item.name }}</a>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ol>
+                </nav>
+            {% endif %}
+
+            <h1 class="text-4xl md:text-6xl font-black leading-tight reveal">{{ page_title }}</h1>
+            <p class="mt-4 text-xl text-white/90 reveal">{{ page_subtitle }}</p>
+
+            {% if page_badges %}
+                <div class="mt-6 flex flex-wrap gap-3 reveal">
+                    {% for badge in page_badges %}
+                        <span class="bg-white/15 border border-white/25 text-white px-3 py-1 rounded-full text-sm font-medium">{{ badge }}</span>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            {% if key_facts %}
+                <div class="mt-8 key-facts border border-blue-200/30 rounded-2xl p-6 reveal">
+                    <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                        <span role="img" aria-hidden="true">💡</span>
+                        À retenir
+                    </h2>
+                    <ul class="space-y-2">
+                        {% for fact in key_facts %}
+                            <li class="key-fact-item text-white/90 font-medium">{{ fact }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+
+    <!-- Sommaire (optionnel) -->
+    {% if show_toc and toc_items %}
+        <section class="py-8 bg-white border-b border-slate-200">
+            <div class="max-w-4xl mx-auto px-6">
+                <nav aria-label="Sommaire" class="reveal">
+                    <h2 class="text-lg font-bold text-slate-900 mb-4">📋 Sommaire</h2>
+                    <ul class="grid sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                        {% for item in toc_items %}
+                            <li>
+                                <a href="#{{ item.anchor }}" class="toc-link block" data-toc-link="{{ item.anchor }}">
+                                    {{ item.title }}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </nav>
+            </div>
+        </section>
+    {% endif %}
+
+    <!-- Contenu principal -->
+    <section class="py-16 bg-white">
+        <div class="max-w-4xl mx-auto px-6 space-y-12">
+
+            <!-- Introduction (optionnelle) -->
+            {% if introduction %}
+                <div class="reveal prose prose-slate prose-lg max-w-none">
+                    {{ introduction | markdown }}
+                </div>
+            {% endif %}
+
+            <!-- Sections dynamiques -->
+            {% for section in content_sections %}
+                <div class="reveal" {% if section.anchor %}id="{{ section.anchor }}"{% endif %}>
+                    {% if section.type == 'heading' %}
+                        <{{ section.level }} class="text-2xl md:text-3xl font-black text-gray-900 mb-4 scroll-mt-20">{{ section.title }}</{{ section.level }}>
+
+                    {% elif section.type == 'content' %}
+                        <div class="prose prose-slate max-w-none">
+                            {{ section.content | markdown }}
+                        </div>
+
+                    {% elif section.type == 'highlight' %}
+                        <div class="bg-blue-50 border border-blue-200 rounded-xl p-6">
+                            <h3 class="flex items-center gap-2 text-lg font-bold text-blue-900 mb-3">
+                                <span role="img" aria-hidden="true">{{ section.icon|default('💡') }}</span>
+                                {{ section.title }}
+                            </h3>
+                            <div class="prose prose-blue max-w-none">
+                                {{ section.content | markdown }}
+                            </div>
+                        </div>
+
+                    {% elif section.type == 'warning' %}
+                        <div class="bg-amber-50 border border-amber-200 rounded-xl p-6">
+                            <h3 class="flex items-center gap-2 text-lg font-bold text-amber-900 mb-3">
+                                <span role="img" aria-hidden="true">⚠️</span>
+                                {{ section.title }}
+                            </h3>
+                            <div class="prose prose-amber max-w-none">
+                                {{ section.content | markdown }}
+                            </div>
+                        </div>
+
+                    {% elif section.type == 'success' %}
+                        <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-6">
+                            <h3 class="flex items-center gap-2 text-lg font-bold text-emerald-900 mb-3">
+                                <span role="img" aria-hidden="true">✅</span>
+                                {{ section.title }}
+                            </h3>
+                            <div class="prose prose-emerald max-w-none">
+                                {{ section.content | markdown }}
+                            </div>
+                        </div>
+
+                    {% elif section.type == 'steps' %}
+                        <div class="space-y-6">
+                            {% for step in section.steps %}
+                                <div class="flex gap-4">
+                                    <div class="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-sm">
+                                        {{ loop.index }}
+                                    </div>
+                                    <div class="flex-1">
+                                        <h4 class="font-semibold text-gray-900 mb-2">{{ step.title }}</h4>
+                                        <div class="prose prose-slate prose-sm max-w-none">
+                                            {{ step.content | markdown }}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                    {% elif section.type == 'faq' %}
+                        <div class="space-y-4">
+                            {% for faq in section.faq_items %}
+                                <details class="bg-slate-50 border border-slate-200 rounded-lg overflow-hidden">
+                                    <summary class="cursor-pointer p-4 font-semibold text-gray-900 hover:bg-slate-100 transition-colors">
+                                        {{ faq.question }}
+                                    </summary>
+                                    <div class="p-4 pt-0 prose prose-slate prose-sm max-w-none">
+                                        {{ faq.answer | markdown }}
+                                    </div>
+                                </details>
+                            {% endfor %}
+                        </div>
+
+                    {% elif section.type == 'links' %}
+                        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {% for link in section.link_items %}
+                                <a href="{{ link.url }}" {% if link.external %}target="_blank" rel="noopener"{% endif %}
+                                   class="group block rounded-xl bg-white border border-slate-200 hover:border-blue-300 shadow-sm hover:shadow transition-all p-4">
+                                    <div class="flex items-start gap-3">
+                                        {% if link.icon %}
+                                            <div class="flex-shrink-0 w-10 h-10 rounded-xl bg-blue-100 text-blue-700 grid place-items-center">
+                                                <span role="img" aria-hidden="true">{{ link.icon }}</span>
+                                            </div>
+                                        {% endif %}
+                                        <div class="flex-1 min-w-0">
+                                            <h4 class="font-bold text-slate-900 group-hover:text-blue-700 transition-colors">{{ link.title }}</h4>
+                                            {% if link.description %}
+                                                <p class="mt-1 text-sm text-slate-600">{{ link.description }}</p>
+                                            {% endif %}
+                                            <span class="mt-2 inline-flex items-center gap-1 text-blue-700 text-sm font-medium">
+                                    {{ link.cta|default('En savoir plus') }}
+                                    <svg class="w-4 h-4 transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                    </svg>
+                                </span>
+                                        </div>
+                                    </div>
+                                </a>
+                            {% endfor %}
+                        </div>
+
+                    {% elif section.type == 'contact_info' and contact_info %}
+                        <div class="bg-slate-50 border border-slate-200 rounded-xl p-6">
+                            <h3 class="flex items-center gap-2 text-lg font-bold text-slate-900 mb-4">
+                                <span role="img" aria-hidden="true">📞</span>
+                                Contacts utiles
+                            </h3>
+                            <div class="grid sm:grid-cols-2 gap-4">
+                                {% if contact_info.phone %}
+                                    <div>
+                                        <span class="block font-medium text-slate-900">Téléphone</span>
+                                        <span class="text-slate-700">{{ contact_info.phone }}</span>
+                                        {% if contact_info.phone_note %}
+                                            <span class="text-xs text-slate-500 block">{{ contact_info.phone_note }}</span>
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+
+                                {% if contact_info.website %}
+                                    <div>
+                                        <span class="block font-medium text-slate-900">Site web</span>
+                                        <a href="https://{{ contact_info.website }}" class="text-blue-700 hover:underline">{{ contact_info.website }}</a>
+                                    </div>
+                                {% endif %}
+
+                                {% if contact_info.hours %}
+                                    <div>
+                                        <span class="block font-medium text-slate-900">Horaires</span>
+                                        <span class="text-slate-700">{{ contact_info.hours }}</span>
+                                    </div>
+                                {% endif %}
+
+                                {% if contact_info.address %}
+                                    <div class="sm:col-span-2">
+                                        <span class="block font-medium text-slate-900">Adresse</span>
+                                        <span class="text-slate-700">{{ contact_info.address }}</span>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                    {% elif section.type == 'cta' %}
+                        <div class="text-center bg-gradient-to-br from-blue-600 to-indigo-700 text-white rounded-2xl p-8">
+                            <h3 class="text-2xl font-bold mb-4">{{ section.title }}</h3>
+                            {% if section.description %}
+                                <p class="text-white/90 mb-6 max-w-2xl mx-auto">{{ section.description }}</p>
+                            {% endif %}
+                            <a href="{{ section.url }}" class="inline-flex items-center gap-2 bg-white text-blue-700 font-bold px-8 py-3 rounded-xl hover:bg-blue-50 transition-colors shadow-lg">
+                                <span role="img" aria-hidden="true">{{ section.icon|default('🚀') }}</span>
+                                {{ section.cta_text }}
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+        <!-- Maillage interne (optionnel) -->
+        {% if related_links %}
+            <div class="reveal">
+                <h2 class="text-2xl md:text-3xl font-black text-gray-900 mb-6 scroll-mt-20">Articles liés</h2>
+                <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {% for link in related_links %}
+                        <a href="{{ link.url }}" class="group block bg-slate-50 hover:bg-white border border-slate-200 hover:border-blue-300 rounded-xl p-6 transition-all hover:shadow-md">
+                            <h3 class="font-bold text-slate-900 group-hover:text-blue-700 transition-colors mb-2">{{ link.title }}</h3>
+                            {% if link.excerpt %}
+                                <p class="text-sm text-slate-600 mb-3">{{ link.excerpt }}</p>
+                            {% endif %}
+                            <span class="inline-flex items-center gap-1 text-blue-700 text-sm font-medium">
+                            Lire l'article
+                            <svg class="w-4 h-4 transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
+                        </span>
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
+        </div>
+    </section>
+</main>
+
+<footer class="bg-gray-900 text-white py-16">
+    <div class="max-w-7xl mx-auto px-6">
+        <div class="grid md:grid-cols-4 gap-8">
+            <div class="md:col-span-2">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="p-3 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl shadow -rotate-3">
+                        <img src="/static/images/logo_jemedefends.svg" alt="Je me défends – logo" class="w-8 h-8 brightness-0 invert rotate-3" width="32" height="32" />
+                    </div>
+                    <h3 class="text-2xl font-black">{{ global_contact.brand_name|default('Je me défends') }}</h3>
+                </div>
+                <p class="text-gray-400 leading-relaxed mb-6 max-w-md">Votre allié pour faire valoir vos droits de consommateur. Service accessible, transparent et efficace.</p>
+                <p class="text-sm text-gray-500 font-medium">{{ global_contact.tagline|default('Mes droits, simplement') }}</p>
+            </div>
+            <div>
+                <h4 class="text-lg font-bold mb-4">Liens utiles</h4>
+                <ul class="space-y-2">
+                    <li><a href="/eligibilite" class="text-gray-400 hover:text-white transition-colors">Test d'éligibilité</a></li>
+                    <li><a href="/mentions-legales" class="text-gray-400 hover:text-white transition-colors">Mentions légales</a></li>
+                    <li><a href="/politique-confidentialite" class="text-gray-400 hover:text-white transition-colors">Politique de confidentialité</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-lg font-bold mb-4">Contact</h4>
+                <ul class="space-y-2">
+                    {% if global_contact.email %}
+                        <li class="text-gray-400">
+                            <span class="block font-medium">Email</span>
+                            <a href="mailto:{{ global_contact.email }}" class="hover:text-white transition-colors">{{ global_contact.email }}</a>
+                        </li>
+                    {% endif %}
+                    {% if global_contact.address %}
+                        <li class="text-gray-400">
+                            <span class="block font-medium">Adresse</span>
+                            {{ global_contact.address }}
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+        <div class="mt-12 pt-8 text-center border-t border-gray-800">
+            <p class="text-gray-500">&copy; 2025 {{ global_contact.brand_name|default('Je me défends') }}. Tous droits réservés.</p>
+        </div>
+    </div>
+</footer>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Animation des éléments reveal
+      const reveals = document.querySelectorAll('.reveal');
+      if ('IntersectionObserver' in window) {
+        const io = new IntersectionObserver((entries) => {
+          entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); });
+        }, { threshold: 0.15 });
+        reveals.forEach(el => io.observe(el));
+      } else {
+        reveals.forEach(el => el.classList.add('active'));
+      }
+
+      // Navigation du sommaire
+      const tocLinks = document.querySelectorAll('[data-toc-link]');
+      const sections = document.querySelectorAll('[id]');
+
+      if (tocLinks.length && sections.length) {
+        const updateActiveToc = () => {
+          let current = '';
+          sections.forEach(section => {
+            const rect = section.getBoundingClientRect();
+            if (rect.top <= 100) current = section.id;
+          });
+
+          tocLinks.forEach(link => {
+            link.classList.toggle('active', link.dataset.tocLink === current);
+          });
+        };
+
+        window.addEventListener('scroll', updateActiveToc);
+        updateActiveToc();
+
+        // Smooth scroll pour les liens du sommaire
+        tocLinks.forEach(link => {
+          link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const target = document.getElementById(link.dataset.tocLink);
+            if (target) {
+              target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+          });
+        });
+      }
+    });
+</script>
+</body>
+</html>

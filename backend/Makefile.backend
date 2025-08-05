@@ -1,0 +1,168 @@
+.PHONY: install run run-debug run-verbose test lint format clean setup check \
+        db-up db-down db-migrate db-reset sqlc sqlc-vet sql-fix sql-lint \
+        validate health-check \
+        prod-build prod-deploy prod-logs prod-status prod-stop \
+        backup-db monitor-logs \
+        css css-watch css-clean dev-front dev-front-debug
+
+# Development commands
+install:
+	uv sync
+
+run:
+	uv run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+
+# Alternative avec plus d'options de debug :
+run-debug:
+	LOG_LEVEL=DEBUG uv run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000 --log-level debug --access-log --use-colors
+
+# Pour voir tous les logs SQL aussi :
+run-verbose:
+	LOG_LEVEL=DEBUG ENABLE_SQL_LOGGING=true uv run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000 --log-level debug --access-log --use-colors
+
+test:
+	uv run pytest tests/ -v
+
+lint:
+	uv run ruff check app/
+	uv run mypy app/ --strict
+
+check: lint test sql-lint css
+
+format:
+	uv run ruff format app/ tests/
+	uv run ruff check --fix app/ tests/
+
+clean:
+	find . -type d -name "__pycache__" -exec rm -rf {} +
+	find . -type f -name "*.pyc" -delete
+	rm -rf .pytest_cache .mypy_cache .ruff_cache
+	rm -rf node_modules package-lock.json
+
+# Database commands
+db-up:
+	docker-compose up -d postgres
+
+db-down:
+	docker-compose down
+
+db-migrate:
+	./scripts/migrate.sh
+
+db-reset:
+	docker-compose down -v
+	docker-compose up -d postgres
+	sleep 3
+	make db-up
+	make db-migrate
+
+# SQL commands
+sqlc:
+	sqlc generate -f app/db/sqlc.yaml
+
+sqlc-vet:
+	sqlc vet -f sql/sqlc.yaml
+
+sql-fix:
+	uv run sqlfluff fix --nocolor app/db/schema app/db/queries/
+
+sql-lint:
+	uv run sqlfluff lint --nocolor app/db/schema app/db/queries/
+
+# CSS / Tailwind commands
+css:
+	npm run tw:build
+
+css-watch:
+	npm run tw:watch
+
+css-clean:
+	rm -f static/css/app.css
+
+dev-front:
+	@echo "🎨  Tailwind watch + 🚀 FastAPI (reload) - démarrage…"
+	@set -e; \
+	npm run tw:watch & CSS_PID=$$!; \
+	echo "👉 Tailwind watch PID: $$CSS_PID"; \
+	trap 'echo "\n🛑 Stop…"; kill $$CSS_PID 2>/dev/null || true' EXIT INT TERM; \
+	uv run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+
+dev-front-debug:
+	@echo "🎨  Tailwind watch + 🚀 FastAPI (debug) - démarrage…"
+	@set -e; \
+	npm run tw:watch & CSS_PID=$$!; \
+	echo "👉 Tailwind watch PID: $$CSS_PID"; \
+	trap 'echo "\n🛑 Stop…"; kill $$CSS_PID 2>/dev/null || true' EXIT INT TERM; \
+	LOG_LEVEL=DEBUG ENABLE_SQL_LOGGING=true uv run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000 --log-level debug --access-log --use-colors
+
+# Validation and health
+validate:
+	./scripts/validate-setup.sh
+
+health-check:
+	./scripts/health-check.sh
+
+# Production commands
+prod-build:
+	docker-compose -f deployment/docker/docker-compose.prod.yml build
+
+prod-deploy:
+	./scripts/deploy.sh
+
+prod-logs:
+	docker-compose -f deployment/docker/docker-compose.prod.yml logs -f app
+
+prod-status:
+	docker-compose -f deployment/docker/docker-compose.prod.yml ps
+
+prod-stop:
+	docker-compose -f deployment/docker/docker-compose.prod.yml down
+
+backup-db:
+	./scripts/backup-db.sh
+
+monitor-logs:
+	./scripts/monitor-logs.sh
+
+# Combined workflows
+setup: install db-up
+	sleep 3
+	make db-migrate
+	make sqlc
+	make validate
+	@echo "✅ Development environment ready!"
+
+dev: setup run
+
+deploy: check prod-build prod-deploy
+
+# Help
+help:
+	@echo "Je me défends - Available commands:"
+	@echo ""
+	@echo "🔧 Development:"
+	@echo "  make setup           # Complete development setup"
+	@echo "  make run             # Start development server"
+	@echo "  make dev-front       # Tailwind watch + FastAPI (reload)"
+	@echo "  make dev-front-debug # Tailwind watch + FastAPI (debug logs)"
+	@echo "  make test            # Run tests"
+	@echo "  make check           # Run all checks (lint + test + sql-lint + css)"
+	@echo "  make validate        # Validate entire setup"
+	@echo ""
+	@echo "🎨 CSS / Tailwind:"
+	@echo "  make css             # Build Tailwind CSS"
+	@echo "  make css-watch       # Watch Tailwind CSS (auto rebuild)"
+	@echo "  make css-clean       # Clean generated CSS"
+	@echo ""
+	@echo "🗄️ Database:"
+	@echo "  make db-up           # Start PostgreSQL"
+	@echo "  make db-migrate      # Run migrations"
+	@echo "  make sqlc            # Generate SQLc code"
+	@echo "  make sql-fix         # Format SQL files"
+	@echo ""
+	@echo "🚀 Production:"
+	@echo "  make prod-deploy     # Deploy to production"
+	@echo "  make prod-logs       # View production logs"
+	@echo "  make backup-db       # Backup database"
+	@echo "  make monitor-logs    # Monitor logs with alerts"
+

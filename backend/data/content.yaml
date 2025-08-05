@@ -1,0 +1,390 @@
+# Structure normalisée et industrialisable - tous types ont les mêmes champs
+
+global:
+  base_url: "https://jemedefends.fr"
+  brand_name: "Je me défends"
+  tagline: "Mes droits, simplement"
+
+  # Contacts structurés pour réutilisation
+  contact:
+    email: "contact@jemedefends.fr"
+    phone: null
+    address: "2 rue André Bouillar, 40220 Tarnos, France"
+    hours: "24h/7j via formulaire"
+
+# Pages par type - structure identique pour tous
+pages:
+  # TYPE: pilier
+  garantie_legale:
+    type: "pilier"
+    seo:
+      slug: "garantie-legale"
+      h1: "Garantie légale de conformité"
+      meta_title: "Garantie légale de conformité : vos droits en 2025"
+      meta_description: "Découvrez vos droits avec la garantie légale de conformité. 2 ans de protection, réparation gratuite, remplacement ou remboursement."
+      canonical: "/garantie-legale/"
+      noindex: false
+      breadcrumbs: []
+      related: ["electromenager", "smartphone", "informatique", "darty", "amazon"]
+
+    hero:
+      title: "Garantie légale de conformité"
+      subtitle: "Vos droits de consommateur expliqués simplement"
+      badges: ["2 ans de protection", "Gratuit et obligatoire", "Valable en France"]
+      key_facts:
+        - "Protection automatique de 2 ans sur tout achat professionnel"
+        - "Réparation, remplacement ou remboursement gratuits"
+        - "Le vendeur ne peut pas vous renvoyer vers le fabricant"
+        - "Présomption légale : le défaut est présumé exister dès l'achat"
+
+    content:
+      introduction: |
+        La **garantie légale de conformité** vous protège pendant **2 ans** après l'achat de tout produit neuf auprès d'un professionnel. Elle est **gratuite**, **obligatoire** et distincte de la garantie commerciale.
+
+      sections:
+        - title: "Qu'est-ce que la garantie légale ?"
+          anchor: "definition"
+          content: |
+            Tout produit doit être conforme à l'usage attendu et aux caractéristiques annoncées. En cas de défaut, le vendeur doit proposer **gratuitement** :
+            
+            - La **réparation** du produit
+            - Le **remplacement** par un produit identique  
+            - Le **remboursement** si réparation et remplacement impossibles
+            
+            La garantie couvre les défauts existants au moment de la livraison, même s'ils se révèlent plus tard.
+
+        - title: "Vos droits en pratique"
+          anchor: "droits"
+          content: |
+            **Présomption légale :** Pendant 24 mois (12 mois pour l'occasion), tout défaut est présumé exister dès la livraison. C'est au **vendeur** de prouver le contraire, pas à vous !
+
+      how_to:
+        title: "Comment faire valoir vos droits"
+        steps:
+          - title: "Contactez le vendeur"
+            content: "Prévenez le vendeur par écrit (email, courrier) en décrivant le problème"
+          - title: "Laissez un délai raisonnable"
+            content: "Accordez 1 mois minimum pour la réparation ou le remplacement"
+          - title: "Envoyez une mise en demeure"
+            content: "Si pas de réponse ou refus, envoyez une mise en demeure formelle"
+          - title: "Saisissez la justice si nécessaire"
+            content: "En dernier recours, médiation ou tribunal pour faire valoir vos droits"
+
+      faq:
+        - question: "Qu'est-ce que la garantie légale de conformité ?"
+          answer: "Protection légale de 2 ans sur tout achat auprès d'un professionnel. Le vendeur doit réparer, remplacer ou rembourser gratuitement."
+        - question: "La garantie légale est-elle gratuite ?"
+          answer: "Oui, totalement gratuite. Aucun frais de diagnostic, réparation ou transport ne peut vous être facturé."
+        - question: "Quelle différence avec la garantie commerciale ?"
+          answer: "La garantie légale est obligatoire, gratuite et dure 2 ans. La garantie commerciale est optionnelle et payante."
+        - question: "Le vendeur peut-il me renvoyer vers le fabricant ?"
+          answer: "Non, la garantie légale lie le consommateur au vendeur uniquement. Il ne peut pas vous renvoyer."
+
+  # TYPE: categorie
+  electromenager:
+    type: "categorie"
+    seo:
+      slug: "electromenager"
+      h1: "Garantie légale électroménager"
+      meta_title: "Garantie électroménager : procédure et droits 2025"
+      meta_description: "Garantie légale pour électroménager : durée, procédure, réparation gratuite. Guide complet de vos droits sur lave-linge, frigo, four."
+      canonical: "/produits/electromenager/"
+      noindex: false
+      breadcrumbs: ["garantie_legale"]
+      related: ["lave_linge", "darty", "samsung", "panne_moteur"]
+
+    hero:
+      title: "Garantie légale électroménager"
+      subtitle: "Vos droits spécifiques pour l'électroménager"
+      badges: ["2 ans de garantie", "Réparation gratuite", "Remplacement possible"]
+      key_facts:
+        - "Tous les appareils électroménagers sont couverts 2 ans"
+        - "Pannes fréquentes dans les premiers mois = défaut de conformité"
+        - "Réparation à domicile gratuite si l'appareil n'est pas transportable"
+        - "Droit au remplacement si réparation impossible ou récurrente"
+
+    content:
+      introduction: |
+        L'électroménager bénéficie pleinement de la garantie légale de conformité. Lave-linge, réfrigérateur, four : **2 ans de protection** contre les pannes, avec des spécificités liées au transport et à l'installation.
+
+      sections:
+        - title: "Spécificités pour l'électroménager"
+          anchor: "specificites"
+          content: |
+            Les appareils électroménagers présentent souvent des défauts de fabrication dans les premiers mois. Les pannes fréquentes :
+            
+            - **Lave-linge :** problèmes de pompe, roulement, courroie
+            - **Réfrigérateur :** compresseur, thermostat, joints
+            - **Four :** résistance, thermostat, porte
+            - **Lave-vaisselle :** pompe, bras de lavage, programmateur
+
+        - title: "Pannes les plus courantes"
+          anchor: "pannes"
+          content: |
+            La plupart des pannes d'électroménager dans les 2 ans sont couvertes par la garantie légale, sauf si le vendeur prouve une usure normale excessive ou mauvaise utilisation.
+            
+            **Important :** Une panne dans les 12 premiers mois est automatiquement présumée être un défaut de conformité.
+
+      faq:
+        - question: "Mon lave-linge tombe en panne après 18 mois, c'est couvert ?"
+          answer: "Oui, parfaitement couvert par la garantie légale jusqu'à 2 ans. Réparation gratuite obligatoire."
+        - question: "L'usure normale est-elle couverte ?"
+          answer: "Non, mais une panne en 18 mois n'est pas de l'usure normale. C'est un défaut de conformité."
+        - question: "Qui paie le déplacement du technicien ?"
+          answer: "Le vendeur, dans le cadre de la garantie légale. Aucun frais ne peut vous être facturé."
+
+  # TYPE: produit
+  lave_linge:
+    type: "produit"
+    seo:
+      slug: "lave-linge"
+      h1: "Garantie lave-linge en panne"
+      meta_title: "Garantie lave-linge : panne et SAV gratuit"
+      meta_description: "Lave-linge en panne ? Découvrez vos droits à la garantie légale : réparation gratuite, remplacement, procédure détaillée."
+      canonical: "/produits/electromenager/lave-linge/"
+      noindex: false
+      breadcrumbs: ["garantie_legale", "electromenager"]
+      related: ["electromenager", "panne_moteur", "darty", "samsung"]
+
+    hero:
+      title: "Garantie lave-linge en panne"
+      subtitle: "Que faire si votre lave-linge tombe en panne"
+      badges: ["Réparation gratuite", "2 ans de garantie", "Procédure simplifiée"]
+      key_facts:
+        - "Réparation à domicile gratuite obligatoire"
+        - "Pompe, roulement, moteur : pannes courantes couvertes"
+        - "Remplacement si 3 pannes similaires ou réparation > 30 jours"
+        - "Aucun frais de déplacement ou diagnostic en garantie légale"
+
+    content:
+      introduction: |
+        Votre lave-linge est couvert par la garantie légale pendant **2 ans**. Les pannes fréquentes (pompe, roulement, moteur) sont généralement prises en charge gratuitement.
+
+      sections:
+        - title: "Pannes typiques"
+          anchor: "pannes"
+          content: |
+            Les pannes les plus courantes sur un lave-linge :
+            
+            - **Pompe de vidange :** obstruction, panne moteur de pompe
+            - **Roulement :** bruit anormal, tambour qui bouge excessivement
+            - **Résistance :** eau qui ne chauffe plus, cycle bloqué
+            - **Programmateur :** cycles qui se bloquent ou sautent
+            - **Joint de hublot :** déchirure, problème d'étanchéité
+            - **Courroie :** tambour qui ne tourne plus
+
+        - title: "Procédure recommandée"
+          anchor: "procedure"
+          content: |
+            Si votre lave-linge rencontre un problème dans les 2 ans, la démarche est encadrée par la loi.
+
+      how_to:
+        title: "Étapes pour votre lave-linge"
+        steps:
+          - title: "Arrêtez l'utilisation"
+            content: "Évitez d'aggraver la panne en continuant à utiliser l'appareil"
+          - title: "Prenez des photos/vidéos"
+            content: "Documentez le problème : fuite, bruit, code erreur avant intervention"
+          - title: "Contactez le vendeur"
+            content: "Magasin ou SAV avec facture d'achat et description précise"
+          - title: "Demandez un technicien"
+            content: "Diagnostic gratuit à domicile en garantie légale, aucun frais"
+
+      faq:
+        - question: "Mon lave-linge fait du bruit, c'est couvert ?"
+          answer: "Oui, si le bruit est anormal (roulement défaillant). Diagnostic gratuit obligatoire."
+        - question: "Combien coûte la réparation sous garantie légale ?"
+          answer: "Rien. Diagnostic, réparation, pièces et déplacement sont gratuits."
+        - question: "Le technicien dit que c'est de l'usure normale ?"
+          answer: "Contestez si moins de 2 ans. L'usure normale sur cette durée est exceptionnelle."
+
+  # TYPE: enseigne
+  darty:
+    type: "enseigne"
+    seo:
+      slug: "darty"
+      h1: "Garantie légale Darty"
+      meta_title: "Garantie légale Darty : procédure SAV 2025"
+      meta_description: "Faire valoir la garantie légale chez Darty : contacts SAV, procédure, délais. Guide complet et mise en demeure."
+      canonical: "/enseignes/darty/"
+      noindex: false
+      breadcrumbs: ["garantie_legale"]
+      related: ["electromenager", "lave_linge", "samsung", "apple"]
+
+    hero:
+      title: "Garantie légale Darty"
+      subtitle: "Procédure spécifique pour Darty"
+      badges: ["Contacts SAV", "Procédure détaillée", "Modèle de lettre"]
+      key_facts:
+        - "SAV Darty réputé mais garantie légale = droit distinct et gratuit"
+        - "Ne pas confondre avec la garantie commerciale Darty payante"
+        - "Réponse sous 48h annoncée, mais 1 mois légal pour réparation"
+        - "Magasin d'achat = interlocuteur prioritaire pour garantie légale"
+
+    content:
+      introduction: |
+        Darty dispose d'un SAV réputé, mais la **garantie légale** reste votre droit principal. Elle s'applique en plus de leurs services et ne peut être refusée.
+
+      sections:
+        - title: "Contacts et procédure"
+          anchor: "contacts"
+          content: |
+            Chez Darty, la procédure recommandée pour faire valoir la garantie légale :
+            
+            1. **Contactez le magasin** où vous avez acheté en priorité
+            2. **Appelez le service client** au 0892 01 10 10 (numéro surtaxé)
+            3. **Utilisez l'espace client** sur darty.com pour traçabilité
+            4. **En magasin** avec facture et produit si transportable
+
+        - title: "Délais et spécificités"
+          anchor: "delais"
+          content: |
+            **Engagements Darty :** réponse sous 48h généralement respectée.
+            
+            **Vos droits légaux :** 1 mois pour la réparation, puis mise en demeure possible.
+            
+            **Important :** Darty propose souvent sa garantie commerciale payante. Rappelez que la garantie légale est **gratuite** et **obligatoire**.
+
+      contact_info:
+        phone: "0892 01 10 10"
+        phone_note: "Service surtaxé"
+        email: null
+        website: "darty.com"
+        address: "Darty - Service Client - 93140 Bondy"
+        hours: "Lun-Sam 8h-20h, Dim 9h-18h"
+
+      faq:
+        - question: "Darty me propose sa garantie payante, dois-je l'accepter ?"
+          answer: "Non, la garantie légale gratuite de 2 ans s'applique automatiquement et suffit."
+        - question: "Le magasin Darty me renvoie vers le constructeur ?"
+          answer: "Illégal. Darty est votre seul interlocuteur pour la garantie légale."
+        - question: "Darty refuse de réparer gratuitement après 1 an ?"
+          answer: "Invoquez explicitement la 'garantie légale de conformité' et citez l'article L.217-4."
+
+  # TYPE: marque
+  samsung:
+    type: "marque"
+    seo:
+      slug: "samsung"
+      h1: "Garantie légale Samsung"
+      meta_title: "Garantie légale Samsung : SAV et procédure 2025"
+      meta_description: "Garantie légale produits Samsung : contacts SAV, procédure, délais. Mise en demeure et recours pour électroménager, TV, smartphone."
+      canonical: "/marques/samsung/"
+      noindex: false
+      breadcrumbs: ["garantie_legale"]
+      related: ["electromenager", "smartphone", "darty", "galaxy_s24"]
+
+    hero:
+      title: "Garantie légale Samsung"
+      subtitle: "Vos droits avec les produits Samsung"
+      badges: ["SAV constructeur", "Garantie légale", "Procédure détaillée"]
+      key_facts:
+        - "Garantie légale s'ajoute à la garantie constructeur Samsung"
+        - "Le vendeur reste votre interlocuteur principal, pas Samsung"
+        - "SAV Samsung via centres agréés pour diagnostic"
+        - "Invoquer 'garantie légale' si refus de prise en charge gratuite"
+
+    content:
+      introduction: |
+        Samsung applique la garantie légale sur tous ses produits vendus en France. Elle s'ajoute à la garantie constructeur et vous protège pendant 2 ans minimum.
+
+      sections:
+        - title: "Particularités du SAV"
+          anchor: "sav"
+          content: |
+            Samsung propose un SAV via centres agréés. Points importants :
+            
+            - **Double protection :** garantie légale (via vendeur) + garantie Samsung
+            - **Diagnostic gratuit** obligatoire en garantie légale
+            - **Centres agréés** : réparation de qualité mais facturation parfois abusive
+            - **Pièces d'origine** garanties via réseau officiel Samsung
+
+        - title: "Produits concernés"
+          anchor: "produits"
+          content: |
+            Tous les produits Samsung vendus en France bénéficient de la garantie légale :
+            
+            - **Smartphones et tablettes** Galaxy
+            - **Électroménager** (réfrigérateur, lave-linge, four, lave-vaisselle)
+            - **TV et audio** (TV QLED, soundbar, écouteurs)
+            - **Montres connectées** Galaxy Watch
+
+      contact_info:
+        phone: "01 48 63 00 00"
+        email: null
+        website: "samsung.com/fr/support"
+        chat: "Disponible sur samsung.fr"
+        hours: "Lun-Ven 9h-18h"
+
+      faq:
+        - question: "Samsung refuse la réparation gratuite après 13 mois ?"
+          answer: "Contactez d'abord le vendeur. Invoquez la garantie légale de conformité, valable 2 ans."
+        - question: "Le centre agréé Samsung me facture le diagnostic ?"
+          answer: "Illégal en garantie légale. Le diagnostic doit être gratuit."
+        - question: "Samsung ou le vendeur : qui contacter en premier ?"
+          answer: "Le vendeur en priorité. Samsung n'intervient qu'en complément ou si accord du vendeur."
+
+  # TYPE: panne
+  panne_moteur:
+    type: "panne"
+    seo:
+      slug: "panne-moteur"
+      h1: "Panne moteur et garantie légale"
+      meta_title: "Panne moteur électroménager : garantie et réparation"
+      meta_description: "Panne moteur sur électroménager ? Découvrez vos droits à la garantie légale et la procédure pour réparation gratuite."
+      canonical: "/pannes/panne-moteur/"
+      noindex: false
+      breadcrumbs: ["garantie_legale"]
+      related: ["electromenager", "lave_linge", "darty", "samsung"]
+
+    hero:
+      title: "Panne moteur et garantie légale"
+      subtitle: "Que faire en cas de panne moteur"
+      badges: ["Défaut couvert", "Réparation gratuite", "Procédure claire"]
+      key_facts:
+        - "Panne moteur dans les 2 ans = défaut de conformité présumé"
+        - "Réparation ou remplacement gratuit obligatoire"
+        - "Diagnostic professionnel requis pour confirmer la panne"
+        - "Droit au remplacement si moteur non réparable"
+
+    content:
+      introduction: |
+        Une panne moteur sur un appareil électroménager de moins de 2 ans est généralement couverte par la garantie légale, sauf si le vendeur prouve une utilisation anormale.
+
+      sections:
+        - title: "Éligibilité à la garantie"
+          anchor: "eligibilite"
+          content: |
+            La panne moteur est couverte par la garantie légale si :
+            
+            - **Achat depuis moins de 2 ans** auprès d'un professionnel
+            - **Usage conforme** aux recommandations du fabricant
+            - **Aucune surcharge** ou utilisation intensive prouvée par le vendeur
+            - **Entretien normal** effectué selon la notice
+            
+            **Présomption légale :** Si la panne survient dans les 24 mois, elle est présumée exister dès l'achat.
+
+        - title: "Démarches à effectuer"
+          anchor: "demarches"
+          content: |
+            Face à une panne moteur, votre stratégie doit être méthodique pour maximiser vos chances.
+
+      how_to:
+        title: "Procédure recommandée"
+        steps:
+          - title: "Arrêtez immédiatement l'appareil"
+            content: "Évitez d'aggraver les dégâts en continuant l'utilisation"
+          - title: "Documentez la panne"
+            content: "Photos, vidéos, bruits anormaux, codes d'erreur affichés"
+          - title: "Contactez le vendeur rapidement"
+            content: "Plus c'est récent, plus la présomption de défaut est forte"
+          - title: "Exigez un diagnostic gratuit"
+            content: "Par un technicien qualifié, à domicile si appareil non transportable"
+
+      faq:
+        - question: "Comment prouver que le moteur était défaillant dès l'achat ?"
+          answer: "Vous n'avez pas à le prouver ! C'est au vendeur de prouver le contraire dans les 2 ans."
+        - question: "Le vendeur dit que c'est de l'usure normale ?"
+          answer: "Contestez. Un moteur qui lâche en moins de 2 ans révèle généralement un défaut de conception."
+        - question: "Puis-je exiger le remplacement plutôt que la réparation ?"
+          answer: "Si la réparation est impossible, disproportionnée ou déjà tentée sans succès, oui."

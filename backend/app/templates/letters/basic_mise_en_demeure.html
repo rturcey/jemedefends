@@ -1,0 +1,309 @@
+<!-- app/templates/letters/basic_mise_en_demeure.html -->
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mise en demeure - Version gratuite</title>
+    <style>
+      :root {
+        --ink: #1f2937;
+        --muted: #6b7280;
+        --accent: #1d4ed8;
+        --warn: #b91c1c;
+      }
+      html,
+      body {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 14px;
+        line-height: 1.55;
+        color: var(--ink);
+      }
+      body {
+        margin: 24px;
+        max-width: 840px;
+      }
+      .row {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+      }
+      .col {
+        flex: 1;
+      }
+      .right {
+        text-align: right;
+      }
+      .muted {
+        color: var(--muted);
+      }
+      .bold {
+        font-weight: 700;
+      }
+      .u {
+        text-decoration: underline;
+      }
+      .chip {
+        display: inline-block;
+        background: #eef2ff;
+        color: #1e3a8a;
+        border: 1px solid #c7d2fe;
+        border-radius: 12px;
+        padding: 2px 8px;
+        font-weight: 700;
+      }
+      .box {
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+        padding: 14px 16px;
+        background: #fff;
+      }
+      .subject {
+        margin: 22px 0 12px 0;
+      }
+      .para {
+        margin: 12px 0;
+        text-align: justify;
+      }
+      .list {
+        margin: 8px 0 8px 20px;
+      }
+      .sig {
+        margin-top: 40px;
+      }
+      .sigline {
+        margin-top: 56px;
+        border-bottom: 1px solid #111;
+        width: 220px;
+      }
+      .refs {
+        margin-top: 18px;
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .hr {
+        height: 1px;
+        background: #e5e7eb;
+        margin: 18px 0;
+      }
+      .danger {
+        color: var(--warn);
+        font-weight: 700;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ENTÊTE / MODES D'ENVOI -->
+    <div class="row">
+      <div class="col">
+        <div class="chip">
+          {% if letter.send_mode == 'lrAR' %}LRAR{%
+            elif letter.send_mode ==
+            'email'
+          %}Courriel{% else %}Mise en demeure{% endif %}
+        </div>
+        <div class="para muted" style="margin-top: 6px">
+          {% if letter.send_mode == 'lrAR' %}
+            Lettre recommandée avec accusé de réception
+          {% elif letter.send_mode == 'email' %}
+            Envoi par courrier électronique
+          {% endif %}
+        </div>
+
+        <div style="margin-top: 10px">
+          <strong>{{ letter.buyer_name }}</strong><br />
+          {{ letter.buyer_address }}<br />
+          {% if letter.buyer_email %}{{ letter.buyer_email }}<br />{% endif %}
+          {% if letter.buyer_phone %}{{ letter.buyer_phone }}{% endif %}
+        </div>
+      </div>
+
+      <div class="col right">
+        À l’attention de :<br />
+        <strong>{{ letter.seller_name }}</strong><br />
+        {{ letter.seller_address }}
+        <div style="margin-top: 10px" class="muted">
+          {{ current_city or '' }}, le {{ current_date }}
+        </div>
+      </div>
+    </div>
+
+    <div class="subject">
+      <span class="bold">Objet&nbsp;:</span>
+      <span class="u"
+        >Mise en demeure au titre de la garantie légale de conformité</span
+      >
+    </div>
+    <div class="refs">
+      Références commande :
+      {% if letter.order_reference %}
+        <strong>{{ letter.order_reference }}</strong>
+      {% else %}
+        <span class="muted">N/R</span>
+      {% endif %}
+      - Produit :
+      <strong>{{ letter.product_name }}</strong>
+    </div>
+
+    <div class="hr"></div>
+
+    <!-- CORPS -->
+    <p class="para">Madame, Monsieur,</p>
+
+    <p class="para">
+      Le <strong>{{ purchase_date_formatted }}</strong>, j’ai acquis auprès de
+      votre société le bien/produit suivant&nbsp;:
+      <strong>{{ letter.product_name }}</strong> pour un montant de
+      <strong>{{ product_price_formatted }}</strong>.
+      {% if letter.is_digital %}
+        Il s’agit d’un <strong>contenu/service numérique</strong> fourni à
+        distance.
+      {% endif %}
+    </p>
+
+    <p class="para">
+      Or, ce {{ 'bien' if not letter.is_digital else 'service' }} présente un
+      <strong>défaut de conformité</strong> caractérisé par&nbsp;:
+      <strong>{{ letter.defect_description }}</strong>.
+    </p>
+
+    <!-- BASE LÉGALE BIENS / NUMÉRIQUE -->
+    {% if not letter.is_digital %}
+      <p class="para">
+        En application des
+        <strong>articles L.217-3 et suivants du Code de la consommation</strong
+        >, le vendeur est tenu de délivrer un bien conforme au contrat. Le
+        consommateur peut obtenir <strong>sans frais</strong> la mise en
+        conformité par <strong>réparation ou remplacement</strong>, selon son
+        choix, sauf impossibilité ou coût manifestement disproportionné. Tous
+        les frais nécessaires sont à la charge du vendeur (notamment transport,
+        enlèvement du bien et réinstallation le cas échéant).
+      </p>
+    {% else %}
+      <p class="para">
+        En application des
+        <strong
+          >articles L.224-25-12 et suivants du Code de la consommation</strong
+        >, le professionnel doit fournir un contenu/service numérique conforme,
+        incluant l’<strong>accès</strong>, les
+        <strong>fonctionnalités</strong> attendues et les
+        <strong>mises à jour</strong> nécessaires. Le consommateur peut obtenir
+        <strong>sans frais</strong> la mise en conformité, et à défaut une
+        <strong>réduction du prix</strong> ou la <strong>résolution</strong> du
+        contrat selon les cas.
+      </p>
+    {% endif %}
+
+    <!-- PRÉSOMPTION DE NON-CONFORMITÉ -->
+    {%
+      set _limit = presumption_limit_months | default( (12 if letter.used else
+      24) )
+    %}
+    {% if presumption_active is defined %}{%
+      set _presumption =
+      presumption_active
+    %}{% else %}{% set _presumption = true %}{% endif %}
+    {% if _presumption %}
+      <p class="para">
+        <strong>Charge de la preuve (art. L.217-7)</strong>&nbsp;: le défaut
+        étant apparu dans les <strong>{{ _limit }} mois</strong> suivant la
+        délivrance ({{ 'bien d’occasion' if letter.used else 'bien neuf' }}), il
+        est <em>présumé exister au jour de celle-ci</em>. Il vous appartient
+        d’apporter la preuve contraire.
+      </p>
+    {% endif %}
+
+    <!-- DEMANDE CLAIRE + DÉLAIS -->
+    {% set demand_deadline_days = demand_deadline_days | default(14) %}
+    {%
+      set
+      preferred_remedy = preferred_remedy | default('repair')
+    %}
+    {# 'repair' |
+    'replace' #}
+
+    <div class="box para">
+      <div class="bold">Mise en conformité demandée</div>
+      <ul class="list">
+        <li>
+          Je vous mets en demeure de procéder, <strong>sans frais</strong>, à la
+          {% if preferred_remedy == 'replace' %}
+            <strong>remplacement</strong>
+          {% else %}
+            <strong>réparation</strong>
+          {% endif %}
+          du
+          {{
+            'bien' if not
+            letter.is_digital else 'service'
+          }}
+          <strong
+            >dans un délai de {{ demand_deadline_days }} jours
+            calendaires</strong
+          >
+          à compter de la réception de la présente, et en tout état de cause
+          <strong>dans un délai raisonnable et sans inconvénient majeur</strong
+          >.
+        </li>
+        <li>
+          Tous frais nécessaires (transport, enlèvement, réinstallation,
+          diagnostics) sont à votre charge.
+        </li>
+        {% if not letter.is_digital %}
+          <li>
+            En cas d’impossibilité ou de coût manifestement disproportionné,
+            merci de m’en informer par écrit et de proposer immédiatement
+            l’autre solution (réparation/remplacement).
+          </li>
+        {% endif %}
+      </ul>
+    </div>
+
+    <!-- RECOURS DE SECOND RANG -->
+    <p class="para">
+      À défaut de mise en conformité
+      <strong>dans les conditions ci-dessus</strong> (refus, impossibilité,
+      dépassement d’un délai raisonnable ou inconvénient majeur), je
+      solliciterai, au choix selon la loi et les circonstances, une
+      <strong>réduction du prix</strong> ou la
+      <strong>résolution de la vente</strong> avec restitution contre
+      remboursement.
+    </p>
+
+    <!-- PIÈCES -->
+    <p class="para">
+      Je vous prie de bien vouloir accuser réception de la présente et
+      m’indiquer vos modalités pratiques (retour, enlèvement, rendez-vous). Sont
+      joints&nbsp;: copie de la facture/commande, photos/constat de la panne,
+      échanges avec votre SAV (le cas échéant).
+    </p>
+
+    <!-- SUITE -->
+    <p class="para">
+      À défaut de réponse satisfaisante, je me réserve la possibilité de saisir
+      le <strong>médiateur de la consommation</strong>, d’alerter la
+      <strong>DGCCRF</strong> et, si nécessaire, d’engager toute action utile.
+    </p>
+
+    <p class="para">
+      Je vous remercie de votre diligence et vous prie d’agréer, Madame,
+      Monsieur, l’expression de mes salutations distinguées.
+    </p>
+
+    <div class="sig">
+      <p><strong>{{ letter.buyer_name }}</strong></p>
+      <div class="sigline"></div>
+      <p class="muted"><em>Signature manuscrite</em></p>
+    </div>
+
+    <!-- MENTIONS / RAPPEL LÉGAL -->
+    <div class="refs">
+      <div>
+        <strong>Rappels légaux clés</strong> - Biens&nbsp;: L.217-3 à L.217-11
+        (mise en conformité sans frais&nbsp;: réparation/remplacement&nbsp;;
+        réduction de prix/résolution en second rang) ; Présomption&nbsp;:
+        L.217-7. Numérique&nbsp;: L.224-25-12 s.
+      </div>
+    </div>
+  </body>
+</html>

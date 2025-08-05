@@ -1,0 +1,5 @@
+{
+  "circular": true,
+  "extensions": ["ts", "tsx", "js", "jsx"],
+  "tsConfig": "./tsconfig.json"
+}
