@@ -1,72 +1,61 @@
-// src/components/layout/TopBar.tsx
 'use client';
 
+import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { usePathname } from 'next/navigation';
-import * as React from 'react';
 import { motion } from 'framer-motion';
-import { ChevronDown, FileText } from 'lucide-react';
-import Container from '@/components/ui/Container';
-import Button from '@/components/ui/Button';
+import { FileText, ChevronDown } from 'lucide-react';
+import { Container, Button } from '@/components/ui';
 
-const HEADER_H = 80; // 5rem
-
-function scrollToId(id: string) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  const top = el.getBoundingClientRect().top + window.scrollY - HEADER_H - 8;
-  window.scrollTo({ top, behavior: 'smooth' });
-}
-
+// --- NavLink Component ---
 function NavLink({ href, children }: { href: string; children: React.ReactNode }) {
-  const [hovered, setHovered] = React.useState(false);
-  const pathname = usePathname();
-
-  const isHash = href.startsWith('/#') || href.startsWith('#');
-  const id = href.replace('/#', '').replace('#', '');
-  const onClick: React.MouseEventHandler<HTMLAnchorElement> = e => {
-    if (isHash && (pathname === '/' || pathname.startsWith('/(site)'))) {
-      e.preventDefault();
-      scrollToId(id);
-    }
-  };
-
   return (
     <motion.a
       href={href}
-      onClick={onClick}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      className="relative px-1 py-1 text-gray-700 hover:text-blue-700 transition-colors"
+      className="text-gray-700 hover:text-blue-700 transition-colors font-medium"
+      whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
+      transition={{ duration: 0.2 }}
     >
       {children}
-      <motion.span
-        layoutId="nav-underline"
-        className="absolute left-0 right-0 -bottom-0.5 h-[2px] bg-blue-600 rounded-full"
-        initial={false}
-        animate={{ opacity: hovered ? 1 : 0 }}
-        transition={{ type: 'spring', stiffness: 450, damping: 35, mass: 0.2 }}
-      />
     </motion.a>
   );
 }
 
-// --- Correction GUIDES DROPDOWN ---
+// --- Correction GUIDES DROPDOWN avec gestion d'erreur ---
 function GuidesDropdown() {
   const [isOpen, setIsOpen] = React.useState(false);
   const timeoutRef = React.useRef<NodeJS.Timeout>();
 
-  const { PAGES } = React.useMemo(() => {
+  // CORRECTION: Gestion sécurisée des imports avec fallback
+  const { PAGES, isLoading } = React.useMemo(() => {
     try {
-      return require('@/content/guides');
-    } catch {
-      return { PAGES: {} };
+      const guidesModule = require('@/content/guides');
+      const pages = guidesModule?.PAGES || guidesModule?.default?.PAGES || {};
+      return {
+        PAGES: pages,
+        isLoading: false,
+      };
+    } catch (error) {
+      console.warn('Could not load guides:', error);
+      return {
+        PAGES: {},
+        isLoading: false,
+      };
     }
   }, []);
 
-  const guidesCount = Object.keys(PAGES).length;
+  // CORRECTION: Vérification de sécurité avant Object.keys
+  const guidesCount = React.useMemo(() => {
+    if (!PAGES || typeof PAGES !== 'object') {
+      return 0;
+    }
+    try {
+      return Object.keys(PAGES).length;
+    } catch {
+      return 0;
+    }
+  }, [PAGES]);
 
   const handleMouseEnter = () => {
     if (timeoutRef.current) {

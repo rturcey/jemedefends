@@ -1,9 +1,9 @@
-// src/components/marketing/Hero.tsx
 'use client';
 import * as React from 'react';
 import { motion } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
 import Container from '@/components/ui/Container';
+import Skeleton from '@/components/ui/Skeleton';
 import GradientBlobs from './GradientBlobs';
 
 type HeroProps = {
@@ -14,15 +14,49 @@ type HeroProps = {
 };
 
 export default function Hero({ title, right, id = 'hero', className = '' }: HeroProps) {
+  const [isLoaded, setIsLoaded] = React.useState(false);
+
+  React.useEffect(() => {
+    const timer = setTimeout(() => setIsLoaded(true), 300);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
-    <section className="min-h-screen flex items-center relative overflow-hidden">
+    <section
+      className={`hero-mobile-height flex items-center justify-center relative overflow-hidden ${className}`}
+    >
       <GradientBlobs />
       <Container>
-        <div className="relative z-10 flex flex-col lg:flex-row items-center justify-center gap-12">
-          <div className="flex-1 max-w-xl">{title}</div>
-          {right ? <div className="lg:w-[22rem] lg:flex-shrink-0">{right}</div> : null}
+        <div className="relative z-10 flex flex-col lg:flex-row items-center justify-center gap-6 lg:gap-10 py-6">
+          <div className="flex-1 max-w-xl text-center lg:text-left">
+            <Skeleton loading={!isLoaded} className="h-80 w-full">
+              {title}
+            </Skeleton>
+          </div>
+          {right && (
+            <div className="lg:w-[22rem] lg:flex-shrink-0">
+              <Skeleton loading={!isLoaded} className="h-80 w-full lg:w-[22rem]">
+                {right}
+              </Skeleton>
+            </div>
+          )}
         </div>
       </Container>
+
+      {/* Indicateur de scroll avec skeleton */}
+      <Skeleton
+        loading={!isLoaded}
+        variant="circular"
+        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 hidden sm:block w-6 h-6"
+      >
+        <motion.div
+          className="absolute bottom-8 left-1/2 transform -translate-x-1/2 hidden sm:block"
+          animate={{ y: [0, 8, 0] }}
+          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+        >
+          <ChevronDown className="w-6 h-6 text-gray-400" />
+        </motion.div>
+      </Skeleton>
     </section>
   );
 }

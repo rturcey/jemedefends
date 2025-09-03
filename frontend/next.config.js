@@ -1,44 +1,73 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  async rewrites() {
-    if (process.env.NODE_ENV === 'development') {
-      return [
-        // ✅ UNIQUEMENT les appels API vers le backend FastAPI
-        {
-          source: '/api/:path*',
-          destination: 'http://localhost:8000/api/:path*',
-        },
-        // ⚠️ NE PAS rediriger /formulaire - Next.js gère cette route
-      ]
-    }
-    return []
-  },
-
-  typescript: {
-    ignoreBuildErrors: false,
-  },
-
-  eslint: {
-    ignoreDuringBuilds: false,
-  },
-
-  images: {
-    domains: ['localhost'],
-    unoptimized: process.env.NODE_ENV === 'development'
-  },
-
+  // Performance optimizations
   experimental: {
-    typedRoutes: true,
+    optimizeCss: true,
+    optimizePackageImports: ['lucide-react'],
   },
 
-  // ✅ Désactiver le conflit de routes avec le backend
-  trailingSlash: false,
+  // Compression
+  compress: true,
 
-  // ✅ Configuration optimisée pour éviter les boucles
-  onDemandEntries: {
-    maxInactiveAge: 25 * 1000,
-    pagesBufferLength: 2,
+  // Headers sécurisés
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'X-Frame-Options',
+            value: 'DENY'
+          },
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff'
+          },
+          {
+            key: 'Referrer-Policy',
+            value: 'origin-when-cross-origin'
+          },
+          {
+            key: 'Permissions-Policy',
+            value: 'camera=(), microphone=(), geolocation=()'
+          }
+        ]
+      }
+    ];
   },
-}
 
-module.exports = nextConfig
+  // Redirections SEO
+  async redirects() {
+    return [
+      {
+        source: '/test-eligibilite',
+        destination: '/eligibilite',
+        permanent: true,
+      },
+      {
+        source: '/eligibilite-garantie',
+        destination: '/eligibilite',
+        permanent: true,
+      }
+    ];
+  },
+
+  // Images optimisées
+  images: {
+    formats: ['image/webp', 'image/avif'],
+    deviceSizes: [640, 750, 828, 1080, 1200],
+  },
+
+  async rewrites() {
+    const target = process.env.BACKEND_ORIGIN || 'http://localhost:8000';
+    return [
+      {
+        source: '/api/v1/:path*',
+        destination: `${target}/api/v1/:path*`,
+      },
+    ];
+  },
+
+};
+
+module.exports = nextConfig;

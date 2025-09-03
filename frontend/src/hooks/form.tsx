@@ -121,17 +121,43 @@ const useFormManager = (formSlug: string = 'mise_en_demeure_v1'): UseFormManager
 
   const fetchJSON = useCallback(async (url: string, opts: RequestInit = {}) => {
     const res = await fetch(url, { credentials: 'include', ...opts });
-    if (!res.ok) {
-      let msg = `HTTP ${res.status}`;
-      try {
-        const j = await res.json();
-        if (j?.detail) msg = j.detail;
-      } catch {}
-      throw new Error(msg);
-    }
     const ct = res.headers.get('content-type') || '';
-    return ct.includes('application/json') ? res.json() : res.text();
+    const isJSON = ct.includes('application/json');
+    if (!res.ok) {
+      const payload = isJSON ? await res.json().catch(() => null) : null;
+      const detail = payload?.detail || `HTTP ${res.status}`;
+      const err = new Error(detail) as Error & { status?: number; payload?: any };
+      err.status = res.status;
+      err.payload = payload;
+      throw err;
+    }
+    return isJSON ? res.json() : res.text();
   }, []);
+
+  const getDraftOrNull = useCallback(
+    async (slug: string) => {
+      try {
+        return await fetchJSON(`${API_BASE}/${encodeURIComponent(slug)}`);
+      } catch (e) {
+        const err = e as Error & { status?: number };
+        if (err.status === 404) return null; // pas encore créé
+        throw e;
+      }
+    },
+    [fetchJSON]
+  );
+
+  const createOrReplaceDraft = useCallback(
+    async (slug: string, data: FormData = {}) => {
+      // privilégie PUT idempotent pour créer/remplacer le brouillon
+      return await fetchJSON(`${API_BASE}/${encodeURIComponent(slug)}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ data }),
+      });
+    },
+    [fetchJSON]
+  );
 
   const showSaveStatus = useCallback((message: string, type: SaveStatus['type']) => {
     setSaveStatus({ message, type });
@@ -171,11 +197,20 @@ const useFormManager = (formSlug: string = 'mise_en_demeure_v1'): UseFormManager
         const processData = extractFormData();
         const data = processData(dataToSave);
 
-        await fetchJSON(`${API_BASE}/${encodeURIComponent(formSlug)}`, {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ data }),
-        });
+        try {
+          await fetchJSON(`${API_BASE}/${encodeURIComponent(formSlug)}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ data }),
+          });
+        } catch (e) {
+          const err = e as Error & { status?: number };
+          if (err.status === 404) {
+            await createOrReplaceDraft(formSlug, data); // création à la volée
+          } else {
+            throw e;
+          }
+        }
 
         showSaveStatus('Sauvegardé', 'saved');
       } catch (error) {
@@ -183,23 +218,25 @@ const useFormManager = (formSlug: string = 'mise_en_demeure_v1'): UseFormManager
         showSaveStatus('Erreur de sauvegarde', 'error');
       }
     },
-    [extractFormData, fetchJSON, formSlug, showSaveStatus]
+    [extractFormData, fetchJSON, formSlug, showSaveStatus, createOrReplaceDraft]
   );
 
   const loadDraft = useCallback(async () => {
     if (isInitializedRef.current) return;
-
     try {
-      const data = await fetchJSON(`${API_BASE}/${encodeURIComponent(formSlug)}`);
-      if (data?.data) {
-        setFormData(data.data);
+      const existing = await getDraftOrNull(formSlug);
+      if (existing?.data) {
+        setFormData(existing.data);
+      } else {
+        // crée un brouillon vide pour éviter les 404 suivants
+        await createOrReplaceDraft(formSlug, {});
       }
-      isInitializedRef.current = true;
     } catch (error) {
       console.error('Erreur chargement brouillon:', error);
+    } finally {
       isInitializedRef.current = true;
     }
-  }, [fetchJSON, formSlug]);
+  }, [formSlug, getDraftOrNull, createOrReplaceDraft]);
 
   // 🔧 VALIDATION SIMPLE SANS CLASSE
   const isStepValid = useCallback((stepIndex: number, data?: FormData): boolean => {
@@ -278,6 +315,7 @@ const useFormManager = (formSlug: string = 'mise_en_demeure_v1'): UseFormManager
 
       const currentData = formDataRef.current || formData;
 
+      // Validation des étapes
       for (let i = 0; i < STEPS.length; i++) {
         if (!isStepValid(i, currentData)) {
           setCurrentStepIndex(i);
@@ -291,21 +329,50 @@ const useFormManager = (formSlug: string = 'mise_en_demeure_v1'): UseFormManager
       const processData = extractFormData();
       const data = processData(currentData);
 
+      // 1. Sauvegarder le brouillon final
       await fetchJSON(`${API_BASE}/${encodeURIComponent(formSlug)}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ data }),
       });
 
+      // 2. Soumettre pour générer la lettre
       const result = await fetchJSON(`${API_BASE}/submit/${encodeURIComponent(formSlug)}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
       });
 
+      console.log('📝 Résultat soumission:', result);
+
+      // 3. 🔧 STOCKAGE CRITIQUE : Sauvegarder letter_id et autres données avant redirection
+      if (result.letter_id) {
+        sessionStorage.setItem('currentLetterId', result.letter_id);
+        console.log('✅ Letter ID stocké:', result.letter_id);
+      }
+
+      // Optionnel : stocker l'email du buyer pour les formulaires payants
+      if (data.buyer_email) {
+        sessionStorage.setItem('buyer_email', data.buyer_email);
+      }
+
+      // Stocker les infos de résultat pour debug
+      sessionStorage.setItem(
+        'submitResult',
+        JSON.stringify({
+          letter_id: result.letter_id,
+          draft_id: result.draft_id,
+          timestamp: new Date().toISOString(),
+        })
+      );
+
+      // 4. Redirection
       if (result.redirect_url) {
+        console.log('🚀 Redirection vers:', result.redirect_url);
         window.location.href = result.redirect_url;
       } else {
         showSaveStatus('Lettre générée avec succès!', 'saved');
+        // Fallback si pas de redirect_url : aller à /resultats
+        window.location.href = '/resultats';
       }
     } catch (error) {
       console.error('Erreur soumission:', error);
@@ -314,7 +381,7 @@ const useFormManager = (formSlug: string = 'mise_en_demeure_v1'): UseFormManager
     } finally {
       setIsSubmitting(false);
     }
-  }, [extractFormData, fetchJSON, formSlug, showSaveStatus, isStepValid]);
+  }, [extractFormData, fetchJSON, formSlug, showSaveStatus, isStepValid, formData]);
 
   const fillTestData = useCallback(() => {
     const testData: FormData = {

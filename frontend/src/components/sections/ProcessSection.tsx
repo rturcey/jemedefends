@@ -1,8 +1,8 @@
-// src/components/sections/ProcessSection.tsx
 'use client';
 
 import * as React from 'react';
 import { Section, Container, Reveal, Badge, Button } from '@/components/ui';
+import Skeleton from '@/components/ui/Skeleton';
 import { HelpCircle, Shield, FileText, Zap, Sparkles } from 'lucide-react';
 
 const STEPS = [
@@ -64,108 +64,93 @@ const COLORS = [
 ];
 
 export default function ProcessSection() {
+  const [isLoaded, setIsLoaded] = React.useState(false);
+
+  React.useEffect(() => {
+    const timer = setTimeout(() => setIsLoaded(true), 300);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <Section
       id="process"
-      className="bg-white py-14 sm:py-16 lg:py-20 lg:min-h-screen flex items-center scroll-mt-24"
+      className="bg-white py-14 sm:py-16 lg:py-20 min-h-screen md:h-[calc(100vh-5rem)] flex items-center section-scroll-target"
     >
       <Container>
-        <Reveal>
-          <div className="max-w-3xl mx-auto text-center mb-10 sm:mb-12">
-            <Badge tone="purple" className="mb-8">
-              Comment ça marche
-            </Badge>
-            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-6">
-              4 étapes pour récupérer votre argent
-            </h2>
-            <p className="text-lg text-slate-600">
-              Un processus simple et rapide pour faire valoir vos droits de consommateur.
-            </p>
-          </div>
-        </Reveal>
+        {/* Header avec skeleton */}
+        <Skeleton loading={!isLoaded} className="h-32 w-full mx-auto mb-12 sm:mb-16">
+          <Reveal>
+            <div className="max-w-3xl mx-auto text-center mb-12 sm:mb-16">
+              <Badge tone="purple" className="mb-8 sm:mb-10">
+                Comment ça marche
+              </Badge>
+              <div className="h-3"></div>
+              <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-6">
+                4 étapes pour récupérer votre argent
+              </h2>
+              <p className="text-lg text-slate-600">
+                Un processus simple et rapide pour faire valoir vos droits de consommateur.
+              </p>
+            </div>
+          </Reveal>
+        </Skeleton>
 
-        {/* Mobile: cartes empilées (hauteurs égales) */}
-        <div className="sm:hidden space-y-6">
+        {/* Steps grid avec skeleton */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
           {STEPS.map((step, i) => {
-            const c = COLORS[i % COLORS.length];
+            const colors = COLORS[i];
             return (
-              <Reveal key={i} delay={i * 0.1}>
-                <div
-                  className={`rounded-xl p-6 border ${c.ring} ring-1 bg-gradient-to-r ${c.bgFrom} ${c.bgTo} h-full`}
-                >
-                  <div className="flex items-start gap-4">
-                    <div
-                      className={`flex-shrink-0 w-12 h-12 ${c.dot} text-white rounded-full flex items-center justify-center font-bold text-lg`}
-                    >
-                      {i + 1}
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-2">
-                        <div className={c.icon}>{step.icon}</div>
-                        <Badge tone="blue" className="text-xs">
-                          {step.time}
-                        </Badge>
+              <Skeleton key={step.title} loading={!isLoaded} className="h-80 rounded-xl">
+                <Reveal delay={i * 0.15}>
+                  <div className="relative text-center group">
+                    {/* Ligne de connexion (masquée sur mobile) */}
+                    {i < STEPS.length - 1 && (
+                      <div className="hidden lg:block absolute top-12 left-1/2 w-full h-0.5 bg-gray-200">
+                        <div
+                          className={`h-full ${colors.dot} transition-all duration-1000 delay-${500 + i * 200}`}
+                          style={{ width: isLoaded ? '100%' : '0%' }}
+                        />
                       </div>
-                      <h3 className="font-bold text-slate-900 text-lg mb-2">{step.title}</h3>
-                      <p className="text-slate-700 leading-relaxed">{step.desc}</p>
+                    )}
+
+                    {/* Icône avec cercle - VOTRE DESIGN ORIGINAL */}
+                    <div
+                      className={`relative mx-auto w-24 h-24 rounded-full bg-gradient-to-br ${colors.bgFrom} ${colors.bgTo} flex items-center justify-center mb-6 ring-4 ${colors.ring} group-hover:ring-8 transition-all duration-300`}
+                    >
+                      <div className={colors.icon}>{step.icon}</div>
+                      {/* Numéro d'étape */}
+                      <div className="absolute -top-2 -right-2 w-8 h-8 bg-slate-900 text-white text-sm font-bold rounded-full flex items-center justify-center">
+                        {i + 1}
+                      </div>
+                    </div>
+
+                    {/* Contenu - VOTRE DESIGN ORIGINAL */}
+                    <div className="space-y-3">
+                      <div className="inline-flex items-center gap-2 px-3 py-1 bg-gray-100 rounded-full text-xs font-semibold text-gray-600">
+                        <div className={`w-2 h-2 rounded-full ${colors.dot}`} />
+                        {step.time}
+                      </div>
+                      <h3 className="font-bold text-xl text-slate-900">{step.title}</h3>
+                      <p className="text-slate-600 leading-relaxed">{step.desc}</p>
                     </div>
                   </div>
-                </div>
-              </Reveal>
+                </Reveal>
+              </Skeleton>
             );
           })}
         </div>
 
-        {/* Desktop: timeline horizontale (hauteurs égales) */}
-        <div className="hidden sm:block">
-          <div className="relative">
-            <div className="absolute top-8 left-8 right-8 h-0.5 bg-gradient-to-r from-blue-200 via-indigo-200 to-purple-200" />
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-              {STEPS.map((step, i) => {
-                const c = COLORS[i % COLORS.length];
-                return (
-                  <Reveal key={i} delay={i * 0.1}>
-                    <div
-                      className={`relative rounded-xl p-6 border ${c.ring} ring-1 bg-white shadow-sm hover:shadow-lg transition-shadow h-full flex flex-col`}
-                    >
-                      <div
-                        className={`absolute -top-4 left-6 w-8 h-8 ${c.dot} text-white rounded-full flex items-center justify-center text-sm font-bold z-10`}
-                      >
-                        {i + 1}
-                      </div>
-                      <div className="pt-6 flex-1 flex flex-col">
-                        <div className="flex items-center gap-2 mb-3">
-                          <div className={`${c.icon}`}>{step.icon}</div>
-                          <Badge tone="blue" className="text-xs">
-                            {step.time}
-                          </Badge>
-                        </div>
-                        <h3 className="font-bold text-slate-900 mb-2">{step.title}</h3>
-                        <p className="text-slate-600 text-sm leading-relaxed flex-1">{step.desc}</p>
-                      </div>
-                    </div>
-                  </Reveal>
-                );
-              })}
+        {/* CTA avec skeleton */}
+        <Skeleton loading={!isLoaded} className="h-20 w-80 mx-auto mt-12 sm:mt-16">
+          <Reveal delay={0.8}>
+            <div className="text-center mt-12 sm:mt-16">
+              <Button href="/eligibilite#start" size="lg" icon={<Sparkles />}>
+                Tester gratuitement mes droits
+              </Button>
+              <p className="mt-4 text-sm text-slate-500">Gratuit • 2 minutes • Résultat immédiat</p>
             </div>
-          </div>
-        </div>
-
-        <Reveal delay={0.8}>
-          <div className="text-center mt-10 sm:mt-12">
-            <Button
-              href="/eligibilite#start"
-              size="lg"
-              icon={<Sparkles className="w-5 h-5" />}
-              className="shadow-lg hover:shadow-xl"
-            >
-              Commencer maintenant
-            </Button>
-            <p className="mt-3 text-sm text-slate-500">
-              Gratuit • Sans engagement • Résultat en 2 minutes
-            </p>
-          </div>
-        </Reveal>
+          </Reveal>
+        </Skeleton>
       </Container>
     </Section>
   );

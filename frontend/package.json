@@ -17,7 +17,14 @@
     "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx}\" \"app/**/*.{ts,tsx,js,jsx}\" \"components/**/*.{ts,tsx,js,jsx}\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx}\" \"app/**/*.{ts,tsx,js,jsx}\" \"components/**/*.{ts,tsx,js,jsx}\"",
     "clean": "rm -rf .next out",
-    "analyze": "ANALYZE=true npm run build"
+    "analyze": "ANALYZE=true npm run build",
+    "lint:fix": "next lint --fix",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "lighthouse": "lhci autorun",
+    "check:unused:files": "unimported",
+    "check:unused:exports": "ts-prune"
   },
   "dependencies": {
     "@radix-ui/react-dropdown-menu": "^2.1.16",
@@ -32,17 +39,23 @@
     "tailwind-merge": "^3.3.1"
   },
   "devDependencies": {
+    "@lhci/cli": "^0.14.0",
     "@next/bundle-analyzer": "^15.5.0",
     "@tailwindcss/postcss": "^4.1.12",
+    "@testing-library/jest-dom": "^6.4.0",
+    "@testing-library/react": "^16.1.0",
+    "@testing-library/user-event": "^14.5.2",
+    "@types/jest": "^29.0.0",
     "@types/node": "^24.3.0",
-    "@types/react": "^18.3.12",
-    "@types/react-dom": "^18.3.1",
+    "@types/react": "19.1.12",
     "@typescript-eslint/eslint-plugin": "^8.15.0",
     "@typescript-eslint/parser": "^8.15.0",
     "autoprefixer": "^10.4.21",
     "detective-typescript": "^13.0.0",
     "eslint": "^9.34.0",
-    "eslint-config-next": "^15.1.0",
+    "eslint-config-next": "^15.5.0",
+    "jest": "^29.0.0",
+    "jest-environment-jsdom": "^29.0.0",
     "madge": "^8.0.0",
     "postcss": "^8.5.6",
     "prettier": "^3.6.2",
@@ -80,5 +93,8 @@
   "repository": {
     "type": "git",
     "url": "private"
+  },
+  "overrides": {
+    "@testing-library/react": "^16.1.0"
   }
 }

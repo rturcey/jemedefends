@@ -1,230 +1,73 @@
 'use client';
 
-import React, { useState } from 'react';
-import { cn } from '@/lib/utils';
-import { ValidationResult } from '@/types/form';
+import * as React from 'react';
+import clsx from 'clsx';
 
-interface RadioOption {
+type Option = {
   value: string;
   label: string;
   description?: string;
-}
-
-interface RadioGroupProps {
-  name: string;
-  legend?: string; // Optional pour l'eligibility (déjà dans QuestionCard)
-  value?: string;
-  onChange: (value: string) => void;
-  options: RadioOption[];
-  required?: boolean;
-  validation?: ValidationResult;
-  layout?: 'grid' | 'stack'; // Flexibilité layout
-  columns?: 1 | 2 | 3; // Nombre de colonnes
-  className?: string;
-}
-
-const RadioGroup: React.FC<RadioGroupProps> = ({
-  name,
-  legend,
-  value,
-  onChange,
-  options,
-  required = false,
-  validation,
-  layout = 'grid',
-  columns = 2,
-  className = '',
-}) => {
-  const [hasInteracted, setHasInteracted] = useState(false);
-
-  const handleChange = (newValue: string) => {
-    setHasInteracted(true);
-    onChange(newValue);
-  };
-
-  const showError = hasInteracted && validation && !validation.valid;
-
-  // Logique de layout flexible
-  const getLayoutClass = () => {
-    if (layout === 'stack') return 'space-y-2';
-
-    // Layout grid responsive
-    const colsMap = {
-      1: 'grid-cols-1',
-      2: 'grid-cols-1 sm:grid-cols-2',
-      3: 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3',
-    };
-    return `grid ${colsMap[columns]} gap-2`;
-  };
-
-  const content = (
-    <div className={cn('form-group', className)}>
-      {legend && (
-        <fieldset>
-          <legend className="block text-sm font-bold mb-3 text-gray-700">
-            {legend}
-            {required && (
-              <span className="text-red-500 ml-1" aria-label="obligatoire">
-                *
-              </span>
-            )}
-          </legend>
-        </fieldset>
-      )}
-
-      <div className={getLayoutClass()}>
-        {options.map(option => (
-          <label
-            key={option.value}
-            className={cn(
-              // Base styles (même logique que l'ancien OptionButton mais plus robuste)
-              'group relative flex items-start gap-3 rounded-xl border p-4 text-left transition-all cursor-pointer',
-              'hover:shadow-sm focus-within:outline-none focus-within:ring-2 focus-within:ring-blue-600 focus-within:ring-offset-1',
-              // États actif/inactif
-              value === option.value
-                ? 'border-blue-600 bg-blue-50 shadow-sm'
-                : 'border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50'
-            )}
-          >
-            {/* Input radio caché mais accessible */}
-            <input
-              type="radio"
-              name={name}
-              value={option.value}
-              checked={value === option.value}
-              onChange={() => handleChange(option.value)}
-              required={required}
-              className="sr-only"
-            />
-
-            {/* Indicateur radio visuel */}
-            <div
-              className={cn(
-                'mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full border-2 transition-colors',
-                value === option.value
-                  ? 'border-blue-600 bg-blue-600'
-                  : 'border-gray-300 bg-white group-hover:border-gray-400'
-              )}
-            >
-              {value === option.value && <div className="h-2 w-2 rounded-full bg-white" />}
-            </div>
-
-            {/* Contenu */}
-            <div className="min-w-0 flex-1">
-              <div
-                className={cn(
-                  'font-medium transition-colors',
-                  value === option.value ? 'text-blue-900' : 'text-gray-900'
-                )}
-              >
-                {option.label}
-              </div>
-              {option.description && (
-                <div
-                  className={cn(
-                    'mt-1 text-sm transition-colors',
-                    value === option.value ? 'text-blue-700' : 'text-gray-600'
-                  )}
-                >
-                  {option.description}
-                </div>
-              )}
-            </div>
-          </label>
-        ))}
-      </div>
-
-      {showError && (
-        <p
-          className="error-message mt-2 text-red-600 text-sm font-medium animate-fade-in"
-          role="alert"
-        >
-          {validation?.message}
-        </p>
-      )}
-    </div>
-  );
-
-  // Si legend existe, wrapper dans fieldset, sinon juste le contenu
-  return legend ? (
-    <fieldset className={cn('form-group', className)}>
-      <legend className="block text-sm font-bold mb-3 text-gray-700">
-        {legend}
-        {required && (
-          <span className="text-red-500 ml-1" aria-label="obligatoire">
-            *
-          </span>
-        )}
-      </legend>
-      <div className={getLayoutClass()}>
-        {options.map(option => (
-          <label
-            key={option.value}
-            className={cn(
-              'group relative flex items-start gap-3 rounded-xl border p-4 text-left transition-all cursor-pointer',
-              'hover:shadow-sm focus-within:outline-none focus-within:ring-2 focus-within:ring-blue-600 focus-within:ring-offset-1',
-              value === option.value
-                ? 'border-blue-600 bg-blue-50 shadow-sm'
-                : 'border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50'
-            )}
-          >
-            <input
-              type="radio"
-              name={name}
-              value={option.value}
-              checked={value === option.value}
-              onChange={() => handleChange(option.value)}
-              required={required}
-              className="sr-only"
-            />
-
-            <div
-              className={cn(
-                'mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full border-2 transition-colors',
-                value === option.value
-                  ? 'border-blue-600 bg-blue-600'
-                  : 'border-gray-300 bg-white group-hover:border-gray-400'
-              )}
-            >
-              {value === option.value && <div className="h-2 w-2 rounded-full bg-white" />}
-            </div>
-
-            <div className="min-w-0 flex-1">
-              <div
-                className={cn(
-                  'font-medium transition-colors',
-                  value === option.value ? 'text-blue-900' : 'text-gray-900'
-                )}
-              >
-                {option.label}
-              </div>
-              {option.description && (
-                <div
-                  className={cn(
-                    'mt-1 text-sm transition-colors',
-                    value === option.value ? 'text-blue-700' : 'text-gray-600'
-                  )}
-                >
-                  {option.description}
-                </div>
-              )}
-            </div>
-          </label>
-        ))}
-      </div>
-
-      {showError && (
-        <p
-          className="error-message mt-2 text-red-600 text-sm font-medium animate-fade-in"
-          role="alert"
-        >
-          {validation?.message}
-        </p>
-      )}
-    </fieldset>
-  ) : (
-    content
-  );
 };
 
-export default RadioGroup;
+export default function RadioGroup({
+  name,
+  options,
+  onChange,
+  required,
+  label,
+  className,
+  inputRef,
+  showAsterisk = true, // ⟵ NEW: étoile masquée par défaut
+}: {
+  name: string;
+  options: Option[];
+  onChange: (value: string) => void;
+  required?: boolean;
+  label?: string;
+  className?: string;
+  inputRef?: React.Ref<HTMLInputElement>;
+  showAsterisk?: boolean;
+}) {
+  return (
+    <fieldset className={clsx('space-y-3', className)}>
+      {label && (
+        <legend className="block text-sm font-medium text-gray-900 mb-2">
+          {label}
+          {required && showAsterisk ? (
+            <span className="ml-1 text-rose-500" aria-hidden="true">
+              *
+            </span>
+          ) : null}
+        </legend>
+      )}
+
+      <div className="space-y-2">
+        {options.map((opt, i) => (
+          <label
+            key={opt.value}
+            className={clsx(
+              'flex items-start gap-3 rounded-xl border border-gray-300 bg-white p-3 cursor-pointer hover:border-gray-400'
+            )}
+          >
+            <input
+              ref={i === 0 ? (inputRef as any) : undefined}
+              type="radio"
+              name={name}
+              value={opt.value}
+              required={required}
+              aria-required={required || undefined}
+              className="mt-1 h-4 w-4"
+              onChange={e => e.target.checked && onChange(opt.value)}
+            />
+            <span>
+              <span className="block text-sm font-medium text-gray-900">{opt.label}</span>
+              {opt.description ? (
+                <span className="block text-xs text-gray-600">{opt.description}</span>
+              ) : null}
+            </span>
+          </label>
+        ))}
+      </div>
+    </fieldset>
+  );
+}

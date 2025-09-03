@@ -25,10 +25,7 @@ interface GuideNavigationProps {
  * Composant client pour la navigation entre guides
  * Utilise Next.js router pour une navigation fluide
  */
-export default function GuideNavigation({
-  guides,
-  title = 'Guides connexes',
-}: GuideNavigationProps) {
+function GuideNavigation({ guides, title = 'Guides connexes' }: GuideNavigationProps) {
   const router = useRouter();
 
   const handleGuideClick = (slug: string, e: React.MouseEvent) => {
@@ -112,3 +109,5 @@ export function useGuideNavigation() {
     navigateToGuides,
   };
 }
+
+export default GuideNavigation;

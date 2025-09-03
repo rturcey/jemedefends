@@ -1,1 +1,2 @@
-export { default as HowToJsonLd } from './HowToJsonLd';
+export { default as HomePageSchema } from './HomePageSchema';
+export { default as GuideSchema } from './GuideSchema';
