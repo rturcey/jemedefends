@@ -1,5 +1,4 @@
-'use client';
-
+// src/components/form/FormField.tsx
 import React, { useRef } from 'react';
 import { statusClass } from '@/lib/statusClass';
 type ValidationShape = { valid?: boolean; message?: string } | boolean | undefined;

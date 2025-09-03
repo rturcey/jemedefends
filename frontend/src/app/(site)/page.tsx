@@ -14,16 +14,16 @@ export default function Homepage() {
         <ProblemsSection />
         <ProcessSection />
         <TrustSovereigntySection />
-        <Section
-            id="faq"
-            className="section-scroll-target py-12 sm:py-16 lg:py-20 lg:min-h-screen flex items-center"
+        <section
+          id="faq"
+          className="section-scroll-target min-h-screen md:h-[calc(100vh-5rem)] flex items-center justify-center bg-white"
         >
-          <Container>
+          <Container className="w-full">
             <div className="mx-auto max-w-5xl">
               <TopFAQ />
             </div>
           </Container>
-        </Section>
+        </section>
         <div className="h-10 sm:h-14" />
 
         <div id="finalcta" className="px-4">

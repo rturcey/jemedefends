@@ -6,6 +6,5 @@ export * from './icons';
 export * from './sections';
 export * from './legal';
 export * from './form';
-export * from './navigation';
 export * from './guides';
 export * from './faq';

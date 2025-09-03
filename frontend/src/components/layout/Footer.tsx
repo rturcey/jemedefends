@@ -18,7 +18,7 @@ function Footer() {
           <Link className="hover:text-blue-700" href="/politique-confidentialite">
             Confidentialité
           </Link>
-          <Link className="hover:text-blue-700" href="/#faq">
+          <Link className="hover:text-blue-700" href="/faq">
             FAQ
           </Link>
         </nav>

@@ -3,8 +3,8 @@
 import React from 'react';
 import FormField from '@/components/form/FormField';
 import AddressInput from '@/components/form/AddressInput';
-import { gatedValidation } from '@/lib/fieldValidation';
-import { normalizeName } from '@/lib/normalizeName';
+import { gatedValidation } from '@/lib/validation';
+import { normalizeName } from '@/lib/validation';
 import { StepProps } from '@/types/form';
 
 const SellerInfoStep: React.FC<StepProps> = ({

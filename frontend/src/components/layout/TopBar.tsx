@@ -1,4 +1,3 @@
-// src/components/layout/TopBar.tsx
 'use client';
 
 import Link from 'next/link';
@@ -15,8 +14,16 @@ const HEADER_H = 80; // 5rem
 function scrollToId(id: string) {
   const el = document.getElementById(id);
   if (!el) return;
-  const top = el.getBoundingClientRect().top + window.scrollY - HEADER_H - 8;
-  window.scrollTo({ top, behavior: 'smooth' });
+
+  // CORRECTION : Position précise sans offset supplémentaire
+  // La classe .section-scroll-target gère déjà le scroll-margin-top
+  const elementTop = el.getBoundingClientRect().top + window.scrollY;
+  const offsetPosition = elementTop - HEADER_H;
+
+  window.scrollTo({
+    top: Math.max(0, offsetPosition),
+    behavior: 'smooth',
+  });
 }
 
 function NavLink({ href, children }: { href: string; children: React.ReactNode }) {
@@ -38,7 +45,7 @@ function NavLink({ href, children }: { href: string; children: React.ReactNode }
       onClick={onClick}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      className="relative px-1 py-1 text-gray-700 hover:text-blue-700 transition-colors"
+      className="relative px-2 py-2 text-gray-700 hover:text-blue-700 transition-colors text-sm font-medium"
       whileTap={{ scale: 0.98 }}
     >
       {children}
@@ -47,7 +54,7 @@ function NavLink({ href, children }: { href: string; children: React.ReactNode }
         className="absolute left-0 right-0 -bottom-0.5 h-[2px] bg-blue-600 rounded-full"
         initial={false}
         animate={{ opacity: hovered ? 1 : 0 }}
-        transition={{ type: 'spring', stiffness: 450, damping: 35, mass: 0.2 }}
+        transition={{ duration: 0.2 }}
       />
     </motion.a>
   );

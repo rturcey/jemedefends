@@ -35,6 +35,10 @@ interface FormLayoutProps {
   // Debug (optionnel)
   showTestData?: boolean;
   onTestData?: () => void;
+
+  // Props supplémentaires nécessaires pour MobileNavigation
+  formData?: any;
+  onFieldChange?: (field: string, value: any) => void;
 }
 
 function FormLayout({
@@ -56,7 +60,24 @@ function FormLayout({
   sidebar,
   showTestData = false,
   onTestData,
+  formData,
+  onFieldChange,
 }: FormLayoutProps) {
+  // Handlers pour la navigation mobile
+  const handleNext = () => {
+    onNext();
+  };
+
+  const handlePrev = () => {
+    onPrev();
+  };
+
+  const handleSubmit = async () => {
+    if (onSubmit) {
+      await onSubmit();
+    }
+  };
+
   return (
     <div className="min-h-screen">
       <main className="mx-auto w-full max-w-4xl px-4 py-6 md:py-10">
@@ -102,11 +123,13 @@ function FormLayout({
                 totalSteps={totalSteps}
                 canGoNext={canGoNext}
                 canGoPrev={canGoPrev}
-                onNext={onNext}
-                onPrev={onPrev}
-                onSubmit={onSubmit || (() => {})}
+                onNext={handleNext}
+                onPrev={handlePrev}
+                onSubmit={handleSubmit}
                 isLastStep={isLastStep}
                 isSubmitting={isSubmitting}
+                formData={formData}
+                onFieldChange={onFieldChange}
               />
             </div>
 

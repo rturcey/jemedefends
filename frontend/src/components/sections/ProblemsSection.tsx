@@ -1,4 +1,3 @@
-// src/components/sections/ProblemsSection.tsx
 'use client';
 
 import * as React from 'react';
@@ -54,17 +53,19 @@ const PROBLEMS: Problem[] = [
 
 export default function ProblemsSection() {
   return (
-    <Section
+    <section
       id="problemes"
-      className="bg-slate-50 py-14 sm:py-16 lg:py-20 lg:min-h-screen flex items-center scroll-mt-24"
+      className="bg-slate-50 min-h-screen md:h-[calc(100vh-5rem)] flex items-center justify-center section-scroll-target"
     >
       <Container>
         <div className="w-full">
           <Reveal>
-            <div className="max-w-3xl mx-auto text-center mb-10 sm:mb-12">
-              <Badge tone="blue" className="mb-5 sm:mb-6">
+            <div className="max-w-3xl mx-auto text-center mb-12 sm:mb-16">
+              <Badge tone="blue" className="mb-8 sm:mb-10">
                 Problèmes courants
               </Badge>
+              {/* AJOUT : Espace supplémentaire entre Badge et Titre */}
+              <div className="h-3"></div>
               <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-6">
                 Votre produit a un défaut ?
               </h2>
@@ -99,7 +100,7 @@ export default function ProblemsSection() {
           </div>
 
           <Reveal delay={0.6}>
-            <div className="text-center mt-10 sm:mt-12">
+            <div className="text-center mt-8 sm:mt-10">
               <p className="text-slate-600 mb-4">
                 Votre problème n&apos;est pas dans cette liste ?
               </p>
@@ -110,6 +111,6 @@ export default function ProblemsSection() {
           </Reveal>
         </div>
       </Container>
-    </Section>
+    </section>
   );
 }

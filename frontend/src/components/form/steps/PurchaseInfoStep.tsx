@@ -3,7 +3,7 @@
 import React from 'react';
 import FormField from '@/components/form/FormField';
 import RadioGroup from '@/components/form/RadioGroup';
-import { gatedValidation } from '@/lib/fieldValidation';
+import { gatedValidation } from '@/lib/validation';
 import { StepProps } from '@/types/form';
 
 const PurchaseInfoStep: React.FC<StepProps> = ({
@@ -122,6 +122,28 @@ const PurchaseInfoStep: React.FC<StepProps> = ({
             validation?.isInteracted
           )}
           helpText="Utilisez une virgule ou un point (ex. 149,90)."
+        />
+        <FormField
+          name="order_reference"
+          label="Référence"
+          value={d.product_name || ''}
+          onChange={v => onFieldChange('order_reference', v)}
+          onBlur={() => validation?.markInteracted?.('order_reference')}
+          minLength={2}
+          maxLength={120}
+          placeholder="Ex : 2025-45678-XX"
+          helpText="Le référence de facture ou de commande."
+          validation={gatedValidation(
+            'order_reference',
+            d.product_name || '',
+            validation?.getFieldRules?.('order_reference', {
+              required: true,
+              minLength: 2,
+              maxLength: 120,
+            }),
+            validation?.validateField,
+            validation?.isInteracted
+          )}
         />
 
         {/* État du produit */}

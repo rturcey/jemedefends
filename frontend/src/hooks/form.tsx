@@ -278,6 +278,7 @@ const useFormManager = (formSlug: string = 'mise_en_demeure_v1'): UseFormManager
 
       const currentData = formDataRef.current || formData;
 
+      // Validation des étapes
       for (let i = 0; i < STEPS.length; i++) {
         if (!isStepValid(i, currentData)) {
           setCurrentStepIndex(i);
@@ -291,21 +292,50 @@ const useFormManager = (formSlug: string = 'mise_en_demeure_v1'): UseFormManager
       const processData = extractFormData();
       const data = processData(currentData);
 
+      // 1. Sauvegarder le brouillon final
       await fetchJSON(`${API_BASE}/${encodeURIComponent(formSlug)}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ data }),
       });
 
+      // 2. Soumettre pour générer la lettre
       const result = await fetchJSON(`${API_BASE}/submit/${encodeURIComponent(formSlug)}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
       });
 
+      console.log('📝 Résultat soumission:', result);
+
+      // 3. 🔧 STOCKAGE CRITIQUE : Sauvegarder letter_id et autres données avant redirection
+      if (result.letter_id) {
+        sessionStorage.setItem('currentLetterId', result.letter_id);
+        console.log('✅ Letter ID stocké:', result.letter_id);
+      }
+
+      // Optionnel : stocker l'email du buyer pour les formulaires payants
+      if (data.buyer_email) {
+        sessionStorage.setItem('buyer_email', data.buyer_email);
+      }
+
+      // Stocker les infos de résultat pour debug
+      sessionStorage.setItem(
+        'submitResult',
+        JSON.stringify({
+          letter_id: result.letter_id,
+          draft_id: result.draft_id,
+          timestamp: new Date().toISOString(),
+        })
+      );
+
+      // 4. Redirection
       if (result.redirect_url) {
+        console.log('🚀 Redirection vers:', result.redirect_url);
         window.location.href = result.redirect_url;
       } else {
         showSaveStatus('Lettre générée avec succès!', 'saved');
+        // Fallback si pas de redirect_url : aller à /resultats
+        window.location.href = '/resultats';
       }
     } catch (error) {
       console.error('Erreur soumission:', error);
@@ -314,7 +344,7 @@ const useFormManager = (formSlug: string = 'mise_en_demeure_v1'): UseFormManager
     } finally {
       setIsSubmitting(false);
     }
-  }, [extractFormData, fetchJSON, formSlug, showSaveStatus, isStepValid]);
+  }, [extractFormData, fetchJSON, formSlug, showSaveStatus, isStepValid, formData]);
 
   const fillTestData = useCallback(() => {
     const testData: FormData = {

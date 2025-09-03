@@ -1,4 +1,3 @@
-// src/components/marketing/Hero.tsx
 'use client';
 import * as React from 'react';
 import { motion } from 'framer-motion';
@@ -15,14 +14,23 @@ type HeroProps = {
 
 export default function Hero({ title, right, id = 'hero', className = '' }: HeroProps) {
   return (
-    <section className="min-h-screen flex items-center relative overflow-hidden">
+    <section className="hero-mobile-height flex items-center justify-center relative overflow-hidden">
+      {' '}
       <GradientBlobs />
       <Container>
-        <div className="relative z-10 flex flex-col lg:flex-row items-center justify-center gap-12">
-          <div className="flex-1 max-w-xl">{title}</div>
+        <div className="relative z-10 flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-12 py-8">
+          <div className="flex-1 max-w-xl text-center lg:text-left">{title}</div>
           {right ? <div className="lg:w-[22rem] lg:flex-shrink-0">{right}</div> : null}
         </div>
       </Container>
+      {/* Indicateur de scroll - mobile first */}
+      <motion.div
+        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 hidden sm:block"
+        animate={{ y: [0, 8, 0] }}
+        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+      >
+        <ChevronDown className="w-6 h-6 text-gray-400" />
+      </motion.div>
     </section>
   );
 }

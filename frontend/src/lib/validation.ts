@@ -1,4 +1,18 @@
-// 🛠️ validation.ts - Service de validation sécurisé
+import React, { useState, useRef, useEffect, useCallback } from 'react';
+import {
+  ChevronLeft,
+  ChevronRight,
+  Check,
+  AlertCircle,
+  MapPin,
+  ArrowRight,
+  Sparkles,
+  X,
+} from 'lucide-react';
+
+// ==========================================
+// TYPES & VALIDATION
+// ==========================================
 
 interface ValidationRule {
   type: 'required' | 'email' | 'minLength' | 'maxLength' | 'pattern';
@@ -6,148 +20,192 @@ interface ValidationRule {
   message: string;
 }
 
-interface StepDefinition {
-  id: string;
-  fields: string[];
+interface ValidationResult {
+  valid: boolean;
+  message: string;
 }
 
-class ValidationService {
+interface FormData {
+  // Buyer info
+  buyer_name?: string;
+  buyer_email?: string;
+  buyer_address_line_1?: string;
+  buyer_address_line_2?: string;
+  buyer_postal_code?: string;
+  buyer_city?: string;
+  buyer_country?: string;
+
+  // Seller info
+  seller_name?: string;
+  seller_address_line_1?: string;
+  seller_address_line_2?: string;
+  seller_postal_code?: string;
+  seller_city?: string;
+  seller_country?: string;
+
+  // Purchase info
+  product_name?: string;
+  purchase_date?: string;
+  product_price?: string;
+  product_condition?: string;
+
+  // Problem info
+  defect_type?: string;
+  defect_description?: string;
+}
+
+// ValidationManager centralisé
+export class ValidationManager {
+  private hasInteracted = new Set<string>();
+  private validationCache = new Map<string, ValidationResult>();
+
   private validators = {
-    required: (value: string) => value?.trim().length > 0,
+    required: (value: string) => value?.trim()?.length > 0,
     email: (value: string) => !value || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
-    minLength: (value: string, min: number) => value.length >= min,
-    maxLength: (value: string, max: number) => value.length <= max,
-    pattern: (value: string, pattern: string) => new RegExp(pattern).test(value),
+    minLength: (value: string, min: number) => (value?.length || 0) >= min,
+    maxLength: (value: string, max: number) => (value?.length || 0) <= max,
+    pattern: (value: string, pattern: string) => new RegExp(pattern).test(value || ''),
   };
 
-  private isValidating = new Set<string>(); // Prévenir la récursion
-
-  /**
-   * ✅ Validation d'un champ spécifique
-   */
-  validateField(
-    fieldName: string,
-    value: any,
-    rules: ValidationRule[] = []
-  ): { valid: boolean; message: string } {
-    // Éviter la validation récursive
-    const validationKey = `${fieldName}-${typeof value === 'string' ? value : JSON.stringify(value)}`;
-
-    if (this.isValidating.has(validationKey)) {
-      return { valid: true, message: '' };
-    }
-
-    this.isValidating.add(validationKey);
-
-    try {
-      for (const rule of rules) {
-        const validator = this.validators[rule.type];
-        if (!validator) continue;
-
-        const valid =
-          rule.value !== undefined ? validator(value, rule.value as any) : validator(value);
-
-        if (!valid) {
-          return { valid: false, message: rule.message };
-        }
-      }
-
-      return { valid: true, message: '' };
-    } finally {
-      // Toujours nettoyer après validation
-      this.isValidating.delete(validationKey);
-    }
+  markInteracted(fieldName: string): void {
+    this.hasInteracted.add(fieldName);
   }
 
-  /**
-   * ✅ Validation d'une étape complète - SANS RÉCURSION
-   */
-  validateStep(
-    stepId: string,
-    formData: Record<string, any> = {},
-    steps: StepDefinition[] = []
-  ): boolean {
-    // Éviter la validation récursive d'étape
-    if (this.isValidating.has(`step-${stepId}`)) {
-      return true;
-    }
-
-    const step = steps.find(s => s.id === stepId);
-    if (!step) return true;
-
-    this.isValidating.add(`step-${stepId}`);
-
-    try {
-      return step.fields.every(fieldName => {
-        const value = formData[fieldName];
-
-        // Validation des champs radio/select
-        if (fieldName === 'product_condition' || fieldName === 'defect_type') {
-          return !!value;
-        }
-
-        // Validation des champs texte
-        if (typeof value === 'string') {
-          const trimmedValue = value.trim();
-
-          // Validation basique required
-          if (!trimmedValue) return false;
-
-          // Validations spécifiques par champ
-          if (fieldName.includes('email')) {
-            return this.validators.email(trimmedValue);
-          }
-
-          if (fieldName.includes('postal_code')) {
-            return /^\d{5}$/.test(trimmedValue);
-          }
-
-          return true;
-        }
-
-        // Pour autres types, vérifier juste la présence
-        return !!value;
-      });
-    } finally {
-      this.isValidating.delete(`step-${stepId}`);
-    }
+  isInteracted(fieldName: string): boolean {
+    return this.hasInteracted.has(fieldName);
   }
 
-  /**
-   * ✅ Validation de tous les champs d'un formulaire
-   */
-  validateAll(
-    formData: Record<string, any>,
-    steps: StepDefinition[] = []
-  ): { isValid: boolean; errors: Record<string, string> } {
-    const errors: Record<string, string> = {};
-    let isValid = true;
+  validateField(fieldName: string, value: any, rules: ValidationRule[] = []): ValidationResult {
+    const cacheKey = `${fieldName}-${JSON.stringify(value)}-${JSON.stringify(rules)}`;
 
-    for (const step of steps) {
-      for (const fieldName of step.fields) {
-        const value = formData[fieldName] || '';
+    if (this.validationCache.has(cacheKey)) {
+      return this.validationCache.get(cacheKey)!;
+    }
 
-        // Validation simple sans appel à validateStep pour éviter la récursion
-        if (!value || (typeof value === 'string' && !value.trim())) {
-          errors[fieldName] = 'Ce champ est requis';
-          isValid = false;
-        }
+    for (const rule of rules) {
+      const validator = this.validators[rule.type];
+      if (!validator) continue;
+
+      const valid =
+        rule.value !== undefined ? validator(value, rule.value as any) : validator(value);
+
+      if (!valid) {
+        const result = { valid: false, message: rule.message };
+        this.validationCache.set(cacheKey, result);
+        return result;
       }
     }
 
-    return { isValid, errors };
+    const result = { valid: true, message: '' };
+    this.validationCache.set(cacheKey, result);
+    return result;
   }
 
-  /**
-   * ✅ Nettoyer le cache de validation
-   */
-  clearCache(): void {
-    this.isValidating.clear();
+  validateStep(stepFields: string[], formData: Record<string, any>): boolean {
+    return stepFields.every(fieldName => {
+      const value = formData[fieldName];
+      if (fieldName.includes('email') && value) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+      }
+      if (fieldName.includes('postal_code') && value) {
+        return /^\d{5}$/.test(value);
+      }
+      return value && (typeof value !== 'string' || value.trim().length > 0);
+    });
   }
 }
 
-// Export d'une instance unique
-export const validationService = new ValidationService();
+export function gatedValidation(
+  fieldName: string,
+  value: any,
+  rules: any,
+  validateField?: ValidateFn,
+  isInteracted?: IsInteractedFn
+) {
+  const touched = isInteracted?.(fieldName) === true;
+  const hasValue =
+    typeof value === 'string' ? value.trim().length > 0 : value !== undefined && value !== null;
 
-// Export du type pour utilisation dans les composants
-export type { ValidationRule, StepDefinition };
+  if (!touched && !hasValue) {
+    return undefined; // neutral = no border/error shown
+  }
+  return typeof validateField === 'function' ? validateField(value, rules) : undefined;
+}
+
+// Capitalisation des noms
+export function normalizeName(input: string): string {
+  if (!input) return input;
+  const particles = new Set([
+    'de',
+    'du',
+    'des',
+    'la',
+    'le',
+    'les',
+    'von',
+    'van',
+    'der',
+    'da',
+    'di',
+  ]);
+
+  return input
+    .trim()
+    .replace(/\s+/g, ' ')
+    .split(' ')
+    .map((token, idx) => {
+      if (!token) return token;
+
+      // Gestion L', D', etc.
+      if (token.includes("'")) {
+        const [left, right] = token.split("'");
+        return `${left.toUpperCase()}'${right.charAt(0).toUpperCase()}${right.slice(1).toLowerCase()}`;
+      }
+
+      // Gestion tirets
+      if (token.includes('-')) {
+        return token
+          .split('-')
+          .map(part => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
+          .join('-');
+      }
+
+      const lower = token.toLowerCase();
+      if (particles.has(lower) && idx > 0) {
+        return lower;
+      }
+
+      return token.charAt(0).toUpperCase() + token.slice(1).toLowerCase();
+    })
+    .join(' ');
+}
+
+export const validateEmail = (email: string): boolean => {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+};
+
+export const showMessage = (type: 'success' | 'error', text: string) => {
+  const messagesEl = document.getElementById('messages');
+  if (!messagesEl) return;
+
+  const messageDiv = document.createElement('div');
+  messageDiv.className = `
+    message p-4 rounded-2xl text-center font-semibold mb-4 animate-slide-down
+    ${
+      type === 'success'
+        ? 'bg-green-100 text-green-800 border border-green-200'
+        : 'bg-red-100 text-red-800 border border-red-200'
+    }
+  `;
+  messageDiv.textContent = text;
+
+  messagesEl.appendChild(messageDiv);
+
+  // Auto-suppression après 5 secondes
+  setTimeout(() => {
+    if (messageDiv.parentNode) {
+      messageDiv.classList.add('animate-slide-up');
+      setTimeout(() => messageDiv.remove(), 300);
+    }
+  }, 5000);
+};

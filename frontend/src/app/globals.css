@@ -23,3 +23,103 @@ body { min-height: 100%; }
     @apply border-border outline-ring/50; }
   body {
     @apply bg-background text-foreground; } }
+
+/* ============================================ */
+/* CLASSES DE SCROLL CORRIGÉES */
+/* ============================================ */
+
+.section-scroll-target {
+  scroll-margin-top: 5rem; /* Exactement la hauteur de la TopBar (80px) */
+}
+
+@media (max-width: 768px) {
+  .section-scroll-target {
+    scroll-margin-top: 0; /* Pas de TopBar sur mobile */
+  }
+}
+
+.hero-mobile-height {
+  min-height: 100vh; /* Mobile : plein écran */
+}
+
+@media (min-width: 768px) {
+  .hero-mobile-height {
+    min-height: calc(100vh - 5rem); /* Desktop : plein écran - TopBar */
+  }
+}
+
+
+/* ============================================ */
+/* ANIMATIONS ET EFFETS VISUELS */
+/* ============================================ */
+
+.gradient-animation {
+  background: linear-gradient(135deg, #3b82f6, #6366f1, #8b5cf6);
+  background-size: 300% 300%;
+  animation: gradientShift 3s ease infinite;
+}
+
+.hero-scroll-indicator {
+  animation: bounceSubtle 2s infinite;
+}
+
+
+/* Keyframes pour les animations */
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes bounceSubtle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+/* ============================================ */
+/* UTILITAIRES POUR LE CTA */
+/* ============================================ */
+
+.gradient-cta {
+  background: linear-gradient(135deg, #3b82f6, #6366f1, #8b5cf6);
+  background-size: 300% 300%;
+}
+
+.btn-xl {
+  padding: 1rem 2rem;
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+  font-weight: 700;
+  border-radius: 0.75rem;
+  min-height: 60px;
+}
+
+@media (max-width: 640px) {
+  .btn-xl {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    line-height: 1.5rem;
+    min-height: 52px;
+  }
+}
+
+/* ============================================ */
+/* ACCESSIBILITÉ */
+/* ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .gradient-animation,
+  .hero-scroll-indicator {
+    animation: none;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Focus visible amélioré */
+.focus-visible:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
