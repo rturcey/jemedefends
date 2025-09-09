@@ -1,0 +1,32 @@
+User-agent: *
+Allow: /
+
+# Pages importantes à indexer en priorité
+Allow: /guides/
+Allow: /faq
+Allow: /a-propos
+Allow: /contact
+
+# Pages à ne pas indexer
+Disallow: /resultats
+Disallow: /paiement
+Disallow: /confirmation
+Disallow: /api/
+Disallow: /_next/
+Disallow: /admin/
+
+# Délai entre les requêtes (recommandé)
+Crawl-delay: 1
+
+# Sitemap
+Sitemap: https://jemedefends.fr/sitemap.xml
+
+# Spécifique Google
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 1
+
+# Spécifique Bing
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 2
