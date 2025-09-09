@@ -1,9 +1,10 @@
 'use client';
 
-import * as React from 'react';
-import Link from 'next/link';
-import { Container, Reveal, Badge, Button } from '@/components/ui';
 import { ArrowRight, Shield, Clock, CheckCircle } from 'lucide-react';
+import Link from 'next/link';
+import * as React from 'react';
+
+import { Container, Reveal, Badge, Button } from '@/components/ui';
 
 type Problem = {
   emoji: string;

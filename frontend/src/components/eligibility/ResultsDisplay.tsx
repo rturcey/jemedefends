@@ -1,6 +1,5 @@
 'use client';
 
-import React from 'react';
 import {
   CheckCircle,
   XCircle,
@@ -12,7 +11,9 @@ import {
   ArrowRight,
   RefreshCw,
 } from 'lucide-react';
-import { EligibilityData } from '@/types/eligibility';
+import React from 'react';
+
+import type { EligibilityData } from '@/types/eligibility';
 
 interface ResultsDisplayProps {
   data: EligibilityData;

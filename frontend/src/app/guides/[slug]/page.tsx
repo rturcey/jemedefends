@@ -1,53 +1,70 @@
+// frontend/src/app/guides/[slug]/page.tsx - FIX SSR
+// Solution : generateStaticParams + métadonnées simplifiées
+
 import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
-import { getAllOptimizedGuides } from '@/content/guides';
-import GuideDetailClient from './guide-detail-client'; // CHANGEMENT: nom de fichier correct
 
-type GuideDetailPageParams = {
-  params: {
-    slug: string;
-  };
-};
+import GuideDetailClient from './guide-detail-client';
 
-const PAGES = getAllOptimizedGuides();
+type Params = { slug: string };
 
-// Métadonnées côté serveur
-export async function generateMetadata({ params }: GuideDetailPageParams): Promise<Metadata> {
-  const { slug } = await params;
-  const guide = PAGES[slug];
+// SOLUTION 1 : Pré-génération statique de toutes les routes
+export async function generateStaticParams(): Promise<{ slug: string }[]> {
+  // Import dynamique pour éviter les erreurs SSR
+  try {
+    const { ALL_GUIDES } = await import('@/content/guides');
+    const slugs = Object.keys(ALL_GUIDES || {});
 
-  if (!guide) {
-    return {
-      title: 'Guide introuvable - Je me défends',
-      description: "Ce guide n'existe pas.",
-    };
+    console.log(`📦 generateStaticParams: ${slugs.length} routes pré-générées`);
+
+    return slugs.map(slug => ({ slug }));
+  } catch (error) {
+    console.error('❌ Erreur generateStaticParams:', error);
+    // Fallback : routes communes
+    return [
+      { slug: 'garantie-legale-conformite-guide-complet' },
+      { slug: 'smartphone-ecran-batterie-defaut-garantie-legale' },
+      { slug: 'ordinateur-portable-panne-garantie-legale' },
+    ];
   }
+}
+
+// SOLUTION 2 : Métadonnées simplifiées sans dépendance ALL_GUIDES côté serveur
+export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
+  const { slug } = await params;
+
+  // Métadonnées basiques générées depuis le slug (sans ALL_GUIDES)
+  const title = slug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) + ' - Je me défends';
+
+  const description = `Guide pratique sur ${slug.replace(/-/g, ' ')} : vos droits, recours et garantie légale de conformité.`;
 
   return {
-    title: `${guide.title} - Je me défends`,
-    description: guide.description,
-    keywords: guide.keywords || [],
+    title,
+    description,
+    keywords: ['garantie légale', 'conformité', 'consommateur', 'recours'],
     alternates: {
       canonical: `https://jemedefends.fr/guides/${slug}`,
     },
     openGraph: {
-      title: guide.title,
-      description: guide.description,
+      title,
+      description,
       url: `https://jemedefends.fr/guides/${slug}`,
       siteName: 'Je me défends',
       type: 'article',
     },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+    },
   };
 }
 
-// Composant serveur minimal — wrapper
-export default async function GuideDetailPage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params; // ✅ ici ok car fonction async
-  const guide = PAGES[slug];
+// SOLUTION 3 : Page qui fonctionne côté client
+export default async function GuideDetailPage({ params }: { params: Promise<Params> }) {
+  const { slug } = await params;
 
-  if (!guide) {
-    notFound();
-  }
+  console.log(`🔍 Page server pour guide: ${slug}`);
 
-  return <GuideDetailClient slug={slug} guide={guide} />;
+  // Le composant client va gérer le chargement du contenu
+  return <GuideDetailClient slug={slug} />;
 }

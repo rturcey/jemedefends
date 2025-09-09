@@ -1,8 +1,9 @@
 // src/components/guides/CategoryFilter.tsx
 'use client';
 
-import React, { useRef, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, Filter } from 'lucide-react';
+import React, { useRef, useEffect } from 'react';
+
 import { useMobileOptimization } from '@/hooks/useMobileOptimization';
 
 interface Category {

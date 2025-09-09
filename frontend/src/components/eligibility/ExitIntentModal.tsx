@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useEffect } from 'react';
 import { AlertTriangle, X } from 'lucide-react';
+import React, { useEffect } from 'react';
 
 interface ExitIntentModalProps {
   isOpen: boolean;

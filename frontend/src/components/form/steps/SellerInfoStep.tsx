@@ -1,11 +1,11 @@
 'use client';
 
 import React from 'react';
-import FormField from '@/components/form/FormField';
+
 import AddressInput from '@/components/form/AddressInput';
-import { gatedValidation } from '@/lib/validation';
-import { normalizeName } from '@/lib/validation';
-import { StepProps } from '@/types/form';
+import FormField from '@/components/form/FormField';
+import { gatedValidation, normalizeName } from '@/lib/validation';
+import type { StepProps } from '@/types/form';
 
 const SellerInfoStep: React.FC<StepProps> = ({
   data,
@@ -19,7 +19,7 @@ const SellerInfoStep: React.FC<StepProps> = ({
   const canContinue =
     (validation?.validateStep?.('seller_info', d) ??
       Boolean(
-        d.seller_name && d.seller_address_line_1 && d.seller_postal_code && d.seller_city
+        d.seller_name && d.seller_address_line_1 && d.seller_postal_code && d.seller_city,
       )) === true;
 
   return (
@@ -70,7 +70,7 @@ const SellerInfoStep: React.FC<StepProps> = ({
               maxLength: 100,
             }),
             validation?.validateField,
-            validation?.isInteracted
+            validation?.isInteracted,
           )}
         />
 

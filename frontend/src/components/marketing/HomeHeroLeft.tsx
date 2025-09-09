@@ -1,10 +1,11 @@
 'use client';
+import { motion } from 'framer-motion';
+import { FileText, Shield, Sparkles, Zap, ArrowRight, Mail } from 'lucide-react';
 import * as React from 'react';
+
 import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
 import Skeleton from '@/components/ui/Skeleton';
-import { FileText, Shield, Sparkles, Zap, ArrowRight, Mail } from 'lucide-react';
-import { motion } from 'framer-motion';
 import { useMobileOptimization } from '@/hooks/useMobileOptimization';
 
 export default function HomeHeroLeft() {

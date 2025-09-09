@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+
 import FAQClientPage from './client-page';
 
 // Métadonnées SEO (côté serveur)

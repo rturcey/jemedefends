@@ -1,10 +1,10 @@
-import { Metadata } from 'next';
+import type { Metadata } from 'next';
 import dynamic from 'next/dynamic';
 
 // Components statiques (chargés immédiatement)
+import StickyMobileCTA from '@/components/cta/StickyMobileCTA';
 import { Hero, HomeHeroLeft, HeroRightFAQ } from '@/components/marketing';
 import { TopFAQ } from '@/components/sections';
-import StickyMobileCTA from '@/components/cta/StickyMobileCTA';
 import Container from '@/components/ui/Container';
 import Skeleton from '@/components/ui/Skeleton';
 
@@ -60,7 +60,7 @@ const TrustSovereigntySection = dynamic(
         </Container>
       </section>
     ),
-  }
+  },
 );
 
 const FinalCTASection = dynamic(() => import('@/components/sections/FinalCTASection'), {

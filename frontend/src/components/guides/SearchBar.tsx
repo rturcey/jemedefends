@@ -1,7 +1,7 @@
 'use client';
 
+import { Search, X, TrendingUp } from 'lucide-react';
 import React, { useState, useCallback, useRef, useEffect } from 'react';
-import { Search, X, Clock, TrendingUp } from 'lucide-react';
 
 interface SearchBarProps {
   onSearch: (query: string) => void;
@@ -47,7 +47,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
         }, 300);
       };
     })(),
-    [onSearch]
+    [onSearch],
   );
 
   // Effet de recherche

@@ -1,6 +1,7 @@
 // src/app/layout.tsx
 import './globals.css';
 import type { Metadata } from 'next';
+
 import { SiteLayout } from '@/components/layout';
 
 const siteUrl = 'https://jemedefends.fr';
@@ -23,7 +24,7 @@ export const metadata: Metadata = {
   // === FAVICONS & ICONES ===
   icons: {
     icon: [
-      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/favicon-64x64.png', sizes: '64x64', type: 'image/png' },
       { url: '/favicon.ico', sizes: 'any' }, // fallback universel
     ],
     // si tu ajoutes le fichier, décommente la ligne ci-dessous :

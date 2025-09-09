@@ -1,0 +1,26 @@
+# Node & builds
+node_modules
+.next
+dist
+build
+out
+coverage
+.turbo
+.cache
+.yarn
+.pnpm-store
+
+# IDE / OS
+.idea
+.vscode
+.DS_Store
+
+# Vendored / générés
+public/vendor
+**/*.min.js
+**/*.snap
+
+# Locks (ne servent pas à être formatés)
+package-lock.json
+pnpm-lock.yaml
+yarn.lock

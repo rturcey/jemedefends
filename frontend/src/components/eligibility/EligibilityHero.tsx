@@ -1,7 +1,7 @@
 'use client';
 
-import React from 'react';
 import { ChevronRight, Shield, Clock, FileText } from 'lucide-react';
+import React from 'react';
 
 interface EligibilityHeroProps {
   onStartTest: () => void;

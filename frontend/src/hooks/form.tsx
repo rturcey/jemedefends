@@ -1,6 +1,8 @@
 // frontend/src/hooks/form.tsx - VERSION SANS SÉRIALISATION PROBLÉMATIQUE
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
-import { FormData, SaveStatus, STEPS } from '@/types/form';
+
+import type { FormData, SaveStatus } from '@/types/form';
+import { STEPS } from '@/types/form';
 
 const API_BASE = '/api/v1/form-drafts';
 const DEBOUNCE_MS = 500;
@@ -26,7 +28,7 @@ const simpleValidation = {
       minLength?: number;
       maxLength?: number;
       pattern?: string;
-    } = {}
+    } = {},
   ): { valid: boolean; message: string } {
     const { required, type, minLength, maxLength, pattern } = rules;
     const str = (value ?? '').toString();
@@ -144,7 +146,7 @@ const useFormManager = (formSlug: string = 'mise_en_demeure_v1'): UseFormManager
         throw e;
       }
     },
-    [fetchJSON]
+    [fetchJSON],
   );
 
   const createOrReplaceDraft = useCallback(
@@ -156,7 +158,7 @@ const useFormManager = (formSlug: string = 'mise_en_demeure_v1'): UseFormManager
         body: JSON.stringify({ data }),
       });
     },
-    [fetchJSON]
+    [fetchJSON],
   );
 
   const showSaveStatus = useCallback((message: string, type: SaveStatus['type']) => {
@@ -218,7 +220,7 @@ const useFormManager = (formSlug: string = 'mise_en_demeure_v1'): UseFormManager
         showSaveStatus('Erreur de sauvegarde', 'error');
       }
     },
-    [extractFormData, fetchJSON, formSlug, showSaveStatus, createOrReplaceDraft]
+    [extractFormData, fetchJSON, formSlug, showSaveStatus, createOrReplaceDraft],
   );
 
   const loadDraft = useCallback(async () => {
@@ -275,7 +277,7 @@ const useFormManager = (formSlug: string = 'mise_en_demeure_v1'): UseFormManager
 
       return true;
     },
-    [isStepValid]
+    [isStepValid],
   );
 
   const nextStep = useCallback((): boolean => {
@@ -305,7 +307,7 @@ const useFormManager = (formSlug: string = 'mise_en_demeure_v1'): UseFormManager
       // 🔧 SIMPLE VALIDATION SANS CLASSE
       simpleValidation.markInteracted(field);
     },
-    [performAutosave]
+    [performAutosave],
   );
 
   const submitForm = useCallback(async () => {
@@ -362,7 +364,7 @@ const useFormManager = (formSlug: string = 'mise_en_demeure_v1'): UseFormManager
           letter_id: result.letter_id,
           draft_id: result.draft_id,
           timestamp: new Date().toISOString(),
-        })
+        }),
       );
 
       // 4. Redirection

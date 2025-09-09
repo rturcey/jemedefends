@@ -1,8 +1,9 @@
 // src/components/guides/TableOfContents.tsx
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
 import { ChevronDown, ChevronUp, BookOpen, Clock } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+
 import { useMobileOptimization } from '@/hooks/useMobileOptimization';
 
 interface Heading {
@@ -52,7 +53,7 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({
         if (visibleEntries.length > 0) {
           // Prendre le premier élément visible (le plus haut)
           const topEntry = visibleEntries.reduce((prev, current) =>
-            prev.boundingClientRect.top < current.boundingClientRect.top ? prev : current
+            prev.boundingClientRect.top < current.boundingClientRect.top ? prev : current,
           );
           setCurrentActiveId(topEntry.target.id);
         }
@@ -60,7 +61,7 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({
       {
         rootMargin: '-20% 0px -35% 0px', // Zone d'activation optimisée
         threshold: [0, 0.25, 0.5, 0.75, 1],
-      }
+      },
     );
 
     headingElements.forEach(element => {

@@ -1,8 +1,9 @@
 'use client';
 
-import * as React from 'react';
-import { Section, Container, Button, Reveal } from '@/components/ui';
 import { Zap, CheckCircle, ArrowRight, Shield, Clock } from 'lucide-react';
+import * as React from 'react';
+
+import { Container, Button, Reveal } from '@/components/ui';
 
 export default function FinalCTASection() {
   return (

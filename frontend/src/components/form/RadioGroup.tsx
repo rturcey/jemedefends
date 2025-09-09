@@ -1,7 +1,7 @@
 'use client';
 
-import * as React from 'react';
 import clsx from 'clsx';
+import * as React from 'react';
 
 type Option = {
   value: string;
@@ -46,7 +46,7 @@ export default function RadioGroup({
           <label
             key={opt.value}
             className={clsx(
-              'flex items-start gap-3 rounded-xl border border-gray-300 bg-white p-3 cursor-pointer hover:border-gray-400'
+              'flex items-start gap-3 rounded-xl border border-gray-300 bg-white p-3 cursor-pointer hover:border-gray-400',
             )}
           >
             <input

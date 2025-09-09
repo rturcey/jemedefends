@@ -1,9 +1,10 @@
 'use client';
 
-import * as React from 'react';
+import { Shield, Server, Mail, CreditCard, Lock, FileText } from 'lucide-react';
 import Link from 'next/link';
-import { Section, Container, Reveal, Badge, Button } from '@/components/ui';
-import { Shield, Server, Mail, CreditCard, Sparkles, Lock, FileText } from 'lucide-react';
+import * as React from 'react';
+
+import { Container, Reveal, Badge, Button } from '@/components/ui';
 
 export default function TrustSovereigntySection() {
   return (

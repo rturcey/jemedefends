@@ -1,7 +1,8 @@
 'use client';
 
-import * as React from 'react';
 import clsx from 'clsx';
+import * as React from 'react';
+
 import ProgressBar from '@/components/ui/progress/ProgressBar';
 
 export default function StepIndicator({

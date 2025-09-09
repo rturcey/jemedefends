@@ -1,8 +1,8 @@
-'use client'
+'use client';
 
-import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { X } from 'lucide-react';
+import React, { useEffect } from 'react';
 
 const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children, title }) => {
   useEffect(() => {

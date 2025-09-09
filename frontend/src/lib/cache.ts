@@ -57,7 +57,7 @@ export const sessionStorage = {
         // Fallback vers le cache en mémoire
         cache.set(key, value, 1800000); // 30 minutes
       }
-    } catch (error) {
+    } catch {
       console.warn('SessionStorage not available, using memory cache');
       cache.set(key, value, 1800000);
     }
@@ -71,7 +71,7 @@ export const sessionStorage = {
       } else {
         return cache.get(key);
       }
-    } catch (error) {
+    } catch {
       return cache.get(key);
     }
   },
@@ -82,7 +82,7 @@ export const sessionStorage = {
         window.sessionStorage.removeItem(key);
       }
       cache.cache.delete(key);
-    } catch (error) {
+    } catch {
       cache.cache.delete(key);
     }
   },

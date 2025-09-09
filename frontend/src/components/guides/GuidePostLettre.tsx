@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
 import { CheckCircle, XCircle, Clock } from 'lucide-react';
+import React, { useState } from 'react';
+
 import { Container, Section, Button } from '@/components/ui';
 
 const GuidePostLettre: React.FC = () => {

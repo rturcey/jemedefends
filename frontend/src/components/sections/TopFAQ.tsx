@@ -1,11 +1,12 @@
 'use client';
+import { HelpCircle, ArrowRight, ChevronDown, ChevronUp, Star, Shield } from 'lucide-react';
+import Link from 'next/link';
 import * as React from 'react';
 import { useState } from 'react';
-import Link from 'next/link';
-import { HelpCircle, ArrowRight, ChevronDown, ChevronUp, Star, Shield } from 'lucide-react';
+
+import MobileFAQItem from '@/components/marketing/MobileFAQItem';
 import { Badge, Reveal } from '@/components/ui';
 import Skeleton from '@/components/ui/Skeleton';
-import MobileFAQItem from '@/components/marketing/MobileFAQItem';
 import { useMobileOptimization } from '@/hooks/useMobileOptimization';
 
 const FAQ_ITEMS = [
@@ -100,7 +101,7 @@ export function TopFAQ({ className = '', showHeader = true }: TopFAQProps) {
       prev =>
         prev.includes(id)
           ? prev.filter(x => x !== id) // Ferme l'item si déjà ouvert
-          : [id] // Ouvre seulement cet item (ferme tous les autres)
+          : [id], // Ouvre seulement cet item (ferme tous les autres)
     );
   };
 
