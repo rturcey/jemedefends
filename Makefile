@@ -132,24 +132,131 @@ test: db-check
 	cd frontend && npm run type-check 2>/dev/null || echo "⚠️ Frontend type-check skipped"
 	@echo "✅ Tests completed"
 
-# Linting & formatting
-lint:
-	@echo "🔍 Linting code..."
-	cd backend && uv run ruff check app/ 2>/dev/null || echo "⚠️ Ruff not configured"
-	cd backend && uv run mypy app/ --strict 2>/dev/null || echo "⚠️ MyPy not configured"
-	cd frontend && npm run lint:check 2>/dev/null || echo "⚠️ Frontend linting skipped"
-	@echo "✅ Linting completed"
+# =====================================================================
+# [A COLLER A LA FIN] Lint + Fix + Format FRONT & BACK (sans régression)
+# =====================================================================
 
-format:
-	@echo "🎨 Formatting code..."
-	cd backend && uv run ruff format app/ 2>/dev/null || echo "⚠️ Ruff not available"
-	cd frontend && npm run format 2>/dev/null || echo "⚠️ Prettier not configured"
-	@echo "✅ Code formatted"
+# --------- Dossiers (laisse ?= pour ne pas écraser tes valeurs) ---------
+FRONTEND_DIR ?= frontend
+BACKEND_DIR  ?= backend
 
-type-check:
-	@echo "🔍 Type checking frontend..."
-	cd frontend && npm run type-check
-	@echo "✅ Type check completed"
+# ===========================
+# Frontend (JS/TS/TSX/CSS…)
+# ===========================
+# Détection package manager
+PKG := $(shell \
+	if command -v pnpm >/dev/null 2>&1; then echo pnpm; \
+	elif command -v yarn >/dev/null 2>&1; then echo yarn; \
+	else echo npm; fi)
+
+ifeq ($(PKG),pnpm)
+	PRETTIER_EXEC = pnpm exec prettier
+	ESLINT_EXEC   = pnpm exec eslint
+else ifeq ($(PKG),yarn)
+	PRETTIER_EXEC = yarn dlx prettier
+	ESLINT_EXEC   = yarn dlx eslint
+else
+	PRETTIER_EXEC = npx prettier
+	ESLINT_EXEC   = npx eslint
+endif
+
+ESLINT_EXTS := .js,.jsx,.ts,.tsx
+PRETTIER_PATTERNS := "**/*.{js,jsx,ts,tsx,css,scss,md,mdx,json,yml,yaml}"
+
+# ===========================
+# Backend (Python)
+# ===========================
+# Laisse ?= pour respecter ton env (venv, pyenv, poetry…)
+PYTHON     ?= python
+MYPY       ?= $(PYTHON) -m mypy
+RUFF       ?= $(PYTHON) -m ruff
+BLACK      ?= $(PYTHON) -m black
+ISORT      ?= $(PYTHON) -m isort
+
+# Tu peux overrider ces args via l’ENV si besoin
+MYPY_ARGS  ?=
+RUFF_ARGS  ?=
+BLACK_ARGS ?=
+ISORT_ARGS ?=
+
+# Type-check dédié (utile en CI)
+.PHONY: backend.typecheck
+backend.typecheck:
+	@echo "🔎 mypy → $(BACKEND_DIR)"
+	@cd "$(BACKEND_DIR)" && $(MYPY) $(MYPY_ARGS) .
+
+# Lint sans modification : ruff + mypy (pas de régression)
+.PHONY: backend.lint
+backend.lint:
+	@echo "🔎 ruff check (no fix) → $(BACKEND_DIR)"
+	@cd "$(BACKEND_DIR)" && $(RUFF) check $(RUFF_ARGS) .
+	@$(MAKE) backend.typecheck
+
+# Fix code style (isort -> black) puis ruff --fix (sécure & standard)
+.PHONY: backend.fix
+backend.fix:
+	@echo "🛠  isort → $(BACKEND_DIR)"
+	@cd "$(BACKEND_DIR)" && $(ISORT) $(ISORT_ARGS) .
+	@echo "🖤  black → $(BACKEND_DIR)"
+	@cd "$(BACKEND_DIR)" && $(BLACK) $(BLACK_ARGS) .
+	@echo "🧩 ruff --fix → $(BACKEND_DIR)"
+	@cd "$(BACKEND_DIR)" && $(RUFF) check --fix $(RUFF_ARGS) .
+
+# Format seul (sans lint) : isort + black
+.PHONY: backend.format
+backend.format:
+	@echo "🧹 isort → $(BACKEND_DIR)"
+	@cd "$(BACKEND_DIR)" && $(ISORT) $(ISORT_ARGS) .
+	@echo "🧹 black → $(BACKEND_DIR)"
+	@cd "$(BACKEND_DIR)" && $(BLACK) $(BLACK_ARGS) .
+
+# --------- Frontend targets ---------
+.PHONY: frontend.lint frontend.fix frontend.format
+frontend.lint:
+	@echo "🔎 ESLint (no fix) → $(FRONTEND_DIR)"
+	@cd "$(FRONTEND_DIR)" && $(ESLINT_EXEC) . --ext $(ESLINT_EXTS)
+
+frontend.fix:
+	@echo "🛠  ESLint --fix → $(FRONTEND_DIR)"
+	@cd "$(FRONTEND_DIR)" && $(ESLINT_EXEC) . --ext $(ESLINT_EXTS) --fix
+
+frontend.format:
+	@echo "🧹 Prettier --write → $(FRONTEND_DIR)"
+	@cd "$(FRONTEND_DIR)" && $(PRETTIER_EXEC) --write $(PRETTIER_PATTERNS)
+	@echo "🛠  ESLint --fix → $(FRONTEND_DIR)"
+	@cd "$(FRONTEND_DIR)" && $(ESLINT_EXEC) . --ext $(ESLINT_EXTS) --fix
+
+# ===========================
+# Agrégés non destructifs
+# ===========================
+# Ces règles en 'double-deux-points' étendent tes cibles existantes sans les remplacer.
+
+.PHONY: lint fix format
+
+# Lint = Front (eslint) + Back (ruff + mypy)
+lint::
+	@$(MAKE) frontend.lint
+	@$(MAKE) backend.lint
+
+# Fix = Front (eslint --fix) + Back (isort + black + ruff --fix)
+fix::
+	@$(MAKE) frontend.fix
+	@$(MAKE) backend.fix
+
+# Format = Front (prettier) + Back (isort + black)
+format::
+	@$(MAKE) frontend.format
+	@$(MAKE) backend.format
+
+# Petit help complémentaire
+.PHONY: help-linting
+help-linting:
+	@echo "Lint/Format intégrés :"
+	@echo "  make lint           → ESLint front + Ruff & mypy back (no fix)"
+	@echo "  make fix            → ESLint --fix front + isort/black/ruff --fix back"
+	@echo "  make format         → Prettier front + isort/black back"
+	@echo "  make backend.typecheck → mypy uniquement"
+
 
 # Nettoyage
 clean:
@@ -196,3 +303,40 @@ help:
 	@echo "  2. make dev-back   # Terminal 1"
 	@echo "  3. make dev-front  # Terminal 2"
 	@echo "  4. make test       # Avant commit"
+
+# ============================== #
+# 📚 CORPUS LÉGAL — FRONTEND     #
+# ============================== #
+.PHONY: legal-tools legal-refresh legal-refresh-browser legal-admin legal-test
+
+# Installe les outils nécessaires (Playwright + Chromium)
+legal-tools:
+	@echo "🧩 Installing Playwright tools (frontend)…"
+	cd frontend && npm i -D playwright @playwright/test tsx
+	cd frontend && npx playwright install --with-deps chromium
+	@echo "✅ Playwright ready"
+
+# Rafraîchit via fetch HTTP (headers renforcés, fallback auto si 403)
+legal-refresh: legal-tools
+	@echo "🔄 Refreshing legal corpus from Legifrance (HTTP + fallback)…"
+	cd frontend && npm run legal:refresh || (echo '⚠️ Fallback required'; exit 1)
+	@echo "✅ legal_texts.generated.json updated"
+
+# Force le parcours via navigateur headless (si tu veux être explicite)
+legal-refresh-browser: legal-tools
+	@echo "🧭 Refreshing via headless browser…"
+	cd frontend && tsx scripts/legal-refresh.ts
+	@echo "✅ legal_texts.generated.json updated (browser)"
+
+# Lance les tests d’intégrité du corpus (frontend)
+legal-test:
+	@echo "🧪 Running legal integrity tests…"
+	cd frontend && npm run test:legal || echo "⚠️ Tests reported issues"
+	@echo "✅ Done"
+
+# Ouvre la page d’admin pour inspection manuelle
+legal-admin:
+	@echo "🌐 Admin page available at: http://localhost:3000/admin/legal"
+	@if command -v xdg-open >/dev/null; then xdg-open http://localhost:3000/admin/legal >/dev/null 2>&1 || true; \
+	elif command -v open >/dev/null; then open http://localhost:3000/admin/legal >/dev/null 2>&1 || true; \
+	else echo "👉 Please open the URL in your browser."; fi

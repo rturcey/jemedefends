@@ -1,71 +1,166 @@
-import { GuideSection, GuidePage } from '@/types/guides';
+/* AUTO-MIGRATED ALL GUIDES — no legacy fallback */
+'use client';
 
-const LEGAL_DISCLAIMER = `
-<div class="bg-amber-50 border-l-4 border-amber-400 p-3 sm:p-4 my-4 sm:my-6 rounded-r-lg">
-  <div class="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-3">
-    <div class="flex-shrink-0 self-start">
-      <svg class="h-5 w-5 text-amber-500" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
-      </svg>
+import * as React from 'react';
+
+import AlternativeOptions from '@/components/ui/AlternativeOptions';
+import Badge from '@/components/ui/Badge';
+import Button from '@/components/ui/Button';
+import CompanyContact from '@/components/ui/CompanyContact';
+import DefaultGrid from '@/components/ui/DefaultGrid';
+import ErrorAlert from '@/components/ui/ErrorAlert';
+import LegalNote from '@/components/ui/LegalNote';
+import LegalReference from '@/components/ui/LegalReference';
+import ProcedureStep from '@/components/ui/ProcedureStep';
+import TimelineProcess from '@/components/ui/TimelineProcess';
+import type { GuidePage } from '@/types/guides';
+
+const TextWithLegalRefs: React.FC<{ text: string }> = ({ text }) => {
+  const parts: Array<string | React.ReactNode> = [];
+  // Reconnaît: L.217-xx, L.612-x, CPC 808|843-847, art. 1641..1649 (incl. 1642.1 / 1646.1)
+  const pattern =
+    /(L\.217-(\d{1,2}))|(L\.612-([1-5]))|\b(?:CPC\s*)?(808|843|844|845|846|847)\b|\b(?:art\.?\s*)?(164(?:2\.1|6\.1|[1-9]))\b/gi;
+  let lastIndex = 0;
+  let m: RegExpExecArray | null;
+  while ((m = pattern.exec(text)) !== null) {
+    if (m.index > lastIndex) parts.push(text.slice(lastIndex, m.index));
+    let code: LegalArticleId | null = null;
+    if (m[1]) code = `L.217-${m[2]}` as LegalArticleId;
+    else if (m[3]) code = `L.612-${m[4]}` as LegalArticleId;
+    else if (m[5])
+      code = m[5] as LegalArticleId; // CPC
+    else if (m[6]) code = m[6] as LegalArticleId; // Code civil
+    if (code) {
+      parts.push(<LegalReference key={`ref-${parts.length}`} code={code} />);
+    }
+    lastIndex = m.index + m[0].length;
+  }
+  if (lastIndex < text.length) parts.push(text.slice(lastIndex));
+  return <>{parts}</>;
+};
+
+function StandardProcedure() {
+  return (
+    <>
+      <TimelineProcess
+        items={[
+          {
+            id: 'reunir-preuves',
+            title: 'Réunir les preuves',
+            description: 'Facture, photos/vidéos, échanges, diagnostics.',
+          },
+          {
+            id: 'mise-en-conformite',
+            title: 'Demander la mise en conformité',
+            description: <LegalReference code="L.217-9" />,
+          },
+          {
+            id: 'delais-frais',
+            title: 'Délais & frais',
+            description: (
+              <>
+                <LegalReference code="L.217-10" /> <span aria-hidden>•</span>{' '}
+                <LegalReference code="L.217-11" />
+              </>
+            ),
+          },
+          {
+            id: 'echec-refus',
+            title: 'Si échec / refus',
+            description: (
+              <>
+                <LegalReference code="L.217-12" /> <span aria-hidden>•</span>{' '}
+                <LegalReference code="L.217-14" /> <span aria-hidden>•</span>{' '}
+                <LegalReference code="L.217-15" /> <span aria-hidden>•</span>{' '}
+                <LegalReference code="L.217-16" /> <span aria-hidden>•</span>{' '}
+                <LegalReference code="L.217-17" />
+              </>
+            ),
+          },
+        ]}
+      />
+
+      <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <ProcedureStep
+          number={1}
+          title="Réparation"
+          description="Transport, main-d’œuvre et pièces à la charge du vendeur."
+          law={<LegalReference code="L.217-11" />}
+        />
+        <ProcedureStep
+          number={2}
+          title="Remplacement"
+          description="Si réparation impossible ou disproportionnée."
+          law={<LegalReference code="L.217-12" />}
+        />
+      </div>
+    </>
+  );
+}
+
+function DefaultAlternatives() {
+  return (
+    <AlternativeOptions
+      options={[
+        {
+          label: 'Médiation (gratuite)',
+          description: 'Saisine possible après réclamation écrite.',
+          law: (
+            <>
+              <LegalReference code="L.612-1" />
+              <span aria-hidden>•</span> <LegalReference code="L.612-2" />
+              <span aria-hidden>•</span> <LegalReference code="L.612-4" />
+            </>
+          ),
+          href: '/mediation',
+        },
+        {
+          label: 'Action en justice',
+          description: 'Référés / fond selon l’urgence et les preuves.',
+          law: (
+            <>
+              CPC: <LegalReference code="808" />
+              <span aria-hidden>•</span> <LegalReference code="843" />
+              <span aria-hidden>•</span> <LegalReference code="844" />
+              <span aria-hidden>•</span> <LegalReference code="845" />
+              <span aria-hidden>•</span> <LegalReference code="846" />
+              <span aria-hidden>•</span> <LegalReference code="847" />
+            </>
+          ),
+          href: '/procedures',
+        },
+      ]}
+    />
+  );
+}
+
+function DefaultContacts() {
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <CompanyContact
+        name="Service client du vendeur"
+        channels={[{ type: 'email', value: 'service-client@example.com' }]}
+        note="Privilégiez l’écrit (LRAR / e-LRAR) et joignez vos pièces."
+      />
+      <CompanyContact
+        name="Médiateur de la consommation"
+        channels={[{ type: 'web', value: 'https://www.mediation-consommation.fr' }]}
+        note={
+          <>
+            Gratuit pour le consommateur — <LegalReference code="L.612-1" />.
+          </>
+        }
+      />
     </div>
-    <div class="flex-1">
-      <p class="text-sm text-amber-800 leading-relaxed">
-        <strong>Information juridique :</strong> Ce guide est basé sur le Code de la consommation français en vigueur. 
-        Les informations sont vérifiées régulièrement mais ne constituent pas un conseil juridique individualisé. 
-        En cas de litige complexe, consultez un professionnel du droit.
-      </p>
-    </div>
-  </div>
-</div>
-`;
+  );
+}
 
-const createFAQSchema = (questions: Array<{ question: string; answer: string }>) => ({
-  '@context': 'https://schema.org',
-  '@type': 'FAQPage',
-  mainEntity: questions.map(q => ({
-    '@type': 'Question',
-    name: q.question,
-    acceptedAnswer: {
-      '@type': 'Answer',
-      text: q.answer,
-    },
-  })),
-});
-
-const createArticleSchema = (guide: any) => ({
-  '@context': 'https://schema.org',
-  '@type': 'Article',
-  headline: guide.title,
-  description: guide.seo.description,
-  author: {
-    '@type': 'Organization',
-    name: 'Je me défends',
-    url: 'https://jemedefends.fr',
-  },
-  publisher: {
-    '@type': 'Organization',
-    name: 'Je me défends',
-    logo: {
-      '@type': 'ImageObject',
-      url: 'https://jemedefends.fr/logo.png',
-    },
-  },
-  datePublished: '2025-01-15',
-  dateModified: '2025-09-07',
-  mainEntityOfPage: `https://jemedefends.fr/guides/${guide.slug}`,
-  articleSection: 'Droit de la consommation',
-  keywords: guide.keywords || [],
-});
-
-export const SEO_OPTIMIZED_GUIDES: Record<string, GuidePage> = {
-  'garantie-legale-conformite-guide-complet': {
-    title: 'Garantie légale de conformité 2025 : Guide complet de vos droits de consommateur',
-    subtitle:
-      '2 ans de protection gratuite • Réparation, remplacement, remboursement • Procédure étape par étape',
+export const GUIDE_GARANTIE_LEGALE_CONFORMITE_GUIDE_COMPLET: GuidePage = {
+  metadata: {
+    title: `Garantie légale de conformité 2025 : Guide complet de vos droits de consommateur`,
     seo: {
-      title: 'Garantie légale de conformité 2025 : Vos droits et recours (Guide complet)',
-      description:
-        'Découvrez vos droits avec la garantie légale : 2 ans de protection, réparation gratuite, remplacement ou remboursement. Articles L.217-3 à L.217-28 expliqués.',
+      title: `Garantie légale de conformité 2025 : Vos droits et recours (Guide complet)`,
+      description: `Découvrez vos droits avec la garantie légale : 2 ans de protection, réparation gratuite, remplacement ou remboursement. Articles L.217-3 à L.217-28 expliqués.`,
       keywords: [
         'garantie légale de conformité',
         'garantie légale 2 ans',
@@ -79,688 +174,547 @@ export const SEO_OPTIMIZED_GUIDES: Record<string, GuidePage> = {
         'SAV refus garantie',
       ],
     },
-    schema: createArticleSchema({
-      title: 'Garantie légale de conformité 2025 : Guide complet de vos droits de consommateur',
-      seo: { description: 'Découvrez vos droits avec la garantie légale : 2 ans de protection...' },
-      slug: 'garantie-legale-conformite-guide-complet',
-      keywords: ['garantie légale', 'droits consommateur', 'réparation gratuite'],
-    }),
-    sections: [
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
       {
-        id: 'definition',
-        title: "Qu'est-ce que la garantie légale de conformité ? (Articles L.217-3 à L.217-6)",
-        html: `
-          <div class="prose prose-lg max-w-none">
-            <p class="text-lg sm:text-xl text-gray-700 leading-relaxed mb-6">
-              La <strong>garantie légale de conformité</strong> est votre bouclier juridique le plus puissant contre les produits défectueux. Méconnue de 70% des consommateurs français, elle vous protège <strong>automatiquement pendant 2 ans</strong> sur tout achat effectué auprès d'un professionnel.
-            </p>
-            
-            <div class="bg-blue-50 border-l-4 border-blue-400 p-4 sm:p-6 my-8">
-              <h4 class="text-base sm:text-lg font-semibold text-blue-900 mb-3">⚖️ Base légale incontournable</h4>
-              <ul class="space-y-2 text-blue-800">
-                <li><strong>Article L.217-3 :</strong> Obligation de conformité du vendeur</li>
-                <li><strong>Article L.217-5 :</strong> Critères de conformité</li>
-                <li><strong>Article L.217-7 :</strong> Présomption de défaut (2 ans)</li>
-                <li><strong>Article L.217-9 :</strong> Droits du consommateur</li>
-              </ul>
-            </div>
-
-            <h4 class="text-lg sm:text-xl font-bold mt-8 mb-4">🎯 Qui est concerné ?</h4>
-            <div class="grid md:grid-cols-2 gap-4 sm:p-6 my-6">
-              <div class="bg-green-50 p-4 sm:p-6 rounded-lg">
-                <h5 class="font-bold text-green-800 mb-3">✅ PROTÉGÉ par la garantie légale</h5>
-                <ul class="space-y-2 text-green-700">
-                  <li>• Achat chez un professionnel (magasin, site e-commerce)</li>
-                  <li>• Produit neuf ou reconditionné</li>
-                  <li>• Usage personnel ou mixte</li>
-                  <li>• Livraison depuis moins de 2 ans</li>
-                </ul>
-              </div>
-              <div class="bg-red-50 p-4 sm:p-6 rounded-lg">
-                <h5 class="font-bold text-red-800 mb-3">❌ NON PROTÉGÉ</h5>
-                <ul class="space-y-2 text-red-700">
-                  <li>• Achat entre particuliers (Leboncoin, etc.)</li>
-                  <li>• Usage professionnel exclusif (B2B)</li>
-                  <li>• Produit acheté il y a plus de 2 ans</li>
-                  <li>• Vente aux enchères publiques</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        `,
-      },
-      {
-        id: 'defauts-couverts',
-        title: 'Quels défauts sont couverts ? Tous les cas pratiques',
-        html: `
-          <div class="prose prose-lg max-w-none">
-            <p class="text-base sm:text-lg text-gray-700 mb-6">
-              La garantie légale couvre <strong>tous les défauts de conformité</strong>, qu'ils soient visibles immédiatement ou qui apparaissent au fil du temps. Voici une liste exhaustive des situations couvertes :
-            </p>
-
-            <div class="grid md:grid-cols-3 gap-4 sm:p-6 my-8">
-              <div class="bg-purple-50 p-4 sm:p-6 rounded-lg">
-                <h4 class="font-bold text-purple-800 mb-4">🔧 Défauts de fonctionnement</h4>
-                <ul class="space-y-2 text-purple-700 text-sm">
-                  <li>• Smartphone qui ne s'allume plus</li>
-                  <li>• Lave-linge qui fuit</li>
-                  <li>• TV avec écran qui scintille</li>
-                  <li>• Voiture avec problème moteur</li>
-                  <li>• Ordinateur qui plante en permanence</li>
-                </ul>
-              </div>
-              
-              <div class="bg-orange-50 p-4 sm:p-6 rounded-lg">
-                <h4 class="font-bold text-orange-800 mb-4">📋 Non-conformité à la description</h4>
-                <ul class="space-y-2 text-orange-700 text-sm">
-                  <li>• Caractéristiques techniques différentes</li>
-                  <li>• Couleur non conforme</li>
-                  <li>• Taille erronée</li>
-                  <li>• Accessoires manquants</li>
-                  <li>• Fonctionnalités absentes</li>
-                </ul>
-              </div>
-              
-              <div class="bg-teal-50 p-4 sm:p-6 rounded-lg">
-                <h4 class="font-bold text-teal-800 mb-4">⭐ Qualité insuffisante</h4>
-                <ul class="space-y-2 text-teal-700 text-sm">
-                  <li>• Durabilité inférieure à l'attendu</li>
-                  <li>• Matériaux de mauvaise qualité</li>
-                  <li>• Finitions défectueuses</li>
-                  <li>• Performance en-deçà des promesses</li>
-                  <li>• Usure prématurée anormale</li>
-                </ul>
-              </div>
-            </div>
-
-            <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 sm:p-6 my-8">
-              <h4 class="text-base sm:text-lg font-semibold text-yellow-900 mb-3">💡 Bon à savoir</h4>
-              <p class="text-yellow-800">
-                <strong>Présomption légale :</strong> Pendant 2 ans (12 mois pour l'occasion), tout défaut est présumé exister dès la livraison. Le vendeur doit prouver que le défaut vient de votre mauvaise utilisation, pas l'inverse !
-              </p>
-            </div>
-          </div>
-        `,
-      },
-      {
-        id: 'vos-droits',
-        title: 'Vos 4 droits inaliénables : réparation, remplacement, remboursement (Art. L.217-9)',
-        html: `
-          <div class="prose prose-lg max-w-none">
-            <p class="text-base sm:text-lg text-gray-700 mb-6">
-              Face à un défaut de conformité, la loi vous accorde <strong>4 options de recours</strong> dans un ordre précis. Le vendeur ne peut pas vous imposer une solution : vous choisissez !
-            </p>
-
-            <div class="space-y-4 sm:space-y-6">
-              <div class="border border-blue-200 rounded-lg p-4 sm:p-6 bg-blue-50">
-                <div class="flex items-start">
-                  <span class="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-4 flex-shrink-0">1</span>
-                  <div>
-                    <h4 class="text-lg sm:text-xl font-bold text-blue-900 mb-2">🔧 RÉPARATION (Art. L.217-9)</h4>
-                    <p class="text-blue-800 mb-3">Le vendeur doit réparer gratuitement le produit dans un délai raisonnable.</p>
-                    <div class="bg-white p-4 rounded border-l-4 border-blue-400">
-                      <p class="text-sm text-blue-700">
-                        <strong>Gratuit :</strong> Aucun frais à votre charge (pièces, main d'œuvre, transport)<br>
-                        <strong>Délai :</strong> "Délai raisonnable" selon la complexité (généralement 15-30 jours)<br>
-                        <strong>Qualité :</strong> Réparation durable avec pièces d'origine ou équivalentes
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="border border-green-200 rounded-lg p-4 sm:p-6 bg-green-50">
-                <div class="flex items-start">
-                  <span class="bg-green-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-4 flex-shrink-0">2</span>
-                  <div>
-                    <h4 class="text-lg sm:text-xl font-bold text-green-900 mb-2">🔄 REMPLACEMENT (Art. L.217-9)</h4>
-                    <p class="text-green-800 mb-3">Échange contre un produit identique et conforme.</p>
-                    <div class="bg-white p-4 rounded border-l-4 border-green-400">
-                      <p class="text-sm text-green-700">
-                        <strong>Produit :</strong> Identique ou caractéristiques équivalentes<br>
-                        <strong>État :</strong> Neuf ou reconditionné selon l'achat initial<br>
-                        <strong>Garantie :</strong> Nouvelle période de garantie de 2 ans
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="border border-yellow-200 rounded-lg p-4 sm:p-6 bg-yellow-50">
-                <div class="flex items-start">
-                  <span class="bg-yellow-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-4 flex-shrink-0">3</span>
-                  <div>
-                    <h4 class="text-lg sm:text-xl font-bold text-yellow-900 mb-2">💰 RÉDUCTION DU PRIX (Art. L.217-13)</h4>
-                    <p class="text-yellow-800 mb-3">Si réparation/remplacement impossible ou refusé.</p>
-                    <div class="bg-white p-4 rounded border-l-4 border-yellow-400">
-                      <p class="text-sm text-yellow-700">
-                        <strong>Calcul :</strong> Proportionnel à la gravité du défaut<br>
-                        <strong>Conservation :</strong> Vous gardez le produit défectueux<br>
-                        <strong>Cumul :</strong> Possible avec dommages-intérêts
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="border border-red-200 rounded-lg p-4 sm:p-6 bg-red-50">
-                <div class="flex items-start">
-                  <span class="bg-red-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-4 flex-shrink-0">4</span>
-                  <div>
-                    <h4 class="text-lg sm:text-xl font-bold text-red-900 mb-2">💸 REMBOURSEMENT INTÉGRAL (Art. L.217-13)</h4>
-                    <p class="text-red-800 mb-3">Résolution du contrat et remboursement total.</p>
-                    <div class="bg-white p-4 rounded border-l-4 border-red-400">
-                      <p class="text-sm text-red-700">
-                        <strong>Montant :</strong> Prix d'achat intégral + frais accessoires<br>
-                        <strong>Délai :</strong> 14 jours après retour du produit<br>
-                        <strong>Retour :</strong> Frais de retour à la charge du vendeur
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="bg-gray-100 p-4 sm:p-6 rounded-lg my-8">
-              <h4 class="text-base sm:text-lg font-bold text-gray-900 mb-3">🎯 Stratégie recommandée</h4>
-              <ol class="list-decimal list-inside space-y-2 text-gray-800">
-                <li>Demandez d'abord la <strong>réparation</strong> (solution la plus rapide)</li>
-                <li>Si refus ou échec, exigez le <strong>remplacement</strong></li>
-                <li>En dernier recours, réclamez le <strong>remboursement intégral</strong></li>
-                <li>Accompagnez toujours d'une <strong>mise en demeure écrite</strong></li>
-              </ol>
-            </div>
-          </div>
-        `,
-      },
-      {
-        id: 'procedure-etapes',
-        title: 'Procédure étape par étape : comment faire valoir vos droits',
-        html: `
-          <div class="prose prose-lg max-w-none">
-            <p class="text-base sm:text-lg text-gray-700 mb-6">
-              Voici la <strong>marche à suivre exacte</strong> pour faire valoir votre garantie légale, avec les modèles de lettres et les délais à respecter :
-            </p>
-
-            <div class="relative">
-              <!-- Timeline vertical -->
-              <div class="absolute left-8 top-0 bottom-0 w-0.5 bg-blue-200"></div>
-              
-              <div class="space-y-8">
-                <!-- Étape 1 -->
-                <div class="relative flex items-start">
-                  <div class="bg-blue-600 text-white rounded-full w-16 h-16 flex items-center justify-center font-bold text-base sm:text-lg flex-shrink-0 z-10">1</div>
-                  <div class="ml-6">
-                    <h4 class="text-lg sm:text-xl font-bold text-blue-900 mb-2">📋 Rassemblez les preuves</h4>
-                    <div class="bg-blue-50 p-4 rounded-lg">
-                      <ul class="space-y-2 text-blue-800">
-                        <li>• <strong>Facture ou ticket de caisse</strong> (preuve d'achat)</li>
-                        <li>• <strong>Photos/vidéos du défaut</strong> (preuves visuelles)</li>
-                        <li>• <strong>Descriptif produit</strong> (site web, catalogue)</li>
-                        <li>• <strong>Échanges écrits</strong> avec le vendeur (emails, courriers)</li>
-                        <li>• <strong>Témoignages</strong> si nécessaire</li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Étape 2 -->
-                <div class="relative flex items-start">
-                  <div class="bg-green-600 text-white rounded-full w-16 h-16 flex items-center justify-center font-bold text-base sm:text-lg flex-shrink-0 z-10">2</div>
-                  <div class="ml-6">
-                    <h4 class="text-lg sm:text-xl font-bold text-green-900 mb-2">📞 Contact amiable préalable</h4>
-                    <div class="bg-green-50 p-4 rounded-lg">
-                      <p class="text-green-800 mb-3">
-                        Contactez d'abord le vendeur par téléphone ou email pour signaler le défaut.
-                      </p>
-                      <div class="bg-white p-3 rounded border-l-4 border-green-400">
-                        <p class="text-sm text-green-700">
-                          <strong>Phrase-type :</strong> "Bonjour, j'ai acheté [produit] le [date] et il présente un défaut de conformité. En application de l'article L.217-9 du Code de la consommation, je souhaite sa réparation/remplacement."
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Étape 3 -->
-                <div class="relative flex items-start">
-                  <div class="bg-orange-600 text-white rounded-full w-16 h-16 flex items-center justify-center font-bold text-base sm:text-lg flex-shrink-0 z-10">3</div>
-                  <div class="ml-6">
-                    <h4 class="text-lg sm:text-xl font-bold text-orange-900 mb-2">✉️ Mise en demeure écrite</h4>
-                    <div class="bg-orange-50 p-4 rounded-lg">
-                      <p class="text-orange-800 mb-3">
-                        Si pas de réponse sous 7 jours ou refus, envoyez une mise en demeure.
-                      </p>
-                      <div class="bg-white p-4 rounded border-l-4 border-orange-400">
-                        <h5 class="font-bold text-orange-700 mb-2">Contenu obligatoire :</h5>
-                        <ul class="space-y-1 text-sm text-orange-700">
-                          <li>• Description précise du défaut</li>
-                          <li>• Référence aux articles L.217-3 et L.217-9</li>
-                          <li>• Réclamation claire (réparation/remplacement/remboursement)</li>
-                          <li>• Délai de réponse (15 jours recommandés)</li>
-                          <li>• Mention des recours en cas de refus</li>
-                        </ul>
-                      </div>
-                      <div class="mt-3 p-3 bg-blue-100 rounded">
-                        <p class="text-sm text-blue-800">
-                          💡 <strong>Astuce :</strong> Utilisez notre générateur pour créer automatiquement votre lettre conforme !
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Étape 4 -->
-                <div class="relative flex items-start">
-                  <div class="bg-purple-600 text-white rounded-full w-16 h-16 flex items-center justify-center font-bold text-base sm:text-lg flex-shrink-0 z-10">4</div>
-                  <div class="ml-6">
-                    <h4 class="text-lg sm:text-xl font-bold text-purple-900 mb-2">⚖️ Recours si échec</h4>
-                    <div class="bg-purple-50 p-4 rounded-lg">
-                      <div class="grid md:grid-cols-2 gap-4">
-                        <div class="bg-white p-3 rounded border-l-4 border-purple-400">
-                          <h5 class="font-bold text-purple-700 mb-2">🤝 Solutions amiables</h5>
-                          <ul class="space-y-1 text-sm text-purple-700">
-                            <li>• Signalconso.gouv.fr</li>
-                            <li>• Conciliateur de justice</li>
-                            <li>• Association de consommateurs</li>
-                            <li>• Médiateur sectoriel</li>
-                          </ul>
-                        </div>
-                        <div class="bg-white p-3 rounded border-l-4 border-purple-400">
-                          <h5 class="font-bold text-purple-700 mb-2">⚖️ Action judiciaire</h5>
-                          <ul class="space-y-1 text-sm text-purple-700">
-                            <li>• Tribunal de proximité (&lt; 10 000€)</li>
-                            <li>• Procédure simplifiée possible</li>
-                            <li>• Dommages-intérêts possibles</li>
-                            <li>• Frais à la charge du perdant</li>
-                          </ul>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        `,
-      },
-      {
-        id: 'pieges-eviter',
-        title: 'Les 10 pièges à éviter : ce que les vendeurs ne veulent pas que vous sachiez',
-        html: `
-          <div class="prose prose-lg max-w-none">
-            <p class="text-base sm:text-lg text-gray-700 mb-6">
-              Beaucoup de vendeurs comptent sur votre méconnaissance de vos droits. Voici les <strong>pièges les plus fréquents</strong> et comment les éviter :
-            </p>
-
-            <div class="space-y-4 sm:space-y-6">
-              <div class="bg-red-50 border border-red-200 rounded-lg p-4 sm:p-6">
-                <h4 class="text-base sm:text-lg font-bold text-red-900 mb-4">❌ PIÈGE #1 : "Adressez-vous au fabricant"</h4>
-                <div class="grid md:grid-cols-2 gap-4">
-                  <div>
-                    <p class="text-red-800 text-sm mb-2"><strong>Ce qu'ils disent :</strong></p>
-                    <p class="text-red-700 text-sm italic">"Ce n'est pas notre problème, contactez [marque] directement."</p>
-                  </div>
-                  <div>
-                    <p class="text-green-800 text-sm mb-2"><strong>Votre réponse :</strong></p>
-                    <p class="text-green-700 text-sm">"L'article L.217-14 précise que je ne peux être renvoyé vers le fabricant. Vous êtes mon seul interlocuteur."</p>
-                  </div>
-                </div>
-              </div>
-
-              <div class="bg-red-50 border border-red-200 rounded-lg p-4 sm:p-6">
-                <h4 class="text-base sm:text-lg font-bold text-red-900 mb-4">❌ PIÈGE #2 : "La garantie légale ne couvre pas ça"</h4>
-                <div class="grid md:grid-cols-2 gap-4">
-                  <div>
-                    <p class="text-red-800 text-sm mb-2"><strong>Ce qu'ils disent :</strong></p>
-                    <p class="text-red-700 text-sm italic">"C'est de l'usure normale" ou "Vous l'avez mal utilisé"</p>
-                  </div>
-                  <div>
-                    <p class="text-green-800 text-sm mb-2"><strong>Votre réponse :</strong></p>
-                    <p class="text-green-700 text-sm">"L'article L.217-7 établit une présomption : c'est à vous de prouver la mauvaise utilisation, pas à moi."</p>
-                  </div>
-                </div>
-              </div>
-
-              <div class="bg-red-50 border border-red-200 rounded-lg p-4 sm:p-6">
-                <h4 class="text-base sm:text-lg font-bold text-red-900 mb-4">❌ PIÈGE #3 : "Vous devez payer les frais de retour"</h4>
-                <div class="grid md:grid-cols-2 gap-4">
-                  <div>
-                    <p class="text-red-800 text-sm mb-2"><strong>Ce qu'ils disent :</strong></p>
-                    <p class="text-red-700 text-sm italic">"Les frais de port sont à vos frais"</p>
-                  </div>
-                  <div>
-                    <p class="text-green-800 text-sm mb-2"><strong>Votre réponse :</strong></p>
-                    <p class="text-green-700 text-sm">"L'article L.217-11 stipule que tous les frais sont à la charge du vendeur."</p>
-                  </div>
-                </div>
-              </div>
-
-              <div class="bg-red-50 border border-red-200 rounded-lg p-4 sm:p-6">
-                <h4 class="text-base sm:text-lg font-bold text-red-900 mb-4">❌ PIÈGE #4 : "Nous ne faisons que des avoirs"</h4>
-                <div class="grid md:grid-cols-2 gap-4">
-                  <div>
-                    <p class="text-red-800 text-sm mb-2"><strong>Ce qu'ils disent :</strong></p>
-                    <p class="text-red-700 text-sm italic">"On ne rembourse pas, seulement des bons d'achat"</p>
-                  </div>
-                  <div>
-                    <p class="text-green-800 text-sm mb-2"><strong>Votre réponse :</strong></p>
-                    <p class="text-green-700 text-sm">"L'article L.217-13 me donne droit au remboursement en espèces, pas en avoir."</p>
-                  </div>
-                </div>
-              </div>
-
-              <div class="bg-red-50 border border-red-200 rounded-lg p-4 sm:p-6">
-                <h4 class="text-base sm:text-lg font-bold text-red-900 mb-4">❌ PIÈGE #5 : "Il faut l'emballage d'origine"</h4>
-                <div class="grid md:grid-cols-2 gap-4">
-                  <div>
-                    <p class="text-red-800 text-sm mb-2"><strong>Ce qu'ils disent :</strong></p>
-                    <p class="text-red-700 text-sm italic">"Sans l'emballage, on ne peut rien faire"</p>
-                  </div>
-                  <div>
-                    <p class="text-green-800 text-sm mb-2"><strong>Votre réponse :</strong></p>
-                    <p class="text-green-700 text-sm">"L'emballage n'est pas requis par la loi pour la garantie légale, seule la preuve d'achat suffit."</p>
-                  </div>
-                </div>
-              </div>
-
-              <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 sm:p-6 mt-8">
-                <h4 class="text-base sm:text-lg font-bold text-yellow-900 mb-3">💡 Conseil d'expert</h4>
-                <p class="text-yellow-800">
-                  Face à ces arguments fallacieux, restez ferme et citez systématiquement les articles de loi. La plupart des vendeurs cèdent quand ils réalisent que vous connaissez vos droits. Si nécessaire, demandez à parler au responsable ou au service juridique.
-                </p>
-              </div>
-            </div>
-          </div>
-        `,
-      },
-      {
-        id: 'exemples-concrets',
-        title: 'Cas pratiques résolus : 15 exemples concrets avec solutions',
-        html: `
-          <div class="prose prose-lg max-w-none">
-            <p class="text-base sm:text-lg text-gray-700 mb-6">
-              Découvrez comment d'autres consommateurs ont fait valoir leurs droits dans des situations similaires à la vôtre. Ces <strong>cas réels</strong> vous donneront les clés pour réussir :
-            </p>
-
-            <div class="grid gap-4 sm:p-6">
-              <!-- Cas 1 : Smartphone -->
-              <div class="bg-white border border-gray-200 rounded-lg p-4 sm:p-6 shadow-sm">
-                <div class="flex items-start">
-                  <div class="bg-blue-100 rounded-lg p-3 mr-4 flex-shrink-0">
-                    <span class="text-xl sm:text-2xl">📱</span>
-                  </div>
-                  <div class="flex-1">
-                    <h4 class="text-base sm:text-lg font-bold text-gray-900 mb-2">iPhone 14 : batterie qui se décharge en 2h</h4>
-                    <p class="text-gray-600 text-sm mb-3">
-                      <strong>Situation :</strong> Acheté chez Fnac il y a 8 mois, autonomie divisée par 10 sans raison.
-                    </p>
-                    <div class="bg-green-50 p-3 rounded">
-                      <p class="text-green-800 text-sm">
-                        <strong>✅ Solution :</strong> Mise en demeure citant L.217-5 (conformité à l'usage attendu). Fnac a proposé un remplacement immédiat par un iPhone 14 neuf. Délai : 3 jours.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Cas 2 : Électroménager -->
-              <div class="bg-white border border-gray-200 rounded-lg p-4 sm:p-6 shadow-sm">
-                <div class="flex items-start">
-                  <div class="bg-orange-100 rounded-lg p-3 mr-4 flex-shrink-0">
-                    <span class="text-xl sm:text-2xl">🏠</span>
-                  </div>
-                  <div class="flex-1">
-                    <h4 class="text-base sm:text-lg font-bold text-gray-900 mb-2">Lave-linge Whirlpool : panne après 13 mois</h4>
-                    <p class="text-gray-600 text-sm mb-3">
-                      <strong>Situation :</strong> Acheté chez Darty, tambour bloqué, coût réparation annoncé : 380€.
-                    </p>
-                    <div class="bg-green-50 p-3 rounded">
-                      <p class="text-green-800 text-sm">
-                        <strong>✅ Solution :</strong> Refus du devis, invocation L.217-11 (réparation gratuite). Darty a pris en charge la réparation complète. Économie : 380€.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Cas 3 : Automobile -->
-              <div class="bg-white border border-gray-200 rounded-lg p-4 sm:p-6 shadow-sm">
-                <div class="flex items-start">
-                  <div class="bg-red-100 rounded-lg p-3 mr-4 flex-shrink-0">
-                    <span class="text-xl sm:text-2xl">🚗</span>
-                  </div>
-                  <div class="flex-1">
-                    <h4 class="text-base sm:text-lg font-bold text-gray-900 mb-2">Peugeot 208 neuve : problème boîte de vitesse</h4>
-                    <p class="text-gray-600 text-sm mb-3">
-                      <strong>Situation :</strong> Achetée en concession, à-coups permanents, utilisation impossible.
-                    </p>
-                    <div class="bg-green-50 p-3 rounded">
-                      <p class="text-green-800 text-sm">
-                        <strong>✅ Solution :</strong> Après 2 réparations échouées, résolution du contrat (L.217-13). Remboursement intégral : 23 500€ + dommages-intérêts pour les désagréments.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Cas 4 : E-commerce -->
-              <div class="bg-white border border-gray-200 rounded-lg p-4 sm:p-6 shadow-sm">
-                <div class="flex items-start">
-                  <div class="bg-purple-100 rounded-lg p-3 mr-4 flex-shrink-0">
-                    <span class="text-xl sm:text-2xl">💻</span>
-                  </div>
-                  <div class="flex-1">
-                    <h4 class="text-base sm:text-lg font-bold text-gray-900 mb-2">MacBook Pro M2 : surchauffe excessive</h4>
-                    <p class="text-gray-600 text-sm mb-3">
-                      <strong>Situation :</strong> Acheté sur Amazon, ventilateur à fond en permanence, ralentissements.
-                    </p>
-                    <div class="bg-green-50 p-3 rounded">
-                      <p class="text-green-800 text-sm">
-                        <strong>✅ Solution :</strong> Documentation du défaut avec captures d'écran des températures. Amazon a accepté le remplacement par un MacBook Pro M3 (modèle supérieur) à prix égal.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 sm:p-6 mt-8">
-              <h4 class="text-base sm:text-lg font-bold text-blue-900 mb-3">📊 Statistiques de réussite</h4>
-              <div class="grid md:grid-cols-3 gap-4 text-center">
-                <div>
-                  <div class="text-3xl font-bold text-blue-600">87%</div>
-                  <div class="text-sm text-blue-800">Résolution amiable avec mise en demeure</div>
-                </div>
-                <div>
-                  <div class="text-3xl font-bold text-green-600">15 jours</div>
-                  <div class="text-sm text-green-800">Délai moyen de résolution</div>
-                </div>
-                <div>
-                  <div class="text-3xl font-bold text-purple-600">€2,341</div>
-                  <div class="text-sm text-purple-800">Économie moyenne par dossier</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        `,
-      },
-      {
-        id: 'delais-prescrips',
-        title: 'Délais et prescription : ne ratez pas le coche',
-        html: `
-          <div class="prose prose-lg max-w-none">
-            <div class="bg-red-50 border-l-4 border-red-400 p-4 sm:p-6 mb-6">
-              <h4 class="text-base sm:text-lg font-bold text-red-900 mb-2">⏰ URGENT : Délais à ne pas manquer</h4>
-              <p class="text-red-800">
-                La garantie légale a des délais stricts. Passé ces échéances, vous perdez définitivement vos droits. Voici tout ce qu'il faut savoir :
-              </p>
-            </div>
-
-            <div class="grid md:grid-cols-2 gap-8">
-              <div class="bg-white border border-blue-200 rounded-lg p-4 sm:p-6">
-                <h4 class="text-lg sm:text-xl font-bold text-blue-900 mb-4">📅 Durée de la garantie</h4>
-                <div class="space-y-4">
-                  <div class="border-l-4 border-green-400 pl-4">
-                    <h5 class="font-bold text-green-800">Produits NEUFS</h5>
-                    <p class="text-green-700 text-sm">2 ans à partir de la livraison (L.217-7)</p>
-                  </div>
-                  <div class="border-l-4 border-orange-400 pl-4">
-                    <h5 class="font-bold text-orange-800">Produits d'OCCASION</h5>
-                    <p class="text-orange-700 text-sm">12 mois minimum (peut être réduit par accord)</p>
-                  </div>
-                  <div class="border-l-4 border-purple-400 pl-4">
-                    <h5 class="font-bold text-purple-800">Services NUMÉRIQUES</h5>
-                    <p class="text-purple-700 text-sm">2 ans ou durée du contrat si supérieure</p>
-                  </div>
-                </div>
-              </div>
-
-              <div class="bg-white border border-orange-200 rounded-lg p-4 sm:p-6">
-                <h4 class="text-lg sm:text-xl font-bold text-orange-900 mb-4">⚖️ Délai d'action en justice</h4>
-                <div class="space-y-4">
-                  <div class="bg-orange-50 p-4 rounded">
-                    <h5 class="font-bold text-orange-800 mb-2">Action contractuelle</h5>
-                    <p class="text-orange-700 text-sm">5 ans à partir de la livraison (Art. 2224 Code civil)</p>
-                  </div>
-                  <div class="bg-red-50 p-4 rounded">
-                    <h5 class="font-bold text-red-800 mb-2">⚠️ Attention</h5>
-                    <p class="text-red-700 text-sm">Ne confondez pas durée de garantie et délai pour agir en justice !</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 sm:p-6 mt-8">
-              <h4 class="text-base sm:text-lg font-bold text-yellow-900 mb-4">🎯 Moments clés de votre garantie</h4>
-              <div class="relative">
-                <div class="flex items-center justify-between mb-4">
-                  <div class="text-center">
-                    <div class="bg-green-500 text-white rounded-full w-12 h-12 flex items-center justify-center font-bold mx-auto mb-2">J</div>
-                    <p class="text-xs text-green-700">Livraison</p>
-                  </div>
-                  <div class="text-center">
-                    <div class="bg-blue-500 text-white rounded-full w-12 h-12 flex items-center justify-center font-bold mx-auto mb-2">6M</div>
-                    <p class="text-xs text-blue-700">Présomption forte</p>
-                  </div>
-                  <div class="text-center">
-                    <div class="bg-orange-500 text-white rounded-full w-12 h-12 flex items-center justify-center font-bold mx-auto mb-2">1A</div>
-                    <p class="text-xs text-orange-700">Présomption affaiblie</p>
-                  </div>
-                  <div class="text-center">
-                    <div class="bg-red-500 text-white rounded-full w-12 h-12 flex items-center justify-center font-bold mx-auto mb-2">2A</div>
-                    <p class="text-xs text-red-700">Fin de garantie</p>
-                  </div>
-                </div>
-                <div class="bg-gray-200 h-2 rounded-full">
-                  <div class="bg-gradient-to-r from-green-500 via-blue-500 via-orange-500 to-red-500 h-2 rounded-full"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        `,
-      },
-      {
-        id: 'faq-complete',
-        title: 'FAQ : 20 questions que vous vous posez',
-        html: `
-          <div class="prose prose-lg max-w-none">
-            <div class="space-y-4 sm:space-y-6">
-              <div class="bg-white border border-gray-200 rounded-lg p-4 sm:p-6">
-                <h4 class="text-base sm:text-lg font-bold text-gray-900 mb-2">❓ Puis-je cumuler garantie légale et garantie commerciale ?</h4>
-                <p class="text-gray-700 text-sm">
-                  <strong>Oui absolument.</strong> La garantie commerciale (extension payante) s'ajoute à la garantie légale, elle ne la remplace jamais. Vous pouvez utiliser l'une ou l'autre selon ce qui vous avantage le plus.
-                </p>
-              </div>
-
-              <div class="bg-white border border-gray-200 rounded-lg p-4 sm:p-6">
-                <h4 class="text-base sm:text-lg font-bold text-gray-900 mb-2">❓ Que faire si le vendeur a fermé/fait faillite ?</h4>
-                <p class="text-gray-700 text-sm">
-                  <strong>Plusieurs options :</strong> Si c'est une chaîne, les autres magasins restent responsables. Si c'est un site e-commerce, contactez la banque (assurance CB) ou votre assurance. Pour les marketplace, la plateforme peut être solidairement responsable.
-                </p>
-              </div>
-
-              <div class="bg-white border border-gray-200 rounded-lg p-4 sm:p-6">
-                <h4 class="text-base sm:text-lg font-bold text-gray-900 mb-2">❓ Les produits reconditionnés sont-ils couverts ?</h4>
-                <p class="text-gray-700 text-sm">
-                  <strong>Oui, partiellement.</strong> Garantie minimum de 12 mois, mais peut être réduite si clairement mentionné avant l'achat. Les défauts dus au reconditionnement peuvent être exclus s'ils étaient prévisibles.
-                </p>
-              </div>
-
-              <div class="bg-white border border-gray-200 rounded-lg p-4 sm:p-6">
-                <h4 class="text-base sm:text-lg font-bold text-gray-900 mb-2">❓ Dois-je accepter une réparation qui échoue plusieurs fois ?</h4>
-                <p class="text-gray-700 text-sm">
-                  <strong>Non.</strong> Après 2 tentatives de réparation échouées, vous pouvez exiger le remplacement ou le remboursement (Art. L.217-9). Le "délai raisonnable" est dépassé.
-                </p>
-              </div>
-
-              <div class="bg-white border border-gray-200 rounded-lg p-4 sm:p-6">
-                <h4 class="text-base sm:text-lg font-bold text-gray-900 mb-2">❓ Puis-je exiger des dommages-intérêts en plus ?</h4>
-                <p class="text-gray-700 text-sm">
-                  <strong>Oui, si préjudice.</strong> Perte d'exploitation, frais supplémentaires, troubles dans les conditions de vie... peuvent donner lieu à indemnisation séparée (Art. 1231-1 Code civil).
-                </p>
-              </div>
-
-              <div class="bg-white border border-gray-200 rounded-lg p-4 sm:p-6">
-                <h4 class="text-base sm:text-lg font-bold text-gray-900 mb-2">❓ Les achats en promotion sont-ils moins protégés ?</h4>
-                <p class="text-gray-700 text-sm">
-                  <strong>Absolument pas.</strong> Soldes, destockage, ventes privées : la garantie légale s'applique intégralement. Le prix payé n'influence pas vos droits.
-                </p>
-              </div>
-            </div>
-
-            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 sm:p-6 mt-8">
-              <h4 class="text-base sm:text-lg font-bold text-blue-900 mb-3">💬 Vous avez d'autres questions ?</h4>
-              <p class="text-blue-800 mb-4">
-                Notre générateur de lettres couvre 95% des situations et inclut un support email pour vous accompagner dans votre démarche.
-              </p>
-              <a href="/eligibilite" class="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors">
-                Créer ma lettre maintenant →
-              </a>
-            </div>
-          </div>
-        `,
+        name: `Garantie légale de conformité 2025 : Guide complet de vos droits de consommateur`,
+        url: `/guides/garantie-legale-conformite-guide-complet`,
       },
     ],
-    faqSchema: createFAQSchema([
-      {
-        question: "Qu'est-ce que la garantie légale de conformité ?",
-        answer:
-          "La garantie légale de conformité protège automatiquement tout consommateur ayant acheté un produit auprès d'un professionnel. Elle dure 2 ans et couvre tous les défauts de conformité.",
-      },
-      {
-        question: 'Combien de temps dure la garantie légale ?',
-        answer:
-          "2 ans pour les produits neufs, 12 mois minimum pour l'occasion. Le délai commence à courir à partir de la livraison du produit.",
-      },
-      {
-        question: 'Quels sont mes recours en cas de défaut ?',
-        answer:
-          'Vous pouvez exiger la réparation gratuite, le remplacement, la réduction du prix ou le remboursement intégral selon les circonstances (Art. L.217-9).',
-      },
-      {
-        question: 'Le vendeur peut-il me renvoyer vers le fabricant ?',
-        answer:
-          "Non, l'article L.217-14 interdit formellement au vendeur de vous renvoyer vers le fabricant. Il est votre seul interlocuteur.",
-      },
-      {
-        question: "Dois-je garder l'emballage d'origine ?",
-        answer:
-          "Non, l'emballage n'est pas requis pour faire valoir la garantie légale. Seule la preuve d'achat (facture, ticket) est nécessaire.",
-      },
-    ]),
-    disclaimer: LEGAL_DISCLAIMER,
   },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec : <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24 mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤ 30 jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={[
+              'L.217-11',
+              'L.217-13',
+              'L.217-14',
+              'L.217-3',
+              'L.217-5',
+              'L.217-7',
+              'L.217-9',
+            ]}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'definition',
+      title: ``,
+      content: (
+        <div className="space-y-3">
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs
+                  text={`Article L.217-3 : Obligation de conformité du vendeur`}
+                />,
+                <TextWithLegalRefs text={`Article L.217-5 : Critères de conformité`} />,
+                <TextWithLegalRefs text={`Article L.217-7 : Présomption de défaut (2 ans)`} />,
+                <TextWithLegalRefs text={`Article L.217-9 : Droits du consommateur`} />,
+                <TextWithLegalRefs
+                  text={`• Achat chez un professionnel (magasin, site e-commerce)`}
+                />,
+                <TextWithLegalRefs text={`• Produit neuf ou reconditionné`} />,
+                <TextWithLegalRefs text={`• Usage personnel ou mixte`} />,
+                <TextWithLegalRefs text={`• Livraison depuis moins de 2 ans`} />,
+                <TextWithLegalRefs text={`• Achat entre particuliers (Leboncoin, etc.)`} />,
+                <TextWithLegalRefs text={`• Usage professionnel exclusif (B2B)`} />,
+                <TextWithLegalRefs text={`• Produit acheté il y a plus de 2 ans`} />,
+                <TextWithLegalRefs text={`• Vente aux enchères publiques`} />,
+              ] as React.ReactNode[]
+            }
+          />{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`La garantie légale de conformité est votre bouclier juridique le plus puissant contre les produits défectueux. Méconnue de 70% des consommateurs français, elle vous protège automatiquement pendant 2 ans sur tout achat effectué auprès d'un professionnel.`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`⚖️ Base légale incontournable Article L.217-3 : Obligation de conformité du vendeur Article L.217-5 : Critères de conformité Article L.217-7 : Présomption de défaut (2 ans) Article L.217-9 : Droits du consommateur 🎯 Qui est concerné ? ✅ PROTÉGÉ par la garantie légale • Achat chez un professionnel (magasin, site e-commerce) • Produit neuf ou reconditionné • Usage personnel ou mixte • Livraison depuis moins de 2 ans ❌ NON PROTÉGÉ • Achat entre particuliers (Leboncoin, etc.) • Usage professionnel exclusif (B2B) • Produit acheté il y a plus de 2 ans • Vente aux enchères publiques`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'defauts-couverts',
+      title: `Quels défauts sont couverts ? Tous les cas pratiques`,
+      content: (
+        <div className="space-y-3">
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs text={`• Smartphone qui ne s"allume plus`} />,
+                <TextWithLegalRefs text={`• Lave-linge qui fuit`} />,
+                <TextWithLegalRefs text={`• TV avec écran qui scintille`} />,
+                <TextWithLegalRefs text={`• Voiture avec problème moteur`} />,
+                <TextWithLegalRefs text={`• Ordinateur qui plante en permanence`} />,
+                <TextWithLegalRefs text={`• Caractéristiques techniques différentes`} />,
+                <TextWithLegalRefs text={`• Couleur non conforme`} />,
+                <TextWithLegalRefs text={`• Taille erronée`} />,
+                <TextWithLegalRefs text={`• Accessoires manquants`} />,
+                <TextWithLegalRefs text={`• Fonctionnalités absentes`} />,
+                <TextWithLegalRefs text={`• Durabilité inférieure à l'attendu`} />,
+                <TextWithLegalRefs text={`• Matériaux de mauvaise qualité`} />,
+              ] as React.ReactNode[]
+            }
+          />{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`La garantie légale couvre tous les défauts de conformité , qu'ils soient visibles immédiatement ou qui apparaissent au fil du temps. Voici une liste exhaustive des situations couvertes :`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`🔧 Défauts de fonctionnement • Smartphone qui ne s"allume plus • Lave-linge qui fuit • TV avec écran qui scintille • Voiture avec problème moteur • Ordinateur qui plante en permanence 📋 Non-conformité à la description • Caractéristiques techniques différentes • Couleur non conforme • Taille erronée • Accessoires manquants • Fonctionnalités absentes ⭐ Qualité insuffisante • Durabilité inférieure à l'attendu • Matériaux de mauvaise qualité • Finitions défectueuses • Performance en-deçà des promesses • Usure prématurée anormale 💡 Bon à savoir Présomption légale : Pendant 2 ans (12 mois pour l'occasion), tout défaut est présumé exister dès la livraison. Le vendeur doit prouver que le défaut vient de votre mauvaise utilisation, pas l'inverse !`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'vos-droits',
+      title: `Vos 4 droits inaliénables : réparation, remplacement, remboursement (Art. L.217-9)`,
+      content: (
+        <div className="space-y-3">
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs
+                  text={`Demandez d'abord la réparation (solution la plus rapide)`}
+                />,
+                <TextWithLegalRefs text={`Si refus ou échec, exigez le remplacement`} />,
+                <TextWithLegalRefs
+                  text={`En dernier recours, réclamez le remboursement intégral`}
+                />,
+                <TextWithLegalRefs text={`Accompagnez toujours d'une mise en demeure écrite`} />,
+              ] as React.ReactNode[]
+            }
+          />
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Face à un défaut de conformité, la loi vous accorde 4 options de recours dans un ordre précis. Le vendeur ne peut pas vous imposer une solution : vous choisissez !`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`1 🔧 RÉPARATION (Art. L.217-9) Le vendeur doit réparer gratuitement le produit dans un délai raisonnable.`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Gratuit : Aucun frais à votre charge (pièces, main d'œuvre, transport) Délai : "Délai raisonnable" selon la complexité (généralement ≤ 30 jours (L.217-10)) Qualité : Réparation durable avec pièces d'origine ou équivalentes`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`2 🔄 REMPLACEMENT (Art. L.217-9) Échange contre un produit identique et conforme.`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Produit : Identique ou caractéristiques équivalentes État : Neuf ou reconditionné selon l'achat initial Garantie : Extension de 6 mois (L.217-14, L.217-16, L.217-17)`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`3 💰 RÉDUCTION DU PRIX (Art. L.217-14, L.217-16, L.217-17) Si réparation/remplacement impossible ou refusé.`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Calcul : Proportionnel à la gravité du défaut Conservation : Vous gardez le produit défectueux Cumul : Possible avec dommages-intérêts`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`4 💸 REMBOURSEMENT INTÉGRAL (Art. L.217-14, L.217-16, L.217-17) Résolution du contrat et remboursement total.`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Montant : Prix d'achat intégral + frais accessoires Délai : 14 jours après retour du produit Retour : Frais de retour à la charge du vendeur`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`🎯 Stratégie recommandée Demandez d'abord la réparation (solution la plus rapide) Si refus ou échec, exigez le remplacement En dernier recours, réclamez le remboursement intégral Accompagnez toujours d'une mise en demeure écrite`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'procedure-etapes',
+      title: `Procédure étape par étape : comment faire valoir vos droits`,
+      content: (
+        <div className="space-y-3">
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs text={`• Facture ou ticket de caisse (preuve d'achat)`} />,
+                <TextWithLegalRefs text={`• Photos/vidéos du défaut (preuves visuelles)`} />,
+                <TextWithLegalRefs text={`• Descriptif produit (site web, catalogue)`} />,
+                <TextWithLegalRefs
+                  text={`• Échanges écrits avec le vendeur (emails, courriers)`}
+                />,
+                <TextWithLegalRefs text={`• Témoignages si nécessaire`} />,
+                <TextWithLegalRefs text={`• Description précise du défaut`} />,
+                <TextWithLegalRefs text={`• Référence aux articles L.217-3 et L.217-9`} />,
+                <TextWithLegalRefs
+                  text={`• Réclamation claire (réparation/remplacement/remboursement)`}
+                />,
+                <TextWithLegalRefs text={`• Délai de réponse (15 jours recommandés)`} />,
+                <TextWithLegalRefs text={`• Mention des recours en cas de refus`} />,
+                <TextWithLegalRefs text={`• Signalconso.gouv.fr`} />,
+                <TextWithLegalRefs text={`• Conciliateur de justice`} />,
+              ] as React.ReactNode[]
+            }
+          />{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Voici la marche à suivre exacte pour faire valoir votre garantie légale, avec les modèles de lettres et les délais à respecter :`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`1 📋 Rassemblez les preuves • Facture ou ticket de caisse (preuve d'achat) • Photos/vidéos du défaut (preuves visuelles) • Descriptif produit (site web, catalogue) • Échanges écrits avec le vendeur (emails, courriers) • Témoignages si nécessaire 2 📞 Contact amiable préalable Contactez d'abord le vendeur par téléphone ou email pour signaler le défaut.`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Phrase-type : "Bonjour, j'ai acheté [produit] le [date] et il présente un défaut de conformité. En application de l'article L.217-9 du Code de la consommation, je souhaite sa réparation/remplacement."`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`3 ✉️ Mise en demeure écrite Si pas de réponse sous 7 jours ou refus, envoyez une mise en demeure.`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Contenu obligatoire : • Description précise du défaut • Référence aux articles L.217-3 et L.217-9 • Réclamation claire (réparation/remplacement/remboursement) • Délai de réponse (15 jours recommandés) • Mention des recours en cas de refus 💡 Astuce : Utilisez notre générateur pour créer automatiquement votre lettre conforme !`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`4 ⚖️ Recours si échec 🤝 Solutions amiables • Signalconso.gouv.fr • Conciliateur de justice • Association de consommateurs • Médiateur sectoriel ⚖️ Action judiciaire • Tribunal de proximité (< 10 000€) • Procédure simplifiée possible • Dommages-intérêts possibles • Frais à la charge du perdant`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'pieges-eviter',
+      title: `Les 10 pièges à éviter : ce que les vendeurs ne veulent pas que vous sachiez`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Beaucoup de vendeurs comptent sur votre méconnaissance de vos droits. Voici les pièges les plus fréquents et comment les éviter :`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`❌ PIÈGE #1 : "Adressez-vous au fabricant" Ce qu'ils disent :`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`"Ce n'est pas notre problème, contactez [marque] directement."`}
+            />
+          </p>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs text={`Votre réponse :`} />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`"l'article L.217-14 précise que je ne peux être renvoyé vers le fabricant. Vous êtes mon seul interlocuteur."`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`❌ PIÈGE #2 : "La garantie légale ne couvre pas ça" Ce qu'ils disent :`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs text={`"C'est de l'usure normale" ou "Vous l'avez mal utilisé"`} />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs text={`Votre réponse :`} />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`"L'article L.217-7 établit une présomption : c"est à vous de prouver la mauvaise utilisation, pas à moi."`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`❌ PIÈGE #3 : "Vous devez payer les frais de retour" Ce qu'ils disent :`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs text={`"Les frais de port sont à vos frais"`} />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs text={`Votre réponse :`} />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`"L'article L.217-11 stipule que tous les frais sont à la charge du vendeur."`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`❌ PIÈGE #4 : "Nous ne faisons que des avoirs" Ce qu'ils disent :`}
+            />
+          </p>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs text={`"On ne rembourse pas, seulement des bons d'achat"`} />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs text={`Votre réponse :`} />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`"L'article L.217-14, L.217-16, L.217-17 me donne droit au remboursement en espèces, pas en avoir."`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`❌ PIÈGE #5 : "Il faut l'emballage d'origine" Ce qu'ils disent :`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs text={`"Sans l'emballage, on ne peut rien faire"`} />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs text={`Votre réponse :`} />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`"l'emballage n'est pas requis par la loi pour la garantie légale, seule la preuve d'achat suffit."`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`💡 Conseil d'expert Face à ces arguments fallacieux, restez ferme et citez systématiquement les articles de loi. La plupart des vendeurs cèdent quand ils réalisent que vous connaissez vos droits. Si nécessaire, demandez à parler au responsable ou au service juridique.`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'exemples-concrets',
+      title: `Cas pratiques résolus : 15 exemples concrets avec solutions`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Découvrez comment d'autres consommateurs ont fait valoir leurs droits dans des situations similaires à la vôtre. Ces cas réels vous donneront les clés pour réussir :`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`📱 iPhone 14 : batterie qui se décharge en 2h Situation : Acheté chez Fnac il y a 8 mois, autonomie divisée par 10 sans raison.`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`✅ Solution : Mise en demeure citant L.217-5 (conformité à l'usage attendu). Fnac a proposé un remplacement immédiat par un iPhone 14 neuf. Délai : 3 jours.`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`🏠 Lave-linge Whirlpool : panne après 13 mois Situation : Acheté chez Darty, tambour bloqué, coût réparation annoncé : 380€.`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`✅ Solution : Refus du devis, invocation L.217-11 (réparation gratuite). Darty a pris en charge la réparation complète. Économie : 380€.`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`🚗 Peugeot 208 neuve : problème boîte de vitesse Situation : Achetée en concession, à-coups permanents, utilisation impossible.`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`✅ Solution : Après 2 réparations échouées, résolution du contrat (L.217-14, L.217-16, L.217-17). Remboursement intégral : 23 500€ + dommages-intérêts pour les désagréments.`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`💻 MacBook Pro M2 : surchauffe excessive Situation : Acheté sur Amazon, ventilateur à fond en permanence, ralentissements.`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`✅ Solution : Documentation du défaut avec captures d'écran des températures. Amazon a accepté le remplacement par un MacBook Pro M3 (modèle supérieur) à prix égal.`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`📊 Statistiques de réussite 87% Résolution amiable avec mise en demeure 15 jours Délai moyen de résolution €2,341 Économie moyenne par dossier`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'delais-prescrips',
+      title: `Délais et prescription : ne ratez pas le coche`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`⏰ URGENT : Délais à ne pas manquer La garantie légale a des délais stricts. Passé ces échéances, vous perdez définitivement vos droits. Voici tout ce qu'il faut savoir :`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`📅 Durée de la garantie Produits NEUFS 2 ans à partir de la livraison (L.217-7)`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Produits d'OCCASION 12 mois minimum (peut être réduit par accord)`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Services NUMÉRIQUES 2 ans ou durée du contrat si supérieure`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`⚖️ Délai d'action en justice Action contractuelle 5 ans à partir de la livraison (Art. 2224 Code civil)`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`⚠️ Attention Ne confondez pas durée de garantie et délai pour agir en justice !`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs text={`🎯 Moments clés de votre garantie J Livraison`} />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs text={`6M Présomption forte`} />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs text={`1A Présomption affaiblie`} />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs text={`2A Fin de garantie`} />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'faq-complete',
+      title: `FAQ : 20 questions que vous vous posez`,
+      content: (
+        <div className="space-y-3">
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs
+                  text={`Qui contacter ? Le vendeur est l’unique interlocuteur pour la conformité.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Délais : mise en conformité dans un délai raisonnable (≤ 30 jours).`}
+                />,
+                <TextWithLegalRefs
+                  text={`Frais : transport, main-d’œuvre et pièces à la charge du vendeur.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Si échec : réduction du prix ou résolution avec remboursement.`}
+                />,
+              ] as React.ReactNode[]
+            }
+          />
+          <div className="pt-2">
+            <Button asChild>
+              <a href="/eligibilite">📄 Créer ma lettre maintenant</a>
+            </Button>
+          </div>
+        </div>
+      ),
+    },
+    {
+      id: 'procedure',
+      title: 'Procédure type',
+      content: <StandardProcedure />,
+    },
+    {
+      id: 'alternatives',
+      title: 'Si ça bloque',
+      content: <DefaultAlternatives />,
+    },
+    {
+      id: 'contacts',
+      title: 'Contacts utiles',
+      content: <DefaultContacts />,
+    },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: [
+      'L.217-11' as LegalArticleId,
+      'L.217-13' as LegalArticleId,
+      'L.217-14' as LegalArticleId,
+      'L.217-3' as LegalArticleId,
+      'L.217-5' as LegalArticleId,
+      'L.217-7' as LegalArticleId,
+      'L.217-9' as LegalArticleId,
+    ],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
 
-  /* ─────────── HIGH-TECH (COMPLÉMENTS) ─────────── */
-
-  'smartphone-ecran-batterie-defaut-garantie-legale': {
-    title: 'Smartphone défectueux : garantie légale 2025',
-    subtitle: 'Écran, batterie, réseau • Réparation, remplacement, remboursement',
+export const GUIDE_SMARTPHONE_ECRAN_BATTERIE_DEFAUT_GARANTIE_LEGALE: GuidePage = {
+  metadata: {
+    title: `Smartphone défectueux : garantie légale 2025`,
     seo: {
-      title: 'Smartphone en panne : vos droits 2025',
-      description:
-        'Écran, batterie, réseau : faites jouer la garantie légale (2 ans). Lettre de mise en demeure prête en 3 minutes.',
+      title: `Smartphone en panne : vos droits 2025`,
+      description: `Écran, batterie, réseau : faites jouer la garantie légale (2 ans). Lettre de mise en demeure prête en 3 minutes.`,
       keywords: [
         'smartphone garantie légale',
         'écran cassures lignes défaut',
@@ -774,73 +728,166 @@ export const SEO_OPTIMIZED_GUIDES: Record<string, GuidePage> = {
         'mise en demeure smartphone',
       ],
     },
-    sections: [
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
       {
-        id: 'defauts-couverts',
-        title: 'Défauts smartphone couverts par la loi',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-gray-700">Couverts (L.217-5, L.217-7) : écran avec lignes/pixels morts, tactile fantôme, batterie chute anormale, recharge capricieuse, pertes réseau répétées, micro/HP défaillants.</p>
-  <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mt-4 rounded-r-lg">
-    <p class="text-sm text-yellow-800"><strong>Non couvert :</strong> casse accidentelle/immersion hors promesse d’étanchéité. En revanche, une étanchéité annoncée mais non tenue reste couverte.</p>
-  </div>
-</div>
-      `,
-      },
-      {
-        id: 'procedure-recours',
-        title: 'Procédure en 4 étapes : simple et efficace',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <ol class="list-decimal list-inside text-sm text-gray-800 space-y-2">
-    <li>Preuves (photos/vidéos, batterie, réseau) + facture</li>
-    <li>Demande au <strong>vendeur</strong> : réparation/remplacement (L.217-9)</li>
-    <li>Mise en demeure écrite (L.217-3, L.217-7, L.217-11)</li>
-    <li>Échec : réduction du prix ou remboursement (L.217-13)</li>
-  </ol>
-  <a href="/eligibilite" class="inline-flex mt-3 px-4 py-2 bg-blue-600 text-white rounded-lg">Générer ma lettre →</a>
-</div>
-      `,
-      },
-      {
-        id: 'vendeurs-strategies',
-        title: 'Boutiques & e-commerce : nos conseils',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">En magasin, exigez un <strong>compte-rendu de test</strong>. En ligne, tracez par écrit sur l’espace vendeur. Les frais sont au vendeur (L.217-11).</p>
-</div>
-      `,
+        name: `Smartphone défectueux : garantie légale 2025`,
+        url: `/guides/smartphone-ecran-batterie-defaut-garantie-legale`,
       },
     ],
-    faqSchema: createFAQSchema([
-      {
-        question: 'Batterie chute à 70% en 2h : couvert ?',
-        answer:
-          'Oui si anormal vs usage normal. Réparation ou remplacement (L.217-9), frais vendeur (L.217-11).',
-      },
-      {
-        question: 'Le vendeur me renvoie vers la marque ?',
-        answer: 'Il ne peut pas. La garantie légale lie le vendeur (L.217-3).',
-      },
-      {
-        question: 'Défaut après 18 mois ?',
-        answer: 'Toujours présumé pour un produit neuf (L.217-7).',
-      },
-      {
-        question: 'Remboursement direct ?',
-        answer: 'Si réparation/remplacement impossible ou échoue (L.217-13).',
-      },
-    ]),
-    disclaimer: LEGAL_DISCLAIMER,
   },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec : <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24 mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤ 30 jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['L.217-11', 'L.217-13', 'L.217-3', 'L.217-5', 'L.217-7', 'L.217-9']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'defauts-couverts',
+      title: `Défauts smartphone couverts par la loi`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Couverts (L.217-5, L.217-7) : écran avec lignes/pixels morts, tactile fantôme, batterie chute anormale, recharge capricieuse, pertes réseau répétées, micro/HP défaillants.`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Non couvert : casse accidentelle/immersion hors promesse d’étanchéité. En revanche, une étanchéité annoncée mais non tenue reste couverte.`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'procedure-recours',
+      title: `Procédure en 4 étapes : simple et efficace`,
+      content: (
+        <div className="space-y-3">
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs text={`Preuves (photos/vidéos, batterie, réseau) + facture`} />,
+                <TextWithLegalRefs
+                  text={`Demande au vendeur : réparation/remplacement (L.217-9)`}
+                />,
+                <TextWithLegalRefs text={`Mise en demeure écrite (L.217-3, L.217-7, L.217-11)`} />,
+                <TextWithLegalRefs
+                  text={`Échec : réduction du prix ou remboursement (L.217-14, L.217-16, L.217-17)`}
+                />,
+              ] as React.ReactNode[]
+            }
+          />
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Preuves (photos/vidéos, batterie, réseau) + facture Demande au vendeur : réparation/remplacement (L.217-9) Mise en demeure écrite (L.217-3, L.217-7, L.217-11) Échec : réduction du prix ou remboursement (L.217-14, L.217-16, L.217-17) Générer ma lettre →`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'vendeurs-strategies',
+      title: `Boutiques & e-commerce : nos conseils`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            Panorama des pratiques par enseigne : qualité d’accueil, délais moyens, facilité de
+            remplacement.
+          </p>
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs
+                  text={`Darty : processus cadré, demandez la mise en conformité par écrit.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Boulanger : insistez sur la gratuité des frais (L.217-11).`}
+                />,
+                <TextWithLegalRefs
+                  text={`Conforama / But : privilégiez la LRAR en cas d’atermoiements.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Amazon : utilisez l’historique des tickets pour la preuve d’échec.`}
+                />,
+              ] as React.ReactNode[]
+            }
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'procedure',
+      title: 'Procédure type',
+      content: <StandardProcedure />,
+    },
+    {
+      id: 'alternatives',
+      title: 'Si ça bloque',
+      content: <DefaultAlternatives />,
+    },
+    {
+      id: 'contacts',
+      title: 'Contacts utiles',
+      content: <DefaultContacts />,
+    },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: [
+      'L.217-11' as LegalArticleId,
+      'L.217-13' as LegalArticleId,
+      'L.217-3' as LegalArticleId,
+      'L.217-5' as LegalArticleId,
+      'L.217-7' as LegalArticleId,
+      'L.217-9' as LegalArticleId,
+    ],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
 
-  'ordinateur-portable-panne-garantie-legale': {
-    title: 'Ordinateur portable en panne : vos recours 2025',
-    subtitle: 'Écran • SSD • Carte-mère • 2 ans de garantie légale',
+export const GUIDE_ORDINATEUR_PORTABLE_PANNE_GARANTIE_LEGALE: GuidePage = {
+  metadata: {
+    title: `Ordinateur portable en panne : vos recours 2025`,
     seo: {
-      title: 'PC portable défectueux : droits 2025',
-      description:
-        'Écran, carte-mère, SSD, batterie : garantie légale 2 ans. Obtenez réparation, remplacement ou remboursement rapidement.',
+      title: `PC portable défectueux : droits 2025`,
+      description: `Écran, carte-mère, SSD, batterie : garantie légale 2 ans. Obtenez réparation, remplacement ou remboursement rapidement.`,
       keywords: [
         'ordinateur portable garantie légale',
         'pc portable écran défaut',
@@ -854,62 +901,157 @@ export const SEO_OPTIMIZED_GUIDES: Record<string, GuidePage> = {
         'mise en demeure pc',
       ],
     },
-    sections: [
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
       {
-        id: 'defauts-couverts',
-        title: 'Défauts couverts par la garantie légale',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <div class="grid sm:grid-cols-2 gap-4">
-    <div class="bg-blue-50 p-4 rounded"><p class="text-sm text-blue-800">Matériel : écran/pixels, clavier/charnières, SSD/RAM, carte-mère.</p></div>
-    <div class="bg-green-50 p-4 rounded"><p class="text-sm text-green-800">Usage : surchauffe anormale, extinction, batterie anormale, ports USB/HDMI HS.</p></div>
-  </div>
-  <p class="mt-3 text-sm text-gray-700">Références : L.217-5 (conformité), L.217-7 (présomption).</p>
-</div>
-      `,
-      },
-      {
-        id: 'procedure-recours',
-        title: 'Chemin vers la mise en conformité',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Demandez d’abord la réparation (L.217-9). Si échec ou délai déraisonnable : remplacement. En dernier recours : réduction du prix/remboursement (L.217-13). Frais vendeur (L.217-11).</p>
-  <a href="/eligibilite" class="inline-flex mt-3 px-4 py-2 bg-blue-600 text-white rounded-lg">Lettre conforme →</a>
-</div>
-      `,
-      },
-      {
-        id: 'vendeurs-strategies',
-        title: 'Revendeurs : pratiques efficaces',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Exigez un diagnostic écrit (logs, tests mémoire). Refusez tout devis hors garantie légale.</p>
-</div>
-      `,
+        name: `Ordinateur portable en panne : vos recours 2025`,
+        url: `/guides/ordinateur-portable-panne-garantie-legale`,
       },
     ],
-    faqSchema: createFAQSchema([
-      {
-        question: 'Charnière qui casse : couvert ?',
-        answer: 'Oui si usage normal. Réparation/remplacement (L.217-9).',
-      },
-      {
-        question: 'Batterie faible ?',
-        answer: 'Si anormale vs usage normal, c’est couvert. Frais au vendeur (L.217-11).',
-      },
-      { question: 'Délais ?', answer: 'Raisonnables. À défaut, changez de recours (L.217-13).' },
-      { question: 'Occasion ?', answer: 'Présomption d’au moins 12 mois (L.217-7).' },
-    ]),
-    disclaimer: LEGAL_DISCLAIMER,
   },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec : <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24 mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤ 30 jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['L.217-11', 'L.217-13', 'L.217-5', 'L.217-7', 'L.217-9']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'defauts-couverts',
+      title: `Défauts couverts par la garantie légale`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Matériel : écran/pixels, clavier/charnières, SSD/RAM, carte-mère.`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Usage : surchauffe anormale, extinction, batterie anormale, ports USB/HDMI HS.`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs text={`Références : L.217-5 (conformité), L.217-7 (présomption).`} />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'procedure-recours',
+      title: `Chemin vers la mise en conformité`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Demandez d’abord la réparation (L.217-9). Si échec ou délai déraisonnable : remplacement. En dernier recours : réduction du prix/remboursement (L.217-14, L.217-16, L.217-17). Frais vendeur (L.217-11).`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs text={`Lettre conforme →`} />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'vendeurs-strategies',
+      title: `Revendeurs : pratiques efficaces`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            Panorama des pratiques par enseigne : qualité d’accueil, délais moyens, facilité de
+            remplacement.
+          </p>
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs
+                  text={`Darty : processus cadré, demandez la mise en conformité par écrit.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Boulanger : insistez sur la gratuité des frais (L.217-11).`}
+                />,
+                <TextWithLegalRefs
+                  text={`Conforama / But : privilégiez la LRAR en cas d’atermoiements.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Amazon : utilisez l’historique des tickets pour la preuve d’échec.`}
+                />,
+              ] as React.ReactNode[]
+            }
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'procedure',
+      title: 'Procédure type',
+      content: <StandardProcedure />,
+    },
+    {
+      id: 'alternatives',
+      title: 'Si ça bloque',
+      content: <DefaultAlternatives />,
+    },
+    {
+      id: 'contacts',
+      title: 'Contacts utiles',
+      content: <DefaultContacts />,
+    },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: [
+      'L.217-11' as LegalArticleId,
+      'L.217-13' as LegalArticleId,
+      'L.217-5' as LegalArticleId,
+      'L.217-7' as LegalArticleId,
+      'L.217-9' as LegalArticleId,
+    ],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
 
-  'routeur-wifi-mesh-deconnexions-garantie-legale': {
-    title: 'Routeur/mesh déconnexions : garantie légale 2025',
-    subtitle: 'Coupures, débit instable, ports HS • Vendeur responsable',
+export const GUIDE_ROUTEUR_WIFI_MESH_DECONNEXIONS_GARANTIE_LEGALE: GuidePage = {
+  metadata: {
+    title: `Routeur/mesh déconnexions : garantie légale 2025`,
     seo: {
-      title: 'Routeur Wi-Fi défectueux : recours',
-      description:
-        'Coupures, ports HS, débit instable : faites jouer la garantie légale. Lettre de mise en demeure en 3 minutes.',
+      title: `Routeur Wi-Fi défectueux : recours`,
+      description: `Coupures, ports HS, débit instable : faites jouer la garantie légale. Lettre de mise en demeure en 3 minutes.`,
       keywords: [
         'routeur wifi panne garantie',
         'mesh deconnexions recours',
@@ -923,60 +1065,146 @@ export const SEO_OPTIMIZED_GUIDES: Record<string, GuidePage> = {
         'mise en demeure routeur',
       ],
     },
-    sections: [
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
       {
-        id: 'defauts-couverts',
-        title: 'Défauts réseau couverts',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-gray-700 text-sm">Coupures récurrentes, débit faible vs caractéristiques, ports LAN/WAN HS, redémarrages intempestifs, firmware instable empêchant l’usage : L.217-5, L.217-7.</p>
-</div>
-      `,
-      },
-      {
-        id: 'procedure-recours',
-        title: 'Obtenir une solution rapide',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Réparation/remplacement auprès du <strong>vendeur</strong> (L.217-9), frais inclus (L.217-11). Si échec : réduction/remboursement (L.217-13).</p>
-</div>
-      `,
-      },
-      {
-        id: 'vendeurs-strategies',
-        title: 'Distributeurs : accélérer',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Joignez captures de débits/tests, journaux système, heures de coupure.</p>
-</div>
-      `,
+        name: `Routeur/mesh déconnexions : garantie légale 2025`,
+        url: `/guides/routeur-wifi-mesh-deconnexions-garantie-legale`,
       },
     ],
-    faqSchema: createFAQSchema([
-      {
-        question: 'Ports LAN HS : couverts ?',
-        answer: 'Oui. Mise en conformité (L.217-9), frais à la charge du vendeur (L.217-11).',
-      },
-      {
-        question: 'Débit très inférieur à la fiche ?',
-        answer: 'C’est un défaut de conformité (L.217-5) si l’usage promis est empêché.',
-      },
-      {
-        question: 'Remboursement ?',
-        answer: 'Si réparation/remplacement impossible ou échoue (L.217-13).',
-      },
-      { question: 'Occasion ?', answer: 'Présomption 12 mois (L.217-7).' },
-    ]),
-    disclaimer: LEGAL_DISCLAIMER,
   },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec : <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24 mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤ 30 jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['L.217-11', 'L.217-13', 'L.217-5', 'L.217-7', 'L.217-9']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'defauts-couverts',
+      title: `Défauts réseau couverts`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Coupures récurrentes, débit faible vs caractéristiques, ports LAN/WAN HS, redémarrages intempestifs, firmware instable empêchant l’usage : L.217-5, L.217-7.`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'procedure-recours',
+      title: `Obtenir une solution rapide`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Réparation/remplacement auprès du vendeur (L.217-9), frais inclus (L.217-11). Si échec : réduction/remboursement (L.217-14, L.217-16, L.217-17).`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'vendeurs-strategies',
+      title: `Distributeurs : accélérer`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            Panorama des pratiques par enseigne : qualité d’accueil, délais moyens, facilité de
+            remplacement.
+          </p>
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs
+                  text={`Darty : processus cadré, demandez la mise en conformité par écrit.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Boulanger : insistez sur la gratuité des frais (L.217-11).`}
+                />,
+                <TextWithLegalRefs
+                  text={`Conforama / But : privilégiez la LRAR en cas d’atermoiements.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Amazon : utilisez l’historique des tickets pour la preuve d’échec.`}
+                />,
+              ] as React.ReactNode[]
+            }
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'procedure',
+      title: 'Procédure type',
+      content: <StandardProcedure />,
+    },
+    {
+      id: 'alternatives',
+      title: 'Si ça bloque',
+      content: <DefaultAlternatives />,
+    },
+    {
+      id: 'contacts',
+      title: 'Contacts utiles',
+      content: <DefaultContacts />,
+    },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: [
+      'L.217-11' as LegalArticleId,
+      'L.217-13' as LegalArticleId,
+      'L.217-5' as LegalArticleId,
+      'L.217-7' as LegalArticleId,
+      'L.217-9' as LegalArticleId,
+    ],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
 
-  'appareil-photo-hybride-defaut-garantie-legale': {
-    title: 'Appareil photo hybride : garantie légale 2025',
-    subtitle: 'AF erratique • Capteur taches • Ports HS • 2 ans',
+export const GUIDE_APPAREIL_PHOTO_HYBRIDE_DEFAUT_GARANTIE_LEGALE: GuidePage = {
+  metadata: {
+    title: `Appareil photo hybride : garantie légale 2025`,
     seo: {
-      title: 'Hybride en panne : vos recours 2025',
-      description:
-        'Autofocus erratique, capteur taché, ports HS : garantie légale. Obtenez réparation, remplacement ou remboursement.',
+      title: `Hybride en panne : vos recours 2025`,
+      description: `Autofocus erratique, capteur taché, ports HS : garantie légale. Obtenez réparation, remplacement ou remboursement.`,
       keywords: [
         'appareil photo hybride garantie légale',
         'autofocus panne recours',
@@ -990,63 +1218,146 @@ export const SEO_OPTIMIZED_GUIDES: Record<string, GuidePage> = {
         'mise en demeure photo',
       ],
     },
-    sections: [
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
       {
-        id: 'defauts-couverts',
-        title: 'Défauts couverts sur boîtiers hybrides',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-gray-700 text-sm">AF qui “pompe” en lumière normale, capteur avec taches d’origine, obturateur bruyant/instable, ports HS, surchauffe empêchant l’usage : L.217-5, L.217-7.</p>
-</div>
-      `,
-      },
-      {
-        id: 'procedure-recours',
-        title: 'Démarches concrètes',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Réparation prioritaire (L.217-9), sinon remplacement. En cas d’échec : réduction/remboursement (L.217-13). Frais vendeur (L.217-11).</p>
-</div>
-      `,
-      },
-      {
-        id: 'vendeurs-strategies',
-        title: 'Magasins photo : bonnes pratiques',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Faites réaliser un test chart AF et un nettoyage capteur consigné par écrit si défaut d’origine.</p>
-</div>
-      `,
+        name: `Appareil photo hybride : garantie légale 2025`,
+        url: `/guides/appareil-photo-hybride-defaut-garantie-legale`,
       },
     ],
-    faqSchema: createFAQSchema([
-      {
-        question: 'Capteur taché neuf : couvert ?',
-        answer: 'Oui, défaut de conformité. Mise en conformité à charge vendeur (L.217-11).',
-      },
-      {
-        question: 'AF instable en plein jour ?',
-        answer:
-          'C’est un défaut si usage promis empêché (L.217-5). Réparation/remplacement (L.217-9).',
-      },
-      {
-        question: 'Remboursement ?',
-        answer: 'Si mise en conformité impossible ou échoue (L.217-13).',
-      },
-      { question: 'Occasion ?', answer: 'Présomption 12 mois au moins (L.217-7).' },
-    ]),
-    disclaimer: LEGAL_DISCLAIMER,
   },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec : <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24 mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤ 30 jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['L.217-11', 'L.217-13', 'L.217-5', 'L.217-7', 'L.217-9']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'defauts-couverts',
+      title: `Défauts couverts sur boîtiers hybrides`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`AF qui “pompe” en lumière normale, capteur avec taches d’origine, obturateur bruyant/instable, ports HS, surchauffe empêchant l’usage : L.217-5, L.217-7.`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'procedure-recours',
+      title: `Démarches concrètes`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Réparation prioritaire (L.217-9), sinon remplacement. En cas d’échec : réduction/remboursement (L.217-14, L.217-16, L.217-17). Frais vendeur (L.217-11).`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'vendeurs-strategies',
+      title: `Magasins photo : bonnes pratiques`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            Panorama des pratiques par enseigne : qualité d’accueil, délais moyens, facilité de
+            remplacement.
+          </p>
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs
+                  text={`Darty : processus cadré, demandez la mise en conformité par écrit.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Boulanger : insistez sur la gratuité des frais (L.217-11).`}
+                />,
+                <TextWithLegalRefs
+                  text={`Conforama / But : privilégiez la LRAR en cas d’atermoiements.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Amazon : utilisez l’historique des tickets pour la preuve d’échec.`}
+                />,
+              ] as React.ReactNode[]
+            }
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'procedure',
+      title: 'Procédure type',
+      content: <StandardProcedure />,
+    },
+    {
+      id: 'alternatives',
+      title: 'Si ça bloque',
+      content: <DefaultAlternatives />,
+    },
+    {
+      id: 'contacts',
+      title: 'Contacts utiles',
+      content: <DefaultContacts />,
+    },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: [
+      'L.217-11' as LegalArticleId,
+      'L.217-13' as LegalArticleId,
+      'L.217-5' as LegalArticleId,
+      'L.217-7' as LegalArticleId,
+      'L.217-9' as LegalArticleId,
+    ],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
 
-  /* ─────────── ÉLECTROMÉNAGER (GRAND PUBLIC) ─────────── */
-
-  'lave-linge-panne-garantie-legale': {
-    title: 'Lave-linge en panne : garantie légale 2025',
-    subtitle: 'Tambour, fuite, carte • 2 ans vendeur • Sécurité & urgence',
+export const GUIDE_LAVE_LINGE_PANNE_GARANTIE_LEGALE: GuidePage = {
+  metadata: {
+    title: `Lave-linge en panne : garantie légale 2025`,
     seo: {
-      title: 'Lave-linge défectueux : recours 2025',
-      description:
-        'Fuite, tambour bloqué, carte HS : faites jouer la garantie légale. Réparation/remplacement/remboursement.',
+      title: `Lave-linge défectueux : recours 2025`,
+      description: `Fuite, tambour bloqué, carte HS : faites jouer la garantie légale. Réparation/remplacement/remboursement.`,
       keywords: [
         'lave linge panne garantie',
         'fuite machine a laver recours',
@@ -1060,58 +1371,149 @@ export const SEO_OPTIMIZED_GUIDES: Record<string, GuidePage> = {
         'mise en demeure lave linge',
       ],
     },
-    sections: [
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
       {
-        id: 'defauts-couverts',
-        title: 'Défauts couverts & risques',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Fuites, tambour/roulements, carte/affichage HS, chauffe absente, cyclage erratique : couverts (L.217-5, L.217-7). Risque d’inondation ⇒ intervention rapide.</p>
-</div>
-      `,
-      },
-      {
-        id: 'procedure-recours',
-        title: 'Procédure à activer vite',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Réparation prioritaire (L.217-9). Si immobilisation longue/défaut récurrent : remplacement. À défaut : remboursement (L.217-13). Frais à la charge du vendeur (L.217-11).</p>
-  <a href="/eligibilite" class="inline-flex mt-3 px-4 py-2 bg-blue-600 text-white rounded-lg">Créer ma lettre →</a>
-</div>
-      `,
-      },
-      {
-        id: 'vendeurs-strategies',
-        title: 'Pose/transport : qui paie ?',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Transport, main-d’œuvre et pièces liés à la mise en conformité sont à la charge du vendeur (L.217-11).</p>
-</div>
-      `,
+        name: `Lave-linge en panne : garantie légale 2025`,
+        url: `/guides/lave-linge-panne-garantie-legale`,
       },
     ],
-    faqSchema: createFAQSchema([
-      {
-        question: 'Fuite au joint : couvert ?',
-        answer: 'Oui. Mise en conformité via vendeur (L.217-9, L.217-11).',
-      },
-      {
-        question: 'Appareil immobilisé 4 semaines ?',
-        answer: 'Demandez un remplacement ou un remboursement (L.217-13).',
-      },
-      { question: 'Occasion 8 mois ?', answer: 'Présomption d’au moins 12 mois (L.217-7).' },
-      { question: 'Test payé ?', answer: 'Non, les frais incombent au vendeur (L.217-11).' },
-    ]),
-    disclaimer: LEGAL_DISCLAIMER,
   },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec : <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24 mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤ 30 jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['L.217-11', 'L.217-13', 'L.217-5', 'L.217-7', 'L.217-9']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'defauts-couverts',
+      title: `Défauts couverts & risques`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Fuites, tambour/roulements, carte/affichage HS, chauffe absente, cyclage erratique : couverts (L.217-5, L.217-7). Risque d’inondation ⇒ intervention rapide.`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'procedure-recours',
+      title: `Procédure à activer vite`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Réparation prioritaire (L.217-9). Si immobilisation longue/défaut récurrent : remplacement. À défaut : remboursement (L.217-14, L.217-16, L.217-17). Frais à la charge du vendeur (L.217-11).`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs text={`Créer ma lettre →`} />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'vendeurs-strategies',
+      title: `Pose/transport : qui paie ?`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            Panorama des pratiques par enseigne : qualité d’accueil, délais moyens, facilité de
+            remplacement.
+          </p>
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs
+                  text={`Darty : processus cadré, demandez la mise en conformité par écrit.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Boulanger : insistez sur la gratuité des frais (L.217-11).`}
+                />,
+                <TextWithLegalRefs
+                  text={`Conforama / But : privilégiez la LRAR en cas d’atermoiements.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Amazon : utilisez l’historique des tickets pour la preuve d’échec.`}
+                />,
+              ] as React.ReactNode[]
+            }
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'procedure',
+      title: 'Procédure type',
+      content: <StandardProcedure />,
+    },
+    {
+      id: 'alternatives',
+      title: 'Si ça bloque',
+      content: <DefaultAlternatives />,
+    },
+    {
+      id: 'contacts',
+      title: 'Contacts utiles',
+      content: <DefaultContacts />,
+    },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: [
+      'L.217-11' as LegalArticleId,
+      'L.217-13' as LegalArticleId,
+      'L.217-5' as LegalArticleId,
+      'L.217-7' as LegalArticleId,
+      'L.217-9' as LegalArticleId,
+    ],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
 
-  'lave-vaisselle-defaut-garantie-legale': {
-    title: 'Lave-vaisselle défectueux : garantie légale 2025',
-    subtitle: 'Fuites • Chauffe • Pompe • 2 ans vendeur',
+export const GUIDE_LAVE_VAISSELLE_DEFAUT_GARANTIE_LEGALE: GuidePage = {
+  metadata: {
+    title: `Lave-vaisselle défectueux : garantie légale 2025`,
     seo: {
-      title: 'LV en panne : vos droits 2025',
-      description:
-        'Fuites, chauffe absente, pompe HS : garantie légale. Réparation, remplacement ou remboursement, frais au vendeur.',
+      title: `LV en panne : vos droits 2025`,
+      description: `Fuites, chauffe absente, pompe HS : garantie légale. Réparation, remplacement ou remboursement, frais au vendeur.`,
       keywords: [
         'lave vaisselle panne garantie',
         'pompe HS lave vaisselle',
@@ -1125,57 +1527,146 @@ export const SEO_OPTIMIZED_GUIDES: Record<string, GuidePage> = {
         'mise en demeure LV',
       ],
     },
-    sections: [
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
       {
-        id: 'defauts-couverts',
-        title: 'Défauts couverts & preuves',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Fuites, code erreur pompe, chauffe absente, bras de lavage bloqués, cartes HS : couverts (L.217-5, L.217-7). Photos/vidéos utiles.</p>
-</div>
-      `,
-      },
-      {
-        id: 'procedure-recours',
-        title: 'Obtenir la mise en conformité',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Réparation via vendeur (L.217-9) → si échec : remplacement → sinon remboursement (L.217-13). Transport et MO à la charge du vendeur (L.217-11).</p>
-</div>
-      `,
-      },
-      {
-        id: 'vendeurs-strategies',
-        title: 'Installateurs : cadrage utile',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Exigez un <strong>compte-rendu d’intervention</strong> et un délai écrit “raisonnable”.</p>
-</div>
-      `,
+        name: `Lave-vaisselle défectueux : garantie légale 2025`,
+        url: `/guides/lave-vaisselle-defaut-garantie-legale`,
       },
     ],
-    faqSchema: createFAQSchema([
-      {
-        question: 'Code erreur pompe : couvert ?',
-        answer: 'Oui. Mise en conformité (L.217-9), frais vendeur (L.217-11).',
-      },
-      {
-        question: 'Remboursement possible ?',
-        answer: 'Si réparation/remplacement impossible ou échec (L.217-13).',
-      },
-      { question: 'Occasion ?', answer: 'Présomption 12 mois (L.217-7).' },
-      { question: 'Dépannage payant ?', answer: 'Non si lié à la mise en conformité (L.217-11).' },
-    ]),
-    disclaimer: LEGAL_DISCLAIMER,
   },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec : <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24 mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤ 30 jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['L.217-11', 'L.217-13', 'L.217-5', 'L.217-7', 'L.217-9']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'defauts-couverts',
+      title: `Défauts couverts & preuves`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Fuites, code erreur pompe, chauffe absente, bras de lavage bloqués, cartes HS : couverts (L.217-5, L.217-7). Photos/vidéos utiles.`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'procedure-recours',
+      title: `Obtenir la mise en conformité`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Réparation via vendeur (L.217-9) → si échec : remplacement → sinon remboursement (L.217-14, L.217-16, L.217-17). Transport et MO à la charge du vendeur (L.217-11).`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'vendeurs-strategies',
+      title: `Installateurs : cadrage utile`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            Panorama des pratiques par enseigne : qualité d’accueil, délais moyens, facilité de
+            remplacement.
+          </p>
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs
+                  text={`Darty : processus cadré, demandez la mise en conformité par écrit.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Boulanger : insistez sur la gratuité des frais (L.217-11).`}
+                />,
+                <TextWithLegalRefs
+                  text={`Conforama / But : privilégiez la LRAR en cas d’atermoiements.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Amazon : utilisez l’historique des tickets pour la preuve d’échec.`}
+                />,
+              ] as React.ReactNode[]
+            }
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'procedure',
+      title: 'Procédure type',
+      content: <StandardProcedure />,
+    },
+    {
+      id: 'alternatives',
+      title: 'Si ça bloque',
+      content: <DefaultAlternatives />,
+    },
+    {
+      id: 'contacts',
+      title: 'Contacts utiles',
+      content: <DefaultContacts />,
+    },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: [
+      'L.217-11' as LegalArticleId,
+      'L.217-13' as LegalArticleId,
+      'L.217-5' as LegalArticleId,
+      'L.217-7' as LegalArticleId,
+      'L.217-9' as LegalArticleId,
+    ],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
 
-  'refrigerateur-congelateur-defaut-garantie-legale': {
-    title: 'Réfrigérateur/Congélateur : recours 2025',
-    subtitle: 'Froid insuffisant • Fuite • Carte HS • 2 ans vendeur',
+export const GUIDE_REFRIGERATEUR_CONGELATEUR_DEFAUT_GARANTIE_LEGALE: GuidePage = {
+  metadata: {
+    title: `Réfrigérateur/Congélateur : recours 2025`,
     seo: {
-      title: 'Frigo défectueux : garantie légale',
-      description:
-        'Froid insuffisant, fuites, carte HS : garantie légale 2 ans. Réparation, remplacement, remboursement. Lettre en 3 minutes.',
+      title: `Frigo défectueux : garantie légale`,
+      description: `Froid insuffisant, fuites, carte HS : garantie légale 2 ans. Réparation, remplacement, remboursement. Lettre en 3 minutes.`,
       keywords: [
         'réfrigérateur garantie légale',
         'froid insuffisant frigo',
@@ -1189,55 +1680,151 @@ export const SEO_OPTIMIZED_GUIDES: Record<string, GuidePage> = {
         'mise en demeure frigo',
       ],
     },
-    sections: [
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
       {
-        id: 'defauts-couverts',
-        title: 'Défauts froid & électronique couverts',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Températures hors tolérance, dégivrage défaillant, ventilateur HS, fuites, cartes/sondes HS : L.217-5, L.217-7.</p>
-  <div class="bg-red-50 border-l-4 border-red-400 p-4 mt-4"><p class="text-sm text-red-800">Denrées perdues ? Conservez les preuves pour la négociation civile/assurance (hors garantie légale elle-même).</p></div>
-</div>
-      `,
-      },
-      {
-        id: 'procedure-recours',
-        title: 'Étapes pour une solution rapide',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Réparation (L.217-9). Si échec/délai anormal : remplacement. Dernier recours : remboursement (L.217-13). Frais vendeur (L.217-11).</p>
-</div>
-      `,
-      },
-      {
-        id: 'vendeurs-strategies',
-        title: 'Livraison/pose : précisions utiles',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Le transport aller/retour et la MO sont à la charge du vendeur (L.217-11). Exigez un écrit.</p>
-</div>
-      `,
+        name: `Réfrigérateur/Congélateur : recours 2025`,
+        url: `/guides/refrigerateur-congelateur-defaut-garantie-legale`,
       },
     ],
-    faqSchema: createFAQSchema([
-      { question: 'Froid insuffisant : couvert ?', answer: 'Oui, défaut de conformité (L.217-5).' },
-      { question: 'Frais de déplacement ?', answer: 'À la charge du vendeur (L.217-11).' },
-      {
-        question: 'Remboursement complet ?',
-        answer: 'Si réparation/remplacement impossible ou échoue (L.217-13).',
-      },
-      { question: 'Occasion ?', answer: 'Présomption au moins 12 mois (L.217-7).' },
-    ]),
-    disclaimer: LEGAL_DISCLAIMER,
   },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec : <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24 mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤ 30 jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['L.217-11', 'L.217-13', 'L.217-5', 'L.217-7', 'L.217-9']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'defauts-couverts',
+      title: `Défauts froid & électronique couverts`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Températures hors tolérance, dégivrage défaillant, ventilateur HS, fuites, cartes/sondes HS : L.217-5, L.217-7.`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Denrées perdues ? Conservez les preuves pour la négociation civile/assurance (hors garantie légale elle-même).`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'procedure-recours',
+      title: `Étapes pour une solution rapide`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Réparation (L.217-9). Si échec/délai anormal : remplacement. Dernier recours : remboursement (L.217-14, L.217-16, L.217-17). Frais vendeur (L.217-11).`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'vendeurs-strategies',
+      title: `Livraison/pose : précisions utiles`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            Panorama des pratiques par enseigne : qualité d’accueil, délais moyens, facilité de
+            remplacement.
+          </p>
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs
+                  text={`Darty : processus cadré, demandez la mise en conformité par écrit.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Boulanger : insistez sur la gratuité des frais (L.217-11).`}
+                />,
+                <TextWithLegalRefs
+                  text={`Conforama / But : privilégiez la LRAR en cas d’atermoiements.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Amazon : utilisez l’historique des tickets pour la preuve d’échec.`}
+                />,
+              ] as React.ReactNode[]
+            }
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'procedure',
+      title: 'Procédure type',
+      content: <StandardProcedure />,
+    },
+    {
+      id: 'alternatives',
+      title: 'Si ça bloque',
+      content: <DefaultAlternatives />,
+    },
+    {
+      id: 'contacts',
+      title: 'Contacts utiles',
+      content: <DefaultContacts />,
+    },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: [
+      'L.217-11' as LegalArticleId,
+      'L.217-13' as LegalArticleId,
+      'L.217-5' as LegalArticleId,
+      'L.217-7' as LegalArticleId,
+      'L.217-9' as LegalArticleId,
+    ],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
 
-  'aspirateur-robot-panne-garantie-legale': {
-    title: 'Aspirateur robot en panne : garantie légale 2025',
-    subtitle: 'Navigation, batterie, station • 2 ans vendeur',
+export const GUIDE_ASPIRATEUR_ROBOT_PANNE_GARANTIE_LEGALE: GuidePage = {
+  metadata: {
+    title: `Aspirateur robot en panne : garantie légale 2025`,
     seo: {
-      title: 'Robot aspirateur défectueux : recours',
-      description:
-        'Navigation erratique, batterie/fonte de charge, station HS : garantie légale. Lettre prête en 3 min.',
+      title: `Robot aspirateur défectueux : recours`,
+      description: `Navigation erratique, batterie/fonte de charge, station HS : garantie légale. Lettre prête en 3 min.`,
       keywords: [
         'aspirateur robot garantie légale',
         'navigation erratique robot',
@@ -1251,60 +1838,146 @@ export const SEO_OPTIMIZED_GUIDES: Record<string, GuidePage> = {
         'mise en demeure robot',
       ],
     },
-    sections: [
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
       {
-        id: 'defauts-couverts',
-        title: 'Défauts robot/IA couverts',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Cartographie perdue, capteurs/roues défaillants, batterie chute anormale, station qui ne vide pas : L.217-5, L.217-7.</p>
-</div>
-      `,
-      },
-      {
-        id: 'procedure-recours',
-        title: 'Du signalement à la solution',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Réparation/remplacement (L.217-9) via vendeur → si échec : réduction/remboursement (L.217-13). Frais : vendeur (L.217-11).</p>
-</div>
-      `,
-      },
-      {
-        id: 'vendeurs-strategies',
-        title: 'E-commerce : sécuriser la preuve',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Captures d’itinéraires, vidéos d’obstacles non détectés, logs appli.</p>
-</div>
-      `,
+        name: `Aspirateur robot en panne : garantie légale 2025`,
+        url: `/guides/aspirateur-robot-panne-garantie-legale`,
       },
     ],
-    faqSchema: createFAQSchema([
-      {
-        question: 'Station qui ne vide pas : couvert ?',
-        answer: 'Oui. Mise en conformité obligatoire (L.217-9), frais vendeur (L.217-11).',
-      },
-      {
-        question: 'Batterie HS en 14 mois ?',
-        answer: 'Présomption toujours applicable (L.217-7) pour un produit neuf.',
-      },
-      {
-        question: 'Remboursement ?',
-        answer: 'Si réparation/remplacement impossible ou échec (L.217-13).',
-      },
-      { question: 'Occasion ?', answer: 'Présomption 12 mois mini (L.217-7).' },
-    ]),
-    disclaimer: LEGAL_DISCLAIMER,
   },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec : <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24 mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤ 30 jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['L.217-11', 'L.217-13', 'L.217-5', 'L.217-7', 'L.217-9']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'defauts-couverts',
+      title: `Défauts robot/IA couverts`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Cartographie perdue, capteurs/roues défaillants, batterie chute anormale, station qui ne vide pas : L.217-5, L.217-7.`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'procedure-recours',
+      title: `Du signalement à la solution`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Réparation/remplacement (L.217-9) via vendeur → si échec : réduction/remboursement (L.217-14, L.217-16, L.217-17). Frais : vendeur (L.217-11).`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'vendeurs-strategies',
+      title: `E-commerce : sécuriser la preuve`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            Panorama des pratiques par enseigne : qualité d’accueil, délais moyens, facilité de
+            remplacement.
+          </p>
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs
+                  text={`Darty : processus cadré, demandez la mise en conformité par écrit.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Boulanger : insistez sur la gratuité des frais (L.217-11).`}
+                />,
+                <TextWithLegalRefs
+                  text={`Conforama / But : privilégiez la LRAR en cas d’atermoiements.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Amazon : utilisez l’historique des tickets pour la preuve d’échec.`}
+                />,
+              ] as React.ReactNode[]
+            }
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'procedure',
+      title: 'Procédure type',
+      content: <StandardProcedure />,
+    },
+    {
+      id: 'alternatives',
+      title: 'Si ça bloque',
+      content: <DefaultAlternatives />,
+    },
+    {
+      id: 'contacts',
+      title: 'Contacts utiles',
+      content: <DefaultContacts />,
+    },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: [
+      'L.217-11' as LegalArticleId,
+      'L.217-13' as LegalArticleId,
+      'L.217-5' as LegalArticleId,
+      'L.217-7' as LegalArticleId,
+      'L.217-9' as LegalArticleId,
+    ],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
 
-  'micro-ondes-panne-garantie-legale': {
-    title: 'Micro-ondes en panne : garantie légale 2025',
-    subtitle: 'Chauffe faible • Plateau • Porte • 2 ans vendeur',
+export const GUIDE_MICRO_ONDES_PANNE_GARANTIE_LEGALE: GuidePage = {
+  metadata: {
+    title: `Micro-ondes en panne : garantie légale 2025`,
     seo: {
-      title: 'Micro-ondes défectueux : recours',
-      description:
-        'Chauffe faible, plateau/porte HS : garantie légale. Réparation, remplacement, remboursement. Lettre conforme immédiate.',
+      title: `Micro-ondes défectueux : recours`,
+      description: `Chauffe faible, plateau/porte HS : garantie légale. Réparation, remplacement, remboursement. Lettre conforme immédiate.`,
       keywords: [
         'micro ondes panne garantie',
         'chauffe faible micro ondes',
@@ -1318,59 +1991,146 @@ export const SEO_OPTIMIZED_GUIDES: Record<string, GuidePage> = {
         'mise en demeure micro ondes',
       ],
     },
-    sections: [
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
       {
-        id: 'defauts-couverts',
-        title: 'Défauts micro-ondes couverts',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Chauffe quasi nulle, plateau inopérant, minuterie/affichage HS, porte qui ferme mal (sécurité) : L.217-5, L.217-7.</p>
-</div>
-      `,
-      },
-      {
-        id: 'procedure-recours',
-        title: 'Étapes légales rapides',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Réparation par le vendeur (L.217-9) • Frais à sa charge (L.217-11) • Échec : remboursement (L.217-13).</p>
-</div>
-      `,
-      },
-      {
-        id: 'vendeurs-strategies',
-        title: 'Sécurité & preuves',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Mentionnez le risque sécurité (porte). Demandez un délai d’intervention écrit.</p>
-</div>
-      `,
+        name: `Micro-ondes en panne : garantie légale 2025`,
+        url: `/guides/micro-ondes-panne-garantie-legale`,
       },
     ],
-    faqSchema: createFAQSchema([
-      {
-        question: 'Porte qui ferme mal : couvert ?',
-        answer: 'Oui, défaut de conformité. Mise en conformité (L.217-9).',
-      },
-      { question: 'Frais atelier ?', answer: 'À la charge du vendeur (L.217-11).' },
-      {
-        question: 'Remboursement ?',
-        answer: 'Si réparation/remplacement impossible/échoue (L.217-13).',
-      },
-      { question: 'Occasion ?', answer: 'Présomption 12 mois mini (L.217-7).' },
-    ]),
-    disclaimer: LEGAL_DISCLAIMER,
   },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec : <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24 mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤ 30 jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['L.217-11', 'L.217-13', 'L.217-5', 'L.217-7', 'L.217-9']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'defauts-couverts',
+      title: `Défauts micro-ondes couverts`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Chauffe quasi nulle, plateau inopérant, minuterie/affichage HS, porte qui ferme mal (sécurité) : L.217-5, L.217-7.`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'procedure-recours',
+      title: `Étapes légales rapides`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Réparation par le vendeur (L.217-9) • Frais à sa charge (L.217-11) • Échec : remboursement (L.217-14, L.217-16, L.217-17).`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'vendeurs-strategies',
+      title: `Sécurité & preuves`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            Panorama des pratiques par enseigne : qualité d’accueil, délais moyens, facilité de
+            remplacement.
+          </p>
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs
+                  text={`Darty : processus cadré, demandez la mise en conformité par écrit.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Boulanger : insistez sur la gratuité des frais (L.217-11).`}
+                />,
+                <TextWithLegalRefs
+                  text={`Conforama / But : privilégiez la LRAR en cas d’atermoiements.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Amazon : utilisez l’historique des tickets pour la preuve d’échec.`}
+                />,
+              ] as React.ReactNode[]
+            }
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'procedure',
+      title: 'Procédure type',
+      content: <StandardProcedure />,
+    },
+    {
+      id: 'alternatives',
+      title: 'Si ça bloque',
+      content: <DefaultAlternatives />,
+    },
+    {
+      id: 'contacts',
+      title: 'Contacts utiles',
+      content: <DefaultContacts />,
+    },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: [
+      'L.217-11' as LegalArticleId,
+      'L.217-13' as LegalArticleId,
+      'L.217-5' as LegalArticleId,
+      'L.217-7' as LegalArticleId,
+      'L.217-9' as LegalArticleId,
+    ],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
 
-  /* ─────────── MAISON (SPÉCIFIQUE) ─────────── */
-
-  'chauffe-eau-electrique-defaut-garantie-legale': {
-    title: 'Chauffe-eau électrique : garantie légale 2025',
-    subtitle: 'Résistance, fuite, carte • Délai raisonnable requis',
+export const GUIDE_CHAUFFE_EAU_ELECTRIQUE_DEFAUT_GARANTIE_LEGALE: GuidePage = {
+  metadata: {
+    title: `Chauffe-eau électrique : garantie légale 2025`,
     seo: {
-      title: 'Chauffe-eau en panne : vos recours',
-      description:
-        'Résistance HS, fuite, carte défaillante : garantie légale. Réparation/remplacement/remboursement, frais au vendeur.',
+      title: `Chauffe-eau en panne : vos recours`,
+      description: `Résistance HS, fuite, carte défaillante : garantie légale. Réparation/remplacement/remboursement, frais au vendeur.`,
       keywords: [
         'chauffe eau garantie légale',
         'résistance HS cumulus',
@@ -1384,57 +2144,146 @@ export const SEO_OPTIMIZED_GUIDES: Record<string, GuidePage> = {
         'mise en demeure chauffe eau',
       ],
     },
-    sections: [
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
       {
-        id: 'defauts-couverts',
-        title: 'Défauts couverts & urgence sanitaire',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-gray-700 text-sm">Fuite, absence de chauffe, carte HS, anode défaillante prématurée : L.217-5, L.217-7. Absence d’eau chaude = urgence, exigez un délai court.</p>
-</div>
-      `,
-      },
-      {
-        id: 'procedure-recours',
-        title: 'Mise en conformité par le vendeur',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Réparation (L.217-9) → Remplacement si besoin → Remboursement si échec (L.217-13). Transport/MO/consommables à la charge du vendeur (L.217-11).</p>
-</div>
-      `,
-      },
-      {
-        id: 'vendeurs-strategies',
-        title: 'Installateur : formaliser par écrit',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Exigez un compte-rendu d’intervention et un délai “raisonnable” daté.</p>
-</div>
-      `,
+        name: `Chauffe-eau électrique : garantie légale 2025`,
+        url: `/guides/chauffe-eau-electrique-defaut-garantie-legale`,
       },
     ],
-    faqSchema: createFAQSchema([
-      {
-        question: 'Fuite ballon : couvert ?',
-        answer: 'Oui. Mise en conformité immédiate (L.217-9), frais vendeur (L.217-11).',
-      },
-      {
-        question: 'Délai raisonnable ?',
-        answer: 'Au regard de l’urgence (absence d’eau chaude), le délai doit être court.',
-      },
-      { question: 'Remboursement ?', answer: 'Possible si mise en conformité échoue (L.217-13).' },
-      { question: 'Occasion ?', answer: 'Présomption d’au moins 12 mois (L.217-7).' },
-    ]),
-    disclaimer: LEGAL_DISCLAIMER,
   },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec : <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24 mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤ 30 jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['L.217-11', 'L.217-13', 'L.217-5', 'L.217-7', 'L.217-9']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'defauts-couverts',
+      title: `Défauts couverts & urgence sanitaire`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Fuite, absence de chauffe, carte HS, anode défaillante prématurée : L.217-5, L.217-7. Absence d’eau chaude = urgence, exigez un délai court.`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'procedure-recours',
+      title: `Mise en conformité par le vendeur`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Réparation (L.217-9) → Remplacement si besoin → Remboursement si échec (L.217-14, L.217-16, L.217-17). Transport/MO/consommables à la charge du vendeur (L.217-11).`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'vendeurs-strategies',
+      title: `Installateur : formaliser par écrit`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            Panorama des pratiques par enseigne : qualité d’accueil, délais moyens, facilité de
+            remplacement.
+          </p>
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs
+                  text={`Darty : processus cadré, demandez la mise en conformité par écrit.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Boulanger : insistez sur la gratuité des frais (L.217-11).`}
+                />,
+                <TextWithLegalRefs
+                  text={`Conforama / But : privilégiez la LRAR en cas d’atermoiements.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Amazon : utilisez l’historique des tickets pour la preuve d’échec.`}
+                />,
+              ] as React.ReactNode[]
+            }
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'procedure',
+      title: 'Procédure type',
+      content: <StandardProcedure />,
+    },
+    {
+      id: 'alternatives',
+      title: 'Si ça bloque',
+      content: <DefaultAlternatives />,
+    },
+    {
+      id: 'contacts',
+      title: 'Contacts utiles',
+      content: <DefaultContacts />,
+    },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: [
+      'L.217-11' as LegalArticleId,
+      'L.217-13' as LegalArticleId,
+      'L.217-5' as LegalArticleId,
+      'L.217-7' as LegalArticleId,
+      'L.217-9' as LegalArticleId,
+    ],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
 
-  'portail-motorise-defaut-garantie-legale': {
-    title: 'Portail motorisé : garantie légale 2025',
-    subtitle: 'Moteur, carte, capteurs • Sécurité • 2 ans vendeur',
+export const GUIDE_PORTAIL_MOTORISE_DEFAUT_GARANTIE_LEGALE: GuidePage = {
+  metadata: {
+    title: `Portail motorisé : garantie légale 2025`,
     seo: {
-      title: 'Portail motorisé en panne : recours',
-      description:
-        'Moteur/carte/capteurs HS : garantie légale. Réparation, remplacement, remboursement. Frais au vendeur.',
+      title: `Portail motorisé en panne : recours`,
+      description: `Moteur/carte/capteurs HS : garantie légale. Réparation, remplacement, remboursement. Frais au vendeur.`,
       keywords: [
         'portail motorisé garantie légale',
         'moteur portail panne',
@@ -1448,59 +2297,146 @@ export const SEO_OPTIMIZED_GUIDES: Record<string, GuidePage> = {
         'mise en demeure portail',
       ],
     },
-    sections: [
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
       {
-        id: 'defauts-couverts',
-        title: 'Défauts couverts & sécurité d’usage',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-gray-700 text-sm">Moteur qui force, carte HS, cellules non détectées, télécommandes inopérantes : L.217-5, L.217-7. Mentionnez les risques sécurité (écrasement/fermeture).</p>
-</div>
-      `,
-      },
-      {
-        id: 'procedure-recours',
-        title: 'Itinéraire légal côté consommateur',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Réparation (L.217-9) → Mise en demeure → Remplacement/remboursement (L.217-13). Tous frais à la charge du vendeur (L.217-11).</p>
-</div>
-      `,
-      },
-      {
-        id: 'vendeurs-strategies',
-        title: 'Poseur/distributeur : preuves utiles',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Joignez photos/vidéos, relevés de fins de course, référence exacte du moteur.</p>
-</div>
-      `,
+        name: `Portail motorisé : garantie légale 2025`,
+        url: `/guides/portail-motorise-defaut-garantie-legale`,
       },
     ],
-    faqSchema: createFAQSchema([
-      {
-        question: 'Cellules photo HS : couvert ?',
-        answer: 'Oui, défaut de conformité. Mise en conformité par le vendeur (L.217-9, L.217-11).',
-      },
-      {
-        question: 'Remboursement direct ?',
-        answer: 'Si réparation/remplacement impossible/échoue (L.217-13).',
-      },
-      { question: 'Délais ?', answer: 'Raisonnables, au regard des risques sécurité.' },
-      { question: 'Occasion ?', answer: 'Présomption 12 mois mini (L.217-7).' },
-    ]),
-    disclaimer: LEGAL_DISCLAIMER,
   },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec : <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24 mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤ 30 jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['L.217-11', 'L.217-13', 'L.217-5', 'L.217-7', 'L.217-9']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'defauts-couverts',
+      title: `Défauts couverts & sécurité d’usage`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Moteur qui force, carte HS, cellules non détectées, télécommandes inopérantes : L.217-5, L.217-7. Mentionnez les risques sécurité (écrasement/fermeture).`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'procedure-recours',
+      title: `Itinéraire légal côté consommateur`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Réparation (L.217-9) → Mise en demeure → Remplacement/remboursement (L.217-14, L.217-16, L.217-17). Tous frais à la charge du vendeur (L.217-11).`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'vendeurs-strategies',
+      title: `Poseur/distributeur : preuves utiles`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            Panorama des pratiques par enseigne : qualité d’accueil, délais moyens, facilité de
+            remplacement.
+          </p>
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs
+                  text={`Darty : processus cadré, demandez la mise en conformité par écrit.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Boulanger : insistez sur la gratuité des frais (L.217-11).`}
+                />,
+                <TextWithLegalRefs
+                  text={`Conforama / But : privilégiez la LRAR en cas d’atermoiements.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Amazon : utilisez l’historique des tickets pour la preuve d’échec.`}
+                />,
+              ] as React.ReactNode[]
+            }
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'procedure',
+      title: 'Procédure type',
+      content: <StandardProcedure />,
+    },
+    {
+      id: 'alternatives',
+      title: 'Si ça bloque',
+      content: <DefaultAlternatives />,
+    },
+    {
+      id: 'contacts',
+      title: 'Contacts utiles',
+      content: <DefaultContacts />,
+    },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: [
+      'L.217-11' as LegalArticleId,
+      'L.217-13' as LegalArticleId,
+      'L.217-5' as LegalArticleId,
+      'L.217-7' as LegalArticleId,
+      'L.217-9' as LegalArticleId,
+    ],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
 
-  /* ─────────── AUTO (COMPLÉMENTS) ─────────── */
-
-  'autoradio-infotainment-defaut-garantie-legale': {
-    title: 'Autoradio/infotainment : garantie légale 2025',
-    subtitle: 'Écran, GPS, Bluetooth • 2 ans vendeur (produit vendu)',
+export const GUIDE_AUTORADIO_INFOTAINMENT_DEFAUT_GARANTIE_LEGALE: GuidePage = {
+  metadata: {
+    title: `Autoradio/infotainment : garantie légale 2025`,
     seo: {
-      title: 'Infotainment défectueux : vos droits',
-      description:
-        'Écran/GPS/BT qui bug ? Garantie légale si le système a été vendu comme produit. Réparation/remplacement/remboursement.',
+      title: `Infotainment défectueux : vos droits`,
+      description: `Écran/GPS/BT qui bug ? Garantie légale si le système a été vendu comme produit. Réparation/remplacement/remboursement.`,
       keywords: [
         'autoradio garantie légale',
         'infotainment bug gps',
@@ -1514,62 +2450,146 @@ export const SEO_OPTIMIZED_GUIDES: Record<string, GuidePage> = {
         'mise en demeure autoradio',
       ],
     },
-    sections: [
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
       {
-        id: 'defauts-couverts',
-        title: 'Quand la garantie légale s’applique',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">S’applique si l’autoradio/écran a été <strong>vendu comme produit</strong> par un pro. Bugs bloquants, écran HS, GPS/Bluetooth inopérant : L.217-5, L.217-7.</p>
-</div>
-      `,
-      },
-      {
-        id: 'procedure-recours',
-        title: 'Processus côté consommateur',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Réparation/remplacement via vendeur (L.217-9), frais à sa charge (L.217-11). Échec : réduction/remboursement (L.217-13).</p>
-</div>
-      `,
-      },
-      {
-        id: 'vendeurs-strategies',
-        title: 'Monteur/accessoiriste : preuves',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Photos du défaut, erreurs OBD si pertinent, références exactes du poste.</p>
-</div>
-      `,
+        name: `Autoradio/infotainment : garantie légale 2025`,
+        url: `/guides/autoradio-infotainment-defaut-garantie-legale`,
       },
     ],
-    faqSchema: createFAQSchema([
-      {
-        question: 'Écran noir : couvert ?',
-        answer: 'Oui, défaut de conformité (L.217-5). Mise en conformité (L.217-9).',
-      },
-      {
-        question: 'Mise à jour payante ?',
-        answer: 'Non si nécessaire à la conformité (L.217-11).',
-      },
-      {
-        question: 'Remboursement ?',
-        answer: 'Si mise en conformité impossible ou échoue (L.217-13).',
-      },
-      { question: 'Occasion ?', answer: 'Présomption 12 mois au moins (L.217-7).' },
-    ]),
-    disclaimer: LEGAL_DISCLAIMER,
   },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec : <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24 mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤ 30 jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['L.217-11', 'L.217-13', 'L.217-5', 'L.217-7', 'L.217-9']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'defauts-couverts',
+      title: `Quand la garantie légale s’applique`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`S’applique si l’autoradio/écran a été vendu comme produit par un pro. Bugs bloquants, écran HS, GPS/Bluetooth inopérant : L.217-5, L.217-7.`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'procedure-recours',
+      title: `Processus côté consommateur`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Réparation/remplacement via vendeur (L.217-9), frais à sa charge (L.217-11). Échec : réduction/remboursement (L.217-14, L.217-16, L.217-17).`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'vendeurs-strategies',
+      title: `Monteur/accessoiriste : preuves`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            Panorama des pratiques par enseigne : qualité d’accueil, délais moyens, facilité de
+            remplacement.
+          </p>
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs
+                  text={`Darty : processus cadré, demandez la mise en conformité par écrit.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Boulanger : insistez sur la gratuité des frais (L.217-11).`}
+                />,
+                <TextWithLegalRefs
+                  text={`Conforama / But : privilégiez la LRAR en cas d’atermoiements.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Amazon : utilisez l’historique des tickets pour la preuve d’échec.`}
+                />,
+              ] as React.ReactNode[]
+            }
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'procedure',
+      title: 'Procédure type',
+      content: <StandardProcedure />,
+    },
+    {
+      id: 'alternatives',
+      title: 'Si ça bloque',
+      content: <DefaultAlternatives />,
+    },
+    {
+      id: 'contacts',
+      title: 'Contacts utiles',
+      content: <DefaultContacts />,
+    },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: [
+      'L.217-11' as LegalArticleId,
+      'L.217-13' as LegalArticleId,
+      'L.217-5' as LegalArticleId,
+      'L.217-7' as LegalArticleId,
+      'L.217-9' as LegalArticleId,
+    ],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
 
-  /* ─────────── SPORT (COMPLÉMENTS) ─────────── */
-
-  'home-trainer-connecte-defaut-garantie-legale': {
-    title: 'Home trainer connecté : garantie légale 2025',
-    subtitle: 'Puissance fausse • Connectivité • Bruits • 2 ans',
+export const GUIDE_HOME_TRAINER_CONNECTE_DEFAUT_GARANTIE_LEGALE: GuidePage = {
+  metadata: {
+    title: `Home trainer connecté : garantie légale 2025`,
     seo: {
-      title: 'Home trainer défectueux : recours',
-      description:
-        'Puissance sous-estimée, connexion instable, bruits : garantie légale. Réparation/remplacement/remboursement.',
+      title: `Home trainer défectueux : recours`,
+      description: `Puissance sous-estimée, connexion instable, bruits : garantie légale. Réparation/remplacement/remboursement.`,
       keywords: [
         'home trainer connecté garantie',
         'puissance zwift fausse',
@@ -1583,55 +2603,146 @@ export const SEO_OPTIMIZED_GUIDES: Record<string, GuidePage> = {
         'mise en demeure home trainer',
       ],
     },
-    sections: [
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
       {
-        id: 'defauts-couverts',
-        title: 'Défauts couverts & mesures',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Écart de puissance significatif vs promesse, perte ANT+/BT, bruits/jeu anormal, chauffe excessive : L.217-5, L.217-7.</p>
-</div>
-      `,
-      },
-      {
-        id: 'procedure-recours',
-        title: 'Démarches gagnantes',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Réparation (L.217-9) → Remplacement → Remboursement (L.217-13). Frais vendeur (L.217-11). Joignez vos courbes de puissance.</p>
-</div>
-      `,
-      },
-      {
-        id: 'vendeurs-strategies',
-        title: 'Magasins vélo : protocoles utiles',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Tests étalonnage/rouleau, protocole comparatif capteur pédalier/roue.</p>
-</div>
-      `,
+        name: `Home trainer connecté : garantie légale 2025`,
+        url: `/guides/home-trainer-connecte-defaut-garantie-legale`,
       },
     ],
-    faqSchema: createFAQSchema([
-      {
-        question: 'Puissance fausse : couvert ?',
-        answer: 'Oui si l’usage promis est affecté (L.217-5).',
-      },
-      { question: 'Frais d’expédition ?', answer: 'À la charge du vendeur (L.217-11).' },
-      { question: 'Remboursement ?', answer: 'Si mise en conformité échoue (L.217-13).' },
-      { question: 'Occasion ?', answer: 'Présomption 12 mois mini (L.217-7).' },
-    ]),
-    disclaimer: LEGAL_DISCLAIMER,
   },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec : <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24 mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤ 30 jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['L.217-11', 'L.217-13', 'L.217-5', 'L.217-7', 'L.217-9']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'defauts-couverts',
+      title: `Défauts couverts & mesures`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Écart de puissance significatif vs promesse, perte ANT+/BT, bruits/jeu anormal, chauffe excessive : L.217-5, L.217-7.`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'procedure-recours',
+      title: `Démarches gagnantes`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Réparation (L.217-9) → Remplacement → Remboursement (L.217-14, L.217-16, L.217-17). Frais vendeur (L.217-11). Joignez vos courbes de puissance.`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'vendeurs-strategies',
+      title: `Magasins vélo : protocoles utiles`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            Panorama des pratiques par enseigne : qualité d’accueil, délais moyens, facilité de
+            remplacement.
+          </p>
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs
+                  text={`Darty : processus cadré, demandez la mise en conformité par écrit.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Boulanger : insistez sur la gratuité des frais (L.217-11).`}
+                />,
+                <TextWithLegalRefs
+                  text={`Conforama / But : privilégiez la LRAR en cas d’atermoiements.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Amazon : utilisez l’historique des tickets pour la preuve d’échec.`}
+                />,
+              ] as React.ReactNode[]
+            }
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'procedure',
+      title: 'Procédure type',
+      content: <StandardProcedure />,
+    },
+    {
+      id: 'alternatives',
+      title: 'Si ça bloque',
+      content: <DefaultAlternatives />,
+    },
+    {
+      id: 'contacts',
+      title: 'Contacts utiles',
+      content: <DefaultContacts />,
+    },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: [
+      'L.217-11' as LegalArticleId,
+      'L.217-13' as LegalArticleId,
+      'L.217-5' as LegalArticleId,
+      'L.217-7' as LegalArticleId,
+      'L.217-9' as LegalArticleId,
+    ],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
 
-  'smartphone-telephone-panne-garantie-legale': {
-    title: 'Smartphone en panne : garantie légale et recours (iPhone, Samsung, Google)',
-    subtitle:
-      'Batterie défaillante, écran noir, redémarrages, surchauffe • Solutions légales étape par étape',
+export const GUIDE_SMARTPHONE_TELEPHONE_PANNE_GARANTIE_LEGALE: GuidePage = {
+  metadata: {
+    title: `Smartphone en panne : garantie légale et recours (iPhone, Samsung, Google)`,
     seo: {
-      title: 'Smartphone iPhone Samsung en panne : vos droits et recours 2025',
-      description:
-        'Téléphone qui plante, batterie HS, écran défectueux ? Découvrez vos droits : réparation gratuite, remplacement ou remboursement sous 2 ans.',
+      title: `Smartphone iPhone Samsung en panne : vos droits et recours 2025`,
+      description: `Téléphone qui plante, batterie HS, écran défectueux ? Découvrez vos droits : réparation gratuite, remplacement ou remboursement sous 2 ans.`,
       keywords: [
         'smartphone en panne garantie légale',
         'iPhone défectueux remboursement',
@@ -1645,416 +2756,219 @@ export const SEO_OPTIMIZED_GUIDES: Record<string, GuidePage> = {
         'SAV téléphone refuse réparation',
       ],
     },
-    sections: [
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
       {
-        id: 'defauts-smartphones',
-        title: 'Top 10 des pannes de smartphone couvertes par la garantie légale',
-        html: `
-  <div class="space-y-4 sm:space-y-6">
-    <p class="text-base sm:text-lg text-gray-700 leading-relaxed">
-      Votre smartphone présente un dysfonctionnement ? Découvrez si votre problème est couvert par la <strong>garantie légale de 2 ans</strong> qui s'applique automatiquement à tout achat chez un professionnel.
-    </p>
-
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-      <div class="bg-red-50 border border-red-200 rounded-xl p-4 sm:p-6">
-        <h4 class="text-lg font-bold text-red-900 mb-3 sm:mb-4 flex items-center gap-2">
-          🔋 <span>Problèmes de batterie</span>
-        </h4>
-        <ul class="space-y-2 text-red-800 text-sm sm:text-base">
-          <li class="flex items-start gap-2">
-            <span class="text-red-600 font-bold mt-1 flex-shrink-0">•</span>
-            <span><strong>Autonomie divisée par 2+</strong> sans raison (hors vieillissement normal)</span>
-          </li>
-          <li class="flex items-start gap-2">
-            <span class="text-red-600 font-bold mt-1 flex-shrink-0">•</span>
-            <span><strong>Charge qui ne tient pas</strong> malgré calibrage</span>
-          </li>
-          <li class="flex items-start gap-2">
-            <span class="text-red-600 font-bold mt-1 flex-shrink-0">•</span>
-            <span><strong>Surchauffe anormale</strong> lors de la charge</span>
-          </li>
-          <li class="flex items-start gap-2">
-            <span class="text-red-600 font-bold mt-1 flex-shrink-0">•</span>
-            <span><strong>Smartphone qui s'éteint</strong> avec encore de la batterie</span>
-          </li>
-          <li class="flex items-start gap-2">
-            <span class="text-red-600 font-bold mt-1 flex-shrink-0">•</span>
-            <span><strong>Charge extrêmement lente</strong> sans raison</span>
-          </li>
-        </ul>
-        <div class="bg-white p-3 rounded-lg mt-3 sm:mt-4 border-l-4 border-red-400">
-          <p class="text-xs sm:text-sm text-red-700">
-            <strong>Base légale :</strong> L.217-5 - Le produit doit correspondre à l'usage attendu et avoir les performances normales.
-          </p>
-        </div>
-      </div>
-      
-      <!-- Répéter pour les autres cartes : Dysfonctionnements système, Problèmes connectivité, Défauts matériels -->
-    </div>
-  </div>
-`,
-      },
-      {
-        id: 'procedure-smartphone',
-        title: 'Marche à suivre : comment obtenir réparation, remplacement ou remboursement',
-        html: `
-          <div class="prose prose-lg max-w-none">
-            <div class="bg-blue-50 border-l-4 border-blue-400 p-4 sm:p-6 mb-6 sm:mb-8">
-              <h4 class="text-base sm:text-lg font-bold text-blue-900 mb-2">🎯 Stratégie recommandée par les experts</h4>
-              <p class="text-blue-800">
-                Ne perdez pas de temps avec les centres de service ! Votre interlocuteur légal est <strong>uniquement le vendeur</strong> (Apple Store, Fnac, Amazon, etc.). Suivez cette procédure testée et approuvée :
-              </p>
-            </div>
-
-            <div class="space-y-8">
-              <!-- Étape 1 -->
-              <div class="bg-white border border-gray-200 rounded-lg p-4 sm:p-6 shadow-sm">
-                <div class="flex items-start">
-                  <div class="bg-blue-600 text-white rounded-full w-12 h-12 flex items-center justify-center font-bold text-base sm:text-lg mr-4 flex-shrink-0">1</div>
-                  <div class="flex-1">
-                    <h4 class="text-lg sm:text-xl font-bold text-gray-900 mb-3">📋 Documentez le défaut (30 minutes)</h4>
-                    <div class="bg-gray-50 p-4 rounded-lg mb-4">
-                      <h5 class="font-bold text-gray-800 mb-2">Preuves indispensables :</h5>
-                      <ul class="space-y-2 text-gray-700 text-sm">
-                        <li>• <strong>Facture/ticket :</strong> Preuve d'achat avec date et lieu</li>
-                        <li>• <strong>Photos/vidéos :</strong> Montrez le dysfonctionnement en action</li>
-                        <li>• <strong>Captures d'écran :</strong> Messages d'erreur, paramètres</li>
-                        <li>• <strong>Descriptif vendeur :</strong> Page produit avec caractéristiques promises</li>
-                      </ul>
-                    </div>
-                    <div class="bg-green-50 p-3 rounded border-l-4 border-green-400">
-                      <p class="text-sm text-green-700">
-                        <strong>💡 Astuce pro :</strong> Filmez le défaut en montrant l'écran "À propos" avec le numéro de série visible.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Étape 2 -->
-              <div class="bg-white border border-gray-200 rounded-lg p-4 sm:p-6 shadow-sm">
-                <div class="flex items-start">
-                  <div class="bg-green-600 text-white rounded-full w-12 h-12 flex items-center justify-center font-bold text-base sm:text-lg mr-4 flex-shrink-0">2</div>
-                  <div class="flex-1">
-                    <h4 class="text-lg sm:text-xl font-bold text-gray-900 mb-3">📞 Premier contact (obligatoire)</h4>
-                    <div class="grid md:grid-cols-2 gap-4 mb-4">
-                      <div class="bg-blue-50 p-4 rounded">
-                        <h5 class="font-bold text-blue-800 mb-2">🏪 Achat en magasin</h5>
-                        <ul class="space-y-1 text-sm text-blue-700">
-                          <li>• Retournez au point de vente</li>
-                          <li>• Demandez le service client/SAV</li>
-                          <li>• Mentionnez "garantie légale L.217-9"</li>
-                        </ul>
-                      </div>
-                      <div class="bg-orange-50 p-4 rounded">
-                        <h5 class="font-bold text-orange-800 mb-2">🌐 Achat en ligne</h5>
-                        <ul class="space-y-1 text-sm text-orange-700">
-                          <li>• Email au service client</li>
-                          <li>• Chat en ligne si disponible</li>
-                          <li>• Téléphone en dernier recours</li>
-                        </ul>
-                      </div>
-                    </div>
-                    <div class="bg-yellow-50 p-4 rounded border-l-4 border-yellow-400">
-                      <p class="text-sm text-yellow-800">
-                        <strong>Phrase magique :</strong> "Mon smartphone présente un défaut de conformité. En application de l'article L.217-9 du Code de la consommation, je souhaite [sa réparation/son remplacement/son remboursement]."
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Étape 3 -->
-              <div class="bg-white border border-gray-200 rounded-lg p-4 sm:p-6 shadow-sm">
-                <div class="flex items-start">
-                  <div class="bg-orange-600 text-white rounded-full w-12 h-12 flex items-center justify-center font-bold text-base sm:text-lg mr-4 flex-shrink-0">3</div>
-                  <div class="flex-1">
-                    <h4 class="text-lg sm:text-xl font-bold text-gray-900 mb-3">✉️ Mise en demeure écrite (si refus/silence)</h4>
-                    <div class="bg-red-50 p-4 rounded-lg mb-4">
-                      <h5 class="font-bold text-red-800 mb-2">⏰ Délai : 7 jours ouvrés maximum</h5>
-                      <p class="text-red-700 text-sm">Si pas de réponse satisfaisante sous une semaine, passez immédiatement à l'écrit.</p>
-                    </div>
-                    <div class="grid md:grid-cols-2 gap-4">
-                      <div class="bg-gray-50 p-4 rounded">
-                        <h5 class="font-bold text-gray-800 mb-2">📮 Envoi recommandé</h5>
-                        <ul class="space-y-1 text-sm text-gray-700">
-                          <li>• Garantit la preuve de réception</li>
-                          <li>• Coût : ~5€</li>
-                          <li>• Délai : 2-3 jours</li>
-                        </ul>
-                      </div>
-                      <div class="bg-gray-50 p-4 rounded">
-                        <h5 class="font-bold text-gray-800 mb-2">📧 Email avec AR</h5>
-                        <ul class="space-y-1 text-sm text-gray-700">
-                          <li>• Plus rapide (immédiat)</li>
-                          <li>• Demandez un accusé de réception</li>
-                          <li>• Gardez les captures d'écran</li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Étape 4 -->
-              <div class="bg-white border border-gray-200 rounded-lg p-4 sm:p-6 shadow-sm">
-                <div class="flex items-start">
-                  <div class="bg-purple-600 text-white rounded-full w-12 h-12 flex items-center justify-center font-bold text-base sm:text-lg mr-4 flex-shrink-0">4</div>
-                  <div class="flex-1">
-                    <h4 class="text-lg sm:text-xl font-bold text-gray-900 mb-3">⚖️ Escalade en cas d'échec</h4>
-                    <div class="grid md:grid-cols-3 gap-4">
-                      <div class="bg-blue-50 p-4 rounded">
-                        <h5 class="font-bold text-blue-800 mb-2">🏛️ SignalConso</h5>
-                        <p class="text-sm text-blue-700">Signalement officiel DGCCRF</p>
-                        <a href="https://signal.conso.gouv.fr" class="text-xs text-blue-600 underline">signal.conso.gouv.fr</a>
-                      </div>
-                      <div class="bg-green-50 p-4 rounded">
-                        <h5 class="font-bold text-green-800 mb-2">🤝 Conciliateur</h5>
-                        <p class="text-sm text-green-700">Médiation gratuite et rapide</p>
-                        <a href="https://justice.fr" class="text-xs text-green-600 underline">justice.fr</a>
-                      </div>
-                      <div class="bg-orange-50 p-4 rounded">
-                        <h5 class="font-bold text-orange-800 mb-2">⚖️ Tribunal</h5>
-                        <p class="text-sm text-orange-700">Procédure simplifiée < 5000€</p>
-                        <p class="text-xs text-orange-600">En dernier recours</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="bg-green-50 border border-green-200 rounded-lg p-4 sm:p-6 mt-8">
-              <h4 class="text-base sm:text-lg font-bold text-green-900 mb-3">📊 Taux de réussite par approche</h4>
-              <div class="grid md:grid-cols-3 gap-4 text-center">
-                <div>
-                  <div class="text-3xl font-bold text-green-600">34%</div>
-                  <div class="text-sm text-green-800">Contact oral seul</div>
-                </div>
-                <div>
-                  <div class="text-3xl font-bold text-blue-600">87%</div>
-                  <div class="text-sm text-blue-800">Avec mise en demeure écrite</div>
-                </div>
-                <div>
-                  <div class="text-3xl font-bold text-purple-600">96%</div>
-                  <div class="text-sm text-purple-800">Avec escalade SignalConso</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        `,
-      },
-      {
-        id: 'marques-particularites',
-        title: 'Spécificités par marque : Apple, Samsung, Google, Xiaomi...',
-        html: `
-          <div class="prose prose-lg max-w-none">
-            <p class="text-base sm:text-lg text-gray-700 mb-6">
-              Chaque marque a ses propres processus SAV et arguments juridiques. Voici comment adapter votre approche selon le fabricant de votre smartphone :
-            </p>
-
-            <div class="space-y-4 sm:space-y-6">
-              <!-- Apple -->
-              <div class="bg-white border-l-4 border-gray-400 p-4 sm:p-6 rounded-lg shadow-sm">
-                <div class="flex items-start">
-                  <div class="mr-4">
-                    <div class="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center">
-                      <span class="text-xl sm:text-2xl">🍎</span>
-                    </div>
-                  </div>
-                  <div class="flex-1">
-                    <h4 class="text-lg sm:text-xl font-bold text-gray-900 mb-3">Apple (iPhone, iPad)</h4>
-                    <div class="grid md:grid-cols-2 gap-4">
-                      <div>
-                        <h5 class="font-bold text-gray-800 mb-2">✅ Points forts Apple</h5>
-                        <ul class="space-y-1 text-sm text-gray-700">
-                          <li>• SAV généralement réactif</li>
-                          <li>• Remplacement souvent accepté rapidement</li>
-                          <li>• Apple Store physiques accessibles</li>
-                          <li>• Diagnostic technique gratuit</li>
-                        </ul>
-                      </div>
-                      <div>
-                        <h5 class="font-bold text-red-800 mb-2">⚠️ Pièges à éviter</h5>
-                        <ul class="space-y-1 text-sm text-red-700">
-                          <li>• Ne vous laissez pas orienter vers AppleCare+</li>
-                          <li>• Refusez les "gestes commerciaux" insuffisants</li>
-                          <li>• N'acceptez pas "c'est normal" pour les ralentissements</li>
-                          <li>• Exigez un iPhone neuf, pas reconditionné</li>
-                        </ul>
-                      </div>
-                    </div>
-                    <div class="bg-blue-50 p-4 rounded mt-4">
-                      <p class="text-sm text-blue-800">
-                        <strong>Argument spécifique Apple :</strong> "Le ralentissement volontaire des iPhone sans information préalable constitue un défaut de conformité selon la jurisprudence française (Cour d'appel de Paris, 2021)."
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Samsung -->
-              <div class="bg-white border-l-4 border-blue-400 p-4 sm:p-6 rounded-lg shadow-sm">
-                <div class="flex items-start">
-                  <div class="mr-4">
-                    <div class="w-16 h-16 bg-blue-100 rounded-lg flex items-center justify-center">
-                      <span class="text-xl sm:text-2xl">📱</span>
-                    </div>
-                  </div>
-                  <div class="flex-1">
-                    <h4 class="text-lg sm:text-xl font-bold text-blue-900 mb-3">Samsung (Galaxy S, Note, A)</h4>
-                    <div class="grid md:grid-cols-2 gap-4">
-                      <div>
-                        <h5 class="font-bold text-blue-800 mb-2">✅ Avantages Samsung</h5>
-                        <ul class="space-y-1 text-sm text-blue-700">
-                          <li>• Centres de service nombreux</li>
-                          <li>• Diagnostic précis des pannes</li>
-                          <li>• Pièces détachées disponibles</li>
-                          <li>• Support technique de qualité</li>
-                        </ul>
-                      </div>
-                      <div>
-                        <h5 class="font-bold text-red-800 mb-2">⚠️ Difficultés courantes</h5>
-                        <ul class="space-y-1 text-sm text-red-700">
-                          <li>• Tentent souvent de facturer le diagnostic</li>
-                          <li>• Proposent du reconditionné en remplacement</li>
-                          <li>• Délais de réparation parfois longs</li>
-                          <li>• Peuvent nier les défauts logiciels</li>
-                        </ul>
-                      </div>
-                    </div>
-                    <div class="bg-orange-50 p-4 rounded mt-4">
-                      <p class="text-sm text-orange-800">
-                        <strong>Argument spécifique Samsung :</strong> "One UI qui plante régulièrement constitue un défaut de conformité car il entrave l'usage normal du smartphone (L.217-5)."
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Google -->
-              <div class="bg-white border-l-4 border-green-400 p-4 sm:p-6 rounded-lg shadow-sm">
-                <div class="flex items-start">
-                  <div class="mr-4">
-                    <div class="w-16 h-16 bg-green-100 rounded-lg flex items-center justify-center">
-                      <span class="text-xl sm:text-2xl">📱</span>
-                    </div>
-                  </div>
-                  <div class="flex-1">
-                    <h4 class="text-lg sm:text-xl font-bold text-green-900 mb-3">Google (Pixel)</h4>
-                    <div class="grid md:grid-cols-2 gap-4">
-                      <div>
-                        <h5 class="font-bold text-green-800 mb-2">✅ Points positifs</h5>
-                        <ul class="space-y-1 text-sm text-green-700">
-                          <li>• Support client réactif par email</li>
-                          <li>• Remplacement souvent privilégié</li>
-                          <li>• Android pur = moins de bugs</li>
-                          <li>• Mises à jour rapides</li>
-                        </ul>
-                      </div>
-                      <div>
-                        <h5 class="font-bold text-red-800 mb-2">⚠️ Défis spécifiques</h5>
-                        <ul class="space-y-1 text-sm text-red-700">
-                          <li>• Pas de magasins physiques en France</li>
-                          <li>• SAV uniquement en ligne</li>
-                          <li>• Peuvent demander la réinitialisation d'abord</li>
-                          <li>• Stock de remplacement limité</li>
-                        </ul>
-                      </div>
-                    </div>
-                    <div class="bg-purple-50 p-4 rounded mt-4">
-                      <p class="text-sm text-purple-800">
-                        <strong>Conseil Google :</strong> Insistez sur l'achat chez un revendeur français (Fnac, Boulanger) plutôt que Google Store pour avoir un interlocuteur physique.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Xiaomi/OnePlus/etc -->
-              <div class="bg-white border-l-4 border-orange-400 p-4 sm:p-6 rounded-lg shadow-sm">
-                <div class="flex items-start">
-                  <div class="mr-4">
-                    <div class="w-16 h-16 bg-orange-100 rounded-lg flex items-center justify-center">
-                      <span class="text-xl sm:text-2xl">📱</span>
-                    </div>
-                  </div>
-                  <div class="flex-1">
-                    <h4 class="text-lg sm:text-xl font-bold text-orange-900 mb-3">Marques chinoises (Xiaomi, OnePlus, Oppo, Huawei)</h4>
-                    <div class="grid md:grid-cols-2 gap-4">
-                      <div>
-                        <h5 class="font-bold text-orange-800 mb-2">✅ Atouts</h5>
-                        <ul class="space-y-1 text-sm text-orange-700">
-                          <li>• Prix attractifs</li>
-                          <li>• Innovations techniques</li>
-                          <li>• Communautés actives</li>
-                          <li>• SAV qui s'améliore</li>
-                        </ul>
-                      </div>
-                      <div>
-                        <h5 class="font-bold text-red-800 mb-2">⚠️ Vigilance requise</h5>
-                        <ul class="space-y-1 text-sm text-red-700">
-                          <li>• SAV parfois décentralisé</li>
-                          <li>• Barrière de la langue possible</li>
-                          <li>• Délais de pièces plus longs</li>
-                          <li>• Préfèrent souvent la réparation au remplacement</li>
-                        </ul>
-                      </div>
-                    </div>
-                    <div class="bg-red-50 p-4 rounded mt-4">
-                      <p class="text-sm text-red-800">
-                        <strong>⚠️ Important :</strong> Vérifiez que votre smartphone a bien été acheté en France avec garantie française. Les imports peuvent compliquer les recours.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 sm:p-6 mt-8">
-              <h4 class="text-base sm:text-lg font-bold text-blue-900 mb-3">💡 Conseil universel</h4>
-              <p class="text-blue-800">
-                Quelle que soit la marque, votre <strong>vendeur</strong> (magasin, site e-commerce) reste votre unique interlocuteur légal. Ne vous laissez jamais renvoyer vers le fabricant : c'est illégal selon l'article L.217-14.
-              </p>
-            </div>
-          </div>
-        `,
+        name: `Smartphone en panne : garantie légale et recours (iPhone, Samsung, Google)`,
+        url: `/guides/smartphone-telephone-panne-garantie-legale`,
       },
     ],
-    faqSchema: createFAQSchema([
-      {
-        question: 'Mon iPhone ralentit après une mise à jour iOS, est-ce couvert ?',
-        answer:
-          'Oui, le ralentissement volontaire des iPhone sans information préalable constitue un défaut de conformité selon la jurisprudence française. Vous pouvez exiger la réparation ou le remplacement.',
-      },
-      {
-        question: 'Combien de temps ai-je pour faire valoir mes droits sur un smartphone ?',
-        answer:
-          "Vous avez 2 ans à partir de la livraison pour invoquer la garantie légale de conformité. Pendant cette période, tout défaut est présumé exister dès l'achat.",
-      },
-      {
-        question: 'Le vendeur peut-il me renvoyer vers le SAV de la marque ?',
-        answer:
-          "Non, c'est strictement interdit par l'article L.217-14. Le vendeur est votre seul interlocuteur légal, que ce soit Apple, Samsung ou toute autre marque.",
-      },
-      {
-        question: "Mon écran est fissuré à cause d'une chute, suis-je couvert ?",
-        answer:
-          "Non, les dommages dus à une mauvaise utilisation (chute, immersion) ne sont pas couverts par la garantie légale, sauf si la résistance annoncée (IP68) n'est pas respectée.",
-      },
-    ]),
-    disclaimer: LEGAL_DISCLAIMER,
   },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec : <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24 mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤ 30 jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['L.217-14', 'L.217-5', 'L.217-9']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'defauts-smartphones',
+      title: `Top 10 des pannes de smartphone couvertes par la garantie légale`,
+      content: (
+        <div className="space-y-3">
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs
+                  text={`• Autonomie divisée par 2+ sans raison (hors vieillissement normal)`}
+                />,
+                <TextWithLegalRefs text={`• Charge qui ne tient pas malgré calibrage`} />,
+                <TextWithLegalRefs text={`• Surchauffe anormale lors de la charge`} />,
+                <TextWithLegalRefs text={`• Smartphone qui s"éteint avec encore de la batterie`} />,
+                <TextWithLegalRefs text={`• Charge extrêmement lente sans raison`} />,
+              ] as React.ReactNode[]
+            }
+          />
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Votre smartphone présente un dysfonctionnement ? Découvrez si votre problème est couvert par la garantie légale de 2 ans qui s'applique automatiquement à tout achat chez un professionnel.`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`🔋 Problèmes de batterie • Autonomie divisée par 2+ sans raison (hors vieillissement normal) • Charge qui ne tient pas malgré calibrage • Surchauffe anormale lors de la charge • Smartphone qui s"éteint avec encore de la batterie • Charge extrêmement lente sans raison Base légale : L.217-5 - Le produit doit correspondre à l'usage attendu et avoir les performances normales.`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'procedure-smartphone',
+      title: `Marche à suivre : comment obtenir réparation, remplacement ou remboursement`,
+      content: (
+        <div className="space-y-3">
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs text={`• Facture/ticket : Preuve d'achat avec date et lieu`} />,
+                <TextWithLegalRefs
+                  text={`• Photos/vidéos : Montrez le dysfonctionnement en action`}
+                />,
+                <TextWithLegalRefs text={`• Captures d'écran : Messages d'erreur, paramètres`} />,
+                <TextWithLegalRefs
+                  text={`• Descriptif vendeur : Page produit avec caractéristiques promises`}
+                />,
+                <TextWithLegalRefs text={`• Retournez au point de vente`} />,
+                <TextWithLegalRefs text={`• Demandez le service client/SAV`} />,
+                <TextWithLegalRefs text={`• Mentionnez "garantie légale L.217-9"`} />,
+                <TextWithLegalRefs text={`• Email au service client`} />,
+                <TextWithLegalRefs text={`• Chat en ligne si disponible`} />,
+                <TextWithLegalRefs text={`• Téléphone en dernier recours`} />,
+                <TextWithLegalRefs text={`• Garantit la preuve de réception`} />,
+                <TextWithLegalRefs text={`• Coût : ~5€`} />,
+              ] as React.ReactNode[]
+            }
+          />{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`🎯 Stratégie recommandée par les experts Ne perdez pas de temps avec les centres de service ! Votre interlocuteur légal est uniquement le vendeur (Apple Store, Fnac, Amazon, etc.). Suivez cette procédure testée et approuvée :`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`1 📋 Documentez le défaut (30 minutes) Preuves indispensables : • Facture/ticket : Preuve d'achat avec date et lieu • Photos/vidéos : Montrez le dysfonctionnement en action • Captures d'écran : Messages d'erreur, paramètres • Descriptif vendeur : Page produit avec caractéristiques promises 💡 Astuce pro : Filmez le défaut en montrant l'écran "À propos" avec le numéro de série visible.`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`2 📞 Premier contact (obligatoire) 🏪 Achat en magasin • Retournez au point de vente • Demandez le service client/SAV • Mentionnez "garantie légale L.217-9" 🌐 Achat en ligne • Email au service client • Chat en ligne si disponible • Téléphone en dernier recours Phrase magique : "Mon smartphone présente un défaut de conformité. En application de l'article L.217-9 du Code de la consommation, je souhaite [sa réparation/son remplacement/son remboursement]."`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`3 ✉️ Mise en demeure écrite (si refus/silence) ⏰ Délai : 7 jours ouvrés maximum Si pas de réponse satisfaisante sous une semaine, passez immédiatement à l'écrit.`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`📮 Envoi recommandé • Garantit la preuve de réception • Coût : ~5€ • Délai : 2-3 jours 📧 Email avec AR • Plus rapide (immédiat) • Demandez un accusé de réception • Gardez les captures d'écran 4 ⚖️ Escalade en cas d'échec 🏛️ SignalConso Signalement officiel DGCCRF`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`signal.conso.gouv.fr 🤝 Conciliateur Médiation gratuite et rapide`}
+            />
+          </p>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs text={`justice.fr ⚖️ Tribunal Procédure simplifiée < 5000€`} />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs text={`En dernier recours`} />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`📊 Taux de réussite par approche 34% Contact oral seul 87% Avec mise en demeure écrite 96% Avec escalade SignalConso`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'marques-particularites',
+      title: `Spécificités par marque : Apple, Samsung, Google, Xiaomi…`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            Conseils par grande marque : garanties commerciales, réseaux SAV, politiques d’échange.
+          </p>
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs
+                  text={`Apple : réparation rapide mais exiger l’application de la garantie légale.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Samsung : conservez les preuves de diagnostics successifs en cas de défaut récurrent.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Google : privilégiez les échanges écrits et exigez un délai raisonnable.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Xiaomi : vérifiez le canal d’achat pour l’accès au SAV en France.`}
+                />,
+              ] as React.ReactNode[]
+            }
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'procedure',
+      title: 'Procédure type',
+      content: <StandardProcedure />,
+    },
+    {
+      id: 'alternatives',
+      title: 'Si ça bloque',
+      content: <DefaultAlternatives />,
+    },
+    {
+      id: 'contacts',
+      title: 'Contacts utiles',
+      content: <DefaultContacts />,
+    },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: [
+      'L.217-14' as LegalArticleId,
+      'L.217-5' as LegalArticleId,
+      'L.217-9' as LegalArticleId,
+    ],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
 
-  // --- GUIDES GÉNÉRÉS ---
-
-  'casque-audio-haut-de-gamme-defaut-garantie-legale': {
-    title: 'Casque audio haut de gamme : vos recours 2025',
-    subtitle: 'Coupures son • Grésillements • Batterie faible • 2 ans de garantie légale',
+export const GUIDE_CASQUE_AUDIO_HAUT_DE_GAMME_DEFAUT_GARANTIE_LEGALE: GuidePage = {
+  metadata: {
+    title: `Casque audio haut de gamme : vos recours 2025`,
     seo: {
-      title: 'Casque audio défectueux : garantie légale 2025',
-      description:
-        'Casque Bose/Sony/Apple en panne ? Réparation, remplacement ou remboursement sous 2 ans. Générez votre mise en demeure en 3 minutes.',
+      title: `Casque audio défectueux : garantie légale 2025`,
+      description: `Casque Bose/Sony/Apple en panne ? Réparation, remplacement ou remboursement sous 2 ans. Générez votre mise en demeure en 3 minutes.`,
       keywords: [
         'casque audio garantie légale',
         'Bose casque panne recours',
@@ -2068,145 +2982,185 @@ export const SEO_OPTIMIZED_GUIDES: Record<string, GuidePage> = {
         'garantie légale L.217-9 casque',
       ],
     },
-    sections: [
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
       {
-        id: 'defauts-couverts',
-        title: 'Les 8 défauts casque audio couverts par la garantie légale',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-base sm:text-lg text-gray-700 mb-6">
-    La garantie légale (Art. <strong>L.217-3</strong> à <strong>L.217-9</strong>) impose au <strong>vendeur</strong> de livrer un produit conforme et d'assumer les défauts pendant <strong>2 ans</strong> (12 mois pour l'occasion). Exemples couverts :
-  </p>
-
-  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-    <div class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-lg">
-      <h5 class="font-bold text-blue-900 mb-2">Défauts techniques</h5>
-      <ul class="text-sm text-blue-800 space-y-1">
-        <li>• Coupures/bluetooth instable</li>
-        <li>• Grésillements/cliquetis anormaux</li>
-        <li>• ANC inefficace ou défaillant</li>
-        <li>• Volume ou canaux déséquilibrés</li>
-      </ul>
-    </div>
-    <div class="bg-green-50 border-l-4 border-green-400 p-4 rounded-lg">
-      <h5 class="font-bold text-green-900 mb-2">Autonomie & charge</h5>
-      <ul class="text-sm text-green-800 space-y-1">
-        <li>• Batterie qui chute anormalement</li>
-        <li>• Charge impossible/port défectueux</li>
-        <li>• Échauffement anormal en charge</li>
-        <li>• Indication batterie erronée</li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 sm:p-6 mt-6 rounded-r-lg">
-    <p class="text-yellow-800 text-sm">
-      <strong>Présomption (Art. L.217-7) :</strong> tout défaut apparu dans les 2 ans est présumé exister au jour de la livraison. Au vendeur de prouver l’incompatibilité avec un usage normal.
-    </p>
-  </div>
-</div>
-      `,
-      },
-      {
-        id: 'procedure-recours',
-        title: 'Procédure étape par étape : obtenir réparation/remboursement',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <div class="bg-red-50 border-l-4 border-red-400 p-4 sm:p-6 mb-6">
-    <p class="text-red-800"><strong>Important :</strong> votre interlocuteur légal est <strong>uniquement le vendeur</strong>. Ne vous laissez pas renvoyer vers la marque.</p>
-  </div>
-
-  <div class="relative">
-    <div class="absolute left-8 top-0 bottom-0 w-0.5 bg-gray-200"></div>
-    <div class="space-y-8">
-      <div class="flex items-start">
-        <div class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold mr-4">1</div>
-        <div>
-          <h4 class="font-bold text-gray-900 mb-2">Rassemblez les preuves</h4>
-          <p class="text-sm text-gray-700">Facture, vidéos du défaut, page produit (promesses), échanges écrits.</p>
-        </div>
-      </div>
-      <div class="flex items-start">
-        <div class="w-10 h-10 rounded-full bg-green-600 text-white flex items-center justify-center font-bold mr-4">2</div>
-        <div>
-          <h4 class="font-bold text-gray-900 mb-2">Contact amiable</h4>
-          <p class="text-sm text-gray-700">Annoncez la garantie légale (Art. L.217-9) et demandez <strong>réparation</strong> ou <strong>remplacement</strong>.</p>
-        </div>
-      </div>
-      <div class="flex items-start">
-        <div class="w-10 h-10 rounded-full bg-orange-600 text-white flex items-center justify-center font-bold mr-4">3</div>
-        <div>
-          <h4 class="font-bold text-gray-900 mb-2">Mise en demeure</h4>
-          <p class="text-sm text-gray-700">Écrite et datée, rappelant L.217-3, L.217-7, L.217-9, L.217-11. Délai 15 jours.</p>
-          <a href="/eligibilite" class="inline-flex mt-3 px-4 py-2 bg-blue-600 text-white rounded-lg">Générer ma lettre →</a>
-        </div>
-      </div>
-      <div class="flex items-start">
-        <div class="w-10 h-10 rounded-full bg-purple-600 text-white flex items-center justify-center font-bold mr-4">4</div>
-        <div>
-          <h4 class="font-bold text-gray-900 mb-2">Si échec</h4>
-          <p class="text-sm text-gray-700">Exigez <strong>réduction du prix</strong> ou <strong>remboursement</strong> (Art. L.217-13). Tous frais à la charge du vendeur (L.217-11).</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-      `,
-      },
-      {
-        id: 'vendeurs-strategies',
-        title: 'Spécificités par enseigne/marque : qui est le plus conciliant',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <div class="space-y-4 sm:space-y-6">
-    <div class="bg-white border border-gray-200 rounded-lg p-4 sm:p-6">
-      <h5 class="font-bold text-gray-900 mb-2">Enseignes multimédia (Fnac, Darty, Boulanger)</h5>
-      <p class="text-sm text-gray-700">Préparez un dossier clair, mention explicite de la garantie légale, et demandez un <strong>bon de réparation</strong> ou un <strong>échange immédiat</strong> si stock.</p>
-    </div>
-    <div class="bg-white border border-gray-200 rounded-lg p-4 sm:p-6">
-      <h5 class="font-bold text-gray-900 mb-2">E-commerce (Amazon, Cdiscount)</h5>
-      <p class="text-sm text-gray-700">Utilisez le canal écrit (messagerie vendeur) pour tracer. Rappelez L.217-11 sur la prise en charge des frais.</p>
-    </div>
-    <div class="bg-green-50 p-4 sm:p-6 rounded-lg">
-      <p class="text-green-800 text-sm"><strong>Astuce :</strong> proposez au vendeur l’option la plus <em>raisonnable</em> (réparation rapide). En cas d’échec, basculez vers remplacement, puis remboursement (L.217-13).</p>
-    </div>
-  </div>
-</div>
-      `,
+        name: `Casque audio haut de gamme : vos recours 2025`,
+        url: `/guides/casque-audio-haut-de-gamme-defaut-garantie-legale`,
       },
     ],
-    faqSchema: createFAQSchema([
-      {
-        question: 'La batterie qui ne tient plus est-elle couverte ?',
-        answer:
-          'Oui si l’autonomie chute anormalement et empêche l’usage normal (L.217-5). Vous pouvez exiger réparation ou remplacement (L.217-9).',
-      },
-      {
-        question: 'Le vendeur peut-il me renvoyer vers la marque ?',
-        answer:
-          'Non. La garantie légale lie le vendeur au consommateur (L.217-3). Le vendeur reste votre interlocuteur.',
-      },
-      {
-        question: 'Qui paie les frais d’envoi et de retour ?',
-        answer:
-          'Tous les frais liés à la mise en conformité sont à la charge du vendeur (L.217-11).',
-      },
-      {
-        question: 'Puis-je demander un remboursement direct ?',
-        answer:
-          'En cas d’impossibilité ou d’échec de la réparation/remplacement, vous pouvez demander la réduction du prix ou la résolution avec remboursement (L.217-13).',
-      },
-    ]),
-    disclaimer: LEGAL_DISCLAIMER,
   },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec : <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24 mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤ 30 jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['L.217-11', 'L.217-13', 'L.217-3', 'L.217-7', 'L.217-9']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'defauts-couverts',
+      title: `Les 8 défauts casque audio couverts par la garantie légale`,
+      content: (
+        <div className="space-y-3">
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs text={`• Coupures/bluetooth instable`} />,
+                <TextWithLegalRefs text={`• Grésillements/cliquetis anormaux`} />,
+                <TextWithLegalRefs text={`• ANC inefficace ou défaillant`} />,
+                <TextWithLegalRefs text={`• Volume ou canaux déséquilibrés`} />,
+                <TextWithLegalRefs text={`• Batterie qui chute anormalement`} />,
+                <TextWithLegalRefs text={`• Charge impossible/port défectueux`} />,
+                <TextWithLegalRefs text={`• Échauffement anormal en charge`} />,
+                <TextWithLegalRefs text={`• Indication batterie erronée`} />,
+              ] as React.ReactNode[]
+            }
+          />{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`La garantie légale (Art. L.217-3 à L.217-9 ) impose au vendeur de livrer un produit conforme et d'assumer les défauts pendant 2 ans (12 mois pour l'occasion). Exemples couverts :`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Défauts techniques • Coupures/bluetooth instable • Grésillements/cliquetis anormaux • ANC inefficace ou défaillant • Volume ou canaux déséquilibrés Autonomie & charge • Batterie qui chute anormalement • Charge impossible/port défectueux • Échauffement anormal en charge • Indication batterie erronée Présomption (Art. L.217-7) : tout défaut apparu dans les 2 ans est présumé exister au jour de la livraison. Au vendeur de prouver l’incompatibilité avec un usage normal.`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'procedure-recours',
+      title: `Procédure étape par étape : obtenir réparation/remboursement`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Important : votre interlocuteur légal est uniquement le vendeur . Ne vous laissez pas renvoyer vers la marque.`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`1 Rassemblez les preuves Facture, vidéos du défaut, page produit (promesses), échanges écrits.`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`2 Contact amiable Annoncez la garantie légale (Art. L.217-9) et demandez réparation ou remplacement .`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`3 Mise en demeure Écrite et datée, rappelant L.217-3, L.217-7, L.217-9, L.217-11. Délai 15 jours.`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Générer ma lettre → 4 Si échec Exigez réduction du prix ou remboursement (Art. L.217-14, L.217-16, L.217-17). Tous frais à la charge du vendeur (L.217-11).`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'vendeurs-strategies',
+      title: `Spécificités par enseigne/marque : qui est le plus conciliant`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            Panorama des pratiques par enseigne : qualité d’accueil, délais moyens, facilité de
+            remplacement.
+          </p>
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs
+                  text={`Darty : processus cadré, demandez la mise en conformité par écrit.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Boulanger : insistez sur la gratuité des frais (L.217-11).`}
+                />,
+                <TextWithLegalRefs
+                  text={`Conforama / But : privilégiez la LRAR en cas d’atermoiements.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Amazon : utilisez l’historique des tickets pour la preuve d’échec.`}
+                />,
+              ] as React.ReactNode[]
+            }
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'procedure',
+      title: 'Procédure type',
+      content: <StandardProcedure />,
+    },
+    {
+      id: 'alternatives',
+      title: 'Si ça bloque',
+      content: <DefaultAlternatives />,
+    },
+    {
+      id: 'contacts',
+      title: 'Contacts utiles',
+      content: <DefaultContacts />,
+    },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: [
+      'L.217-11' as LegalArticleId,
+      'L.217-13' as LegalArticleId,
+      'L.217-3' as LegalArticleId,
+      'L.217-7' as LegalArticleId,
+      'L.217-9' as LegalArticleId,
+    ],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
 
-  'ecouteurs-sans-fil-defaut-connexion-garantie-legale': {
-    title: 'Écouteurs sans fil : garantie légale & recours 2025',
-    subtitle: 'Coupures, latence, grésillements, batterie • 2 ans de protection',
+export const GUIDE_ECOUTEURS_SANS_FIL_DEFAUT_CONNEXION_GARANTIE_LEGALE: GuidePage = {
+  metadata: {
+    title: `Écouteurs sans fil : garantie légale & recours 2025`,
     seo: {
-      title: 'Écouteurs TWS défectueux : vos droits 2025',
-      description:
-        'AirPods/Pixel Buds/Galaxy Buds qui coupent ? Garantie légale : réparation, remplacement ou remboursement. Lettre conforme en 3 min.',
+      title: `Écouteurs TWS défectueux : vos droits 2025`,
+      description: `AirPods/Pixel Buds/Galaxy Buds qui coupent ? Garantie légale : réparation, remplacement ou remboursement. Lettre conforme en 3 min.`,
       keywords: [
         'écouteurs sans fil garantie légale',
         'AirPods panne recours',
@@ -2220,79 +3174,159 @@ export const SEO_OPTIMIZED_GUIDES: Record<string, GuidePage> = {
         'réparation gratuite écouteurs',
       ],
     },
-    sections: [
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
       {
-        id: 'defauts-couverts',
-        title: 'Les défauts typiques couverts sur les écouteurs',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <div class="space-y-4 sm:space-y-6">
-    <div class="bg-purple-50 border-l-4 border-purple-400 p-4 sm:p-6 rounded-r-lg">
-      <p class="text-purple-800 text-sm"><strong>Couvert :</strong> pertes de connexion, canal muet, grésillements, charge erratique, autonomie anormalement faible, boîtier qui ne ferme plus.</p>
-      <p class="text-purple-800 text-sm mt-2"><strong>Base :</strong> L.217-5 (conformité à l’usage attendu), L.217-7 (présomption 2 ans).</p>
-    </div>
-    <div class="bg-yellow-50 p-4 sm:p-6 rounded-lg">
-      <p class="text-yellow-800 text-sm">Les dommages accidentels (chute/immersion) ne sont pas couverts, sauf promesse spécifique non tenue sur la résistance annoncée.</p>
-    </div>
-  </div>
-</div>
-      `,
-      },
-      {
-        id: 'procedure-recours',
-        title: 'Obtenir réparation/remplacement : la méthode claire',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <div class="space-y-6">
-    <div class="bg-blue-50 border-l-4 border-blue-400 p-4 sm:p-6">
-      <p class="text-blue-800 text-sm">1) Prouvez le défaut (vidéos, capture autonomie) • 2) Contactez le vendeur (L.217-9) • 3) Mise en demeure écrite si refus • 4) Remplacement ou remboursement (L.217-13).</p>
-    </div>
-    <a href="/eligibilite" class="inline-flex px-4 py-2 bg-blue-600 text-white rounded-lg">Créer ma lettre maintenant →</a>
-  </div>
-</div>
-      `,
-      },
-      {
-        id: 'vendeurs-strategies',
-        title: 'Stratégies par enseigne : comment accélérer',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <ul class="text-sm text-gray-700 space-y-2">
-    <li><strong>Magasin spécialisé :</strong> exigez un test immédiat en boutique et l’ouverture d’un ticket sous garantie légale.</li>
-    <li><strong>Marketplace :</strong> écrivez via la messagerie officielle pour tracer, joignez preuves, rappelez L.217-11 (frais à charge vendeur).</li>
-    <li><strong>Click & Collect :</strong> retour au point de retrait = vendeur, même si la marque propose un centre externe.</li>
-  </ul>
-</div>
-      `,
+        name: `Écouteurs sans fil : garantie légale & recours 2025`,
+        url: `/guides/ecouteurs-sans-fil-defaut-connexion-garantie-legale`,
       },
     ],
-    faqSchema: createFAQSchema([
-      {
-        question: 'Boîtier qui ne charge plus : couvert ?',
-        answer: 'Oui si le défaut empêche l’usage normal. Demandez réparation/échange (L.217-9).',
-      },
-      {
-        question: 'Délais de la garantie ?',
-        answer:
-          '2 ans (neuf) / 12 mois au moins (occasion). Présomption de défaut durant la période (L.217-7).',
-      },
-      { question: 'Frais d’envoi ?', answer: 'Ils incombent au vendeur (L.217-11).' },
-      {
-        question: 'Remboursement possible ?',
-        answer:
-          'Oui si réparation/remplacement impossible ou échec : réduction du prix ou remboursement (L.217-13).',
-      },
-    ]),
-    disclaimer: LEGAL_DISCLAIMER,
   },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec : <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24 mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤ 30 jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['L.217-11', 'L.217-13', 'L.217-5', 'L.217-7', 'L.217-9']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'defauts-couverts',
+      title: `Les défauts typiques couverts sur les écouteurs`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Couvert : pertes de connexion, canal muet, grésillements, charge erratique, autonomie anormalement faible, boîtier qui ne ferme plus.`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Base : L.217-5 (conformité à l’usage attendu), L.217-7 (présomption 2 ans).`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Les dommages accidentels (chute/immersion) ne sont pas couverts, sauf promesse spécifique non tenue sur la résistance annoncée.`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'procedure-recours',
+      title: `Obtenir réparation/remplacement : la méthode claire`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`1) Prouvez le défaut (vidéos, capture autonomie) • 2) Contactez le vendeur (L.217-9) • 3) Mise en demeure écrite si refus • 4) Remplacement ou remboursement (L.217-14, L.217-16, L.217-17).`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs text={`Créer ma lettre maintenant →`} />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'vendeurs-strategies',
+      title: `Stratégies par enseigne : comment accélérer`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            Panorama des pratiques par enseigne : qualité d’accueil, délais moyens, facilité de
+            remplacement.
+          </p>
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs
+                  text={`Darty : processus cadré, demandez la mise en conformité par écrit.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Boulanger : insistez sur la gratuité des frais (L.217-11).`}
+                />,
+                <TextWithLegalRefs
+                  text={`Conforama / But : privilégiez la LRAR en cas d’atermoiements.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Amazon : utilisez l’historique des tickets pour la preuve d’échec.`}
+                />,
+              ] as React.ReactNode[]
+            }
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'procedure',
+      title: 'Procédure type',
+      content: <StandardProcedure />,
+    },
+    {
+      id: 'alternatives',
+      title: 'Si ça bloque',
+      content: <DefaultAlternatives />,
+    },
+    {
+      id: 'contacts',
+      title: 'Contacts utiles',
+      content: <DefaultContacts />,
+    },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: [
+      'L.217-11' as LegalArticleId,
+      'L.217-13' as LegalArticleId,
+      'L.217-5' as LegalArticleId,
+      'L.217-7' as LegalArticleId,
+      'L.217-9' as LegalArticleId,
+    ],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
 
-  'smartwatch-batterie-faible-garantie-legale': {
-    title: 'Smartwatch qui ne tient plus la charge : recours 2025',
-    subtitle: 'Autonomie faible • Capteurs imprécis • Écran figé • 2 ans vendeur',
+export const GUIDE_SMARTWATCH_BATTERIE_FAIBLE_GARANTIE_LEGALE: GuidePage = {
+  metadata: {
+    title: `Smartwatch qui ne tient plus la charge : recours 2025`,
     seo: {
-      title: 'Montre connectée en panne : garantie légale',
-      description:
-        'Batterie faible, capteurs défaillants, écran qui fige ? Garantie légale : réparation, remplacement, remboursement. Lettre conforme en 3 minutes.',
+      title: `Montre connectée en panne : garantie légale`,
+      description: `Batterie faible, capteurs défaillants, écran qui fige ? Garantie légale : réparation, remplacement, remboursement. Lettre conforme en 3 minutes.`,
       keywords: [
         'smartwatch batterie faible garantie',
         'garantie légale montre connectée',
@@ -2306,75 +3340,165 @@ export const SEO_OPTIMIZED_GUIDES: Record<string, GuidePage> = {
         'réparation gratuite L.217-11',
       ],
     },
-    sections: [
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
       {
-        id: 'defauts-couverts',
-        title: 'Défauts couverts : de la batterie aux capteurs',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <div class="space-y-4">
-    <p class="text-gray-700">Couvert par L.217-5 et L.217-7 : autonomie anormalement basse, écran figé/ghosting, capteurs incohérents, charge instable, boutons défaillants.</p>
-    <div class="bg-green-50 p-4 rounded-lg"><p class="text-sm text-green-800"><strong>Tip :</strong> consignez des mesures sur plusieurs jours (captures), cela renforce la preuve.</p></div>
-  </div>
-</div>
-      `,
-      },
-      {
-        id: 'procedure-recours',
-        title: 'La timeline gagnante (vendeur uniquement)',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <div class="space-y-6">
-    <div class="grid sm:grid-cols-2 gap-4">
-      <div class="bg-blue-50 p-4 rounded"><p class="text-sm text-blue-800"><strong>J+0 :</strong> signaler au vendeur (L.217-9) • solution demandée : réparation.</p></div>
-      <div class="bg-yellow-50 p-4 rounded"><p class="text-sm text-yellow-800"><strong>J+15 :</strong> mise en demeure si pas de solution • rappel L.217-3, L.217-7, L.217-11.</p></div>
-    </div>
-    <div class="bg-purple-50 p-4 rounded"><p class="text-sm text-purple-800"><strong>Échec :</strong> bascule en remplacement ou remboursement (L.217-13).</p></div>
-    <a href="/eligibilite" class="inline-flex px-4 py-2 bg-blue-600 text-white rounded-lg">Générer ma lettre →</a>
-  </div>
-</div>
-      `,
-      },
-      {
-        id: 'vendeurs-strategies',
-        title: 'Enseignes & bonnes pratiques',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <ul class="text-sm text-gray-700 space-y-2">
-    <li>Demandez un compte-rendu écrit du test en boutique.</li>
-    <li>Refusez les détours vers un centre marque : la garantie légale lie le vendeur.</li>
-    <li>Exigez la prise en charge totale des frais (L.217-11).</li>
-  </ul>
-</div>
-      `,
+        name: `Smartwatch qui ne tient plus la charge : recours 2025`,
+        url: `/guides/smartwatch-batterie-faible-garantie-legale`,
       },
     ],
-    faqSchema: createFAQSchema([
-      {
-        question: 'Capteurs incohérents : couvert ?',
-        answer:
-          'Oui si cela empêche l’usage conforme (L.217-5). Demandez réparation/remplacement (L.217-9).',
-      },
-      {
-        question: 'Présomption de défaut ?',
-        answer: 'Oui pendant 2 ans (12 mois occasion) : L.217-7.',
-      },
-      { question: 'Qui paye les envois ?', answer: 'Le vendeur (L.217-11).' },
-      {
-        question: 'Remboursement direct ?',
-        answer: 'Possible si échec ou impossibilité des autres solutions (L.217-13).',
-      },
-    ]),
-    disclaimer: LEGAL_DISCLAIMER,
   },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec : <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24 mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤ 30 jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['L.217-11', 'L.217-13', 'L.217-3', 'L.217-5', 'L.217-7', 'L.217-9']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'defauts-couverts',
+      title: `Défauts couverts : de la batterie aux capteurs`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Couvert par L.217-5 et L.217-7 : autonomie anormalement basse, écran figé/ghosting, capteurs incohérents, charge instable, boutons défaillants.`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Tip : consignez des mesures sur plusieurs jours (captures), cela renforce la preuve.`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'procedure-recours',
+      title: `La timeline gagnante (vendeur uniquement)`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`J+0 : signaler au vendeur (L.217-9) • solution demandée : réparation.`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`J+15 : mise en demeure si pas de solution • rappel L.217-3, L.217-7, L.217-11.`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Échec : bascule en remplacement ou remboursement (L.217-14, L.217-16, L.217-17).`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs text={`Générer ma lettre →`} />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'vendeurs-strategies',
+      title: `Enseignes & bonnes pratiques`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            Panorama des pratiques par enseigne : qualité d’accueil, délais moyens, facilité de
+            remplacement.
+          </p>
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs
+                  text={`Darty : processus cadré, demandez la mise en conformité par écrit.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Boulanger : insistez sur la gratuité des frais (L.217-11).`}
+                />,
+                <TextWithLegalRefs
+                  text={`Conforama / But : privilégiez la LRAR en cas d’atermoiements.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Amazon : utilisez l’historique des tickets pour la preuve d’échec.`}
+                />,
+              ] as React.ReactNode[]
+            }
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'procedure',
+      title: 'Procédure type',
+      content: <StandardProcedure />,
+    },
+    {
+      id: 'alternatives',
+      title: 'Si ça bloque',
+      content: <DefaultAlternatives />,
+    },
+    {
+      id: 'contacts',
+      title: 'Contacts utiles',
+      content: <DefaultContacts />,
+    },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: [
+      'L.217-11' as LegalArticleId,
+      'L.217-13' as LegalArticleId,
+      'L.217-3' as LegalArticleId,
+      'L.217-5' as LegalArticleId,
+      'L.217-7' as LegalArticleId,
+      'L.217-9' as LegalArticleId,
+    ],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
 
-  'tablette-tactile-ecran-surchauffe-garantie-legale': {
-    title: 'Tablette tactile en panne : garantie légale 2025',
-    subtitle: 'Écran, surchauffe, batterie • Réparation, remplacement, remboursement',
+export const GUIDE_TABLETTE_TACTILE_ECRAN_SURCHAUFFE_GARANTIE_LEGALE: GuidePage = {
+  metadata: {
+    title: `Tablette tactile en panne : garantie légale 2025`,
     seo: {
-      title: 'Tablette défectueuse : vos droits 2025',
-      description:
-        'iPad/Galaxy Tab/Lenovo Tab défectueuse ? Activez la garantie légale : 2 ans. Lettre de mise en demeure en quelques clics.',
+      title: `Tablette défectueuse : vos droits 2025`,
+      description: `iPad/Galaxy Tab/Lenovo Tab défectueuse ? Activez la garantie légale : 2 ans. Lettre de mise en demeure en quelques clics.`,
       keywords: [
         'tablette en panne garantie',
         'iPad écran défaut recours',
@@ -2388,67 +3512,167 @@ export const SEO_OPTIMIZED_GUIDES: Record<string, GuidePage> = {
         'frais vendeur L.217-11',
       ],
     },
-    sections: [
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
       {
-        id: 'defauts-couverts',
-        title: 'Défauts couverts sur les tablettes : check-list',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <div class="grid sm:grid-cols-2 gap-4">
-    <div class="bg-blue-50 p-4 rounded"><p class="text-sm text-blue-800">Écran : taches, lignes, tactile fantôme, pixellisation.</p></div>
-    <div class="bg-green-50 p-4 rounded"><p class="text-sm text-green-800">Surchauffe anormale, reboots, charge erratique, haut-parleurs HS.</p></div>
-  </div>
-  <p class="mt-4 text-sm text-gray-700">Base : L.217-5 (usage attendu), L.217-7 (présomption 2 ans).</p>
-</div>
-      `,
-      },
-      {
-        id: 'procedure-recours',
-        title: 'Procédure express en 4 étapes',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <ol class="list-decimal list-inside text-sm text-gray-800 space-y-2">
-    <li>Preuves (photos/vidéos + facture)</li>
-    <li>Demande au vendeur : réparation (L.217-9)</li>
-    <li>Mise en demeure (rappel L.217-3, L.217-7, L.217-11)</li>
-    <li>Si échec : réduction du prix ou remboursement (L.217-13)</li>
-  </ol>
-  <a href="/eligibilite" class="inline-flex mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg">Créer ma lettre →</a>
-</div>
-      `,
-      },
-      {
-        id: 'vendeurs-strategies',
-        title: 'Conseils par circuits de vente',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">En boutique, exigez un test et un accusé de réception de dossier. En ligne, privilégiez l’écrit et le suivi d’envoi (frais vendeur : L.217-11).</p>
-</div>
-      `,
+        name: `Tablette tactile en panne : garantie légale 2025`,
+        url: `/guides/tablette-tactile-ecran-surchauffe-garantie-legale`,
       },
     ],
-    faqSchema: createFAQSchema([
-      {
-        question: 'Écran avec lignes : couvert ?',
-        answer: 'Oui, défaut de conformité. Réparation/remplacement (L.217-9).',
-      },
-      { question: 'Délais ?', answer: '2 ans (neuf) / 12 mois au moins (occasion) : L.217-7.' },
-      {
-        question: 'Remboursement ?',
-        answer: 'Si réparation/remplacement impossible ou échec : L.217-13.',
-      },
-      { question: 'Frais de retour ?', answer: 'À la charge du vendeur (L.217-11).' },
-    ]),
-    disclaimer: LEGAL_DISCLAIMER,
   },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec : <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24 mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤ 30 jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['L.217-11', 'L.217-13', 'L.217-3', 'L.217-5', 'L.217-7', 'L.217-9']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'defauts-couverts',
+      title: `Défauts couverts sur les tablettes : check-list`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs text={`Écran : taches, lignes, tactile fantôme, pixellisation.`} />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Surchauffe anormale, reboots, charge erratique, haut-parleurs HS.`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Base : L.217-5 (usage attendu), L.217-7 (présomption 2 ans).`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'procedure-recours',
+      title: `Procédure express en 4 étapes`,
+      content: (
+        <div className="space-y-3">
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs text={`Preuves (photos/vidéos + facture)`} />,
+                <TextWithLegalRefs text={`Demande au vendeur : réparation (L.217-9)`} />,
+                <TextWithLegalRefs text={`Mise en demeure (rappel L.217-3, L.217-7, L.217-11)`} />,
+                <TextWithLegalRefs
+                  text={`Si échec : réduction du prix ou remboursement (L.217-14, L.217-16, L.217-17)`}
+                />,
+              ] as React.ReactNode[]
+            }
+          />
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Preuves (photos/vidéos + facture) Demande au vendeur : réparation (L.217-9) Mise en demeure (rappel L.217-3, L.217-7, L.217-11) Si échec : réduction du prix ou remboursement (L.217-14, L.217-16, L.217-17) Créer ma lettre →`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'vendeurs-strategies',
+      title: `Conseils par circuits de vente`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            Panorama des pratiques par enseigne : qualité d’accueil, délais moyens, facilité de
+            remplacement.
+          </p>
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs
+                  text={`Darty : processus cadré, demandez la mise en conformité par écrit.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Boulanger : insistez sur la gratuité des frais (L.217-11).`}
+                />,
+                <TextWithLegalRefs
+                  text={`Conforama / But : privilégiez la LRAR en cas d’atermoiements.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Amazon : utilisez l’historique des tickets pour la preuve d’échec.`}
+                />,
+              ] as React.ReactNode[]
+            }
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'procedure',
+      title: 'Procédure type',
+      content: <StandardProcedure />,
+    },
+    {
+      id: 'alternatives',
+      title: 'Si ça bloque',
+      content: <DefaultAlternatives />,
+    },
+    {
+      id: 'contacts',
+      title: 'Contacts utiles',
+      content: <DefaultContacts />,
+    },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: [
+      'L.217-11' as LegalArticleId,
+      'L.217-13' as LegalArticleId,
+      'L.217-3' as LegalArticleId,
+      'L.217-5' as LegalArticleId,
+      'L.217-7' as LegalArticleId,
+      'L.217-9' as LegalArticleId,
+    ],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
 
-  'tv-oled-ecran-marques-garantie-legale': {
-    title: 'TV OLED défectueuse : vos recours 2025',
-    subtitle: 'Pixels morts • Marquage • eARC/CEC • 2 ans chez le vendeur',
+export const GUIDE_TV_OLED_ECRAN_MARQUES_GARANTIE_LEGALE: GuidePage = {
+  metadata: {
+    title: `TV OLED défectueuse : vos recours 2025`,
     seo: {
-      title: 'TV OLED en panne : garantie légale 2025',
-      description:
-        'Pixels morts, marquage, HDMI eARC/CEC instable ? Exigez réparation, remplacement ou remboursement sous 2 ans. Lettre conforme en 3 minutes.',
+      title: `TV OLED en panne : garantie légale 2025`,
+      description: `Pixels morts, marquage, HDMI eARC/CEC instable ? Exigez réparation, remplacement ou remboursement sous 2 ans. Lettre conforme en 3 minutes.`,
       keywords: [
         'tv oled garantie légale',
         'oled marquage rémanence recours',
@@ -2462,129 +3686,183 @@ export const SEO_OPTIMIZED_GUIDES: Record<string, GuidePage> = {
         'vendeur responsable L.217-3',
       ],
     },
-    sections: [
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
       {
-        id: 'defauts-couverts',
-        title: 'Les 8 défauts TV OLED couverts par la garantie légale',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-base sm:text-lg text-gray-700 mb-6">
-    Art. <strong>L.217-3</strong> à <strong>L.217-13</strong> : le vendeur doit livrer un produit conforme pendant <strong>2 ans</strong> (12 mois mini en occasion).
-  </p>
-  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-    <div class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-lg">
-      <h5 class="font-bold text-blue-900 mb-2">Affichage</h5>
-      <ul class="text-sm text-blue-800 space-y-1">
-        <li>• Pixels morts / lignes</li>
-        <li>• Marquage/rémanence anormale</li>
-        <li>• Teintes/gradients instables</li>
-      </ul>
-    </div>
-    <div class="bg-green-50 border-l-4 border-green-400 p-4 rounded-lg">
-      <h5 class="font-bold text-green-900 mb-2">Connectique & son</h5>
-      <ul class="text-sm text-green-800 space-y-1">
-        <li>• eARC/CEC instable</li>
-        <li>• HDMI/port optique HS</li>
-        <li>• Haut-parleurs défaillants</li>
-      </ul>
-    </div>
-  </div>
-  <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 sm:p-6 mt-6 rounded-r-lg">
-    <p class="text-yellow-800 text-sm"><strong>L.217-7 :</strong> tout défaut apparu dans les 2 ans (12 mois occasion) est présumé exister à la livraison.</p>
-  </div>
-  <div class="bg-green-50 p-4 sm:p-6 rounded-lg mt-8">
-    <p class="text-green-800 text-sm">Nos dossiers obtiennent une issue favorable dans 78% des cas après mise en demeure écrite.</p>
-  </div>
-</div>
-      `,
-      },
-      {
-        id: 'procedure-recours',
-        title: 'Procédure étape par étape : obtenir réparation/remboursement',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <div class="relative">
-    <div class="absolute left-8 top-0 bottom-0 w-0.5 bg-gray-200"></div>
-    <div class="space-y-8">
-      <div class="flex items-start">
-        <div class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold mr-4">1</div>
-        <div>
-          <h4 class="font-bold text-gray-900 mb-2">Prouvez</h4>
-          <p class="text-sm text-gray-700">Photos/vidéos du défaut, facture, promesses commerciales (fiche produit).</p>
-        </div>
-      </div>
-      <div class="flex items-start">
-        <div class="w-10 h-10 rounded-full bg-green-600 text-white flex items-center justify-center font-bold mr-4">2</div>
-        <div>
-          <h4 class="font-bold text-gray-900 mb-2">Demandez la mise en conformité</h4>
-          <p class="text-sm text-gray-700">Au <strong>vendeur</strong> uniquement (L.217-9) : réparation ou remplacement.</p>
-        </div>
-      </div>
-      <div class="flex items-start">
-        <div class="w-10 h-10 rounded-full bg-orange-600 text-white flex items-center justify-center font-bold mr-4">3</div>
-        <div>
-          <h4 class="font-bold text-gray-900 mb-2">Mise en demeure</h4>
-          <p class="text-sm text-gray-700">Rappelez L.217-3, L.217-7, L.217-11. Délai 15 jours.</p>
-          <a href="/eligibilite" class="inline-flex mt-3 px-4 py-2 bg-blue-600 text-white rounded-lg">Générer ma lettre →</a>
-        </div>
-      </div>
-      <div class="flex items-start">
-        <div class="w-10 h-10 rounded-full bg-purple-600 text-white flex items-center justify-center font-bold mr-4">4</div>
-        <div>
-          <h4 class="font-bold text-gray-900 mb-2">Si échec</h4>
-          <p class="text-sm text-gray-700">Réduction du prix ou remboursement (L.217-13). Tous frais au vendeur (L.217-11).</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-      `,
-      },
-      {
-        id: 'vendeurs-strategies',
-        title: 'Spécificités par enseigne/marque : qui est le plus conciliant',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <div class="space-y-4 sm:space-y-6">
-    <div class="bg-white border border-gray-200 rounded-lg p-4 sm:p-6">
-      <h5 class="font-bold text-gray-900 mb-2">Enseignes TV (Fnac, Darty, Boulanger)</h5>
-      <p class="text-sm text-gray-700">Demandez un test dalles + HDMI en magasin et un <strong>compte-rendu écrit</strong>.</p>
-    </div>
-    <div class="bg-white border border-gray-200 rounded-lg p-4 sm:p-6">
-      <h5 class="font-bold text-gray-900 mb-2">E-commerce & marketplaces</h5>
-      <p class="text-sm text-gray-700">Tracez par écrit (messagerie vendeur), rappelez la prise en charge intégrale (L.217-11).</p>
-    </div>
-  </div>
-</div>
-      `,
+        name: `TV OLED défectueuse : vos recours 2025`,
+        url: `/guides/tv-oled-ecran-marques-garantie-legale`,
       },
     ],
-    faqSchema: createFAQSchema([
-      {
-        question: 'Marquage OLED : couvert ?',
-        answer:
-          'Oui s’il empêche l’usage normal ou contredit les performances promises (L.217-5). Mise en conformité (L.217-9).',
-      },
-      {
-        question: 'Le vendeur me renvoie vers la marque ?',
-        answer: 'Interdit : la garantie légale lie le vendeur (L.217-3).',
-      },
-      { question: 'Frais d’envoi/transport ?', answer: 'À la charge du vendeur (L.217-11).' },
-      {
-        question: 'Remboursement possible ?',
-        answer: 'Si réparation/remplacement impossible ou échoue (L.217-13).',
-      },
-    ]),
-    disclaimer: LEGAL_DISCLAIMER,
   },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec : <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24 mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤ 30 jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['L.217-11', 'L.217-13', 'L.217-3', 'L.217-7', 'L.217-9']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'defauts-couverts',
+      title: `Les 8 défauts TV OLED couverts par la garantie légale`,
+      content: (
+        <div className="space-y-3">
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs text={`• Pixels morts / lignes`} />,
+                <TextWithLegalRefs text={`• Marquage/rémanence anormale`} />,
+                <TextWithLegalRefs text={`• Teintes/gradients instables`} />,
+                <TextWithLegalRefs text={`• eARC/CEC instable`} />,
+                <TextWithLegalRefs text={`• HDMI/port optique HS`} />,
+                <TextWithLegalRefs text={`• Haut-parleurs défaillants`} />,
+              ] as React.ReactNode[]
+            }
+          />{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Art. L.217-3 à L.217-13 : le vendeur doit livrer un produit conforme pendant 2 ans (12 mois mini en occasion).`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Affichage • Pixels morts / lignes • Marquage/rémanence anormale • Teintes/gradients instables Connectique & son • eARC/CEC instable • HDMI/port optique HS • Haut-parleurs défaillants L.217-7 : tout défaut apparu dans les 2 ans (12 mois occasion) est présumé exister à la livraison.`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Nos dossiers obtiennent une issue favorable dans 78% des cas après mise en demeure écrite.`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'procedure-recours',
+      title: `Procédure étape par étape : obtenir réparation/remboursement`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`1 Prouvez Photos/vidéos du défaut, facture, promesses commerciales (fiche produit).`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`2 Demandez la mise en conformité Au vendeur uniquement (L.217-9) : réparation ou remplacement.`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`3 Mise en demeure Rappelez L.217-3, L.217-7, L.217-11. Délai 15 jours.`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Générer ma lettre → 4 Si échec Réduction du prix ou remboursement (L.217-14, L.217-16, L.217-17). Tous frais au vendeur (L.217-11).`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'vendeurs-strategies',
+      title: `Spécificités par enseigne/marque : qui est le plus conciliant`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            Panorama des pratiques par enseigne : qualité d’accueil, délais moyens, facilité de
+            remplacement.
+          </p>
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs
+                  text={`Darty : processus cadré, demandez la mise en conformité par écrit.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Boulanger : insistez sur la gratuité des frais (L.217-11).`}
+                />,
+                <TextWithLegalRefs
+                  text={`Conforama / But : privilégiez la LRAR en cas d’atermoiements.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Amazon : utilisez l’historique des tickets pour la preuve d’échec.`}
+                />,
+              ] as React.ReactNode[]
+            }
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'procedure',
+      title: 'Procédure type',
+      content: <StandardProcedure />,
+    },
+    {
+      id: 'alternatives',
+      title: 'Si ça bloque',
+      content: <DefaultAlternatives />,
+    },
+    {
+      id: 'contacts',
+      title: 'Contacts utiles',
+      content: <DefaultContacts />,
+    },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: [
+      'L.217-11' as LegalArticleId,
+      'L.217-13' as LegalArticleId,
+      'L.217-3' as LegalArticleId,
+      'L.217-7' as LegalArticleId,
+      'L.217-9' as LegalArticleId,
+    ],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
 
-  'videoprojecteur-panne-garantie-legale': {
-    title: 'Vidéoprojecteur en panne : garantie légale 2025',
-    subtitle: 'Focus/Keystone • Lampe/laser • HDMI/ARC • 2 ans vendeur',
+export const GUIDE_VIDEOPROJECTEUR_PANNE_GARANTIE_LEGALE: GuidePage = {
+  metadata: {
+    title: `Vidéoprojecteur en panne : garantie légale 2025`,
     seo: {
-      title: 'Vidéoprojecteur défectueux : recours 2025',
-      description:
-        'Focus, keystone, lampe/laser, HDMI instable : garantie légale. Obtenez réparation, remplacement ou remboursement. Lettre en 3 minutes.',
+      title: `Vidéoprojecteur défectueux : recours 2025`,
+      description: `Focus, keystone, lampe/laser, HDMI instable : garantie légale. Obtenez réparation, remplacement ou remboursement. Lettre en 3 minutes.`,
       keywords: [
         'videoprojecteur garantie légale',
         'focus flou keystone défaut',
@@ -2598,77 +3876,172 @@ export const SEO_OPTIMIZED_GUIDES: Record<string, GuidePage> = {
         'mise en demeure projecteur',
       ],
     },
-    sections: [
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
       {
-        id: 'defauts-couverts',
-        title: 'Défauts couverts côté image & connectique',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <div class="space-y-4 sm:space-y-6">
-    <div class="bg-purple-50 border-l-4 border-purple-400 p-4 sm:p-6 rounded-r-lg">
-      <p class="text-purple-800 text-sm"><strong>Couvert :</strong> focus impossible à régler, keystone inopérant, lampe/laser chute anormale, HDMI/ARC instable, ventilateur bruyant.</p>
-      <p class="text-purple-800 text-sm mt-2"><strong>Base :</strong> L.217-5 (usage attendu), L.217-7 (présomption).</p>
-    </div>
-  </div>
-  <div class="bg-green-50 p-4 sm:p-6 rounded-lg mt-8">
-    <p class="text-green-800 text-sm">Résolution amiable en ~70% des cas après rappel clair de L.217-9 et L.217-11.</p>
-  </div>
-</div>
-      `,
-      },
-      {
-        id: 'procedure-recours',
-        title: 'Procédure étape par étape : obtenir réparation/remboursement',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <div class="bg-blue-50 border-l-4 border-blue-400 p-4 sm:p-6 mb-6">
-    <p class="text-blue-800"><strong>Interlocuteur :</strong> uniquement le vendeur (L.217-3). Choix initial : réparation ou remplacement (L.217-9).</p>
-  </div>
-  <ol class="list-decimal list-inside text-sm text-gray-800 space-y-2">
-    <li>Preuves (photos/fichiers test) + facture</li>
-    <li>Demande de mise en conformité (L.217-9)</li>
-    <li>Mise en demeure (L.217-3, L.217-7, L.217-11)</li>
-    <li>Réduction du prix / remboursement (L.217-13)</li>
-  </ol>
-  <a href="/eligibilite" class="inline-flex mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg">Créer ma lettre →</a>
-</div>
-      `,
-      },
-      {
-        id: 'vendeurs-strategies',
-        title: 'Enseignes & astuces pratiques',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <ul class="text-sm text-gray-700 space-y-2">
-    <li>Demandez test en salle sombre avec mire de focus.</li>
-    <li>Consignez l’autonomie lampe/laser relevée par l’OSD.</li>
-  </ul>
-</div>
-      `,
+        name: `Vidéoprojecteur en panne : garantie légale 2025`,
+        url: `/guides/videoprojecteur-panne-garantie-legale`,
       },
     ],
-    faqSchema: createFAQSchema([
-      {
-        question: 'Lampe qui chute vite : couvert ?',
-        answer: 'Oui si anormal vs promesse/usage (L.217-5). Mise en conformité (L.217-9).',
-      },
-      { question: 'Frais de retour ?', answer: 'À la charge du vendeur (L.217-11).' },
-      {
-        question: 'Remboursement ?',
-        answer: 'Si réparation/remplacement impossible ou échoue (L.217-13).',
-      },
-      { question: 'Occasion ?', answer: 'Présomption 12 mois mini (L.217-7).' },
-    ]),
-    disclaimer: LEGAL_DISCLAIMER,
   },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec : <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24 mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤ 30 jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['L.217-11', 'L.217-13', 'L.217-3', 'L.217-5', 'L.217-7', 'L.217-9']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'defauts-couverts',
+      title: `Défauts couverts côté image & connectique`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Couvert : focus impossible à régler, keystone inopérant, lampe/laser chute anormale, HDMI/ARC instable, ventilateur bruyant.`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs text={`Base : L.217-5 (usage attendu), L.217-7 (présomption).`} />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Résolution amiable en ~70% des cas après rappel clair de L.217-9 et L.217-11.`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'procedure-recours',
+      title: `Procédure étape par étape : obtenir réparation/remboursement`,
+      content: (
+        <div className="space-y-3">
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs text={`Preuves (photos/fichiers test) + facture`} />,
+                <TextWithLegalRefs text={`Demande de mise en conformité (L.217-9)`} />,
+                <TextWithLegalRefs text={`Mise en demeure (L.217-3, L.217-7, L.217-11)`} />,
+                <TextWithLegalRefs
+                  text={`Réduction du prix / remboursement (L.217-14, L.217-16, L.217-17)`}
+                />,
+              ] as React.ReactNode[]
+            }
+          />
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Interlocuteur : uniquement le vendeur (L.217-3). Choix initial : réparation ou remplacement (L.217-9).`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Preuves (photos/fichiers test) + facture Demande de mise en conformité (L.217-9) Mise en demeure (L.217-3, L.217-7, L.217-11) Réduction du prix / remboursement (L.217-14, L.217-16, L.217-17) Créer ma lettre →`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'vendeurs-strategies',
+      title: `Enseignes & astuces pratiques`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            Panorama des pratiques par enseigne : qualité d’accueil, délais moyens, facilité de
+            remplacement.
+          </p>
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs
+                  text={`Darty : processus cadré, demandez la mise en conformité par écrit.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Boulanger : insistez sur la gratuité des frais (L.217-11).`}
+                />,
+                <TextWithLegalRefs
+                  text={`Conforama / But : privilégiez la LRAR en cas d’atermoiements.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Amazon : utilisez l’historique des tickets pour la preuve d’échec.`}
+                />,
+              ] as React.ReactNode[]
+            }
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'procedure',
+      title: 'Procédure type',
+      content: <StandardProcedure />,
+    },
+    {
+      id: 'alternatives',
+      title: 'Si ça bloque',
+      content: <DefaultAlternatives />,
+    },
+    {
+      id: 'contacts',
+      title: 'Contacts utiles',
+      content: <DefaultContacts />,
+    },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: [
+      'L.217-11' as LegalArticleId,
+      'L.217-13' as LegalArticleId,
+      'L.217-3' as LegalArticleId,
+      'L.217-5' as LegalArticleId,
+      'L.217-7' as LegalArticleId,
+      'L.217-9' as LegalArticleId,
+    ],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
 
-  'serveur-nas-panne-garantie-legale': {
-    title: 'Serveur NAS en panne : garantie légale 2025',
-    subtitle: 'Baie HS • Réseau instable • RAID • 2 ans vendeur',
+export const GUIDE_SERVEUR_NAS_PANNE_GARANTIE_LEGALE: GuidePage = {
+  metadata: {
+    title: `Serveur NAS en panne : garantie légale 2025`,
     seo: {
-      title: 'NAS défectueux : recours 2025',
-      description:
-        'Baies HS, réseau instable, RAID qui lâche : garantie légale. Exigez réparation, remplacement ou remboursement. Lettre conforme immédiate.',
+      title: `NAS défectueux : recours 2025`,
+      description: `Baies HS, réseau instable, RAID qui lâche : garantie légale. Exigez réparation, remplacement ou remboursement. Lettre conforme immédiate.`,
       keywords: [
         'NAS garantie légale',
         'baie disque HS NAS',
@@ -2682,64 +4055,154 @@ export const SEO_OPTIMIZED_GUIDES: Record<string, GuidePage> = {
         'mise en demeure NAS',
       ],
     },
-    sections: [
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
       {
-        id: 'defauts-couverts',
-        title: 'Défauts NAS couverts par la garantie légale',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-gray-700">Baie/dock disque qui n’alimente plus, contrôleur RAID instable, ports Ethernet HS, ventilateurs très bruyants, UI inaccessible : L.217-5, L.217-7.</p>
-  <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mt-4 rounded-r-lg">
-    <p class="text-sm text-yellow-800"><strong>Attention :</strong> la récupération de données n’est pas couverte par la garantie légale elle-même (c’est un service séparé).</p>
-  </div>
-</div>
-      `,
-      },
-      {
-        id: 'procedure-recours',
-        title: 'Procédure pas à pas',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Demandez réparation/remplacement (L.217-9). Tous frais à la charge du vendeur (L.217-11). Si échec : réduction/remboursement (L.217-13).</p>
-  <a href="/eligibilite" class="inline-flex mt-3 px-4 py-2 bg-blue-600 text-white rounded-lg">Lettre conforme →</a>
-</div>
-      `,
-      },
-      {
-        id: 'vendeurs-strategies',
-        title: 'Distributeurs & bonnes pratiques',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Fournissez journaux système et numéros de séries baies/disques pour accélerer le traitement.</p>
-</div>
-      `,
+        name: `Serveur NAS en panne : garantie légale 2025`,
+        url: `/guides/serveur-nas-panne-garantie-legale`,
       },
     ],
-    faqSchema: createFAQSchema([
-      {
-        question: 'Baie disque inopérante : couvert ?',
-        answer: 'Oui, défaut de conformité (L.217-5). Mise en conformité (L.217-9).',
-      },
-      {
-        question: 'Frais de diagnostic ?',
-        answer: 'À la charge du vendeur s’ils visent la mise en conformité (L.217-11).',
-      },
-      {
-        question: 'Remboursement ?',
-        answer: 'En cas d’impossibilité ou d’échec des autres recours (L.217-13).',
-      },
-      { question: 'Occasion ?', answer: 'Présomption d’au moins 12 mois (L.217-7).' },
-    ]),
-    disclaimer: LEGAL_DISCLAIMER,
   },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec : <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24 mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤ 30 jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['L.217-11', 'L.217-13', 'L.217-5', 'L.217-7', 'L.217-9']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'defauts-couverts',
+      title: `Défauts NAS couverts par la garantie légale`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Baie/dock disque qui n’alimente plus, contrôleur RAID instable, ports Ethernet HS, ventilateurs très bruyants, UI inaccessible : L.217-5, L.217-7.`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Attention : la récupération de données n’est pas couverte par la garantie légale elle-même (c’est un service séparé).`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'procedure-recours',
+      title: `Procédure pas à pas`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Demandez réparation/remplacement (L.217-9). Tous frais à la charge du vendeur (L.217-11). Si échec : réduction/remboursement (L.217-14, L.217-16, L.217-17).`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs text={`Lettre conforme →`} />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'vendeurs-strategies',
+      title: `Distributeurs & bonnes pratiques`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            Panorama des pratiques par enseigne : qualité d’accueil, délais moyens, facilité de
+            remplacement.
+          </p>
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs
+                  text={`Darty : processus cadré, demandez la mise en conformité par écrit.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Boulanger : insistez sur la gratuité des frais (L.217-11).`}
+                />,
+                <TextWithLegalRefs
+                  text={`Conforama / But : privilégiez la LRAR en cas d’atermoiements.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Amazon : utilisez l’historique des tickets pour la preuve d’échec.`}
+                />,
+              ] as React.ReactNode[]
+            }
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'procedure',
+      title: 'Procédure type',
+      content: <StandardProcedure />,
+    },
+    {
+      id: 'alternatives',
+      title: 'Si ça bloque',
+      content: <DefaultAlternatives />,
+    },
+    {
+      id: 'contacts',
+      title: 'Contacts utiles',
+      content: <DefaultContacts />,
+    },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: [
+      'L.217-11' as LegalArticleId,
+      'L.217-13' as LegalArticleId,
+      'L.217-5' as LegalArticleId,
+      'L.217-7' as LegalArticleId,
+      'L.217-9' as LegalArticleId,
+    ],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
 
-  'imprimante-defaut-garantie-legale': {
-    title: 'Imprimante défectueuse : garantie légale 2025',
-    subtitle: 'Têtes bouchées • Papier bloqué • Wi-Fi • 2 ans vendeur',
+export const GUIDE_IMPRIMANTE_DEFAUT_GARANTIE_LEGALE: GuidePage = {
+  metadata: {
+    title: `Imprimante défectueuse : garantie légale 2025`,
     seo: {
-      title: 'Imprimante en panne : vos droits 2025',
-      description:
-        'Têtes bouchées, bourrages, Wi-Fi/USB HS : garantie légale. Exigez réparation, remplacement ou remboursement. Lettre en 3 minutes.',
+      title: `Imprimante en panne : vos droits 2025`,
+      description: `Têtes bouchées, bourrages, Wi-Fi/USB HS : garantie légale. Exigez réparation, remplacement ou remboursement. Lettre en 3 minutes.`,
       keywords: [
         'imprimante garantie légale',
         'bourrage papier défaut',
@@ -2753,70 +4216,167 @@ export const SEO_OPTIMIZED_GUIDES: Record<string, GuidePage> = {
         'mise en demeure imprimante',
       ],
     },
-    sections: [
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
       {
-        id: 'defauts-couverts',
-        title: 'Défauts imprimante couverts par la loi',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <div class="grid sm:grid-cols-2 gap-4">
-    <div class="bg-blue-50 p-4 rounded"><p class="text-sm text-blue-800">Bourrages répétés, entraînement papier HS, Wi-Fi/USB inopérant.</p></div>
-    <div class="bg-green-50 p-4 rounded"><p class="text-sm text-green-800">Têtes bouchées malgré usage normal, cartouches non reconnues.</p></div>
-  </div>
-  <p class="mt-4 text-sm text-gray-700">Base : L.217-5, L.217-7.</p>
-</div>
-      `,
-      },
-      {
-        id: 'procedure-recours',
-        title: 'Procédure express en 4 étapes',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <ol class="list-decimal list-inside text-sm text-gray-800 space-y-2">
-    <li>Preuves + facture</li>
-    <li>Demande de réparation/remplacement (L.217-9)</li>
-    <li>Mise en demeure (L.217-3, L.217-7, L.217-11)</li>
-    <li>Réduction du prix / remboursement (L.217-13)</li>
-  </ol>
-  <a href="/eligibilite" class="inline-flex mt-3 px-4 py-2 bg-blue-600 text-white rounded-lg">Générer ma lettre →</a>
-</div>
-      `,
-      },
-      {
-        id: 'vendeurs-strategies',
-        title: 'Conseils enseignes',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Exigez un test d’impression et l’édition d’un rapport écrit (pages de diagnostic).</p>
-</div>
-      `,
+        name: `Imprimante défectueuse : garantie légale 2025`,
+        url: `/guides/imprimante-defaut-garantie-legale`,
       },
     ],
-    faqSchema: createFAQSchema([
-      {
-        question: 'Têtes bouchées : couvert ?',
-        answer: 'Oui si usage normal et nettoyage inefficace. Mise en conformité (L.217-9).',
-      },
-      {
-        question: 'Frais de cartouches test ?',
-        answer: 'À la charge du vendeur si nécessaires à la mise en conformité (L.217-11).',
-      },
-      {
-        question: 'Remboursement ?',
-        answer: 'Si réparation/remplacement impossible/échoue (L.217-13).',
-      },
-      { question: 'Occasion ?', answer: 'Présomption 12 mois mini (L.217-7).' },
-    ]),
-    disclaimer: LEGAL_DISCLAIMER,
   },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec : <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24 mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤ 30 jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['L.217-11', 'L.217-13', 'L.217-3', 'L.217-5', 'L.217-7', 'L.217-9']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'defauts-couverts',
+      title: `Défauts imprimante couverts par la loi`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Bourrages répétés, entraînement papier HS, Wi-Fi/USB inopérant.`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Têtes bouchées malgré usage normal, cartouches non reconnues.`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs text={`Base : L.217-5, L.217-7.`} />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'procedure-recours',
+      title: `Procédure express en 4 étapes`,
+      content: (
+        <div className="space-y-3">
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs text={`Preuves + facture`} />,
+                <TextWithLegalRefs text={`Demande de réparation/remplacement (L.217-9)`} />,
+                <TextWithLegalRefs text={`Mise en demeure (L.217-3, L.217-7, L.217-11)`} />,
+                <TextWithLegalRefs
+                  text={`Réduction du prix / remboursement (L.217-14, L.217-16, L.217-17)`}
+                />,
+              ] as React.ReactNode[]
+            }
+          />
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Preuves + facture Demande de réparation/remplacement (L.217-9) Mise en demeure (L.217-3, L.217-7, L.217-11) Réduction du prix / remboursement (L.217-14, L.217-16, L.217-17) Générer ma lettre →`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'vendeurs-strategies',
+      title: `Conseils enseignes`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            Panorama des pratiques par enseigne : qualité d’accueil, délais moyens, facilité de
+            remplacement.
+          </p>
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs
+                  text={`Darty : processus cadré, demandez la mise en conformité par écrit.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Boulanger : insistez sur la gratuité des frais (L.217-11).`}
+                />,
+                <TextWithLegalRefs
+                  text={`Conforama / But : privilégiez la LRAR en cas d’atermoiements.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Amazon : utilisez l’historique des tickets pour la preuve d’échec.`}
+                />,
+              ] as React.ReactNode[]
+            }
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'procedure',
+      title: 'Procédure type',
+      content: <StandardProcedure />,
+    },
+    {
+      id: 'alternatives',
+      title: 'Si ça bloque',
+      content: <DefaultAlternatives />,
+    },
+    {
+      id: 'contacts',
+      title: 'Contacts utiles',
+      content: <DefaultContacts />,
+    },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: [
+      'L.217-11' as LegalArticleId,
+      'L.217-13' as LegalArticleId,
+      'L.217-3' as LegalArticleId,
+      'L.217-5' as LegalArticleId,
+      'L.217-7' as LegalArticleId,
+      'L.217-9' as LegalArticleId,
+    ],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
 
-  'ecran-pc-pixels-morts-garantie-legale': {
-    title: 'Écran PC : pixels morts/saignement — recours 2025',
-    subtitle: 'Pixels morts • Fuites de lumière • Ports HS • 2 ans',
+export const GUIDE_ECRAN_PC_PIXELS_MORTS_GARANTIE_LEGALE: GuidePage = {
+  metadata: {
+    title: `Écran PC : pixels morts/saignement — recours 2025`,
     seo: {
-      title: 'Écran PC défectueux : garantie 2025',
-      description:
-        'Pixels morts, fuites de lumière, ports HS : garantie légale. Obtenez réparation, remplacement ou remboursement. Lettre conforme immédiate.',
+      title: `Écran PC défectueux : garantie 2025`,
+      description: `Pixels morts, fuites de lumière, ports HS : garantie légale. Obtenez réparation, remplacement ou remboursement. Lettre conforme immédiate.`,
       keywords: [
         'ecran pc garantie légale',
         'pixels morts moniteur',
@@ -2830,61 +4390,151 @@ export const SEO_OPTIMIZED_GUIDES: Record<string, GuidePage> = {
         'mise en demeure moniteur',
       ],
     },
-    sections: [
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
       {
-        id: 'defauts-couverts',
-        title: 'Défauts couverts sur moniteurs PC',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-gray-700">Pixels morts/taches, saignement de dalle, uniformité douteuse, ports HS, scintillement anormal : L.217-5, L.217-7.</p>
-  <div class="bg-green-50 p-4 sm:p-6 rounded-lg mt-6">
-    <p class="text-green-800 text-sm">Taux de réussite élevé avec preuve photo et rappel L.217-9/L.217-11.</p>
-  </div>
-</div>
-      `,
-      },
-      {
-        id: 'procedure-recours',
-        title: 'Itinéraire vers la mise en conformité',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Contact vendeur → réparation/remplacement (L.217-9). Si échec : réduction/remboursement (L.217-13). Frais à sa charge (L.217-11).</p>
-</div>
-      `,
-      },
-      {
-        id: 'vendeurs-strategies',
-        title: 'Revendeurs IT : accélérer',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Demandez un test mire et un rapport de pixels morts établi au comptoir.</p>
-</div>
-      `,
+        name: `Écran PC : pixels morts/saignement — recours 2025`,
+        url: `/guides/ecran-pc-pixels-morts-garantie-legale`,
       },
     ],
-    faqSchema: createFAQSchema([
-      {
-        question: 'Un pixel mort : couvert ?',
-        answer:
-          'Oui si usage normal affecté et/ou promesses non tenues (L.217-5). Mise en conformité (L.217-9).',
-      },
-      { question: 'Frais d’emballage/transport ?', answer: 'À la charge du vendeur (L.217-11).' },
-      {
-        question: 'Remboursement ?',
-        answer: 'Si réparation/remplacement impossible ou échoue (L.217-13).',
-      },
-      { question: 'Occasion ?', answer: 'Présomption 12 mois (L.217-7).' },
-    ]),
-    disclaimer: LEGAL_DISCLAIMER,
   },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec : <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24 mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤ 30 jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['L.217-11', 'L.217-13', 'L.217-5', 'L.217-7', 'L.217-9']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'defauts-couverts',
+      title: `Défauts couverts sur moniteurs PC`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Pixels morts/taches, saignement de dalle, uniformité douteuse, ports HS, scintillement anormal : L.217-5, L.217-7.`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Taux de réussite élevé avec preuve photo et rappel L.217-9/L.217-11.`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'procedure-recours',
+      title: `Itinéraire vers la mise en conformité`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Contact vendeur → réparation/remplacement (L.217-9). Si échec : réduction/remboursement (L.217-14, L.217-16, L.217-17). Frais à sa charge (L.217-11).`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'vendeurs-strategies',
+      title: `Revendeurs IT : accélérer`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            Panorama des pratiques par enseigne : qualité d’accueil, délais moyens, facilité de
+            remplacement.
+          </p>
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs
+                  text={`Darty : processus cadré, demandez la mise en conformité par écrit.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Boulanger : insistez sur la gratuité des frais (L.217-11).`}
+                />,
+                <TextWithLegalRefs
+                  text={`Conforama / But : privilégiez la LRAR en cas d’atermoiements.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Amazon : utilisez l’historique des tickets pour la preuve d’échec.`}
+                />,
+              ] as React.ReactNode[]
+            }
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'procedure',
+      title: 'Procédure type',
+      content: <StandardProcedure />,
+    },
+    {
+      id: 'alternatives',
+      title: 'Si ça bloque',
+      content: <DefaultAlternatives />,
+    },
+    {
+      id: 'contacts',
+      title: 'Contacts utiles',
+      content: <DefaultContacts />,
+    },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: [
+      'L.217-11' as LegalArticleId,
+      'L.217-13' as LegalArticleId,
+      'L.217-5' as LegalArticleId,
+      'L.217-7' as LegalArticleId,
+      'L.217-9' as LegalArticleId,
+    ],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
 
-  'aspirateur-balai-panne-garantie-legale': {
-    title: 'Aspirateur balai en panne : garantie légale 2025',
-    subtitle: 'Batterie • Brosse • Moteur • 2 ans chez le vendeur',
+export const GUIDE_ASPIRATEUR_BALAI_PANNE_GARANTIE_LEGALE: GuidePage = {
+  metadata: {
+    title: `Aspirateur balai en panne : garantie légale 2025`,
     seo: {
-      title: 'Aspirateur balai défectueux : recours',
-      description:
-        'Batterie chute, brosse/moteur HS, charge erratique : garantie légale. Réparation, remplacement ou remboursement. Lettre en 3 minutes.',
+      title: `Aspirateur balai défectueux : recours`,
+      description: `Batterie chute, brosse/moteur HS, charge erratique : garantie légale. Réparation, remplacement ou remboursement. Lettre en 3 minutes.`,
       keywords: [
         'aspirateur balai garantie légale',
         'batterie aspirateur chute',
@@ -2898,60 +4548,162 @@ export const SEO_OPTIMIZED_GUIDES: Record<string, GuidePage> = {
         'mise en demeure aspirateur',
       ],
     },
-    sections: [
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
       {
-        id: 'defauts-couverts',
-        title: 'Défauts couverts & preuves utiles',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <ul class="text-sm text-gray-700 space-y-1">
-    <li>• Autonomie anormalement faible</li>
-    <li>• Moteur/bruit anormal, coupures</li>
-    <li>• Brosse/embouts inopérants, charge capricieuse</li>
-  </ul>
-  <p class="mt-3 text-sm text-gray-700">Base : L.217-5, L.217-7.</p>
-</div>
-      `,
-      },
-      {
-        id: 'procedure-recours',
-        title: 'Procédure fiable',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Réparation (L.217-9) → Remplacement → Réduction/remboursement (L.217-13). Frais intégralement au vendeur (L.217-11).</p>
-  <a href="/eligibilite" class="inline-flex mt-3 px-4 py-2 bg-blue-600 text-white rounded-lg">Lettre conforme →</a>
-</div>
-      `,
-      },
-      {
-        id: 'vendeurs-strategies',
-        title: 'Magasins : faire valoir vos droits',
-        html: `
-<div class="prose prose-lg max-w-none">
-    <p class="text-sm text-gray-700">Demandez un test d’autonomie écrit et une prise en charge batteries/pièces.</p>
-</div>
-      `,
+        name: `Aspirateur balai en panne : garantie légale 2025`,
+        url: `/guides/aspirateur-balai-panne-garantie-legale`,
       },
     ],
-    faqSchema: createFAQSchema([
-      {
-        question: 'Batterie qui chute : couvert ?',
-        answer: 'Oui si anormal vs usage normal (L.217-5). Mise en conformité (L.217-9).',
-      },
-      { question: 'Frais de retour ?', answer: 'À la charge du vendeur (L.217-11).' },
-      { question: 'Remboursement ?', answer: 'Si mise en conformité échoue (L.217-13).' },
-      { question: 'Occasion ?', answer: 'Présomption 12 mois mini (L.217-7).' },
-    ]),
-    disclaimer: LEGAL_DISCLAIMER,
   },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec : <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24 mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤ 30 jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['L.217-11', 'L.217-13', 'L.217-5', 'L.217-7', 'L.217-9']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'defauts-couverts',
+      title: `Défauts couverts & preuves utiles`,
+      content: (
+        <div className="space-y-3">
+          <ul className="list-disc pl-5 space-y-1">
+            \n{' '}
+            <li>
+              <TextWithLegalRefs text={`• Autonomie anormalement faible`} />
+            </li>
+            <li>
+              <TextWithLegalRefs text={`• Moteur/bruit anormal, coupures`} />
+            </li>
+            <li>
+              <TextWithLegalRefs text={`• Brosse/embouts inopérants, charge capricieuse`} />
+            </li>
+            \n
+          </ul>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`• Autonomie anormalement faible • Moteur/bruit anormal, coupures • Brosse/embouts inopérants, charge capricieuse Base : L.217-5, L.217-7.`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'procedure-recours',
+      title: `Procédure fiable`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Réparation (L.217-9) → Remplacement → Réduction/remboursement (L.217-14, L.217-16, L.217-17). Frais intégralement au vendeur (L.217-11).`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs text={`Lettre conforme →`} />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'vendeurs-strategies',
+      title: `Magasins : faire valoir vos droits`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            Panorama des pratiques par enseigne : qualité d’accueil, délais moyens, facilité de
+            remplacement.
+          </p>
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs
+                  text={`Darty : processus cadré, demandez la mise en conformité par écrit.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Boulanger : insistez sur la gratuité des frais (L.217-11).`}
+                />,
+                <TextWithLegalRefs
+                  text={`Conforama / But : privilégiez la LRAR en cas d’atermoiements.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Amazon : utilisez l’historique des tickets pour la preuve d’échec.`}
+                />,
+              ] as React.ReactNode[]
+            }
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'procedure',
+      title: 'Procédure type',
+      content: <StandardProcedure />,
+    },
+    {
+      id: 'alternatives',
+      title: 'Si ça bloque',
+      content: <DefaultAlternatives />,
+    },
+    {
+      id: 'contacts',
+      title: 'Contacts utiles',
+      content: <DefaultContacts />,
+    },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: [
+      'L.217-11' as LegalArticleId,
+      'L.217-13' as LegalArticleId,
+      'L.217-5' as LegalArticleId,
+      'L.217-7' as LegalArticleId,
+      'L.217-9' as LegalArticleId,
+    ],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
 
-  'purificateur-air-defaut-garantie-legale': {
-    title: 'Purificateur d’air défectueux : garantie légale 2025',
-    subtitle: 'Capteurs • Débit CADR • Bruit • 2 ans vendeur',
+export const GUIDE_PURIFICATEUR_AIR_DEFAUT_GARANTIE_LEGALE: GuidePage = {
+  metadata: {
+    title: `Purificateur d’air défectueux : garantie légale 2025`,
     seo: {
-      title: 'Purificateur d’air en panne : recours',
-      description:
-        'Capteurs faux, CADR insuffisant, bruit excessif : garantie légale. Réparation, remplacement ou remboursement. Lettre immédiate.',
+      title: `Purificateur d’air en panne : recours`,
+      description: `Capteurs faux, CADR insuffisant, bruit excessif : garantie légale. Réparation, remplacement ou remboursement. Lettre immédiate.`,
       keywords: [
         'purificateur air garantie légale',
         'capteurs pm2.5 faux',
@@ -2965,63 +4717,151 @@ export const SEO_OPTIMIZED_GUIDES: Record<string, GuidePage> = {
         'mise en demeure purificateur',
       ],
     },
-    sections: [
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
       {
-        id: 'defauts-couverts',
-        title: 'Défauts couverts & métriques utiles',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Capteurs PM2.5/TVOC incohérents, CADR très inférieur aux promesses, bruit/vibrations anormales, ventilateur HS : L.217-5, L.217-7.</p>
-  <div class="bg-green-50 p-4 sm:p-6 rounded-lg mt-6">
-    <p class="text-green-800 text-sm">Conservez captures (niveaux PM), vidéos du bruit, fiche produit (promesses).</p>
-  </div>
-</div>
-      `,
-      },
-      {
-        id: 'procedure-recours',
-        title: 'Démarches efficaces',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Exigez réparation/remplacement (L.217-9). Frais à la charge du vendeur (L.217-11). Échec : réduction/remboursement (L.217-13).</p>
-</div>
-      `,
-      },
-      {
-        id: 'vendeurs-strategies',
-        title: 'Distributeurs/poseurs : cadrage',
-        html: `
-<div class="prose prose-lg max-w-none">
-    <p class="text-sm text-gray-700">Demandez un test de débit écrit et la traçabilité des filtres livrés.</p>
-</div>
-      `,
+        name: `Purificateur d’air défectueux : garantie légale 2025`,
+        url: `/guides/purificateur-air-defaut-garantie-legale`,
       },
     ],
-    faqSchema: createFAQSchema([
-      {
-        question: 'CADR bien en dessous : couvert ?',
-        answer: 'Oui si performances promises non tenues (L.217-5).',
-      },
-      {
-        question: 'Frais de filtres test ?',
-        answer: 'À la charge du vendeur s’ils sont nécessaires (L.217-11).',
-      },
-      {
-        question: 'Remboursement ?',
-        answer: 'Si mise en conformité impossible/échoue (L.217-13).',
-      },
-      { question: 'Occasion ?', answer: 'Présomption 12 mois mini (L.217-7).' },
-    ]),
-    disclaimer: LEGAL_DISCLAIMER,
   },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec : <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24 mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤ 30 jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['L.217-11', 'L.217-13', 'L.217-5', 'L.217-7', 'L.217-9']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'defauts-couverts',
+      title: `Défauts couverts & métriques utiles`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Capteurs PM2.5/TVOC incohérents, CADR très inférieur aux promesses, bruit/vibrations anormales, ventilateur HS : L.217-5, L.217-7.`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Conservez captures (niveaux PM), vidéos du bruit, fiche produit (promesses).`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'procedure-recours',
+      title: `Démarches efficaces`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Exigez réparation/remplacement (L.217-9). Frais à la charge du vendeur (L.217-11). Échec : réduction/remboursement (L.217-14, L.217-16, L.217-17).`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'vendeurs-strategies',
+      title: `Distributeurs/poseurs : cadrage`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            Panorama des pratiques par enseigne : qualité d’accueil, délais moyens, facilité de
+            remplacement.
+          </p>
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs
+                  text={`Darty : processus cadré, demandez la mise en conformité par écrit.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Boulanger : insistez sur la gratuité des frais (L.217-11).`}
+                />,
+                <TextWithLegalRefs
+                  text={`Conforama / But : privilégiez la LRAR en cas d’atermoiements.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Amazon : utilisez l’historique des tickets pour la preuve d’échec.`}
+                />,
+              ] as React.ReactNode[]
+            }
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'procedure',
+      title: 'Procédure type',
+      content: <StandardProcedure />,
+    },
+    {
+      id: 'alternatives',
+      title: 'Si ça bloque',
+      content: <DefaultAlternatives />,
+    },
+    {
+      id: 'contacts',
+      title: 'Contacts utiles',
+      content: <DefaultContacts />,
+    },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: [
+      'L.217-11' as LegalArticleId,
+      'L.217-13' as LegalArticleId,
+      'L.217-5' as LegalArticleId,
+      'L.217-7' as LegalArticleId,
+      'L.217-9' as LegalArticleId,
+    ],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
 
-  'plaque-induction-defaut-garantie-legale': {
-    title: 'Plaque induction défectueuse : garantie légale 2025',
-    subtitle: 'Cartes • Détection • Erreurs • 2 ans vendeur',
+export const GUIDE_PLAQUE_INDUCTION_DEFAUT_GARANTIE_LEGALE: GuidePage = {
+  metadata: {
+    title: `Plaque induction défectueuse : garantie légale 2025`,
     seo: {
-      title: 'Plaque induction en panne : recours',
-      description:
-        'Détection casserole aléatoire, erreurs, carte HS : garantie légale. Réparation, remplacement ou remboursement. Lettre conforme.',
+      title: `Plaque induction en panne : recours`,
+      description: `Détection casserole aléatoire, erreurs, carte HS : garantie légale. Réparation, remplacement ou remboursement. Lettre conforme.`,
       keywords: [
         'plaque induction garantie légale',
         'détection casserole défaut',
@@ -3035,55 +4875,149 @@ export const SEO_OPTIMIZED_GUIDES: Record<string, GuidePage> = {
         'mise en demeure plaque',
       ],
     },
-    sections: [
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
       {
-        id: 'defauts-couverts',
-        title: 'Défauts couverts & sécurité',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Détection aléatoire, zones inactives, cartes HS, erreurs récurrentes, ventilateurs bruyants : L.217-5, L.217-7. Mentionnez l’impact sur la cuisine quotidienne.</p>
-</div>
-      `,
-      },
-      {
-        id: 'procedure-recours',
-        title: 'Obtenir la mise en conformité',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Réparation prioritaire (L.217-9). Si échec : remplacement. Dernier recours : remboursement (L.217-13). Frais : vendeur (L.217-11).</p>
-  <a href="/eligibilite" class="inline-flex mt-3 px-4 py-2 bg-blue-600 text-white rounded-lg">Créer ma lettre →</a>
-</div>
-      `,
-      },
-      {
-        id: 'vendeurs-strategies',
-        title: 'Installateurs & magasins',
-        html: `
-<div class="prose prose-lg max-w-none">
-    <p class="text-sm text-gray-700">Exigez un rapport d’erreurs et un test de toutes zones avec casserole compatible.</p>
-</div>
-      `,
+        name: `Plaque induction défectueuse : garantie légale 2025`,
+        url: `/guides/plaque-induction-defaut-garantie-legale`,
       },
     ],
-    faqSchema: createFAQSchema([
-      {
-        question: 'Détection aléatoire : couvert ?',
-        answer: 'Oui si empêche l’usage normal (L.217-5). Mise en conformité (L.217-9).',
-      },
-      { question: 'Frais de déplacement ?', answer: 'À la charge du vendeur (L.217-11).' },
-      { question: 'Remboursement ?', answer: 'Si réparation/remplacement échoue (L.217-13).' },
-      { question: 'Occasion ?', answer: 'Présomption 12 mois mini (L.217-7).' },
-    ]),
-    disclaimer: LEGAL_DISCLAIMER,
   },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec : <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24 mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤ 30 jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['L.217-11', 'L.217-13', 'L.217-5', 'L.217-7', 'L.217-9']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'defauts-couverts',
+      title: `Défauts couverts & sécurité`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Détection aléatoire, zones inactives, cartes HS, erreurs récurrentes, ventilateurs bruyants : L.217-5, L.217-7. Mentionnez l’impact sur la cuisine quotidienne.`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'procedure-recours',
+      title: `Obtenir la mise en conformité`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Réparation prioritaire (L.217-9). Si échec : remplacement. Dernier recours : remboursement (L.217-14, L.217-16, L.217-17). Frais : vendeur (L.217-11).`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs text={`Créer ma lettre →`} />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'vendeurs-strategies',
+      title: `Installateurs & magasins`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            Panorama des pratiques par enseigne : qualité d’accueil, délais moyens, facilité de
+            remplacement.
+          </p>
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs
+                  text={`Darty : processus cadré, demandez la mise en conformité par écrit.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Boulanger : insistez sur la gratuité des frais (L.217-11).`}
+                />,
+                <TextWithLegalRefs
+                  text={`Conforama / But : privilégiez la LRAR en cas d’atermoiements.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Amazon : utilisez l’historique des tickets pour la preuve d’échec.`}
+                />,
+              ] as React.ReactNode[]
+            }
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'procedure',
+      title: 'Procédure type',
+      content: <StandardProcedure />,
+    },
+    {
+      id: 'alternatives',
+      title: 'Si ça bloque',
+      content: <DefaultAlternatives />,
+    },
+    {
+      id: 'contacts',
+      title: 'Contacts utiles',
+      content: <DefaultContacts />,
+    },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: [
+      'L.217-11' as LegalArticleId,
+      'L.217-13' as LegalArticleId,
+      'L.217-5' as LegalArticleId,
+      'L.217-7' as LegalArticleId,
+      'L.217-9' as LegalArticleId,
+    ],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
 
-  'four-encastrable-panne-garantie-legale': {
-    title: 'Four encastrable en panne : garantie légale 2025',
-    subtitle: 'Chauffe • Thermostat • Pyrolyse • 2 ans vendeur',
+export const GUIDE_FOUR_ENCASTRABLE_PANNE_GARANTIE_LEGALE: GuidePage = {
+  metadata: {
+    title: `Four encastrable en panne : garantie légale 2025`,
     seo: {
-      title: 'Four défectueux : vos droits 2025',
-      description:
-        'Chauffe lente, thermostat faux, pyrolyse HS : garantie légale. Demandez réparation, remplacement ou remboursement.',
+      title: `Four défectueux : vos droits 2025`,
+      description: `Chauffe lente, thermostat faux, pyrolyse HS : garantie légale. Demandez réparation, remplacement ou remboursement.`,
       keywords: [
         'four encastrable garantie légale',
         'thermostat four défaut',
@@ -3097,57 +5031,146 @@ export const SEO_OPTIMIZED_GUIDES: Record<string, GuidePage> = {
         'mise en demeure four',
       ],
     },
-    sections: [
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
       {
-        id: 'defauts-couverts',
-        title: 'Défauts couverts & preuves utiles',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Résistances HS, thermostat faux, ventilateur, pyrolyse inopérante, affichage/sonde HS : L.217-5, L.217-7. Photos/temps de chauffe comme preuves.</p>
-</div>
-      `,
-      },
-      {
-        id: 'procedure-recours',
-        title: 'Procédure claire',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Réparation via vendeur (L.217-9). Si échec : remplacement/remboursement (L.217-13). Frais intégralement au vendeur (L.217-11).</p>
-</div>
-      `,
-      },
-      {
-        id: 'vendeurs-strategies',
-        title: 'Poseur/distributeur : accélérer',
-        html: `
-<div class="prose prose-lg max-w-none">
-    <p class="text-sm text-gray-700">Demandez un contrôle de température écrit et un délai d’intervention “raisonnable”.</p>
-</div>
-      `,
+        name: `Four encastrable en panne : garantie légale 2025`,
+        url: `/guides/four-encastrable-panne-garantie-legale`,
       },
     ],
-    faqSchema: createFAQSchema([
-      {
-        question: 'Pyrolyse HS : couvert ?',
-        answer: 'Oui, défaut de conformité (L.217-5). Mise en conformité (L.217-9).',
-      },
-      {
-        question: 'Frais de démontage/pose ?',
-        answer: 'À la charge du vendeur si liés à la mise en conformité (L.217-11).',
-      },
-      { question: 'Remboursement ?', answer: 'Si mise en conformité échoue (L.217-13).' },
-      { question: 'Occasion ?', answer: 'Présomption 12 mois minimum (L.217-7).' },
-    ]),
-    disclaimer: LEGAL_DISCLAIMER,
   },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec : <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24 mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤ 30 jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['L.217-11', 'L.217-13', 'L.217-5', 'L.217-7', 'L.217-9']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'defauts-couverts',
+      title: `Défauts couverts & preuves utiles`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Résistances HS, thermostat faux, ventilateur, pyrolyse inopérante, affichage/sonde HS : L.217-5, L.217-7. Photos/temps de chauffe comme preuves.`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'procedure-recours',
+      title: `Procédure claire`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Réparation via vendeur (L.217-9). Si échec : remplacement/remboursement (L.217-14, L.217-16, L.217-17). Frais intégralement au vendeur (L.217-11).`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'vendeurs-strategies',
+      title: `Poseur/distributeur : accélérer`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            Panorama des pratiques par enseigne : qualité d’accueil, délais moyens, facilité de
+            remplacement.
+          </p>
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs
+                  text={`Darty : processus cadré, demandez la mise en conformité par écrit.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Boulanger : insistez sur la gratuité des frais (L.217-11).`}
+                />,
+                <TextWithLegalRefs
+                  text={`Conforama / But : privilégiez la LRAR en cas d’atermoiements.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Amazon : utilisez l’historique des tickets pour la preuve d’échec.`}
+                />,
+              ] as React.ReactNode[]
+            }
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'procedure',
+      title: 'Procédure type',
+      content: <StandardProcedure />,
+    },
+    {
+      id: 'alternatives',
+      title: 'Si ça bloque',
+      content: <DefaultAlternatives />,
+    },
+    {
+      id: 'contacts',
+      title: 'Contacts utiles',
+      content: <DefaultContacts />,
+    },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: [
+      'L.217-11' as LegalArticleId,
+      'L.217-13' as LegalArticleId,
+      'L.217-5' as LegalArticleId,
+      'L.217-7' as LegalArticleId,
+      'L.217-9' as LegalArticleId,
+    ],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
 
-  'cafetiere-expresso-broyeur-defaut-garantie-legale': {
-    title: 'Cafetière expresso broyeur : recours 2025',
-    subtitle: 'Groupe café • Moulins • Fuites • 2 ans vendeur',
+export const GUIDE_CAFETIERE_EXPRESSO_BROYEUR_DEFAUT_GARANTIE_LEGALE: GuidePage = {
+  metadata: {
+    title: `Cafetière expresso broyeur : recours 2025`,
     seo: {
-      title: 'Expresso broyeur défectueux : droits',
-      description:
-        'Groupe café/moulin HS, fuites, capteurs : garantie légale. Réparation, remplacement, remboursement. Lettre en 3 min.',
+      title: `Expresso broyeur défectueux : droits`,
+      description: `Groupe café/moulin HS, fuites, capteurs : garantie légale. Réparation, remplacement, remboursement. Lettre en 3 min.`,
       keywords: [
         'cafetière expresso garantie légale',
         'broyeur café panne',
@@ -3161,62 +5184,149 @@ export const SEO_OPTIMIZED_GUIDES: Record<string, GuidePage> = {
         'mise en demeure expresso',
       ],
     },
-    sections: [
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
       {
-        id: 'defauts-couverts',
-        title: 'Défauts couverts & entretien normal',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-gray-700 text-sm">Groupe qui bloque, broyeur HS, fuites, capteurs réservoir, chauffe instable : L.217-5, L.217-7. L’entretien normal (détartrage) ne supprime pas la garantie légale.</p>
-</div>
-      `,
-      },
-      {
-        id: 'procedure-recours',
-        title: 'Étapes légales',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Demandez réparation/remplacement (L.217-9). Frais vendeur (L.217-11). Si échec : réduction/remboursement (L.217-13).</p>
-  <a href="/eligibilite" class="inline-flex mt-3 px-4 py-2 bg-blue-600 text-white rounded-lg">Générer ma lettre →</a>
-</div>
-      `,
-      },
-      {
-        id: 'vendeurs-strategies',
-        title: 'Revendeurs : preuves efficaces',
-        html: `
-<div class="prose prose-lg max-w-none">
-    <p class="text-sm text-gray-700">Joignez vidéos (débit, fuite), ticket d’erreur, relevé de cycles si disponible.</p>
-</div>
-      `,
+        name: `Cafetière expresso broyeur : recours 2025`,
+        url: `/guides/cafetiere-expresso-broyeur-defaut-garantie-legale`,
       },
     ],
-    faqSchema: createFAQSchema([
-      {
-        question: 'Fuite interne : couvert ?',
-        answer: 'Oui. Mise en conformité par le vendeur (L.217-9, L.217-11).',
-      },
-      {
-        question: 'Entretien non fait = refus ?',
-        answer:
-          'Le vendeur doit prouver un mauvais usage pour exclure (L.217-7). Sinon, garantie légale s’applique.',
-      },
-      {
-        question: 'Remboursement ?',
-        answer: 'Si réparation/remplacement impossible/échoue (L.217-13).',
-      },
-      { question: 'Occasion ?', answer: 'Présomption 12 mois au moins (L.217-7).' },
-    ]),
-    disclaimer: LEGAL_DISCLAIMER,
   },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec : <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24 mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤ 30 jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['L.217-11', 'L.217-13', 'L.217-5', 'L.217-7', 'L.217-9']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'defauts-couverts',
+      title: `Défauts couverts & entretien normal`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Groupe qui bloque, broyeur HS, fuites, capteurs réservoir, chauffe instable : L.217-5, L.217-7. L’entretien normal (détartrage) ne supprime pas la garantie légale.`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'procedure-recours',
+      title: `Étapes légales`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Demandez réparation/remplacement (L.217-9). Frais vendeur (L.217-11). Si échec : réduction/remboursement (L.217-14, L.217-16, L.217-17).`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs text={`Générer ma lettre →`} />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'vendeurs-strategies',
+      title: `Revendeurs : preuves efficaces`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            Panorama des pratiques par enseigne : qualité d’accueil, délais moyens, facilité de
+            remplacement.
+          </p>
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs
+                  text={`Darty : processus cadré, demandez la mise en conformité par écrit.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Boulanger : insistez sur la gratuité des frais (L.217-11).`}
+                />,
+                <TextWithLegalRefs
+                  text={`Conforama / But : privilégiez la LRAR en cas d’atermoiements.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Amazon : utilisez l’historique des tickets pour la preuve d’échec.`}
+                />,
+              ] as React.ReactNode[]
+            }
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'procedure',
+      title: 'Procédure type',
+      content: <StandardProcedure />,
+    },
+    {
+      id: 'alternatives',
+      title: 'Si ça bloque',
+      content: <DefaultAlternatives />,
+    },
+    {
+      id: 'contacts',
+      title: 'Contacts utiles',
+      content: <DefaultContacts />,
+    },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: [
+      'L.217-11' as LegalArticleId,
+      'L.217-13' as LegalArticleId,
+      'L.217-5' as LegalArticleId,
+      'L.217-7' as LegalArticleId,
+      'L.217-9' as LegalArticleId,
+    ],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
 
-  'borne-recharge-domestique-ve-defaut-garantie-legale': {
-    title: 'Borne de recharge domestique VE : recours 2025',
-    subtitle: 'Charge aléatoire • RFID • Disjonctions • 2 ans vendeur',
+export const GUIDE_BORNE_RECHARGE_DOMESTIQUE_VE_DEFAUT_GARANTIE_LEGALE: GuidePage = {
+  metadata: {
+    title: `Borne de recharge domestique VE : recours 2025`,
     seo: {
-      title: 'Borne de recharge VE défectueuse',
-      description:
-        'Charge aléatoire, RFID/app HS, disjonctions : garantie légale. Réparation, remplacement ou remboursement. Lettre conforme en 3 minutes.',
+      title: `Borne de recharge VE défectueuse`,
+      description: `Charge aléatoire, RFID/app HS, disjonctions : garantie légale. Réparation, remplacement ou remboursement. Lettre conforme en 3 minutes.`,
       keywords: [
         'borne recharge VE garantie légale',
         'wallbox panne défaut',
@@ -3230,58 +5340,151 @@ export const SEO_OPTIMIZED_GUIDES: Record<string, GuidePage> = {
         'mise en demeure borne',
       ],
     },
-    sections: [
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
       {
-        id: 'defauts-couverts',
-        title: 'Défauts couverts & sécurité électrique',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-gray-700 text-sm">Charge aléatoire, pilotage RFID/app inopérant, câble/prise HS, disjonctions sans cause externe : L.217-5, L.217-7.</p>
-  <div class="bg-red-50 border-l-4 border-red-400 p-4 mt-4"><p class="text-red-800 text-sm">Sécurité : mentionnez les disjonctions et l’immobilisation du véhicule.</p></div>
-</div>
-      `,
-      },
-      {
-        id: 'procedure-recours',
-        title: 'Démarches côté consommateur',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Exigez réparation/remplacement (L.217-9). Frais intégralement au vendeur (L.217-11). Si échec : remboursement (L.217-13).</p>
-</div>
-      `,
-      },
-      {
-        id: 'vendeurs-strategies',
-        title: 'Installateur/distributeur : bonnes pratiques',
-        html: `
-<div class="prose prose-lg max-w-none">
-    <p class="text-sm text-gray-700">Demandez logs de charge et schéma d’installation. Délai “raisonnable” écrit.</p>
-</div>
-      `,
+        name: `Borne de recharge domestique VE : recours 2025`,
+        url: `/guides/borne-recharge-domestique-ve-defaut-garantie-legale`,
       },
     ],
-    faqSchema: createFAQSchema([
-      {
-        question: 'Charge qui coupe : couvert ?',
-        answer: 'Oui si usage normal est empêché (L.217-5). Mise en conformité (L.217-9).',
-      },
-      { question: 'Frais d’intervention ?', answer: 'À la charge du vendeur (L.217-11).' },
-      {
-        question: 'Remboursement ?',
-        answer: 'Si mise en conformité impossible/échoue (L.217-13).',
-      },
-      { question: 'Occasion ?', answer: 'Présomption 12 mois mini (L.217-7).' },
-    ]),
-    disclaimer: LEGAL_DISCLAIMER,
   },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec : <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24 mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤ 30 jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['L.217-11', 'L.217-13', 'L.217-5', 'L.217-7', 'L.217-9']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'defauts-couverts',
+      title: `Défauts couverts & sécurité électrique`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Charge aléatoire, pilotage RFID/app inopérant, câble/prise HS, disjonctions sans cause externe : L.217-5, L.217-7.`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Sécurité : mentionnez les disjonctions et l’immobilisation du véhicule.`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'procedure-recours',
+      title: `Démarches côté consommateur`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Exigez réparation/remplacement (L.217-9). Frais intégralement au vendeur (L.217-11). Si échec : remboursement (L.217-14, L.217-16, L.217-17).`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'vendeurs-strategies',
+      title: `Installateur/distributeur : bonnes pratiques`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            Panorama des pratiques par enseigne : qualité d’accueil, délais moyens, facilité de
+            remplacement.
+          </p>
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs
+                  text={`Darty : processus cadré, demandez la mise en conformité par écrit.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Boulanger : insistez sur la gratuité des frais (L.217-11).`}
+                />,
+                <TextWithLegalRefs
+                  text={`Conforama / But : privilégiez la LRAR en cas d’atermoiements.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Amazon : utilisez l’historique des tickets pour la preuve d’échec.`}
+                />,
+              ] as React.ReactNode[]
+            }
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'procedure',
+      title: 'Procédure type',
+      content: <StandardProcedure />,
+    },
+    {
+      id: 'alternatives',
+      title: 'Si ça bloque',
+      content: <DefaultAlternatives />,
+    },
+    {
+      id: 'contacts',
+      title: 'Contacts utiles',
+      content: <DefaultContacts />,
+    },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: [
+      'L.217-11' as LegalArticleId,
+      'L.217-13' as LegalArticleId,
+      'L.217-5' as LegalArticleId,
+      'L.217-7' as LegalArticleId,
+      'L.217-9' as LegalArticleId,
+    ],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
 
-  'serrure-connectee-defaut-garantie-legale': {
-    title: 'Serrure connectée défectueuse : garantie légale 2025',
-    subtitle: 'App/Bridge • Mécanique • Sécurité • 2 ans vendeur',
+export const GUIDE_SERRURE_CONNECTEE_DEFAUT_GARANTIE_LEGALE: GuidePage = {
+  metadata: {
+    title: `Serrure connectée défectueuse : garantie légale 2025`,
     seo: {
-      title: 'Serrure connectée en panne : recours',
-      description:
-        'App/bridge instables, moteur bloqué, capteurs faux : garantie légale. Réparation, remplacement, remboursement. Lettre immédiate.',
+      title: `Serrure connectée en panne : recours`,
+      description: `App/bridge instables, moteur bloqué, capteurs faux : garantie légale. Réparation, remplacement, remboursement. Lettre immédiate.`,
       keywords: [
         'serrure connectée garantie légale',
         'bridge app instable serrure',
@@ -3295,63 +5498,164 @@ export const SEO_OPTIMIZED_GUIDES: Record<string, GuidePage> = {
         'mise en demeure serrure',
       ],
     },
-    sections: [
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
       {
-        id: 'defauts-couverts',
-        title: 'Défauts couverts & points sécurité',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-gray-700 text-sm">Bridge/app instables, moteur/béquille bloqués, capteurs d’ouverture faux, autonomie anormalement faible : L.217-5, L.217-7.</p>
-  <div class="bg-red-50 border-l-4 border-red-400 p-4 mt-4"><p class="text-red-800 text-sm">Mentionnez le risque de <strong>non-accès</strong> au logement pour prioriser l’intervention.</p></div>
-</div>
-      `,
-      },
-      {
-        id: 'procedure-recours',
-        title: 'Procédure en 4 étapes',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <ol class="list-decimal list-inside text-sm text-gray-800 space-y-2">
-    <li>Preuves + facture</li>
-    <li>Réparation/remplacement (L.217-9) auprès du vendeur</li>
-    <li>Mise en demeure (L.217-3, L.217-7, L.217-11)</li>
-    <li>Remboursement si échec (L.217-13)</li>
-  </ol>
-</div>
-      `,
-      },
-      {
-        id: 'vendeurs-strategies',
-        title: 'Magasins domotique/DIY : accélérer',
-        html: `
-<div class="prose prose-lg max-w-none">
-    <p class="text-sm text-gray-700">Joignez logs d’événements et captures de l’app. Demandez un délai “raisonnable” écrit.</p>
-</div>
-      `,
+        name: `Serrure connectée défectueuse : garantie légale 2025`,
+        url: `/guides/serrure-connectee-defaut-garantie-legale`,
       },
     ],
-    faqSchema: createFAQSchema([
-      {
-        question: 'Bridge instable : couvert ?',
-        answer: 'Oui si usage normal affecté (L.217-5). Mise en conformité (L.217-9).',
-      },
-      { question: 'Qui paie les frais ?', answer: 'Le vendeur (L.217-11).' },
-      {
-        question: 'Remboursement direct ?',
-        answer: 'Si réparation/remplacement impossible/échoue (L.217-13).',
-      },
-      { question: 'Occasion ?', answer: 'Présomption 12 mois au moins (L.217-7).' },
-    ]),
-    disclaimer: LEGAL_DISCLAIMER,
   },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec : <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24 mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤ 30 jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['L.217-11', 'L.217-13', 'L.217-3', 'L.217-5', 'L.217-7', 'L.217-9']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'defauts-couverts',
+      title: `Défauts couverts & points sécurité`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Bridge/app instables, moteur/béquille bloqués, capteurs d’ouverture faux, autonomie anormalement faible : L.217-5, L.217-7.`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Mentionnez le risque de non-accès au logement pour prioriser l’intervention.`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'procedure-recours',
+      title: `Procédure en 4 étapes`,
+      content: (
+        <div className="space-y-3">
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs text={`Preuves + facture`} />,
+                <TextWithLegalRefs text={`Réparation/remplacement (L.217-9) auprès du vendeur`} />,
+                <TextWithLegalRefs text={`Mise en demeure (L.217-3, L.217-7, L.217-11)`} />,
+                <TextWithLegalRefs
+                  text={`Remboursement si échec (L.217-14, L.217-16, L.217-17)`}
+                />,
+              ] as React.ReactNode[]
+            }
+          />
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Preuves + facture Réparation/remplacement (L.217-9) auprès du vendeur Mise en demeure (L.217-3, L.217-7, L.217-11) Remboursement si échec (L.217-14, L.217-16, L.217-17)`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'vendeurs-strategies',
+      title: `Magasins domotique/DIY : accélérer`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            Panorama des pratiques par enseigne : qualité d’accueil, délais moyens, facilité de
+            remplacement.
+          </p>
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs
+                  text={`Darty : processus cadré, demandez la mise en conformité par écrit.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Boulanger : insistez sur la gratuité des frais (L.217-11).`}
+                />,
+                <TextWithLegalRefs
+                  text={`Conforama / But : privilégiez la LRAR en cas d’atermoiements.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Amazon : utilisez l’historique des tickets pour la preuve d’échec.`}
+                />,
+              ] as React.ReactNode[]
+            }
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'procedure',
+      title: 'Procédure type',
+      content: <StandardProcedure />,
+    },
+    {
+      id: 'alternatives',
+      title: 'Si ça bloque',
+      content: <DefaultAlternatives />,
+    },
+    {
+      id: 'contacts',
+      title: 'Contacts utiles',
+      content: <DefaultContacts />,
+    },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: [
+      'L.217-11' as LegalArticleId,
+      'L.217-13' as LegalArticleId,
+      'L.217-3' as LegalArticleId,
+      'L.217-5' as LegalArticleId,
+      'L.217-7' as LegalArticleId,
+      'L.217-9' as LegalArticleId,
+    ],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
 
-  'console-portable-ecran-defectueux-garantie-legale': {
-    title: 'Console portable écran défectueux : recours 2025',
-    subtitle: 'Pixels morts • Drift joystick • Crashes • 2 ans de garantie légale',
+export const GUIDE_CONSOLE_PORTABLE_ECRAN_DEFECTUEUX_GARANTIE_LEGALE: GuidePage = {
+  metadata: {
+    title: `Console portable écran défectueux : recours 2025`,
     seo: {
-      title: 'Console portable en panne : vos droits 2025',
-      description:
-        'Écran, joystick, surchauffe : faites valoir la garantie légale. Réparation, remplacement ou remboursement. Lettre prête en 3 minutes.',
+      title: `Console portable en panne : vos droits 2025`,
+      description: `Écran, joystick, surchauffe : faites valoir la garantie légale. Réparation, remplacement ou remboursement. Lettre prête en 3 minutes.`,
       keywords: [
         'console portable écran défaut',
         'joystick drift garantie',
@@ -3365,72 +5669,157 @@ export const SEO_OPTIMIZED_GUIDES: Record<string, GuidePage> = {
         'remboursement L.217-13 console',
       ],
     },
-    sections: [
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
       {
-        id: 'defauts-couverts',
-        title: 'Défauts couverts pour consoles portables',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <div class="grid sm:grid-cols-2 gap-4">
-    <div class="bg-purple-50 p-4 rounded">
-      <p class="text-sm text-purple-800">Écran : pixels morts, taches, latence tactile, saignement de dalle.</p>
-    </div>
-    <div class="bg-orange-50 p-4 rounded">
-      <p class="text-sm text-orange-800">Joysticks : drift, boutons inopérants • Surchauffe • Batterie anormale.</p>
-    </div>
-  </div>
-  <p class="mt-4 text-sm text-gray-700">Base : L.217-5, L.217-7.</p>
-</div>
-      `,
-      },
-      {
-        id: 'procedure-recours',
-        title: 'Itinéraire simple vers la solution',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <div class="bg-blue-50 p-4 rounded">
-    <p class="text-sm text-blue-800">1) Prouvez • 2) Demandez réparation/remplacement (L.217-9) • 3) Mise en demeure • 4) Remboursement si échec (L.217-13). Frais vendeur (L.217-11).</p>
-  </div>
-  <a href="/eligibilite" class="inline-flex mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg">Lettre conforme →</a>
-</div>
-      `,
-      },
-      {
-        id: 'vendeurs-strategies',
-        title: 'Marques/enseignes : comment négocier',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Demandez un échange immédiat si le défaut est visible (pixel mort out-of-box). Sinon, réparation prioritaire puis bascule remplacement.</p>
-</div>
-      `,
+        name: `Console portable écran défectueux : recours 2025`,
+        url: `/guides/console-portable-ecran-defectueux-garantie-legale`,
       },
     ],
-    faqSchema: createFAQSchema([
-      {
-        question: 'Drift joystick : garanti ?',
-        answer: 'Oui si cela empêche l’usage normal (L.217-5). Réparation/remplacement (L.217-9).',
-      },
-      {
-        question: 'Défaut apparu à 18 mois ?',
-        answer:
-          'Toujours présumé (L.217-7). Le vendeur doit prouver l’usage inapproprié s’il conteste.',
-      },
-      {
-        question: 'Remboursement ?',
-        answer: 'Oui si la mise en conformité échoue/impossible (L.217-13).',
-      },
-      { question: 'Frais ?', answer: 'À la charge du vendeur (L.217-11).' },
-    ]),
-    disclaimer: LEGAL_DISCLAIMER,
   },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec : <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24 mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤ 30 jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['L.217-11', 'L.217-13', 'L.217-5', 'L.217-7', 'L.217-9']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'defauts-couverts',
+      title: `Défauts couverts pour consoles portables`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Écran : pixels morts, taches, latence tactile, saignement de dalle.`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Joysticks : drift, boutons inopérants • Surchauffe • Batterie anormale.`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs text={`Base : L.217-5, L.217-7.`} />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'procedure-recours',
+      title: `Itinéraire simple vers la solution`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`1) Prouvez • 2) Demandez réparation/remplacement (L.217-9) • 3) Mise en demeure • 4) Remboursement si échec (L.217-14, L.217-16, L.217-17). Frais vendeur (L.217-11).`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs text={`Lettre conforme →`} />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'vendeurs-strategies',
+      title: `Marques/enseignes : comment négocier`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            Panorama des pratiques par enseigne : qualité d’accueil, délais moyens, facilité de
+            remplacement.
+          </p>
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs
+                  text={`Darty : processus cadré, demandez la mise en conformité par écrit.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Boulanger : insistez sur la gratuité des frais (L.217-11).`}
+                />,
+                <TextWithLegalRefs
+                  text={`Conforama / But : privilégiez la LRAR en cas d’atermoiements.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Amazon : utilisez l’historique des tickets pour la preuve d’échec.`}
+                />,
+              ] as React.ReactNode[]
+            }
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'procedure',
+      title: 'Procédure type',
+      content: <StandardProcedure />,
+    },
+    {
+      id: 'alternatives',
+      title: 'Si ça bloque',
+      content: <DefaultAlternatives />,
+    },
+    {
+      id: 'contacts',
+      title: 'Contacts utiles',
+      content: <DefaultContacts />,
+    },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: [
+      'L.217-11' as LegalArticleId,
+      'L.217-13' as LegalArticleId,
+      'L.217-5' as LegalArticleId,
+      'L.217-7' as LegalArticleId,
+      'L.217-9' as LegalArticleId,
+    ],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
 
-  'home-cinema-barre-de-son-panne-garantie-legale': {
-    title: 'Home cinéma/Barre de son en panne : recours 2025',
-    subtitle: 'Coupures • HDMI ARC • Caisson muet • 2 ans de garantie légale',
+export const GUIDE_HOME_CINEMA_BARRE_DE_SON_PANNE_GARANTIE_LEGALE: GuidePage = {
+  metadata: {
+    title: `Home cinéma/Barre de son en panne : recours 2025`,
     seo: {
-      title: 'Barre de son défectueuse : garantie légale',
-      description:
-        'HDMI ARC qui décroche, caisson muet ? Activez la garantie légale : réparation, remplacement, remboursement. Lettre conforme en 3 min.',
+      title: `Barre de son défectueuse : garantie légale`,
+      description: `HDMI ARC qui décroche, caisson muet ? Activez la garantie légale : réparation, remplacement, remboursement. Lettre conforme en 3 min.`,
       keywords: [
         'barre de son garantie légale',
         'home cinéma panne HDMI ARC',
@@ -3444,62 +5833,163 @@ export const SEO_OPTIMIZED_GUIDES: Record<string, GuidePage> = {
         'vendeur responsable L.217-3',
       ],
     },
-    sections: [
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
       {
-        id: 'defauts-couverts',
-        title: 'Défauts audio/vidéo couverts',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <ul class="text-sm text-gray-700 space-y-2">
-    <li>• Coupures HDMI ARC/eARC, désynchronisation audio</li>
-    <li>• Caisson sans appairage, grésillements, saturation basse</li>
-    <li>• Perte de canaux, volume bloqué, télécommande inopérante</li>
-  </ul>
-  <p class="mt-3 text-sm text-gray-700">Fondements : L.217-5, L.217-7.</p>
-</div>
-      `,
-      },
-      {
-        id: 'procedure-recours',
-        title: 'Du diagnostic à la solution',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Diagnostic écrit + demande réparation (L.217-9) → mise en demeure si besoin → remplacement/remboursement (L.217-13). Frais pris en charge (L.217-11).</p>
-  <a href="/eligibilite" class="inline-flex mt-3 px-4 py-2 bg-blue-600 text-white rounded-lg">Générer ma lettre →</a>
-</div>
-      `,
-      },
-      {
-        id: 'vendeurs-strategies',
-        title: 'Conseils pratiques par enseigne',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Faites tester sur place (câble/port), consignez par écrit. Priorisez remplacement si panne intermittente difficile à reproduire.</p>
-</div>
-      `,
+        name: `Home cinéma/Barre de son en panne : recours 2025`,
+        url: `/guides/home-cinema-barre-de-son-panne-garantie-legale`,
       },
     ],
-    faqSchema: createFAQSchema([
-      {
-        question: 'ARC qui décroche : garanti ?',
-        answer:
-          'Oui si cela empêche l’usage conforme (L.217-5). Réparation/remplacement (L.217-9).',
-      },
-      { question: 'Coût du transport ?', answer: 'À la charge du vendeur (L.217-11).' },
-      {
-        question: 'Si plusieurs réparations échouent ?',
-        answer: 'Bascule vers remplacement ou remboursement (L.217-13).',
-      },
-      { question: 'Délais ?', answer: '2 ans (neuf), 12 mois au moins (occasion) : L.217-7.' },
-    ]),
-    disclaimer: LEGAL_DISCLAIMER,
   },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec : <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24 mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤ 30 jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['L.217-11', 'L.217-13', 'L.217-5', 'L.217-7', 'L.217-9']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'defauts-couverts',
+      title: `Défauts audio/vidéo couverts`,
+      content: (
+        <div className="space-y-3">
+          <ul className="list-disc pl-5 space-y-1">
+            \n{' '}
+            <li>
+              <TextWithLegalRefs text={`• Coupures HDMI ARC/eARC, désynchronisation audio`} />
+            </li>
+            <li>
+              <TextWithLegalRefs
+                text={`• Caisson sans appairage, grésillements, saturation basse`}
+              />
+            </li>
+            <li>
+              <TextWithLegalRefs
+                text={`• Perte de canaux, volume bloqué, télécommande inopérante`}
+              />
+            </li>
+            \n
+          </ul>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`• Coupures HDMI ARC/eARC, désynchronisation audio • Caisson sans appairage, grésillements, saturation basse • Perte de canaux, volume bloqué, télécommande inopérante Fondements : L.217-5, L.217-7.`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'procedure-recours',
+      title: `Du diagnostic à la solution`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Diagnostic écrit + demande réparation (L.217-9) → mise en demeure si besoin → remplacement/remboursement (L.217-14, L.217-16, L.217-17). Frais pris en charge (L.217-11).`}
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs text={`Générer ma lettre →`} />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'vendeurs-strategies',
+      title: `Conseils pratiques par enseigne`,
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            Panorama des pratiques par enseigne : qualité d’accueil, délais moyens, facilité de
+            remplacement.
+          </p>
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs
+                  text={`Darty : processus cadré, demandez la mise en conformité par écrit.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Boulanger : insistez sur la gratuité des frais (L.217-11).`}
+                />,
+                <TextWithLegalRefs
+                  text={`Conforama / But : privilégiez la LRAR en cas d’atermoiements.`}
+                />,
+                <TextWithLegalRefs
+                  text={`Amazon : utilisez l’historique des tickets pour la preuve d’échec.`}
+                />,
+              ] as React.ReactNode[]
+            }
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'procedure',
+      title: 'Procédure type',
+      content: <StandardProcedure />,
+    },
+    {
+      id: 'alternatives',
+      title: 'Si ça bloque',
+      content: <DefaultAlternatives />,
+    },
+    {
+      id: 'contacts',
+      title: 'Contacts utiles',
+      content: <DefaultContacts />,
+    },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: [
+      'L.217-11' as LegalArticleId,
+      'L.217-13' as LegalArticleId,
+      'L.217-5' as LegalArticleId,
+      'L.217-7' as LegalArticleId,
+      'L.217-9' as LegalArticleId,
+    ],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
 
-  /* ─────────────────── ÉLECTROMÉNAGER ─────────────────── */
-
-  'friteuse-electrique-panne-garantie-legale': {
+export const GUIDE_FRITEUSE_ELECTRIQUE_PANNE_GARANTIE_LEGALE: GuidePage = {
+  metadata: {
     title: 'Friteuse électrique en panne : garantie légale 2025',
-    subtitle: 'Résistance HS • Température instable • 2 ans vendeur',
     seo: {
       title: 'Friteuse défectueuse : vos droits 2025',
       description:
@@ -3517,62 +6007,167 @@ export const SEO_OPTIMIZED_GUIDES: Record<string, GuidePage> = {
         'vendeur responsable L.217-3',
       ],
     },
-    sections: [
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
       {
-        id: 'defauts-couverts',
-        title: 'Défauts friteuse couverts par la loi',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Chauffe inexistante, thermostat erratique, fuite d’huile, voyant inopérant, matériaux qui se déforment : couverts par L.217-5 et L.217-7.</p>
-  <div class="bg-red-50 border-l-4 border-red-400 p-4 mt-4"><p class="text-red-800 text-sm">Sécurité : si risque de brûlure/feu, exigez une solution rapide (mise en demeure).</p></div>
-</div>
-      `,
-      },
-      {
-        id: 'procedure-recours',
-        title: 'Obtenir la mise en conformité',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <ol class="list-decimal list-inside text-sm text-gray-800 space-y-2">
-    <li>Preuves (photos/vidéos + facture)</li>
-    <li>Réparation demandée (L.217-9)</li>
-    <li>Mise en demeure (rappel L.217-3, L.217-7, L.217-11)</li>
-    <li>Remplacement ou remboursement (L.217-13)</li>
-  </ol>
-</div>
-      `,
-      },
-      {
-        id: 'vendeurs-strategies',
-        title: 'Points de vente : stratégie',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Pour un appareil gras/odorant, demandez un <strong>bon de dépôt</strong> et la prise en charge du transport (L.217-11).</p>
-</div>
-      `,
+        name: 'Friteuse électrique en panne : garantie légale 2025',
+        url: '/guides/friteuse-electrique-panne-garantie-legale',
       },
     ],
-    faqSchema: createFAQSchema([
-      {
-        question: 'Fuite d’huile : couvert ?',
-        answer: 'Oui, défaut de conformité. Réparation/remplacement (L.217-9).',
-      },
-      {
-        question: 'Défaut à 20 mois ?',
-        answer: 'Toujours présumé (L.217-7) pour un produit neuf.',
-      },
-      { question: 'Frais d’envoi ?', answer: 'À la charge du vendeur (L.217-11).' },
-      {
-        question: 'Remboursement ?',
-        answer: 'Si mise en conformité impossible/échoue : L.217-13.',
-      },
-    ]),
-    disclaimer: LEGAL_DISCLAIMER,
   },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec : <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24 mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤ 30 jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['L.217-11', 'L.217-13', 'L.217-3', 'L.217-5', 'L.217-7', 'L.217-9']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'defauts-couverts',
+      title: 'Défauts friteuse couverts par la loi',
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={
+                'Chauffe inexistante, thermostat erratique, fuite d’huile, voyant inopérant, matériaux qui se déforment : couverts par L.217-5 et L.217-7.'
+              }
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={
+                'Sécurité : si risque de brûlure/feu, exigez une solution rapide (mise en demeure).'
+              }
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'procedure-recours',
+      title: 'Obtenir la mise en conformité',
+      content: (
+        <div className="space-y-3">
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs text={'Preuves (photos/vidéos + facture)'} />,
+                <TextWithLegalRefs text={'Réparation demandée (L.217-9)'} />,
+                <TextWithLegalRefs text={'Mise en demeure (rappel L.217-3, L.217-7, L.217-11)'} />,
+                <TextWithLegalRefs
+                  text={'Remplacement ou remboursement (L.217-14, L.217-16, L.217-17)'}
+                />,
+              ] as React.ReactNode[]
+            }
+          />
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={
+                'Preuves (photos/vidéos + facture) Réparation demandée (L.217-9) Mise en demeure (rappel L.217-3, L.217-7, L.217-11) Remplacement ou remboursement (L.217-14, L.217-16, L.217-17)'
+              }
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'vendeurs-strategies',
+      title: 'Points de vente : stratégie',
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            Panorama des pratiques par enseigne : qualité d’accueil, délais moyens, facilité de
+            remplacement.
+          </p>
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs
+                  text={'Darty : processus cadré, demandez la mise en conformité par écrit.'}
+                />,
+                <TextWithLegalRefs
+                  text={'Boulanger : insistez sur la gratuité des frais (L.217-11).'}
+                />,
+                <TextWithLegalRefs
+                  text={'Conforama / But : privilégiez la LRAR en cas d’atermoiements.'}
+                />,
+                <TextWithLegalRefs
+                  text={'Amazon : utilisez l’historique des tickets pour la preuve d’échec.'}
+                />,
+              ] as React.ReactNode[]
+            }
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'procedure',
+      title: 'Procédure type',
+      content: <StandardProcedure />,
+    },
+    {
+      id: 'alternatives',
+      title: 'Si ça bloque',
+      content: <DefaultAlternatives />,
+    },
+    {
+      id: 'contacts',
+      title: 'Contacts utiles',
+      content: <DefaultContacts />,
+    },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: [
+      'L.217-11' as LegalArticleId,
+      'L.217-13' as LegalArticleId,
+      'L.217-3' as LegalArticleId,
+      'L.217-5' as LegalArticleId,
+      'L.217-7' as LegalArticleId,
+      'L.217-9' as LegalArticleId,
+    ],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
 
-  'mixeur-blender-panne-garantie-legale': {
+export const GUIDE_MIXEUR_BLENDER_PANNE_GARANTIE_LEGALE: GuidePage = {
+  metadata: {
     title: 'Mixeur/Blender en panne : garantie légale 2025',
-    subtitle: 'Moteur brûle • Lames bloquées • 2 ans de protection',
     seo: {
       title: 'Blender défectueux : vos droits 2025',
       description:
@@ -3590,61 +6185,160 @@ export const SEO_OPTIMIZED_GUIDES: Record<string, GuidePage> = {
         'mise en demeure blender',
       ],
     },
-    sections: [
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
       {
-        id: 'defauts-couverts',
-        title: 'Défauts fréquents & couverture',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <ul class="text-sm text-gray-700 space-y-1">
-    <li>• Moteur qui s’arrête sous faible charge</li>
-    <li>• Joints qui fuient/odeurs de brûlé</li>
-    <li>• Vitesses inopérantes, boîtier fissuré</li>
-  </ul>
-  <p class="mt-3 text-sm text-gray-700">Couvert : L.217-5, L.217-7.</p>
-</div>
-      `,
-      },
-      {
-        id: 'procedure-recours',
-        title: 'Chemin rapide vers la solution',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Demandez d’abord la réparation (L.217-9) • Si échec → remplacement • En dernier recours → réduction/ remboursement (L.217-13). Frais : vendeur (L.217-11).</p>
-</div>
-      `,
-      },
-      {
-        id: 'vendeurs-strategies',
-        title: 'Enseignes : conseils',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Apportez un test écrit (mix de glace/eau). L’intermittence n’exclut pas la garantie si l’usage normal est empêché.</p>
-</div>
-      `,
+        name: 'Mixeur/Blender en panne : garantie légale 2025',
+        url: '/guides/mixeur-blender-panne-garantie-legale',
       },
     ],
-    faqSchema: createFAQSchema([
-      {
-        question: 'Fuite au joint : garanti ?',
-        answer: 'Oui. Mise en conformité à la charge du vendeur (L.217-11).',
-      },
-      {
-        question: 'Preuves utiles ?',
-        answer: 'Vidéo en usage normal, facture, page produit (performances promises).',
-      },
-      {
-        question: 'Remboursement possible ?',
-        answer: 'Oui si échec des autres solutions (L.217-13).',
-      },
-      { question: 'Occasion ?', answer: 'Présomption au moins 12 mois (L.217-7).' },
-    ]),
-    disclaimer: LEGAL_DISCLAIMER,
   },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec : <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24 mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤ 30 jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['L.217-11', 'L.217-13', 'L.217-5', 'L.217-7', 'L.217-9']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'defauts-couverts',
+      title: 'Défauts fréquents & couverture',
+      content: (
+        <div className="space-y-3">
+          <ul className="list-disc pl-5 space-y-1">
+            \n{' '}
+            <li>
+              <TextWithLegalRefs text={'• Moteur qui s’arrête sous faible charge'} />
+            </li>
+            <li>
+              <TextWithLegalRefs text={'• Joints qui fuient/odeurs de brûlé'} />
+            </li>
+            <li>
+              <TextWithLegalRefs text={'• Vitesses inopérantes, boîtier fissuré'} />
+            </li>
+            \n
+          </ul>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={
+                '• Moteur qui s’arrête sous faible charge • Joints qui fuient/odeurs de brûlé • Vitesses inopérantes, boîtier fissuré Couvert : L.217-5, L.217-7.'
+              }
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'procedure-recours',
+      title: 'Chemin rapide vers la solution',
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={
+                'Demandez d’abord la réparation (L.217-9) • Si échec → remplacement • En dernier recours → réduction/ remboursement (L.217-14, L.217-16, L.217-17). Frais : vendeur (L.217-11).'
+              }
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'vendeurs-strategies',
+      title: 'Enseignes : conseils',
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            Panorama des pratiques par enseigne : qualité d’accueil, délais moyens, facilité de
+            remplacement.
+          </p>
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs
+                  text={'Darty : processus cadré, demandez la mise en conformité par écrit.'}
+                />,
+                <TextWithLegalRefs
+                  text={'Boulanger : insistez sur la gratuité des frais (L.217-11).'}
+                />,
+                <TextWithLegalRefs
+                  text={'Conforama / But : privilégiez la LRAR en cas d’atermoiements.'}
+                />,
+                <TextWithLegalRefs
+                  text={'Amazon : utilisez l’historique des tickets pour la preuve d’échec.'}
+                />,
+              ] as React.ReactNode[]
+            }
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'procedure',
+      title: 'Procédure type',
+      content: <StandardProcedure />,
+    },
+    {
+      id: 'alternatives',
+      title: 'Si ça bloque',
+      content: <DefaultAlternatives />,
+    },
+    {
+      id: 'contacts',
+      title: 'Contacts utiles',
+      content: <DefaultContacts />,
+    },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: [
+      'L.217-11' as LegalArticleId,
+      'L.217-13' as LegalArticleId,
+      'L.217-5' as LegalArticleId,
+      'L.217-7' as LegalArticleId,
+      'L.217-9' as LegalArticleId,
+    ],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
 
-  'extracteur-de-jus-panne-garantie-legale': {
+export const GUIDE_EXTRACTEUR_DE_JUS_PANNE_GARANTIE_LEGALE: GuidePage = {
+  metadata: {
     title: 'Extracteur de jus en panne : garantie légale 2025',
-    subtitle: 'Moteur, vis sans fin, fuites • Recours légaux simples',
     seo: {
       title: 'Extracteur de jus défectueux : recours',
       description:
@@ -3662,55 +6356,160 @@ export const SEO_OPTIMIZED_GUIDES: Record<string, GuidePage> = {
         'mise en demeure extracteur',
       ],
     },
-    sections: [
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
       {
-        id: 'defauts-couverts',
-        title: 'Défauts couverts & bases légales',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Fuites, craquements mécaniques, blocage de la vis, moteur irrégulier, plastique qui blanchit prématurément : couverts (L.217-5, L.217-7).</p>
-</div>
-      `,
-      },
-      {
-        id: 'procedure-recours',
-        title: 'Procédure pas à pas',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <ol class="list-decimal list-inside text-sm text-gray-800 space-y-2">
-    <li>Preuves</li>
-    <li>Demande de réparation (L.217-9)</li>
-    <li>Mise en demeure (L.217-3, L.217-7, L.217-11)</li>
-    <li>Réduction/remboursement (L.217-13)</li>
-  </ol>
-</div>
-      `,
-      },
-      {
-        id: 'vendeurs-strategies',
-        title: 'Vendeur : comment cadrer',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Précisez l’usage normal (fruits/légumes standards). Refusez la facturation de diagnostic (L.217-11).</p>
-</div>
-      `,
+        name: 'Extracteur de jus en panne : garantie légale 2025',
+        url: '/guides/extracteur-de-jus-panne-garantie-legale',
       },
     ],
-    faqSchema: createFAQSchema([
-      {
-        question: 'Bourrages récurrents : couvert ?',
-        answer: 'Oui s’ils empêchent l’usage normal (L.217-5).',
-      },
-      { question: 'Diagnostic payant ?', answer: 'Non, à la charge du vendeur (L.217-11).' },
-      { question: 'Remboursement ?', answer: 'Possible si mise en conformité échoue (L.217-13).' },
-      { question: 'Délais ?', answer: '2 ans (neuf) / 12 mois mini (occasion) : L.217-7.' },
-    ]),
-    disclaimer: LEGAL_DISCLAIMER,
   },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec : <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24 mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤ 30 jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['L.217-11', 'L.217-13', 'L.217-3', 'L.217-5', 'L.217-7', 'L.217-9']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'defauts-couverts',
+      title: 'Défauts couverts & bases légales',
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={
+                'Fuites, craquements mécaniques, blocage de la vis, moteur irrégulier, plastique qui blanchit prématurément : couverts (L.217-5, L.217-7).'
+              }
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'procedure-recours',
+      title: 'Procédure pas à pas',
+      content: (
+        <div className="space-y-3">
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs text={'Preuves'} />,
+                <TextWithLegalRefs text={'Demande de réparation (L.217-9)'} />,
+                <TextWithLegalRefs text={'Mise en demeure (L.217-3, L.217-7, L.217-11)'} />,
+                <TextWithLegalRefs
+                  text={'Réduction/remboursement (L.217-14, L.217-16, L.217-17)'}
+                />,
+              ] as React.ReactNode[]
+            }
+          />
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={
+                'Preuves Demande de réparation (L.217-9) Mise en demeure (L.217-3, L.217-7, L.217-11) Réduction/remboursement (L.217-14, L.217-16, L.217-17)'
+              }
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'vendeurs-strategies',
+      title: 'Vendeur : comment cadrer',
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            Panorama des pratiques par enseigne : qualité d’accueil, délais moyens, facilité de
+            remplacement.
+          </p>
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs
+                  text={'Darty : processus cadré, demandez la mise en conformité par écrit.'}
+                />,
+                <TextWithLegalRefs
+                  text={'Boulanger : insistez sur la gratuité des frais (L.217-11).'}
+                />,
+                <TextWithLegalRefs
+                  text={'Conforama / But : privilégiez la LRAR en cas d’atermoiements.'}
+                />,
+                <TextWithLegalRefs
+                  text={'Amazon : utilisez l’historique des tickets pour la preuve d’échec.'}
+                />,
+              ] as React.ReactNode[]
+            }
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'procedure',
+      title: 'Procédure type',
+      content: <StandardProcedure />,
+    },
+    {
+      id: 'alternatives',
+      title: 'Si ça bloque',
+      content: <DefaultAlternatives />,
+    },
+    {
+      id: 'contacts',
+      title: 'Contacts utiles',
+      content: <DefaultContacts />,
+    },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: [
+      'L.217-11' as LegalArticleId,
+      'L.217-13' as LegalArticleId,
+      'L.217-3' as LegalArticleId,
+      'L.217-5' as LegalArticleId,
+      'L.217-7' as LegalArticleId,
+      'L.217-9' as LegalArticleId,
+    ],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
 
-  'yaourtiere-defaut-temperature-garantie-legale': {
+export const GUIDE_YAOURTIERE_DEFAUT_TEMPERATURE_GARANTIE_LEGALE: GuidePage = {
+  metadata: {
     title: 'Yaourtière défectueuse : garantie légale 2025',
-    subtitle: 'Température instable • Pannes répétées • Vos droits',
     seo: {
       title: 'Yaourtière en panne : recours',
       description:
@@ -3728,53 +6527,147 @@ export const SEO_OPTIMIZED_GUIDES: Record<string, GuidePage> = {
         'recours garantie yaourtière',
       ],
     },
-    sections: [
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
       {
-        id: 'defauts-couverts',
-        title: 'Défauts courants & couverture',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Température fluctuante, cycles incomplets, minuterie erratique, cuve qui fissure : couverts (L.217-5, L.217-7).</p>
-</div>
-      `,
-      },
-      {
-        id: 'procedure-recours',
-        title: 'Étapes rapides',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Réparation prioritaire (L.217-9) → Mise en demeure → Remplacement ou remboursement (L.217-13). Frais à la charge du vendeur (L.217-11).</p>
-</div>
-      `,
-      },
-      {
-        id: 'vendeurs-strategies',
-        title: 'À dire au vendeur',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Précisez l’échec de recettes standard. Demandez un délai raisonnable et écrit d’intervention.</p>
-</div>
-      `,
+        name: 'Yaourtière défectueuse : garantie légale 2025',
+        url: '/guides/yaourtiere-defaut-temperature-garantie-legale',
       },
     ],
-    faqSchema: createFAQSchema([
-      {
-        question: 'Cuve fissurée : couvert ?',
-        answer: 'Oui si usage normal. Réparation/remplacement (L.217-9).',
-      },
-      { question: 'Frais de retour ?', answer: 'Vendeur (L.217-11).' },
-      {
-        question: 'Remboursement ?',
-        answer: 'Si impossible ou échec de mise en conformité (L.217-13).',
-      },
-      { question: 'Occasion ?', answer: 'Présomption au moins 12 mois (L.217-7).' },
-    ]),
-    disclaimer: LEGAL_DISCLAIMER,
   },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec : <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24 mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤ 30 jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['L.217-11', 'L.217-13', 'L.217-5', 'L.217-7', 'L.217-9']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'defauts-couverts',
+      title: 'Défauts courants & couverture',
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={
+                'Température fluctuante, cycles incomplets, minuterie erratique, cuve qui fissure : couverts (L.217-5, L.217-7).'
+              }
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'procedure-recours',
+      title: 'Étapes rapides',
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={
+                'Réparation prioritaire (L.217-9) → Mise en demeure → Remplacement ou remboursement (L.217-14, L.217-16, L.217-17). Frais à la charge du vendeur (L.217-11).'
+              }
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'vendeurs-strategies',
+      title: 'À dire au vendeur',
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            Panorama des pratiques par enseigne : qualité d’accueil, délais moyens, facilité de
+            remplacement.
+          </p>
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs
+                  text={'Darty : processus cadré, demandez la mise en conformité par écrit.'}
+                />,
+                <TextWithLegalRefs
+                  text={'Boulanger : insistez sur la gratuité des frais (L.217-11).'}
+                />,
+                <TextWithLegalRefs
+                  text={'Conforama / But : privilégiez la LRAR en cas d’atermoiements.'}
+                />,
+                <TextWithLegalRefs
+                  text={'Amazon : utilisez l’historique des tickets pour la preuve d’échec.'}
+                />,
+              ] as React.ReactNode[]
+            }
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'procedure',
+      title: 'Procédure type',
+      content: <StandardProcedure />,
+    },
+    {
+      id: 'alternatives',
+      title: 'Si ça bloque',
+      content: <DefaultAlternatives />,
+    },
+    {
+      id: 'contacts',
+      title: 'Contacts utiles',
+      content: <DefaultContacts />,
+    },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: [
+      'L.217-11' as LegalArticleId,
+      'L.217-13' as LegalArticleId,
+      'L.217-5' as LegalArticleId,
+      'L.217-7' as LegalArticleId,
+      'L.217-9' as LegalArticleId,
+    ],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
 
-  'machine-a-pain-panne-garantie-legale': {
+export const GUIDE_MACHINE_A_PAIN_PANNE_GARANTIE_LEGALE: GuidePage = {
+  metadata: {
     title: 'Machine à pain en panne : garantie légale 2025',
-    subtitle: 'Pétrin bloqué • Résistance HS • 2 ans de protection',
     seo: {
       title: 'Machine à pain défectueuse : recours',
       description:
@@ -3792,59 +6685,160 @@ export const SEO_OPTIMIZED_GUIDES: Record<string, GuidePage> = {
         'mise en demeure machine à pain',
       ],
     },
-    sections: [
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
       {
-        id: 'defauts-couverts',
-        title: 'Défauts couverts & preuves utiles',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <ul class="text-sm text-gray-700 space-y-1">
-    <li>• Pétrin qui ne tourne plus</li>
-    <li>• Cuisson incomplète/température instable</li>
-    <li>• Fuites, joints HS, fumées anormales</li>
-  </ul>
-  <p class="mt-3 text-sm text-gray-700">Base : L.217-5, L.217-7.</p>
-</div>
-      `,
-      },
-      {
-        id: 'procedure-recours',
-        title: 'Procédure fiable',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Réparation → Remplacement → Réduction/remboursement (L.217-13). Toujours via le vendeur (L.217-3), frais à sa charge (L.217-11).</p>
-</div>
-      `,
-      },
-      {
-        id: 'vendeurs-strategies',
-        title: 'Enseignes : faire valoir vos droits',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Demandez le <strong>bon de dépôt</strong> et l’estimation écrite du délai “raisonnable”.</p>
-</div>
-      `,
+        name: 'Machine à pain en panne : garantie légale 2025',
+        url: '/guides/machine-a-pain-panne-garantie-legale',
       },
     ],
-    faqSchema: createFAQSchema([
-      {
-        question: 'Cuisson incomplète : garanti ?',
-        answer: 'Oui. Demandez réparation puis remplacement (L.217-9).',
-      },
-      {
-        question: 'Délais de prise en charge ?',
-        answer:
-          'Dans un délai raisonnable ; au-delà, basculez vers remplacement/ remboursement (L.217-13).',
-      },
-      { question: 'Frais ?', answer: 'À la charge du vendeur (L.217-11).' },
-      { question: 'Occasion ?', answer: 'Présomption au moins 12 mois (L.217-7).' },
-    ]),
-    disclaimer: LEGAL_DISCLAIMER,
   },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec : <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24 mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤ 30 jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['L.217-11', 'L.217-13', 'L.217-3', 'L.217-5', 'L.217-7']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'defauts-couverts',
+      title: 'Défauts couverts & preuves utiles',
+      content: (
+        <div className="space-y-3">
+          <ul className="list-disc pl-5 space-y-1">
+            \n{' '}
+            <li>
+              <TextWithLegalRefs text={'• Pétrin qui ne tourne plus'} />
+            </li>
+            <li>
+              <TextWithLegalRefs text={'• Cuisson incomplète/température instable'} />
+            </li>
+            <li>
+              <TextWithLegalRefs text={'• Fuites, joints HS, fumées anormales'} />
+            </li>
+            \n
+          </ul>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={
+                '• Pétrin qui ne tourne plus • Cuisson incomplète/température instable • Fuites, joints HS, fumées anormales Base : L.217-5, L.217-7.'
+              }
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'procedure-recours',
+      title: 'Procédure fiable',
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={
+                'Réparation → Remplacement → Réduction/remboursement (L.217-14, L.217-16, L.217-17). Toujours via le vendeur (L.217-3), frais à sa charge (L.217-11).'
+              }
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'vendeurs-strategies',
+      title: 'Enseignes : faire valoir vos droits',
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            Panorama des pratiques par enseigne : qualité d’accueil, délais moyens, facilité de
+            remplacement.
+          </p>
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs
+                  text={'Darty : processus cadré, demandez la mise en conformité par écrit.'}
+                />,
+                <TextWithLegalRefs
+                  text={'Boulanger : insistez sur la gratuité des frais (L.217-11).'}
+                />,
+                <TextWithLegalRefs
+                  text={'Conforama / But : privilégiez la LRAR en cas d’atermoiements.'}
+                />,
+                <TextWithLegalRefs
+                  text={'Amazon : utilisez l’historique des tickets pour la preuve d’échec.'}
+                />,
+              ] as React.ReactNode[]
+            }
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'procedure',
+      title: 'Procédure type',
+      content: <StandardProcedure />,
+    },
+    {
+      id: 'alternatives',
+      title: 'Si ça bloque',
+      content: <DefaultAlternatives />,
+    },
+    {
+      id: 'contacts',
+      title: 'Contacts utiles',
+      content: <DefaultContacts />,
+    },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: [
+      'L.217-11' as LegalArticleId,
+      'L.217-13' as LegalArticleId,
+      'L.217-3' as LegalArticleId,
+      'L.217-5' as LegalArticleId,
+      'L.217-7' as LegalArticleId,
+    ],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
 
-  'centrale-vapeur-fuite-panne-garantie-legale': {
+export const GUIDE_CENTRALE_VAPEUR_FUITE_PANNE_GARANTIE_LEGALE: GuidePage = {
+  metadata: {
     title: 'Centrale vapeur en panne : garantie légale 2025',
-    subtitle: 'Fuites • Vapeur faible • Arrêts • 2 ans vendeur',
     seo: {
       title: 'Centrale vapeur défectueuse : recours',
       description:
@@ -3862,55 +6856,147 @@ export const SEO_OPTIMIZED_GUIDES: Record<string, GuidePage> = {
         'mise en demeure centrale',
       ],
     },
-    sections: [
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
       {
-        id: 'defauts-couverts',
-        title: 'Défauts couverts & sécurité',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Fuite réservoir, vapeur insuffisante, pression instable, semelle défaillante : couverts (L.217-5, L.217-7). En cas de risque brûlure, exigez une action rapide.</p>
-</div>
-      `,
-      },
-      {
-        id: 'procedure-recours',
-        title: 'Étapes pour obtenir la mise en conformité',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Demande de réparation (L.217-9) → Mise en demeure → Remplacement/remboursement (L.217-13). Frais : vendeur (L.217-11).</p>
-</div>
-      `,
-      },
-      {
-        id: 'vendeurs-strategies',
-        title: 'Magasin / en ligne : nos conseils',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Exigez un écrit du diagnostic, refusez tout devis “d’usage” : la garantie légale est gratuite pour le consommateur.</p>
-</div>
-      `,
+        name: 'Centrale vapeur en panne : garantie légale 2025',
+        url: '/guides/centrale-vapeur-fuite-panne-garantie-legale',
       },
     ],
-    faqSchema: createFAQSchema([
-      {
-        question: 'Fuite réservoir : couvert ?',
-        answer: 'Oui. Réparation/remplacement (L.217-9).',
-      },
-      { question: 'Frais d’envoi ?', answer: 'Vendeur (L.217-11).' },
-      {
-        question: 'Remboursement ?',
-        answer: 'Si impossible/échec de mise en conformité (L.217-13).',
-      },
-      { question: 'Délais ?', answer: '2 ans (neuf) / 12 mois mini (occasion) : L.217-7.' },
-    ]),
-    disclaimer: LEGAL_DISCLAIMER,
   },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec : <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24 mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤ 30 jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['L.217-11', 'L.217-13', 'L.217-5', 'L.217-7', 'L.217-9']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'defauts-couverts',
+      title: 'Défauts couverts & sécurité',
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={
+                'Fuite réservoir, vapeur insuffisante, pression instable, semelle défaillante : couverts (L.217-5, L.217-7). En cas de risque brûlure, exigez une action rapide.'
+              }
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'procedure-recours',
+      title: 'Étapes pour obtenir la mise en conformité',
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={
+                'Demande de réparation (L.217-9) → Mise en demeure → Remplacement/remboursement (L.217-14, L.217-16, L.217-17). Frais : vendeur (L.217-11).'
+              }
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'vendeurs-strategies',
+      title: 'Magasin / en ligne : nos conseils',
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            Panorama des pratiques par enseigne : qualité d’accueil, délais moyens, facilité de
+            remplacement.
+          </p>
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs
+                  text={'Darty : processus cadré, demandez la mise en conformité par écrit.'}
+                />,
+                <TextWithLegalRefs
+                  text={'Boulanger : insistez sur la gratuité des frais (L.217-11).'}
+                />,
+                <TextWithLegalRefs
+                  text={'Conforama / But : privilégiez la LRAR en cas d’atermoiements.'}
+                />,
+                <TextWithLegalRefs
+                  text={'Amazon : utilisez l’historique des tickets pour la preuve d’échec.'}
+                />,
+              ] as React.ReactNode[]
+            }
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'procedure',
+      title: 'Procédure type',
+      content: <StandardProcedure />,
+    },
+    {
+      id: 'alternatives',
+      title: 'Si ça bloque',
+      content: <DefaultAlternatives />,
+    },
+    {
+      id: 'contacts',
+      title: 'Contacts utiles',
+      content: <DefaultContacts />,
+    },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: [
+      'L.217-11' as LegalArticleId,
+      'L.217-13' as LegalArticleId,
+      'L.217-5' as LegalArticleId,
+      'L.217-7' as LegalArticleId,
+      'L.217-9' as LegalArticleId,
+    ],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
 
-  /* ─────────────────── AUTOMOBILE SPÉCIALISÉ ─────────────────── */
-
-  'voiture-electrique-defaut-garantie-legale': {
+export const GUIDE_VOITURE_ELECTRIQUE_DEFAUT_GARANTIE_LEGALE: GuidePage = {
+  metadata: {
     title: 'Voiture électrique : garantie légale (produit vendu) 2025',
-    subtitle: 'Batterie/charge • Électronique • 2 ans vendeur (hors garantie commerciale)',
     seo: {
       title: 'Voiture électrique vendue : vos recours',
       description:
@@ -3928,62 +7014,159 @@ export const SEO_OPTIMIZED_GUIDES: Record<string, GuidePage> = {
         'véhicule occasion présomption 12 mois',
       ],
     },
-    sections: [
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
       {
-        id: 'defauts-couverts',
-        title: 'Défauts VE couverts (hors garanties commerciales)',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Charge aléatoire, autonomie anormalement basse vs promesse, BMS/électronique défaillants, interfaces qui plantent : couverts si usage normal empêché (L.217-5, L.217-7).</p>
-</div>
-      `,
-      },
-      {
-        id: 'procedure-recours',
-        title: 'Parcours légal côté consommateur',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <ol class="list-decimal list-inside text-sm text-gray-800 space-y-2">
-    <li>Signalement au vendeur (L.217-9) + diagnostic écrit</li>
-    <li>Mise en demeure avec délai raisonnable</li>
-    <li>Si échec : remplacement ou remboursement (L.217-13)</li>
-    <li>Frais de transport/diagnostic : vendeur (L.217-11)</li>
-  </ol>
-</div>
-      `,
-      },
-      {
-        id: 'vendeurs-strategies',
-        title: 'Concession/mandataire : bonnes pratiques',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Faites préciser par écrit les performances promises (autonomie/charge). Exigez un prêt de véhicule si immobilisation longue (bonne pratique commerciale).</p>
-</div>
-      `,
+        name: 'Voiture électrique : garantie légale (produit vendu) 2025',
+        url: '/guides/voiture-electrique-defaut-garantie-legale',
       },
     ],
-    faqSchema: createFAQSchema([
-      {
-        question: 'Autonomie inférieure aux promesses : couvert ?',
-        answer:
-          'Oui si l’usage normal est affecté par rapport aux caractéristiques promises (L.217-5).',
-      },
-      { question: 'Occasion VE ?', answer: 'Présomption de défaut au moins 12 mois (L.217-7).' },
-      {
-        question: 'Frais de remorquage/diagnostic ?',
-        answer: 'À la charge du vendeur si liés à la mise en conformité (L.217-11).',
-      },
-      {
-        question: 'Remboursement ?',
-        answer: 'Possible si mise en conformité impossible/échec (L.217-13).',
-      },
-    ]),
-    disclaimer: LEGAL_DISCLAIMER,
   },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec : <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24 mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤ 30 jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['L.217-11', 'L.217-13', 'L.217-5', 'L.217-7', 'L.217-9']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'defauts-couverts',
+      title: 'Défauts VE couverts (hors garanties commerciales)',
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={
+                'Charge aléatoire, autonomie anormalement basse vs promesse, BMS/électronique défaillants, interfaces qui plantent : couverts si usage normal empêché (L.217-5, L.217-7).'
+              }
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'procedure-recours',
+      title: 'Parcours légal côté consommateur',
+      content: (
+        <div className="space-y-3">
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs text={'Signalement au vendeur (L.217-9) + diagnostic écrit'} />,
+                <TextWithLegalRefs text={'Mise en demeure avec délai raisonnable'} />,
+                <TextWithLegalRefs
+                  text={'Si échec : remplacement ou remboursement (L.217-14, L.217-16, L.217-17)'}
+                />,
+                <TextWithLegalRefs text={'Frais de transport/diagnostic : vendeur (L.217-11)'} />,
+              ] as React.ReactNode[]
+            }
+          />
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={
+                'Signalement au vendeur (L.217-9) + diagnostic écrit Mise en demeure avec délai raisonnable Si échec : remplacement ou remboursement (L.217-14, L.217-16, L.217-17) Frais de transport/diagnostic : vendeur (L.217-11)'
+              }
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'vendeurs-strategies',
+      title: 'Concession/mandataire : bonnes pratiques',
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            Panorama des pratiques par enseigne : qualité d’accueil, délais moyens, facilité de
+            remplacement.
+          </p>
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs
+                  text={'Darty : processus cadré, demandez la mise en conformité par écrit.'}
+                />,
+                <TextWithLegalRefs
+                  text={'Boulanger : insistez sur la gratuité des frais (L.217-11).'}
+                />,
+                <TextWithLegalRefs
+                  text={'Conforama / But : privilégiez la LRAR en cas d’atermoiements.'}
+                />,
+                <TextWithLegalRefs
+                  text={'Amazon : utilisez l’historique des tickets pour la preuve d’échec.'}
+                />,
+              ] as React.ReactNode[]
+            }
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'procedure',
+      title: 'Procédure type',
+      content: <StandardProcedure />,
+    },
+    {
+      id: 'alternatives',
+      title: 'Si ça bloque',
+      content: <DefaultAlternatives />,
+    },
+    {
+      id: 'contacts',
+      title: 'Contacts utiles',
+      content: <DefaultContacts />,
+    },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: [
+      'L.217-11' as LegalArticleId,
+      'L.217-13' as LegalArticleId,
+      'L.217-5' as LegalArticleId,
+      'L.217-7' as LegalArticleId,
+      'L.217-9' as LegalArticleId,
+    ],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
 
-  'voiture-hybride-defaut-garantie-legale': {
+export const GUIDE_VOITURE_HYBRIDE_DEFAUT_GARANTIE_LEGALE: GuidePage = {
+  metadata: {
     title: 'Voiture hybride : garantie légale (produit vendu) 2025',
-    subtitle: 'Hybride/électronique • 2 ans vendeur • 4 recours légaux',
     seo: {
       title: 'Voiture hybride vendue : vos droits',
       description:
@@ -4001,50 +7184,147 @@ export const SEO_OPTIMIZED_GUIDES: Record<string, GuidePage> = {
         'véhicule occasion garantie légale',
       ],
     },
-    sections: [
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
       {
-        id: 'defauts-couverts',
-        title: 'Défauts couverts côté hybride/électronique',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Bascule thermique/électrique erratique, surconsommation vs promesse, calculateurs qui plantent, voyants défaut persistants : couverts (L.217-5, L.217-7).</p>
-</div>
-      `,
-      },
-      {
-        id: 'procedure-recours',
-        title: 'Étapes légales clés',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Demande de réparation (L.217-9) → Mise en demeure → Remplacement/remboursement (L.217-13). Frais liés = vendeur (L.217-11).</p>
-</div>
-      `,
-      },
-      {
-        id: 'vendeurs-strategies',
-        title: 'Concessions : faire valoir la loi',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Demandez l’historique d’entretien et les rapports OBD joints au dossier. Gardez tout par écrit.</p>
-</div>
-      `,
+        name: 'Voiture hybride : garantie légale (produit vendu) 2025',
+        url: '/guides/voiture-hybride-defaut-garantie-legale',
       },
     ],
-    faqSchema: createFAQSchema([
-      {
-        question: 'Surconsommation anormale : couverte ?',
-        answer: 'Oui si écart significatif vs usage attendu/promesse (L.217-5).',
-      },
-      { question: 'Occasion ?', answer: 'Présomption 12 mois mini (L.217-7).' },
-      { question: 'Frais ?', answer: 'À la charge du vendeur (L.217-11).' },
-      { question: 'Remboursement ?', answer: 'Si échec de mise en conformité (L.217-13).' },
-    ]),
-    disclaimer: LEGAL_DISCLAIMER,
   },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec : <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24 mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤ 30 jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['L.217-11', 'L.217-13', 'L.217-5', 'L.217-7', 'L.217-9']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'defauts-couverts',
+      title: 'Défauts couverts côté hybride/électronique',
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={
+                'Bascule thermique/électrique erratique, surconsommation vs promesse, calculateurs qui plantent, voyants défaut persistants : couverts (L.217-5, L.217-7).'
+              }
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'procedure-recours',
+      title: 'Étapes légales clés',
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={
+                'Demande de réparation (L.217-9) → Mise en demeure → Remplacement/remboursement (L.217-14, L.217-16, L.217-17). Frais liés = vendeur (L.217-11).'
+              }
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'vendeurs-strategies',
+      title: 'Concessions : faire valoir la loi',
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            Panorama des pratiques par enseigne : qualité d’accueil, délais moyens, facilité de
+            remplacement.
+          </p>
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs
+                  text={'Darty : processus cadré, demandez la mise en conformité par écrit.'}
+                />,
+                <TextWithLegalRefs
+                  text={'Boulanger : insistez sur la gratuité des frais (L.217-11).'}
+                />,
+                <TextWithLegalRefs
+                  text={'Conforama / But : privilégiez la LRAR en cas d’atermoiements.'}
+                />,
+                <TextWithLegalRefs
+                  text={'Amazon : utilisez l’historique des tickets pour la preuve d’échec.'}
+                />,
+              ] as React.ReactNode[]
+            }
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'procedure',
+      title: 'Procédure type',
+      content: <StandardProcedure />,
+    },
+    {
+      id: 'alternatives',
+      title: 'Si ça bloque',
+      content: <DefaultAlternatives />,
+    },
+    {
+      id: 'contacts',
+      title: 'Contacts utiles',
+      content: <DefaultContacts />,
+    },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: [
+      'L.217-11' as LegalArticleId,
+      'L.217-13' as LegalArticleId,
+      'L.217-5' as LegalArticleId,
+      'L.217-7' as LegalArticleId,
+      'L.217-9' as LegalArticleId,
+    ],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
 
-  'camping-car-defauts-garantie-legale': {
+export const GUIDE_CAMPING_CAR_DEFAUTS_GARANTIE_LEGALE: GuidePage = {
+  metadata: {
     title: 'Camping-car : garantie légale (produit vendu) 2025',
-    subtitle: 'Étanchéité • Équipements • Électronique • 2 ans vendeur',
     seo: {
       title: 'Camping-car défectueux : recours',
       description:
@@ -4062,58 +7342,160 @@ export const SEO_OPTIMIZED_GUIDES: Record<string, GuidePage> = {
         'mise en demeure camping-car',
       ],
     },
-    sections: [
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
       {
-        id: 'defauts-couverts',
-        title: 'Défauts typiques couverts',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <ul class="text-sm text-gray-700 space-y-1">
-    <li>• Infiltrations/étanchéité</li>
-    <li>• Chauffage/eau/chauffe-eau HS</li>
-    <li>• Électricité auxiliaire défaillante</li>
-  </ul>
-  <p class="mt-2 text-sm text-gray-700">Base : L.217-5, L.217-7.</p>
-</div>
-      `,
-      },
-      {
-        id: 'procedure-recours',
-        title: 'Parcours gagnant',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Réparation prioritaire (L.217-9). En cas d’immobilisation longue, demandez remplacement raisonnable. Si échec : remboursement (L.217-13). Frais : vendeur (L.217-11).</p>
-</div>
-      `,
-      },
-      {
-        id: 'vendeurs-strategies',
-        title: 'Concessions : cadrage pratique',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Exigez un test d’étanchéité certifié et un plan d’action écrit (délais + pièces).</p>
-</div>
-      `,
+        name: 'Camping-car : garantie légale (produit vendu) 2025',
+        url: '/guides/camping-car-defauts-garantie-legale',
       },
     ],
-    faqSchema: createFAQSchema([
-      {
-        question: 'Infiltration eau : couvert ?',
-        answer: 'Oui (L.217-5). Réparation puis remplacement/remboursement (L.217-13) si échec.',
-      },
-      { question: 'Frais ?', answer: 'À la charge du vendeur (L.217-11).' },
-      { question: 'Occasion ?', answer: 'Présomption 12 mois (L.217-7).' },
-      {
-        question: 'Délais ?',
-        answer: 'Dans un délai raisonnable ; sinon on change de recours (L.217-9 → L.217-13).',
-      },
-    ]),
-    disclaimer: LEGAL_DISCLAIMER,
   },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec : <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24 mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤ 30 jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['L.217-11', 'L.217-13', 'L.217-5', 'L.217-7', 'L.217-9']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'defauts-couverts',
+      title: 'Défauts typiques couverts',
+      content: (
+        <div className="space-y-3">
+          <ul className="list-disc pl-5 space-y-1">
+            \n{' '}
+            <li>
+              <TextWithLegalRefs text={'• Infiltrations/étanchéité'} />
+            </li>
+            <li>
+              <TextWithLegalRefs text={'• Chauffage/eau/chauffe-eau HS'} />
+            </li>
+            <li>
+              <TextWithLegalRefs text={'• Électricité auxiliaire défaillante'} />
+            </li>
+            \n
+          </ul>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={
+                '• Infiltrations/étanchéité • Chauffage/eau/chauffe-eau HS • Électricité auxiliaire défaillante Base : L.217-5, L.217-7.'
+              }
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'procedure-recours',
+      title: 'Parcours gagnant',
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={
+                'Réparation prioritaire (L.217-9). En cas d’immobilisation longue, demandez remplacement raisonnable. Si échec : remboursement (L.217-14, L.217-16, L.217-17). Frais : vendeur (L.217-11).'
+              }
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'vendeurs-strategies',
+      title: 'Concessions : cadrage pratique',
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            Panorama des pratiques par enseigne : qualité d’accueil, délais moyens, facilité de
+            remplacement.
+          </p>
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs
+                  text={'Darty : processus cadré, demandez la mise en conformité par écrit.'}
+                />,
+                <TextWithLegalRefs
+                  text={'Boulanger : insistez sur la gratuité des frais (L.217-11).'}
+                />,
+                <TextWithLegalRefs
+                  text={'Conforama / But : privilégiez la LRAR en cas d’atermoiements.'}
+                />,
+                <TextWithLegalRefs
+                  text={'Amazon : utilisez l’historique des tickets pour la preuve d’échec.'}
+                />,
+              ] as React.ReactNode[]
+            }
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'procedure',
+      title: 'Procédure type',
+      content: <StandardProcedure />,
+    },
+    {
+      id: 'alternatives',
+      title: 'Si ça bloque',
+      content: <DefaultAlternatives />,
+    },
+    {
+      id: 'contacts',
+      title: 'Contacts utiles',
+      content: <DefaultContacts />,
+    },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: [
+      'L.217-11' as LegalArticleId,
+      'L.217-13' as LegalArticleId,
+      'L.217-5' as LegalArticleId,
+      'L.217-7' as LegalArticleId,
+      'L.217-9' as LegalArticleId,
+    ],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
 
-  'moto-defaut-garantie-legale': {
+export const GUIDE_MOTO_DEFAUT_GARANTIE_LEGALE: GuidePage = {
+  metadata: {
     title: 'Moto achetée chez pro : garantie légale 2025',
-    subtitle: 'Électronique • Moteur • Freinage • 2 ans/12 mois',
     seo: {
       title: 'Moto vendue : vos droits',
       description:
@@ -4131,56 +7513,147 @@ export const SEO_OPTIMIZED_GUIDES: Record<string, GuidePage> = {
         'mise en demeure moto',
       ],
     },
-    sections: [
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
       {
-        id: 'defauts-couverts',
-        title: 'Défauts moto couverts',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Démarrages aléatoires, voyants défaut, ABS/TC défaillant, surchauffe, coupures : couverts (L.217-5, L.217-7).</p>
-</div>
-      `,
-      },
-      {
-        id: 'procedure-recours',
-        title: 'La méthode qui marche',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Réparation (L.217-9) → Mise en demeure → Remplacement ou remboursement (L.217-13). Frais : vendeur (L.217-11).</p>
-</div>
-      `,
-      },
-      {
-        id: 'vendeurs-strategies',
-        title: 'Concession moto : tips',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Demandez le rapport diagnostic branché (codes défaut) joint au dossier.</p>
-</div>
-      `,
+        name: 'Moto achetée chez pro : garantie légale 2025',
+        url: '/guides/moto-defaut-garantie-legale',
       },
     ],
-    faqSchema: createFAQSchema([
-      {
-        question: 'Voyant moteur : couvert ?',
-        answer: 'Oui si usage normal impacté (L.217-5). Réparation/remplacement (L.217-9).',
-      },
-      {
-        question: 'Occasion 11 mois ?',
-        answer: 'Présomption valable (au moins 12 mois : L.217-7).',
-      },
-      {
-        question: 'Frais essais/diagnostic ?',
-        answer: 'À la charge du vendeur s’ils visent la mise en conformité (L.217-11).',
-      },
-      { question: 'Remboursement ?', answer: 'Si échec mise en conformité (L.217-13).' },
-    ]),
-    disclaimer: LEGAL_DISCLAIMER,
   },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec : <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24 mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤ 30 jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['L.217-11', 'L.217-13', 'L.217-5', 'L.217-7', 'L.217-9']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'defauts-couverts',
+      title: 'Défauts moto couverts',
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={
+                'Démarrages aléatoires, voyants défaut, ABS/TC défaillant, surchauffe, coupures : couverts (L.217-5, L.217-7).'
+              }
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'procedure-recours',
+      title: 'La méthode qui marche',
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={
+                'Réparation (L.217-9) → Mise en demeure → Remplacement ou remboursement (L.217-14, L.217-16, L.217-17). Frais : vendeur (L.217-11).'
+              }
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'vendeurs-strategies',
+      title: 'Concession moto : tips',
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            Panorama des pratiques par enseigne : qualité d’accueil, délais moyens, facilité de
+            remplacement.
+          </p>
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs
+                  text={'Darty : processus cadré, demandez la mise en conformité par écrit.'}
+                />,
+                <TextWithLegalRefs
+                  text={'Boulanger : insistez sur la gratuité des frais (L.217-11).'}
+                />,
+                <TextWithLegalRefs
+                  text={'Conforama / But : privilégiez la LRAR en cas d’atermoiements.'}
+                />,
+                <TextWithLegalRefs
+                  text={'Amazon : utilisez l’historique des tickets pour la preuve d’échec.'}
+                />,
+              ] as React.ReactNode[]
+            }
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'procedure',
+      title: 'Procédure type',
+      content: <StandardProcedure />,
+    },
+    {
+      id: 'alternatives',
+      title: 'Si ça bloque',
+      content: <DefaultAlternatives />,
+    },
+    {
+      id: 'contacts',
+      title: 'Contacts utiles',
+      content: <DefaultContacts />,
+    },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: [
+      'L.217-11' as LegalArticleId,
+      'L.217-13' as LegalArticleId,
+      'L.217-5' as LegalArticleId,
+      'L.217-7' as LegalArticleId,
+      'L.217-9' as LegalArticleId,
+    ],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
 
-  'scooter-defaut-garantie-legale': {
+export const GUIDE_SCOOTER_DEFAUT_GARANTIE_LEGALE: GuidePage = {
+  metadata: {
     title: 'Scooter acheté chez pro : garantie légale 2025',
-    subtitle: 'Allumage • Charge • Freinage • 2 ans/12 mois',
     seo: {
       title: 'Scooter défectueux : recours',
       description:
@@ -4198,60 +7671,160 @@ export const SEO_OPTIMIZED_GUIDES: Record<string, GuidePage> = {
         'mise en demeure scooter',
       ],
     },
-    sections: [
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
       {
-        id: 'defauts-couverts',
-        title: 'Défauts couverts sur scooters',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Allumage aléatoire, batterie/chargeur défaillants, freinage spongieux, électronique instable : L.217-5, L.217-7.</p>
-</div>
-      `,
-      },
-      {
-        id: 'procedure-recours',
-        title: 'Procédure en 4 temps',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <ol class="list-decimal list-inside text-sm text-gray-800 space-y-2">
-    <li>Preuves</li>
-    <li>Réparation (L.217-9)</li>
-    <li>Mise en demeure (L.217-3, L.217-7, L.217-11)</li>
-    <li>Remplacement/remboursement (L.217-13)</li>
-  </ol>
-</div>
-      `,
-      },
-      {
-        id: 'vendeurs-strategies',
-        title: 'Concession : accélérer le traitement',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Demandez un prêt de scooter si immobilisation prolongée (bonne pratique commerciale) et un délai écrit.</p>
-</div>
-      `,
+        name: 'Scooter acheté chez pro : garantie légale 2025',
+        url: '/guides/scooter-defaut-garantie-legale',
       },
     ],
-    faqSchema: createFAQSchema([
-      {
-        question: 'Charge impossible : couvert ?',
-        answer: 'Oui. Mise en conformité exigible (L.217-9), frais vendeur (L.217-11).',
-      },
-      { question: 'Occasion 10 mois ?', answer: 'Présomption minimum 12 mois (L.217-7).' },
-      { question: 'Remboursement ?', answer: 'Oui si échec mise en conformité (L.217-13).' },
-      {
-        question: 'Diagnostic payant ?',
-        answer: 'À la charge du vendeur s’il sert la mise en conformité (L.217-11).',
-      },
-    ]),
-    disclaimer: LEGAL_DISCLAIMER,
   },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec : <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24 mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤ 30 jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['L.217-11', 'L.217-13', 'L.217-3', 'L.217-5', 'L.217-7', 'L.217-9']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'defauts-couverts',
+      title: 'Défauts couverts sur scooters',
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={
+                'Allumage aléatoire, batterie/chargeur défaillants, freinage spongieux, électronique instable : L.217-5, L.217-7.'
+              }
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'procedure-recours',
+      title: 'Procédure en 4 temps',
+      content: (
+        <div className="space-y-3">
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs text={'Preuves'} />,
+                <TextWithLegalRefs text={'Réparation (L.217-9)'} />,
+                <TextWithLegalRefs text={'Mise en demeure (L.217-3, L.217-7, L.217-11)'} />,
+                <TextWithLegalRefs
+                  text={'Remplacement/remboursement (L.217-14, L.217-16, L.217-17)'}
+                />,
+              ] as React.ReactNode[]
+            }
+          />
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={
+                'Preuves Réparation (L.217-9) Mise en demeure (L.217-3, L.217-7, L.217-11) Remplacement/remboursement (L.217-14, L.217-16, L.217-17)'
+              }
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'vendeurs-strategies',
+      title: 'Concession : accélérer le traitement',
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            Panorama des pratiques par enseigne : qualité d’accueil, délais moyens, facilité de
+            remplacement.
+          </p>
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs
+                  text={'Darty : processus cadré, demandez la mise en conformité par écrit.'}
+                />,
+                <TextWithLegalRefs
+                  text={'Boulanger : insistez sur la gratuité des frais (L.217-11).'}
+                />,
+                <TextWithLegalRefs
+                  text={'Conforama / But : privilégiez la LRAR en cas d’atermoiements.'}
+                />,
+                <TextWithLegalRefs
+                  text={'Amazon : utilisez l’historique des tickets pour la preuve d’échec.'}
+                />,
+              ] as React.ReactNode[]
+            }
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'procedure',
+      title: 'Procédure type',
+      content: <StandardProcedure />,
+    },
+    {
+      id: 'alternatives',
+      title: 'Si ça bloque',
+      content: <DefaultAlternatives />,
+    },
+    {
+      id: 'contacts',
+      title: 'Contacts utiles',
+      content: <DefaultContacts />,
+    },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: [
+      'L.217-11' as LegalArticleId,
+      'L.217-13' as LegalArticleId,
+      'L.217-3' as LegalArticleId,
+      'L.217-5' as LegalArticleId,
+      'L.217-7' as LegalArticleId,
+      'L.217-9' as LegalArticleId,
+    ],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
 
-  /* ─────────────────── MAISON ─────────────────── */
-
-  'climatisation-en-panne-garantie-legale': {
+export const GUIDE_CLIMATISATION_EN_PANNE_GARANTIE_LEGALE: GuidePage = {
+  metadata: {
     title: 'Climatisation en panne : garantie légale 2025',
-    subtitle: 'Fuite, panne compresseur, carte HS • 2 ans vendeur',
     seo: {
       title: 'Clim défectueuse : vos droits 2025',
       description:
@@ -4269,54 +7842,152 @@ export const SEO_OPTIMIZED_GUIDES: Record<string, GuidePage> = {
         'mise en demeure clim',
       ],
     },
-    sections: [
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
       {
-        id: 'defauts-couverts',
-        title: 'Défauts clim couverts par la loi',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Fuite fluide, compresseur/ventilo HS, carte électronique, performances de refroidissement insuffisantes vs promesse : L.217-5, L.217-7.</p>
-  <div class="bg-red-50 border-l-4 border-red-400 p-4 mt-4"><p class="text-red-800 text-sm">Chaleur estivale = urgence. Exigez un délai raisonnable écrit.</p></div>
-</div>
-      `,
-      },
-      {
-        id: 'procedure-recours',
-        title: 'Démarches efficaces',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Réparation prioritaire (L.217-9) • Mise en demeure • Remplacement/remboursement (L.217-13). Frais : vendeur (L.217-11).</p>
-</div>
-      `,
-      },
-      {
-        id: 'vendeurs-strategies',
-        title: 'Installateur/vendeur : cadrage',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Exigez un rapport d’intervention et la prise en charge du fluide et de la main-d’œuvre.</p>
-</div>
-      `,
+        name: 'Climatisation en panne : garantie légale 2025',
+        url: '/guides/climatisation-en-panne-garantie-legale',
       },
     ],
-    faqSchema: createFAQSchema([
-      {
-        question: 'Fuite de fluide : couvert ?',
-        answer: 'Oui. Mise en conformité (L.217-9) à la charge du vendeur (L.217-11).',
-      },
-      {
-        question: 'Remplacement unité extérieure ?',
-        answer: 'Possible si réparation impossible/inefficace (L.217-13).',
-      },
-      { question: 'Délais ?', answer: 'Dans un délai raisonnable, surtout en période chaude.' },
-      { question: 'Occasion ?', answer: 'Présomption 12 mois (L.217-7).' },
-    ]),
-    disclaimer: LEGAL_DISCLAIMER,
   },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec : <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24 mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤ 30 jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['L.217-11', 'L.217-13', 'L.217-5', 'L.217-7', 'L.217-9']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'defauts-couverts',
+      title: 'Défauts clim couverts par la loi',
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={
+                'Fuite fluide, compresseur/ventilo HS, carte électronique, performances de refroidissement insuffisantes vs promesse : L.217-5, L.217-7.'
+              }
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={'Chaleur estivale = urgence. Exigez un délai raisonnable écrit.'}
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'procedure-recours',
+      title: 'Démarches efficaces',
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={
+                'Réparation prioritaire (L.217-9) • Mise en demeure • Remplacement/remboursement (L.217-14, L.217-16, L.217-17). Frais : vendeur (L.217-11).'
+              }
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'vendeurs-strategies',
+      title: 'Installateur/vendeur : cadrage',
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            Panorama des pratiques par enseigne : qualité d’accueil, délais moyens, facilité de
+            remplacement.
+          </p>
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs
+                  text={'Darty : processus cadré, demandez la mise en conformité par écrit.'}
+                />,
+                <TextWithLegalRefs
+                  text={'Boulanger : insistez sur la gratuité des frais (L.217-11).'}
+                />,
+                <TextWithLegalRefs
+                  text={'Conforama / But : privilégiez la LRAR en cas d’atermoiements.'}
+                />,
+                <TextWithLegalRefs
+                  text={'Amazon : utilisez l’historique des tickets pour la preuve d’échec.'}
+                />,
+              ] as React.ReactNode[]
+            }
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'procedure',
+      title: 'Procédure type',
+      content: <StandardProcedure />,
+    },
+    {
+      id: 'alternatives',
+      title: 'Si ça bloque',
+      content: <DefaultAlternatives />,
+    },
+    {
+      id: 'contacts',
+      title: 'Contacts utiles',
+      content: <DefaultContacts />,
+    },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: [
+      'L.217-11' as LegalArticleId,
+      'L.217-13' as LegalArticleId,
+      'L.217-5' as LegalArticleId,
+      'L.217-7' as LegalArticleId,
+      'L.217-9' as LegalArticleId,
+    ],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
 
-  'vmc-habitation-panne-garantie-legale': {
+export const GUIDE_VMC_HABITATION_PANNE_GARANTIE_LEGALE: GuidePage = {
+  metadata: {
     title: 'VMC habitation en panne : garantie légale 2025',
-    subtitle: 'Moteur bruyant • Débit insuffisant • 2 ans vendeur',
     seo: {
       title: 'VMC défectueuse : recours',
       description:
@@ -4334,50 +8005,147 @@ export const SEO_OPTIMIZED_GUIDES: Record<string, GuidePage> = {
         'VMC défaut conformité',
       ],
     },
-    sections: [
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
       {
-        id: 'defauts-couverts',
-        title: 'Défauts VMC couverts & preuves',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Bruit anormal, pannes, débit très inférieur aux caractéristiques promises : L.217-5, L.217-7. Preuves : mesures simples/vidéos.</p>
-</div>
-      `,
-      },
-      {
-        id: 'procedure-recours',
-        title: 'Étapes légales',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Réparation (L.217-9) → Mise en demeure → Remplacement/remboursement (L.217-13). Frais : vendeur (L.217-11).</p>
-</div>
-      `,
-      },
-      {
-        id: 'vendeurs-strategies',
-        title: 'Distributeur/poseur : comment agir',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Demandez un contrôle de débit écrit. Refusez les frais de déplacement (L.217-11).</p>
-</div>
-      `,
+        name: 'VMC habitation en panne : garantie légale 2025',
+        url: '/guides/vmc-habitation-panne-garantie-legale',
       },
     ],
-    faqSchema: createFAQSchema([
-      {
-        question: 'Bruit excessif : couvert ?',
-        answer: 'Oui si usage normal affecté. Mise en conformité (L.217-9).',
-      },
-      { question: 'Frais ?', answer: 'À charge du vendeur (L.217-11).' },
-      { question: 'Remboursement ?', answer: 'Si mise en conformité échoue (L.217-13).' },
-      { question: 'Occasion ?', answer: 'Présomption 12 mois (L.217-7).' },
-    ]),
-    disclaimer: LEGAL_DISCLAIMER,
   },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec : <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24 mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤ 30 jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['L.217-11', 'L.217-13', 'L.217-5', 'L.217-7', 'L.217-9']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'defauts-couverts',
+      title: 'Défauts VMC couverts & preuves',
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={
+                'Bruit anormal, pannes, débit très inférieur aux caractéristiques promises : L.217-5, L.217-7. Preuves : mesures simples/vidéos.'
+              }
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'procedure-recours',
+      title: 'Étapes légales',
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={
+                'Réparation (L.217-9) → Mise en demeure → Remplacement/remboursement (L.217-14, L.217-16, L.217-17). Frais : vendeur (L.217-11).'
+              }
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'vendeurs-strategies',
+      title: 'Distributeur/poseur : comment agir',
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            Panorama des pratiques par enseigne : qualité d’accueil, délais moyens, facilité de
+            remplacement.
+          </p>
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs
+                  text={'Darty : processus cadré, demandez la mise en conformité par écrit.'}
+                />,
+                <TextWithLegalRefs
+                  text={'Boulanger : insistez sur la gratuité des frais (L.217-11).'}
+                />,
+                <TextWithLegalRefs
+                  text={'Conforama / But : privilégiez la LRAR en cas d’atermoiements.'}
+                />,
+                <TextWithLegalRefs
+                  text={'Amazon : utilisez l’historique des tickets pour la preuve d’échec.'}
+                />,
+              ] as React.ReactNode[]
+            }
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'procedure',
+      title: 'Procédure type',
+      content: <StandardProcedure />,
+    },
+    {
+      id: 'alternatives',
+      title: 'Si ça bloque',
+      content: <DefaultAlternatives />,
+    },
+    {
+      id: 'contacts',
+      title: 'Contacts utiles',
+      content: <DefaultContacts />,
+    },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: [
+      'L.217-11' as LegalArticleId,
+      'L.217-13' as LegalArticleId,
+      'L.217-5' as LegalArticleId,
+      'L.217-7' as LegalArticleId,
+      'L.217-9' as LegalArticleId,
+    ],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
 
-  'chaudiere-domestique-defaut-garantie-legale': {
+export const GUIDE_CHAUDIERE_DOMESTIQUE_DEFAUT_GARANTIE_LEGALE: GuidePage = {
+  metadata: {
     title: 'Chaudière domestique : garantie légale 2025',
-    subtitle: 'Pannes récurrentes • Carte/Allumage • 2 ans vendeur',
     seo: {
       title: 'Chaudière en panne : vos droits',
       description:
@@ -4395,55 +8163,150 @@ export const SEO_OPTIMIZED_GUIDES: Record<string, GuidePage> = {
         'mise en demeure chaudière',
       ],
     },
-    sections: [
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
       {
-        id: 'defauts-couverts',
-        title: 'Défauts chaudière couverts',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Allumage aléatoire, carte électronique, fuites, pression instable, impossibilité d’atteindre la température : L.217-5, L.217-7.</p>
-  <div class="bg-red-50 border-l-4 border-red-400 p-4 mt-4"><p class="text-red-800 text-sm">Urgence sanitaire : exigez un délai raisonnable réduit.</p></div>
-</div>
-      `,
-      },
-      {
-        id: 'procedure-recours',
-        title: 'Démarches priorisées',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Réparation (L.217-9) • Mise en demeure • Remplacement/remboursement (L.217-13). Frais : vendeur (L.217-11).</p>
-</div>
-      `,
-      },
-      {
-        id: 'vendeurs-strategies',
-        title: 'Installateur/vendeur : points clés',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Demandez un procès-verbal d’intervention et la planification écrite.</p>
-</div>
-      `,
+        name: 'Chaudière domestique : garantie légale 2025',
+        url: '/guides/chaudiere-domestique-defaut-garantie-legale',
       },
     ],
-    faqSchema: createFAQSchema([
-      {
-        question: 'Panne récurrente : couvert ?',
-        answer:
-          'Oui. Après échecs de réparation, basculez vers remplacement/remboursement (L.217-13).',
-      },
-      { question: 'Frais de déplacement ?', answer: 'À la charge du vendeur (L.217-11).' },
-      { question: 'Occasion ?', answer: 'Présomption 12 mois (L.217-7).' },
-      {
-        question: 'Délais ?',
-        answer: 'Délai raisonnable selon contexte (période froide = priorité).',
-      },
-    ]),
-    disclaimer: LEGAL_DISCLAIMER,
   },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec : <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24 mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤ 30 jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['L.217-11', 'L.217-13', 'L.217-5', 'L.217-7', 'L.217-9']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'defauts-couverts',
+      title: 'Défauts chaudière couverts',
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={
+                'Allumage aléatoire, carte électronique, fuites, pression instable, impossibilité d’atteindre la température : L.217-5, L.217-7.'
+              }
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs text={'Urgence sanitaire : exigez un délai raisonnable réduit.'} />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'procedure-recours',
+      title: 'Démarches priorisées',
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={
+                'Réparation (L.217-9) • Mise en demeure • Remplacement/remboursement (L.217-14, L.217-16, L.217-17). Frais : vendeur (L.217-11).'
+              }
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'vendeurs-strategies',
+      title: 'Installateur/vendeur : points clés',
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            Panorama des pratiques par enseigne : qualité d’accueil, délais moyens, facilité de
+            remplacement.
+          </p>
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs
+                  text={'Darty : processus cadré, demandez la mise en conformité par écrit.'}
+                />,
+                <TextWithLegalRefs
+                  text={'Boulanger : insistez sur la gratuité des frais (L.217-11).'}
+                />,
+                <TextWithLegalRefs
+                  text={'Conforama / But : privilégiez la LRAR en cas d’atermoiements.'}
+                />,
+                <TextWithLegalRefs
+                  text={'Amazon : utilisez l’historique des tickets pour la preuve d’échec.'}
+                />,
+              ] as React.ReactNode[]
+            }
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'procedure',
+      title: 'Procédure type',
+      content: <StandardProcedure />,
+    },
+    {
+      id: 'alternatives',
+      title: 'Si ça bloque',
+      content: <DefaultAlternatives />,
+    },
+    {
+      id: 'contacts',
+      title: 'Contacts utiles',
+      content: <DefaultContacts />,
+    },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: [
+      'L.217-11' as LegalArticleId,
+      'L.217-13' as LegalArticleId,
+      'L.217-5' as LegalArticleId,
+      'L.217-7' as LegalArticleId,
+      'L.217-9' as LegalArticleId,
+    ],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
 
-  'pompe-a-chaleur-defaut-garantie-legale': {
+export const GUIDE_POMPE_A_CHALEUR_DEFAUT_GARANTIE_LEGALE: GuidePage = {
+  metadata: {
     title: 'Pompe à chaleur : garantie légale 2025',
-    subtitle: 'COP faible • Pannes électroniques • 2 ans vendeur',
     seo: {
       title: 'PAC défectueuse : vos recours',
       description:
@@ -4461,50 +8324,147 @@ export const SEO_OPTIMIZED_GUIDES: Record<string, GuidePage> = {
         'mise en demeure PAC',
       ],
     },
-    sections: [
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
       {
-        id: 'defauts-couverts',
-        title: 'Défauts PAC couverts',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">COP très inférieur aux caractéristiques promises, fuites, cartes HS, bruit anormal : L.217-5, L.217-7.</p>
-</div>
-      `,
-      },
-      {
-        id: 'procedure-recours',
-        title: 'Parcours clair',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Réparation (L.217-9) → Mise en demeure → Remplacement/remboursement (L.217-13). Frais : vendeur (L.217-11).</p>
-</div>
-      `,
-      },
-      {
-        id: 'vendeurs-strategies',
-        title: 'Poseur/distributeur : cadrage',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Demandez relevés de performance écrits et plan d’action avec délai.</p>
-</div>
-      `,
+        name: 'Pompe à chaleur : garantie légale 2025',
+        url: '/guides/pompe-a-chaleur-defaut-garantie-legale',
       },
     ],
-    faqSchema: createFAQSchema([
-      {
-        question: 'COP très bas : couvert ?',
-        answer: 'Oui si usage/performances promis non atteints (L.217-5).',
-      },
-      { question: 'Frais ?', answer: 'À la charge du vendeur (L.217-11).' },
-      { question: 'Remboursement ?', answer: 'Si mise en conformité échoue (L.217-13).' },
-      { question: 'Occasion ?', answer: 'Présomption 12 mois mini (L.217-7).' },
-    ]),
-    disclaimer: LEGAL_DISCLAIMER,
   },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec : <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24 mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤ 30 jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['L.217-11', 'L.217-13', 'L.217-5', 'L.217-7', 'L.217-9']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'defauts-couverts',
+      title: 'Défauts PAC couverts',
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={
+                'COP très inférieur aux caractéristiques promises, fuites, cartes HS, bruit anormal : L.217-5, L.217-7.'
+              }
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'procedure-recours',
+      title: 'Parcours clair',
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={
+                'Réparation (L.217-9) → Mise en demeure → Remplacement/remboursement (L.217-14, L.217-16, L.217-17). Frais : vendeur (L.217-11).'
+              }
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'vendeurs-strategies',
+      title: 'Poseur/distributeur : cadrage',
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            Panorama des pratiques par enseigne : qualité d’accueil, délais moyens, facilité de
+            remplacement.
+          </p>
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs
+                  text={'Darty : processus cadré, demandez la mise en conformité par écrit.'}
+                />,
+                <TextWithLegalRefs
+                  text={'Boulanger : insistez sur la gratuité des frais (L.217-11).'}
+                />,
+                <TextWithLegalRefs
+                  text={'Conforama / But : privilégiez la LRAR en cas d’atermoiements.'}
+                />,
+                <TextWithLegalRefs
+                  text={'Amazon : utilisez l’historique des tickets pour la preuve d’échec.'}
+                />,
+              ] as React.ReactNode[]
+            }
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'procedure',
+      title: 'Procédure type',
+      content: <StandardProcedure />,
+    },
+    {
+      id: 'alternatives',
+      title: 'Si ça bloque',
+      content: <DefaultAlternatives />,
+    },
+    {
+      id: 'contacts',
+      title: 'Contacts utiles',
+      content: <DefaultContacts />,
+    },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: [
+      'L.217-11' as LegalArticleId,
+      'L.217-13' as LegalArticleId,
+      'L.217-5' as LegalArticleId,
+      'L.217-7' as LegalArticleId,
+      'L.217-9' as LegalArticleId,
+    ],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
 
-  'alarme-maison-defaut-garantie-legale': {
+export const GUIDE_ALARME_MAISON_DEFAUT_GARANTIE_LEGALE: GuidePage = {
+  metadata: {
     title: 'Alarme maison défectueuse : garantie légale 2025',
-    subtitle: 'Faux positifs • Sirène muette • 2 ans vendeur',
     seo: {
       title: 'Alarme défectueuse : vos droits',
       description:
@@ -4522,47 +8482,147 @@ export const SEO_OPTIMIZED_GUIDES: Record<string, GuidePage> = {
         'mise en demeure alarme',
       ],
     },
-    sections: [
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
       {
-        id: 'defauts-couverts',
-        title: 'Défauts couverts sur systèmes d’alarme',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Détections fantômes, capteurs défaillants, sirène inopérante, centrale instable : L.217-5, L.217-7.</p>
-</div>
-      `,
-      },
-      {
-        id: 'procedure-recours',
-        title: 'Étapes légales',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Réparation (L.217-9) → Mise en demeure → Remplacement/remboursement (L.217-13). Frais : vendeur (L.217-11).</p>
-</div>
-      `,
-      },
-      {
-        id: 'vendeurs-strategies',
-        title: 'Vendeur/poseur : bonnes pratiques',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Demandez un test complet écrit (capteurs/sirène) et paramétrage documenté.</p>
-</div>
-      `,
+        name: 'Alarme maison défectueuse : garantie légale 2025',
+        url: '/guides/alarme-maison-defaut-garantie-legale',
       },
     ],
-    faqSchema: createFAQSchema([
-      { question: 'Faux positifs : couverts ?', answer: 'Oui si usage normal empêché (L.217-5).' },
-      { question: 'Frais ?', answer: 'À charge du vendeur (L.217-11).' },
-      { question: 'Remboursement ?', answer: 'Si échec mise en conformité (L.217-13).' },
-      { question: 'Occasion ?', answer: 'Présomption 12 mois (L.217-7).' },
-    ]),
-    disclaimer: LEGAL_DISCLAIMER,
   },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec : <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24 mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤ 30 jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['L.217-11', 'L.217-13', 'L.217-5', 'L.217-7', 'L.217-9']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'defauts-couverts',
+      title: 'Défauts couverts sur systèmes d’alarme',
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={
+                'Détections fantômes, capteurs défaillants, sirène inopérante, centrale instable : L.217-5, L.217-7.'
+              }
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'procedure-recours',
+      title: 'Étapes légales',
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={
+                'Réparation (L.217-9) → Mise en demeure → Remplacement/remboursement (L.217-14, L.217-16, L.217-17). Frais : vendeur (L.217-11).'
+              }
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'vendeurs-strategies',
+      title: 'Vendeur/poseur : bonnes pratiques',
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            Panorama des pratiques par enseigne : qualité d’accueil, délais moyens, facilité de
+            remplacement.
+          </p>
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs
+                  text={'Darty : processus cadré, demandez la mise en conformité par écrit.'}
+                />,
+                <TextWithLegalRefs
+                  text={'Boulanger : insistez sur la gratuité des frais (L.217-11).'}
+                />,
+                <TextWithLegalRefs
+                  text={'Conforama / But : privilégiez la LRAR en cas d’atermoiements.'}
+                />,
+                <TextWithLegalRefs
+                  text={'Amazon : utilisez l’historique des tickets pour la preuve d’échec.'}
+                />,
+              ] as React.ReactNode[]
+            }
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'procedure',
+      title: 'Procédure type',
+      content: <StandardProcedure />,
+    },
+    {
+      id: 'alternatives',
+      title: 'Si ça bloque',
+      content: <DefaultAlternatives />,
+    },
+    {
+      id: 'contacts',
+      title: 'Contacts utiles',
+      content: <DefaultContacts />,
+    },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: [
+      'L.217-11' as LegalArticleId,
+      'L.217-13' as LegalArticleId,
+      'L.217-5' as LegalArticleId,
+      'L.217-7' as LegalArticleId,
+      'L.217-9' as LegalArticleId,
+    ],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
 
-  'domotique-passerelle-capteurs-garantie-legale': {
+export const GUIDE_DOMOTIQUE_PASSERELLE_CAPTEURS_GARANTIE_LEGALE: GuidePage = {
+  metadata: {
     title: 'Domotique (passerelle/capteurs) : garantie légale 2025',
-    subtitle: 'Déconnexions • Automations HS • 2 ans vendeur',
     seo: {
       title: 'Domotique défectueuse : recours',
       description:
@@ -4580,52 +8640,147 @@ export const SEO_OPTIMIZED_GUIDES: Record<string, GuidePage> = {
         'mise en demeure domotique',
       ],
     },
-    sections: [
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
       {
-        id: 'defauts-couverts',
-        title: 'Défauts domotique couverts',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Pertes de liaison, capteurs fantômes, scénarios non exécutés, application inopérante : L.217-5, L.217-7.</p>
-</div>
-      `,
-      },
-      {
-        id: 'procedure-recours',
-        title: 'Marche à suivre',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Réparation prioritaire (L.217-9). Si échec : remplacement/remboursement (L.217-13). Frais : vendeur (L.217-11).</p>
-</div>
-      `,
-      },
-      {
-        id: 'vendeurs-strategies',
-        title: 'Distributeur : accélérer la prise en charge',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Capturez des journaux d’événements (logs) et joignez-les à la demande.</p>
-</div>
-      `,
+        name: 'Domotique (passerelle/capteurs) : garantie légale 2025',
+        url: '/guides/domotique-passerelle-capteurs-garantie-legale',
       },
     ],
-    faqSchema: createFAQSchema([
-      {
-        question: 'Capteurs qui décrochent : couverts ?',
-        answer: 'Oui si l’usage normal est affecté (L.217-5).',
-      },
-      { question: 'Frais de remplacement ?', answer: 'À la charge du vendeur (L.217-11).' },
-      { question: 'Remboursement ?', answer: 'Si mise en conformité impossible/échec (L.217-13).' },
-      { question: 'Occasion ?', answer: 'Présomption 12 mois (L.217-7).' },
-    ]),
-    disclaimer: LEGAL_DISCLAIMER,
   },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec : <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24 mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤ 30 jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['L.217-11', 'L.217-13', 'L.217-5', 'L.217-7', 'L.217-9']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'defauts-couverts',
+      title: 'Défauts domotique couverts',
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={
+                'Pertes de liaison, capteurs fantômes, scénarios non exécutés, application inopérante : L.217-5, L.217-7.'
+              }
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'procedure-recours',
+      title: 'Marche à suivre',
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={
+                'Réparation prioritaire (L.217-9). Si échec : remplacement/remboursement (L.217-14, L.217-16, L.217-17). Frais : vendeur (L.217-11).'
+              }
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'vendeurs-strategies',
+      title: 'Distributeur : accélérer la prise en charge',
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            Panorama des pratiques par enseigne : qualité d’accueil, délais moyens, facilité de
+            remplacement.
+          </p>
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs
+                  text={'Darty : processus cadré, demandez la mise en conformité par écrit.'}
+                />,
+                <TextWithLegalRefs
+                  text={'Boulanger : insistez sur la gratuité des frais (L.217-11).'}
+                />,
+                <TextWithLegalRefs
+                  text={'Conforama / But : privilégiez la LRAR en cas d’atermoiements.'}
+                />,
+                <TextWithLegalRefs
+                  text={'Amazon : utilisez l’historique des tickets pour la preuve d’échec.'}
+                />,
+              ] as React.ReactNode[]
+            }
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'procedure',
+      title: 'Procédure type',
+      content: <StandardProcedure />,
+    },
+    {
+      id: 'alternatives',
+      title: 'Si ça bloque',
+      content: <DefaultAlternatives />,
+    },
+    {
+      id: 'contacts',
+      title: 'Contacts utiles',
+      content: <DefaultContacts />,
+    },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: [
+      'L.217-11' as LegalArticleId,
+      'L.217-13' as LegalArticleId,
+      'L.217-5' as LegalArticleId,
+      'L.217-7' as LegalArticleId,
+      'L.217-9' as LegalArticleId,
+    ],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
 
-  /* ─────────────────── SPORT (EXTRA) ─────────────────── */
-
-  'velo-electrique-defaut-garantie-legale': {
+export const GUIDE_VELO_ELECTRIQUE_DEFAUT_GARANTIE_LEGALE: GuidePage = {
+  metadata: {
     title: 'Vélo électrique défectueux : garantie légale 2025',
-    subtitle: 'Batterie/moteur • Freinage • Électronique • 2 ans vendeur',
     seo: {
       title: 'VAE en panne : vos droits 2025',
       description:
@@ -4643,50 +8798,147 @@ export const SEO_OPTIMIZED_GUIDES: Record<string, GuidePage> = {
         'vendeur responsable L.217-3',
       ],
     },
-    sections: [
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
       {
-        id: 'defauts-couverts',
-        title: 'Défauts VAE couverts',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Batterie qui chute, moteur bruyant, contrôleur/afficheur HS, câblage défectueux, freins inefficaces : L.217-5, L.217-7.</p>
-</div>
-      `,
-      },
-      {
-        id: 'procedure-recours',
-        title: 'Procédure claire',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Réparation via vendeur (L.217-9) • Mise en demeure • Remplacement/remboursement (L.217-13). Frais : vendeur (L.217-11).</p>
-</div>
-      `,
-      },
-      {
-        id: 'vendeurs-strategies',
-        title: 'Magasin vélos : tips',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Relevés batterie (cycles, tension) et preuve d’usage normal. Exigez un vélo de courtoisie si immobilisation.</p>
-</div>
-      `,
+        name: 'Vélo électrique défectueux : garantie légale 2025',
+        url: '/guides/velo-electrique-defaut-garantie-legale',
       },
     ],
-    faqSchema: createFAQSchema([
-      {
-        question: 'Autonomie en chute libre : couvert ?',
-        answer: 'Oui si anormale vs usage normal/promesse (L.217-5).',
-      },
-      { question: 'Frais atelier ?', answer: 'À charge du vendeur (L.217-11).' },
-      { question: 'Remboursement ?', answer: 'Oui si échec de mise en conformité (L.217-13).' },
-      { question: 'Occasion ?', answer: 'Présomption 12 mois (L.217-7).' },
-    ]),
-    disclaimer: LEGAL_DISCLAIMER,
   },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec : <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24 mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤ 30 jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['L.217-11', 'L.217-13', 'L.217-5', 'L.217-7', 'L.217-9']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'defauts-couverts',
+      title: 'Défauts VAE couverts',
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={
+                'Batterie qui chute, moteur bruyant, contrôleur/afficheur HS, câblage défectueux, freins inefficaces : L.217-5, L.217-7.'
+              }
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'procedure-recours',
+      title: 'Procédure claire',
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={
+                'Réparation via vendeur (L.217-9) • Mise en demeure • Remplacement/remboursement (L.217-14, L.217-16, L.217-17). Frais : vendeur (L.217-11).'
+              }
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'vendeurs-strategies',
+      title: 'Magasin vélos : tips',
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            Panorama des pratiques par enseigne : qualité d’accueil, délais moyens, facilité de
+            remplacement.
+          </p>
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs
+                  text={'Darty : processus cadré, demandez la mise en conformité par écrit.'}
+                />,
+                <TextWithLegalRefs
+                  text={'Boulanger : insistez sur la gratuité des frais (L.217-11).'}
+                />,
+                <TextWithLegalRefs
+                  text={'Conforama / But : privilégiez la LRAR en cas d’atermoiements.'}
+                />,
+                <TextWithLegalRefs
+                  text={'Amazon : utilisez l’historique des tickets pour la preuve d’échec.'}
+                />,
+              ] as React.ReactNode[]
+            }
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'procedure',
+      title: 'Procédure type',
+      content: <StandardProcedure />,
+    },
+    {
+      id: 'alternatives',
+      title: 'Si ça bloque',
+      content: <DefaultAlternatives />,
+    },
+    {
+      id: 'contacts',
+      title: 'Contacts utiles',
+      content: <DefaultContacts />,
+    },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: [
+      'L.217-11' as LegalArticleId,
+      'L.217-13' as LegalArticleId,
+      'L.217-5' as LegalArticleId,
+      'L.217-7' as LegalArticleId,
+      'L.217-9' as LegalArticleId,
+    ],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
 
-  'trottinette-electrique-defaut-garantie-legale': {
+export const GUIDE_TROTTINETTE_ELECTRIQUE_DEFAUT_GARANTIE_LEGALE: GuidePage = {
+  metadata: {
     title: 'Trottinette électrique : garantie légale 2025',
-    subtitle: 'Batterie, contrôleur, freinage • 2 ans vendeur',
     seo: {
       title: 'Trottinette en panne : vos droits',
       description:
@@ -4704,47 +8956,147 @@ export const SEO_OPTIMIZED_GUIDES: Record<string, GuidePage> = {
         'mise en demeure trottinette',
       ],
     },
-    sections: [
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
       {
-        id: 'defauts-couverts',
-        title: 'Défauts couverts sur trottinettes',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Batterie qui ne tient pas, contrôleur/écran HS, freinage inefficace, jeu dans la colonne : L.217-5, L.217-7.</p>
-</div>
-      `,
-      },
-      {
-        id: 'procedure-recours',
-        title: 'Étapes légales',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Réparation (L.217-9) → Mise en demeure → Remplacement/remboursement (L.217-13). Frais : vendeur (L.217-11).</p>
-</div>
-      `,
-      },
-      {
-        id: 'vendeurs-strategies',
-        title: 'Boutiques : comment procéder',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Exigez un procès-verbal d’essais routiers et la traçabilité des pièces posées.</p>
-</div>
-      `,
+        name: 'Trottinette électrique : garantie légale 2025',
+        url: '/guides/trottinette-electrique-defaut-garantie-legale',
       },
     ],
-    faqSchema: createFAQSchema([
-      { question: 'Batterie HS : couverte ?', answer: 'Oui si anormal vs usage normal (L.217-5).' },
-      { question: 'Frais ?', answer: 'Vendeur (L.217-11).' },
-      { question: 'Remboursement ?', answer: 'Si échec mise en conformité (L.217-13).' },
-      { question: 'Occasion ?', answer: 'Présomption 12 mois (L.217-7).' },
-    ]),
-    disclaimer: LEGAL_DISCLAIMER,
   },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec : <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24 mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤ 30 jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['L.217-11', 'L.217-13', 'L.217-5', 'L.217-7', 'L.217-9']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'defauts-couverts',
+      title: 'Défauts couverts sur trottinettes',
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={
+                'Batterie qui ne tient pas, contrôleur/écran HS, freinage inefficace, jeu dans la colonne : L.217-5, L.217-7.'
+              }
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'procedure-recours',
+      title: 'Étapes légales',
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={
+                'Réparation (L.217-9) → Mise en demeure → Remplacement/remboursement (L.217-14, L.217-16, L.217-17). Frais : vendeur (L.217-11).'
+              }
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'vendeurs-strategies',
+      title: 'Boutiques : comment procéder',
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            Panorama des pratiques par enseigne : qualité d’accueil, délais moyens, facilité de
+            remplacement.
+          </p>
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs
+                  text={'Darty : processus cadré, demandez la mise en conformité par écrit.'}
+                />,
+                <TextWithLegalRefs
+                  text={'Boulanger : insistez sur la gratuité des frais (L.217-11).'}
+                />,
+                <TextWithLegalRefs
+                  text={'Conforama / But : privilégiez la LRAR en cas d’atermoiements.'}
+                />,
+                <TextWithLegalRefs
+                  text={'Amazon : utilisez l’historique des tickets pour la preuve d’échec.'}
+                />,
+              ] as React.ReactNode[]
+            }
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'procedure',
+      title: 'Procédure type',
+      content: <StandardProcedure />,
+    },
+    {
+      id: 'alternatives',
+      title: 'Si ça bloque',
+      content: <DefaultAlternatives />,
+    },
+    {
+      id: 'contacts',
+      title: 'Contacts utiles',
+      content: <DefaultContacts />,
+    },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: [
+      'L.217-11' as LegalArticleId,
+      'L.217-13' as LegalArticleId,
+      'L.217-5' as LegalArticleId,
+      'L.217-7' as LegalArticleId,
+      'L.217-9' as LegalArticleId,
+    ],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
 
-  'equipement-fitness-maison-garantie-legale': {
+export const GUIDE_EQUIPEMENT_FITNESS_MAISON_GARANTIE_LEGALE: GuidePage = {
+  metadata: {
     title: 'Équipement fitness maison : garantie légale 2025',
-    subtitle: 'Tapis vélo rameur • Bruits • Électronique • 2 ans',
     seo: {
       title: 'Matériel fitness défectueux : recours',
       description:
@@ -4762,55 +9114,160 @@ export const SEO_OPTIMIZED_GUIDES: Record<string, GuidePage> = {
         'matériel sport défectueux',
       ],
     },
-    sections: [
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
       {
-        id: 'defauts-couverts',
-        title: 'Défauts couverts (tapis/vélo/rameur)',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <ul class="text-sm text-gray-700 space-y-1">
-    <li>• Bruits/jeu anormal, courroie qui patine</li>
-    <li>• Électronique/console HS, capteurs faux</li>
-    <li>• Résistance inopérante, structure qui fissure</li>
-  </ul>
-  <p class="mt-2 text-sm text-gray-700">Base : L.217-5, L.217-7.</p>
-</div>
-      `,
-      },
-      {
-        id: 'procedure-recours',
-        title: 'Procédure orientée résultat',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Réparation (L.217-9) • Mise en demeure • Remplacement/remboursement (L.217-13). Frais vendeurs (L.217-11).</p>
-</div>
-      `,
-      },
-      {
-        id: 'vendeurs-strategies',
-        title: 'Magasin/marketplace : agir vite',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Joignez vidéos des bruits, demandez essai technique ou échange immédiat en cas de défaut évident.</p>
-</div>
-      `,
+        name: 'Équipement fitness maison : garantie légale 2025',
+        url: '/guides/equipement-fitness-maison-garantie-legale',
       },
     ],
-    faqSchema: createFAQSchema([
-      {
-        question: 'Console HS : couverte ?',
-        answer: 'Oui, défaut de conformité (L.217-5). Réparation/remplacement (L.217-9).',
-      },
-      { question: 'Frais de transport ?', answer: 'À la charge du vendeur (L.217-11).' },
-      { question: 'Remboursement ?', answer: 'Si mise en conformité échoue (L.217-13).' },
-      { question: 'Occasion ?', answer: 'Présomption 12 mois (L.217-7).' },
-    ]),
-    disclaimer: LEGAL_DISCLAIMER,
   },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec : <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24 mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤ 30 jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['L.217-11', 'L.217-13', 'L.217-5', 'L.217-7', 'L.217-9']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'defauts-couverts',
+      title: 'Défauts couverts (tapis/vélo/rameur)',
+      content: (
+        <div className="space-y-3">
+          <ul className="list-disc pl-5 space-y-1">
+            \n{' '}
+            <li>
+              <TextWithLegalRefs text={'• Bruits/jeu anormal, courroie qui patine'} />
+            </li>
+            <li>
+              <TextWithLegalRefs text={'• Électronique/console HS, capteurs faux'} />
+            </li>
+            <li>
+              <TextWithLegalRefs text={'• Résistance inopérante, structure qui fissure'} />
+            </li>
+            \n
+          </ul>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={
+                '• Bruits/jeu anormal, courroie qui patine • Électronique/console HS, capteurs faux • Résistance inopérante, structure qui fissure Base : L.217-5, L.217-7.'
+              }
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'procedure-recours',
+      title: 'Procédure orientée résultat',
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={
+                'Réparation (L.217-9) • Mise en demeure • Remplacement/remboursement (L.217-14, L.217-16, L.217-17). Frais vendeurs (L.217-11).'
+              }
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'vendeurs-strategies',
+      title: 'Magasin/marketplace : agir vite',
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            Panorama des pratiques par enseigne : qualité d’accueil, délais moyens, facilité de
+            remplacement.
+          </p>
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs
+                  text={'Darty : processus cadré, demandez la mise en conformité par écrit.'}
+                />,
+                <TextWithLegalRefs
+                  text={'Boulanger : insistez sur la gratuité des frais (L.217-11).'}
+                />,
+                <TextWithLegalRefs
+                  text={'Conforama / But : privilégiez la LRAR en cas d’atermoiements.'}
+                />,
+                <TextWithLegalRefs
+                  text={'Amazon : utilisez l’historique des tickets pour la preuve d’échec.'}
+                />,
+              ] as React.ReactNode[]
+            }
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'procedure',
+      title: 'Procédure type',
+      content: <StandardProcedure />,
+    },
+    {
+      id: 'alternatives',
+      title: 'Si ça bloque',
+      content: <DefaultAlternatives />,
+    },
+    {
+      id: 'contacts',
+      title: 'Contacts utiles',
+      content: <DefaultContacts />,
+    },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: [
+      'L.217-11' as LegalArticleId,
+      'L.217-13' as LegalArticleId,
+      'L.217-5' as LegalArticleId,
+      'L.217-7' as LegalArticleId,
+      'L.217-9' as LegalArticleId,
+    ],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
 
-  'ski-equipement-defaut-garantie-legale': {
+export const GUIDE_SKI_EQUIPEMENT_DEFAUT_GARANTIE_LEGALE: GuidePage = {
+  metadata: {
     title: 'Ski & équipements défectueux : garantie légale 2025',
-    subtitle: 'Fixations, chaussures, peaux • 2 ans vendeur',
     seo: {
       title: 'Ski défectueux : vos recours',
       description:
@@ -4828,51 +9285,147 @@ export const SEO_OPTIMIZED_GUIDES: Record<string, GuidePage> = {
         'mise en demeure ski',
       ],
     },
-    sections: [
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
       {
-        id: 'defauts-couverts',
-        title: 'Défauts ski couverts',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Fixations qui déclenchent mal, chaussures qui fissurent anormalement, peaux qui se décollent : L.217-5, L.217-7.</p>
-</div>
-      `,
-      },
-      {
-        id: 'procedure-recours',
-        title: 'Étapes légales',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Réparation (L.217-9) → Mise en demeure → Remplacement/remboursement (L.217-13). Frais : vendeur (L.217-11).</p>
-</div>
-      `,
-      },
-      {
-        id: 'vendeurs-strategies',
-        title: 'Magasin sport : accélérer',
-        html: `
-<div class="prose prose-lg max-w-none">
-  <p class="text-sm text-gray-700">Demandez test en atelier et attestation écrite de non-conformité.</p>
-</div>
-      `,
+        name: 'Ski & équipements défectueux : garantie légale 2025',
+        url: '/guides/ski-equipement-defaut-garantie-legale',
       },
     ],
-    faqSchema: createFAQSchema([
-      {
-        question: 'Fixations qui déclenchent trop tôt : couvert ?',
-        answer: 'Oui si usage normal affecté (L.217-5). Mise en conformité (L.217-9).',
-      },
-      { question: 'Frais atelier ?', answer: 'À charge du vendeur (L.217-11).' },
-      { question: 'Remboursement ?', answer: 'Si échec mise en conformité (L.217-13).' },
-      { question: 'Occasion ?', answer: 'Présomption 12 mois (L.217-7).' },
-    ]),
-    disclaimer: LEGAL_DISCLAIMER,
   },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec : <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24 mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤ 30 jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['L.217-11', 'L.217-13', 'L.217-5', 'L.217-7', 'L.217-9']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'defauts-couverts',
+      title: 'Défauts ski couverts',
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={
+                'Fixations qui déclenchent mal, chaussures qui fissurent anormalement, peaux qui se décollent : L.217-5, L.217-7.'
+              }
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'procedure-recours',
+      title: 'Étapes légales',
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={
+                'Réparation (L.217-9) → Mise en demeure → Remplacement/remboursement (L.217-14, L.217-16, L.217-17). Frais : vendeur (L.217-11).'
+              }
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'vendeurs-strategies',
+      title: 'Magasin sport : accélérer',
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            Panorama des pratiques par enseigne : qualité d’accueil, délais moyens, facilité de
+            remplacement.
+          </p>
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs
+                  text={'Darty : processus cadré, demandez la mise en conformité par écrit.'}
+                />,
+                <TextWithLegalRefs
+                  text={'Boulanger : insistez sur la gratuité des frais (L.217-11).'}
+                />,
+                <TextWithLegalRefs
+                  text={'Conforama / But : privilégiez la LRAR en cas d’atermoiements.'}
+                />,
+                <TextWithLegalRefs
+                  text={'Amazon : utilisez l’historique des tickets pour la preuve d’échec.'}
+                />,
+              ] as React.ReactNode[]
+            }
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'procedure',
+      title: 'Procédure type',
+      content: <StandardProcedure />,
+    },
+    {
+      id: 'alternatives',
+      title: 'Si ça bloque',
+      content: <DefaultAlternatives />,
+    },
+    {
+      id: 'contacts',
+      title: 'Contacts utiles',
+      content: <DefaultContacts />,
+    },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: [
+      'L.217-11' as LegalArticleId,
+      'L.217-13' as LegalArticleId,
+      'L.217-5' as LegalArticleId,
+      'L.217-7' as LegalArticleId,
+      'L.217-9' as LegalArticleId,
+    ],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
 
-  'electromenager-lave-linge-lave-vaisselle-garantie': {
+export const GUIDE_ELECTROMENAGER_LAVE_LINGE_LAVE_VAISSELLE_GARANTIE: GuidePage = {
+  metadata: {
     title: 'Électroménager en panne : garantie légale et remboursement (2025)',
-    subtitle:
-      'Lave-linge, lave-vaisselle, frigo, four • 2 ans de protection • Réparation gratuite ou remboursement',
     seo: {
       title: 'Électroménager en panne : vos droits, réparation gratuite et remboursement',
       description:
@@ -4890,1730 +9443,2525 @@ export const SEO_OPTIMIZED_GUIDES: Record<string, GuidePage> = {
         'remboursement gros électroménager',
       ],
     },
-    sections: [
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
       {
-        id: 'pannes-courantes',
-        title: "Les 15 pannes d'électroménager les plus fréquentes et vos recours",
-        html: `
-          <div class="prose prose-lg max-w-none">
-            <p class="text-base sm:text-lg text-gray-700 mb-6">
-              Votre électroménager vous lâche ? Pas de panique ! La <strong>garantie légale de 2 ans</strong> vous protège automatiquement. Découvrez si votre panne est couverte et comment obtenir réparation gratuite, remplacement ou remboursement.
-            </p>
-
-            <div class="space-y-4 sm:space-y-6">
-              <!-- Lave-linge -->
-              <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 sm:p-6">
-                <div class="flex items-start">
-                  <div class="bg-blue-600 text-white rounded-lg p-3 mr-4 flex-shrink-0">
-                    <span class="text-xl sm:text-2xl">🧺</span>
-                  </div>
-                  <div class="flex-1">
-                    <h4 class="text-lg sm:text-xl font-bold text-blue-900 mb-4">LAVE-LINGE : Top 5 des pannes couvertes</h4>
-                    <div class="grid md:grid-cols-2 gap-4">
-                      <div>
-                        <h5 class="font-bold text-blue-800 mb-2">🚿 Problèmes de fuite</h5>
-                        <ul class="space-y-1 text-sm text-blue-700">
-                          <li>• Fuite par le joint de porte</li>
-                          <li>• Eau qui sort par le tiroir à lessive</li>
-                          <li>• Flaques sous la machine</li>
-                          <li>• Tuyaux qui se détachent</li>
-                        </ul>
-                      </div>
-                      <div>
-                        <h5 class="font-bold text-blue-800 mb-2">⚙️ Dysfonctionnements mécaniques</h5>
-                        <ul class="space-y-1 text-sm text-blue-700">
-                          <li>• Tambour bloqué qui ne tourne plus</li>
-                          <li>• Essorage défaillant ou bruyant</li>
-                          <li>• Porte qui ne se ferme plus</li>
-                          <li>• Pompe de vidange en panne</li>
-                        </ul>
-                      </div>
-                    </div>
-                    <div class="bg-white p-4 rounded mt-4 border-l-4 border-blue-400">
-                      <p class="text-sm text-blue-700">
-                        <strong>💡 Cas réel :</strong> Lave-linge Bosch qui fuit après 8 mois → Darty a remplacé gratuitement sous 48h après mise en demeure citant L.217-9.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Réfrigérateur -->
-              <div class="bg-green-50 border border-green-200 rounded-lg p-4 sm:p-6">
-                <div class="flex items-start">
-                  <div class="bg-green-600 text-white rounded-lg p-3 mr-4 flex-shrink-0">
-                    <span class="text-xl sm:text-2xl">❄️</span>
-                  </div>
-                  <div class="flex-1">
-                    <h4 class="text-lg sm:text-xl font-bold text-green-900 mb-4">RÉFRIGÉRATEUR : Pannes critiques</h4>
-                    <div class="grid md:grid-cols-2 gap-4">
-                      <div>
-                        <h5 class="font-bold text-green-800 mb-2">🌡️ Problèmes de température</h5>
-                        <ul class="space-y-1 text-sm text-green-700">
-                          <li>• Ne refroidit plus du tout</li>
-                          <li>• Température instable</li>
-                          <li>• Congélateur qui décongèle</li>
-                          <li>• Givrage excessif</li>
-                        </ul>
-                      </div>
-                      <div>
-                        <h5 class="font-bold text-green-800 mb-2">🔧 Défaillances techniques</h5>
-                        <ul class="space-y-1 text-sm text-green-700">
-                          <li>• Compresseur bruyant ou HS</li>
-                          <li>• Éclairage défaillant</li>
-                          <li>• Thermostat déréglé</li>
-                          <li>• Joint d'étanchéité défectueux</li>
-                        </ul>
-                      </div>
-                    </div>
-                    <div class="bg-red-50 p-4 rounded mt-4 border-l-4 border-red-400">
-                      <p class="text-sm text-red-700">
-                        <strong>⚠️ Urgence :</strong> Un frigo qui ne refroidit plus = perte de denrées alimentaires. Vous pouvez réclamer des dommages-intérêts en plus de la réparation !
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Lave-vaisselle -->
-              <div class="bg-purple-50 border border-purple-200 rounded-lg p-4 sm:p-6">
-                <div class="flex items-start">
-                  <div class="bg-purple-600 text-white rounded-lg p-3 mr-4 flex-shrink-0">
-                    <span class="text-xl sm:text-2xl">🍽️</span>
-                  </div>
-                  <div class="flex-1">
-                    <h4 class="text-lg sm:text-xl font-bold text-purple-900 mb-4">LAVE-VAISSELLE : Défauts récurrents</h4>
-                    <div class="grid md:grid-cols-2 gap-4">
-                      <div>
-                        <h5 class="font-bold text-purple-800 mb-2">🧼 Lavage déficient</h5>
-                        <ul class="space-y-1 text-sm text-purple-700">
-                          <li>• Vaisselle qui reste sale</li>
-                          <li>• Traces et résidus persistants</li>
-                          <li>• Bras de lavage obstrués</li>
-                          <li>• Pastilles qui ne se dissolvent pas</li>
-                        </ul>
-                      </div>
-                      <div>
-                        <h5 class="font-bold text-purple-800 mb-2">💧 Problèmes d'eau</h5>
-                        <ul class="space-y-1 text-sm text-purple-700">
-                          <li>• Ne se remplit plus d'eau</li>
-                          <li>• Ne vidange pas complètement</li>
-                          <li>• Fuite au niveau des joints</li>
-                          <li>• Séchage inefficace</li>
-                        </ul>
-                      </div>
-                    </div>
-                    <div class="bg-yellow-50 p-4 rounded mt-4 border-l-4 border-yellow-400">
-                      <p class="text-sm text-yellow-700">
-                        <strong>💡 Astuce :</strong> Photographiez la vaisselle mal lavée avec la date. C'est votre preuve du défaut de conformité !
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Four et cuisson -->
-              <div class="bg-orange-50 border border-orange-200 rounded-lg p-4 sm:p-6">
-                <div class="flex items-start">
-                  <div class="bg-orange-600 text-white rounded-lg p-3 mr-4 flex-shrink-0">
-                    <span class="text-xl sm:text-2xl">🔥</span>
-                  </div>
-                  <div class="flex-1">
-                    <h4 class="text-lg sm:text-xl font-bold text-orange-900 mb-4">FOUR : Problèmes de cuisson</h4>
-                    <div class="grid md:grid-cols-2 gap-4">
-                      <div>
-                        <h5 class="font-bold text-orange-800 mb-2">🌡️ Température défaillante</h5>
-                        <ul class="space-y-1 text-sm text-orange-700">
-                          <li>• Ne chauffe plus du tout</li>
-                          <li>• Température incorrecte/instable</li>
-                          <li>• Préchauffage très long</li>
-                          <li>• Chaleur tournante HS</li>
-                        </ul>
-                      </div>
-                      <div>
-                        <h5 class="font-bold text-orange-800 mb-2">⚡ Dysfonctionnements</h5>
-                        <ul class="space-y-1 text-sm text-orange-700">
-                          <li>• Porte qui ne ferme pas bien</li>
-                          <li>• Éclairage intérieur défaillant</li>
-                          <li>• Programmateur en panne</li>
-                          <li>• Grill qui ne fonctionne plus</li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="bg-red-50 border border-red-200 rounded-lg p-4 sm:p-6 mt-8">
-              <h4 class="text-base sm:text-lg font-bold text-red-900 mb-3">⚠️ Cas NON couverts par la garantie légale</h4>
-              <div class="grid md:grid-cols-2 gap-4">
-                <div>
-                  <h5 class="font-bold text-red-800 mb-2">❌ Exclusions absolues</h5>
-                  <ul class="space-y-1 text-sm text-red-700">
-                    <li>• Mauvais entretien (calcaire, saleté)</li>
-                    <li>• Surtension/foudre</li>
-                    <li>• Utilisation non conforme</li>
-                    <li>• Pièces d'usure normale (joints, filtres)</li>
-                  </ul>
-                </div>
-                <div>
-                  <h5 class="font-bold text-orange-800 mb-2">⚖️ Cas litigieux</h5>
-                  <ul class="space-y-1 text-sm text-orange-700">
-                    <li>• Usure "prématurée" (à prouver)</li>
-                    <li>• Problèmes d'installation</li>
-                    <li>• Incompatibilité électrique</li>
-                    <li>• Dommages transport</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-        `,
-      },
-      {
-        id: 'recours-strategiques',
-        title: 'Stratégies de recours : comment obtenir gain de cause rapidement',
-        html: `
-          <div class="prose prose-lg max-w-none">
-            <div class="bg-blue-50 border-l-4 border-blue-400 p-4 sm:p-6 mb-6 sm:mb-8">
-              <h4 class="text-base sm:text-lg font-bold text-blue-900 mb-2">🎯 La règle d'or de l'électroménager</h4>
-              <p class="text-blue-800">
-                Contrairement aux idées reçues, vous n'êtes <strong>jamais obligé d'accepter une réparation</strong>. Selon l'article L.217-9, vous pouvez directement demander le remplacement ou le remboursement si vous estimez que le produit n'est pas fiable.
-              </p>
-            </div>
-
-            <div class="space-y-8">
-              <!-- Option 1: Réparation -->
-              <div class="bg-white border border-green-200 rounded-lg p-4 sm:p-6 shadow-sm">
-                <div class="flex items-start">
-                  <div class="bg-green-600 text-white rounded-full w-12 h-12 flex items-center justify-center font-bold text-base sm:text-lg mr-4 flex-shrink-0">1</div>
-                  <div class="flex-1">
-                    <h4 class="text-lg sm:text-xl font-bold text-green-900 mb-3">🔧 OPTION 1 : Réparation gratuite</h4>
-                    <div class="grid md:grid-cols-2 gap-4 mb-4">
-                      <div class="bg-green-50 p-4 rounded">
-                        <h5 class="font-bold text-green-800 mb-2">✅ Quand la choisir</h5>
-                        <ul class="space-y-1 text-sm text-green-700">
-                          <li>• Panne ponctuelle et identifiable</li>
-                          <li>• Appareil récent (< 6 mois)</li>
-                          <li>• Réparateur compétent disponible</li>
-                          <li>• Pièce disponible rapidement</li>
-                        </ul>
-                      </div>
-                      <div class="bg-red-50 p-4 rounded">
-                        <h5 class="font-bold text-red-800 mb-2">❌ Évitez si</h5>
-                        <ul class="space-y-1 text-sm text-red-700">
-                          <li>• 2e panne du même type</li>
-                          <li>• Délai > 30 jours annoncé</li>
-                          <li>• Coût réparation > 50% prix neuf</li>
-                          <li>• Panne récurrente connue du modèle</li>
-                        </ul>
-                      </div>
-                    </div>
-                    <div class="bg-yellow-50 p-4 rounded border-l-4 border-yellow-400">
-                      <p class="text-sm text-yellow-800">
-                        <strong>⏰ Délai maximum :</strong> La réparation doit être effectuée dans un "délai raisonnable". En pratique : 15-30 jours selon la complexité. Au-delà, vous pouvez exiger le remplacement.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Option 2: Remplacement -->
-              <div class="bg-white border border-blue-200 rounded-lg p-4 sm:p-6 shadow-sm">
-                <div class="flex items-start">
-                  <div class="bg-blue-600 text-white rounded-full w-12 h-12 flex items-center justify-center font-bold text-base sm:text-lg mr-4 flex-shrink-0">2</div>
-                  <div class="flex-1">
-                    <h4 class="text-lg sm:text-xl font-bold text-blue-900 mb-3">🔄 OPTION 2 : Remplacement (RECOMMANDÉ)</h4>
-                    <div class="bg-blue-50 p-4 rounded mb-4">
-                      <h5 class="font-bold text-blue-800 mb-2">🎯 Pourquoi c'est souvent le meilleur choix</h5>
-                      <ul class="space-y-2 text-blue-700 text-sm">
-                        <li>• <strong>Appareil neuf</strong> avec nouvelle garantie de 2 ans</li>
-                        <li>• <strong>Aucun risque</strong> de panne récurrente</li>
-                        <li>• <strong>Souvent plus rapide</strong> que la réparation</li>
-                        <li>• <strong>Modèle équivalent ou supérieur</strong> si stock épuisé</li>
-                      </ul>
-                    </div>
-                    <div class="grid md:grid-cols-2 gap-4">
-                      <div class="bg-green-50 p-4 rounded">
-                        <h5 class="font-bold text-green-800 mb-2">📋 Conditions d'obtention</h5>
-                        <ul class="space-y-1 text-sm text-green-700">
-                          <li>• Invoquer L.217-9 du Code conso</li>
-                          <li>• Justifier que réparation inadéquate</li>
-                          <li>• Produit disponible en stock</li>
-                          <li>• Dans les 2 ans après achat</li>
-                        </ul>
-                      </div>
-                      <div class="bg-orange-50 p-4 rounded">
-                        <h5 class="font-bold text-orange-800 mb-2">💡 Arguments juridiques efficaces</h5>
-                        <ul class="space-y-1 text-sm text-orange-700">
-                          <li>• "Perte de confiance dans la fiabilité"</li>
-                          <li>• "Risque de récidive inacceptable"</li>
-                          <li>• "Besoin d'un appareil fiable au quotidien"</li>
-                          <li>• "Coût réparation disproportionné"</li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Option 3: Remboursement -->
-              <div class="bg-white border border-purple-200 rounded-lg p-4 sm:p-6 shadow-sm">
-                <div class="flex items-start">
-                  <div class="bg-purple-600 text-white rounded-full w-12 h-12 flex items-center justify-center font-bold text-base sm:text-lg mr-4 flex-shrink-0">3</div>
-                  <div class="flex-1">
-                    <h4 class="text-lg sm:text-xl font-bold text-purple-900 mb-3">💰 OPTION 3 : Remboursement intégral</h4>
-                    <div class="bg-purple-50 p-4 rounded mb-4">
-                      <h5 class="font-bold text-purple-800 mb-2">🎯 Situations où l'exiger</h5>
-                      <ul class="space-y-2 text-purple-700 text-sm">
-                        <li>• <strong>Réparation échouée</strong> après 2 tentatives</li>
-                        <li>• <strong>Remplacement impossible</strong> (produit discontinué)</li>
-                        <li>• <strong>Panne grave</strong> compromettant la sécurité</li>
-                        <li>• <strong>Délais inacceptables</strong> (> 1 mois)</li>
-                      </ul>
-                    </div>
-                    <div class="grid md:grid-cols-2 gap-4">
-                      <div class="bg-green-50 p-4 rounded">
-                        <h5 class="font-bold text-green-800 mb-2">💶 Ce qui vous est dû</h5>
-                        <ul class="space-y-1 text-sm text-green-700">
-                          <li>• Prix d'achat intégral</li>
-                          <li>• Frais de livraison/installation</li>
-                          <li>• TVA incluse</li>
-                          <li>• Éventuels dommages-intérêts</li>
-                        </ul>
-                      </div>
-                      <div class="bg-red-50 p-4 rounded">
-                        <h5 class="font-bold text-red-800 mb-2">⚠️ Attention aux pièges</h5>
-                        <ul class="space-y-1 text-sm text-red-700">
-                          <li>• Refusez les avoirs/bons d'achat</li>
-                          <li>• Exigez le remboursement en espèces</li>
-                          <li>• Ne payez pas les frais de retour</li>
-                          <li>• Gardez l'appareil jusqu'au remboursement</li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="bg-gradient-to-r from-blue-50 to-green-50 border border-blue-200 rounded-lg p-4 sm:p-6 mt-8">
-              <h4 class="text-base sm:text-lg font-bold text-gray-900 mb-4">📊 Efficacité des recours selon le type d'appareil</h4>
-              <div class="grid md:grid-cols-3 gap-4 text-center">
-                <div class="bg-white p-4 rounded-lg shadow-sm">
-                  <div class="text-xl sm:text-2xl mb-2">🧺</div>
-                  <div class="font-bold text-blue-600">Lave-linge</div>
-                  <div class="text-sm text-gray-600">78% remplacement obtenu</div>
-                </div>
-                <div class="bg-white p-4 rounded-lg shadow-sm">
-                  <div class="text-xl sm:text-2xl mb-2">❄️</div>
-                  <div class="font-bold text-green-600">Réfrigérateur</div>
-                  <div class="text-sm text-gray-600">65% remboursement</div>
-                </div>
-                <div class="bg-white p-4 rounded-lg shadow-sm">
-                  <div class="text-xl sm:text-2xl mb-2">🍽️</div>
-                  <div class="font-bold text-purple-600">Lave-vaisselle</div>
-                  <div class="text-sm text-gray-600">71% réparation réussie</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        `,
-      },
-      {
-        id: 'vendeurs-strategies',
-        title:
-          'SAV par enseigne : Darty, Boulanger, Conforama, But... Qui est le plus conciliant ?',
-        html: `
-          <div class="prose prose-lg max-w-none">
-            <p class="text-base sm:text-lg text-gray-700 mb-6">
-              Tous les vendeurs ne réagissent pas de la même façon face à vos réclamations. Découvrez les <strong>forces et faiblesses</strong> de chaque enseigne pour adapter votre stratégie :
-            </p>
-
-            <div class="space-y-4 sm:space-y-6">
-              <!-- Darty -->
-              <div class="bg-white border-l-4 border-red-400 p-4 sm:p-6 rounded-lg shadow-sm">
-                <div class="flex items-start">
-                  <div class="mr-4">
-                    <div class="w-16 h-16 bg-red-100 rounded-lg flex items-center justify-center">
-                      <span class="text-xl sm:text-2xl">🔴</span>
-                    </div>
-                  </div>
-                  <div class="flex-1">
-                    <h4 class="text-lg sm:text-xl font-bold text-red-900 mb-3">DARTY - "Le contrat de confiance"</h4>
-                    <div class="grid md:grid-cols-2 gap-4">
-                      <div>
-                        <h5 class="font-bold text-green-800 mb-2">✅ Points forts</h5>
-                        <ul class="space-y-1 text-sm text-green-700">
-                          <li>• SAV réputé réactif</li>
-                          <li>• Réseau de réparateurs étendu</li>
-                          <li>• Formation équipes sur garantie légale</li>
-                          <li>• Souvent conciliant sur les remplacements</li>
-                        </ul>
-                      </div>
-                      <div>
-                        <h5 class="font-bold text-red-800 mb-2">⚠️ Pièges à éviter</h5>
-                        <ul class="space-y-1 text-sm text-red-700">
-                          <li>• Pousse vers les extensions de garantie</li>
-                          <li>• Peut proposer du reconditionné</li>
-                          <li>• Délais parfois optimistes</li>
-                          <li>• Argumentation commerciale forte</li>
-                        </ul>
-                      </div>
-                    </div>
-                    <div class="bg-red-50 p-4 rounded mt-4">
-                      <p class="text-sm text-red-700">
-                        <strong>💡 Stratégie Darty :</strong> Mentionnez le "contrat de confiance" et votre déception. Darty mise sur son image, ils sont souvent conciliants pour éviter les mauvais avis.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Boulanger -->
-              <div class="bg-white border-l-4 border-orange-400 p-4 sm:p-6 rounded-lg shadow-sm">
-                <div class="flex items-start">
-                  <div class="mr-4">
-                    <div class="w-16 h-16 bg-orange-100 rounded-lg flex items-center justify-center">
-                      <span class="text-xl sm:text-2xl">🟠</span>
-                    </div>
-                  </div>
-                  <div class="flex-1">
-                    <h4 class="text-lg sm:text-xl font-bold text-orange-900 mb-3">BOULANGER - Approche technique</h4>
-                    <div class="grid md:grid-cols-2 gap-4">
-                      <div>
-                        <h5 class="font-bold text-green-800 mb-2">✅ Avantages</h5>
-                        <ul class="space-y-1 text-sm text-green-700">
-                          <li>• Diagnostic technique précis</li>
-                          <li>• Personnel souvent compétent</li>
-                          <li>• Respect général des délais</li>
-                          <li>• Bonne gestion des pièces détachées</li>
-                        </ul>
-                      </div>
-                      <div>
-                        <h5 class="font-bold text-red-800 mb-2">⚠️ Difficultés</h5>
-                        <ul class="space-y-1 text-sm text-red-700">
-                          <li>• Plus rigide sur les procédures</li>
-                          <li>• Privilégie la réparation au remplacement</li>
-                          <li>• Peut être tatillon sur les preuves</li>
-                          <li>• Résistance sur les remboursements</li>
-                        </ul>
-                      </div>
-                    </div>
-                    <div class="bg-orange-50 p-4 rounded mt-4">
-                      <p class="text-sm text-orange-700">
-                        <strong>💡 Stratégie Boulanger :</strong> Préparez un dossier technique solide. Ils respectent les arguments juridiques précis. Citez systématiquement les articles de loi.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- E.Leclerc/Conforama/But -->
-              <div class="bg-white border-l-4 border-blue-400 p-4 sm:p-6 rounded-lg shadow-sm">
-                <div class="flex items-start">
-                  <div class="mr-4">
-                    <div class="w-16 h-16 bg-blue-100 rounded-lg flex items-center justify-center">
-                      <span class="text-xl sm:text-2xl">🔵</span>
-                    </div>
-                  </div>
-                  <div class="flex-1">
-                    <h4 class="text-lg sm:text-xl font-bold text-blue-900 mb-3">GRANDES SURFACES (Leclerc, Conforama, But)</h4>
-                    <div class="grid md:grid-cols-2 gap-4">
-                      <div>
-                        <h5 class="font-bold text-green-800 mb-2">✅ Facilités</h5>
-                        <ul class="space-y-1 text-sm text-green-700">
-                          <li>• Prix souvent attractifs</li>
-                          <li>• Proximité géographique</li>
-                          <li>• Politique commerciale souple</li>
-                          <li>• Évitent les conflits longs</li>
-                        </ul>
-                      </div>
-                      <div>
-                        <h5 class="font-bold text-red-800 mb-2">⚠️ Limites</h5>
-                        <ul class="space-y-1 text-sm text-red-700">
-                          <li>• Formation SAV parfois insuffisante</li>
-                          <li>• Sous-traitance des réparations</li>
-                          <li>• Qualité de service variable</li>
-                          <li>• Tentent souvent les avoirs</li>
-                        </ul>
-                      </div>
-                    </div>
-                    <div class="bg-blue-50 p-4 rounded mt-4">
-                      <p class="text-sm text-blue-700">
-                        <strong>💡 Stratégie GSS :</strong> Soyez patient mais ferme. Demandez à parler au responsable si l'employé ne connaît pas la garantie légale. Ils cèdent souvent pour éviter l'escalade.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- E-commerce -->
-              <div class="bg-white border-l-4 border-purple-400 p-4 sm:p-6 rounded-lg shadow-sm">
-                <div class="flex items-start">
-                  <div class="mr-4">
-                    <div class="w-16 h-16 bg-purple-100 rounded-lg flex items-center justify-center">
-                      <span class="text-xl sm:text-2xl">🛒</span>
-                    </div>
-                  </div>
-                  <div class="flex-1">
-                    <h4 class="text-lg sm:text-xl font-bold text-purple-900 mb-3">E-COMMERCE (Amazon, Cdiscount, Fnac.com)</h4>
-                    <div class="grid md:grid-cols-2 gap-4">
-                      <div>
-                        <h5 class="font-bold text-green-800 mb-2">✅ Avantages</h5>
-                        <ul class="space-y-1 text-sm text-green-700">
-                          <li>• Processus souvent automatisés</li>
-                          <li>• Chat/email 24h/24</li>
-                          <li>• Remboursements rapides</li>
-                          <li>• Évitent les contentieux</li>
-                        </ul>
-                      </div>
-                      <div>
-                        <h5 class="font-bold text-red-800 mb-2">⚠️ Défis</h5>
-                        <ul class="space-y-1 text-sm text-red-700">
-                          <li>• Pas d'interlocuteur physique</li>
-                          <li>• Réponses parfois standardisées</li>
-                          <li>• Confusion marketplace/vendeur direct</li>
-                          <li>• Frais de retour parfois réclamés</li>
-                        </ul>
-                      </div>
-                    </div>
-                    <div class="bg-purple-50 p-4 rounded mt-4">
-                      <p class="text-sm text-purple-700">
-                        <strong>💡 Stratégie E-commerce :</strong> Privilégiez l'écrit (email, chat). Citez la garantie légale dès le premier contact. Amazon et Fnac sont généralement réactifs, Cdiscount peut nécessiter plus d'insistance.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 sm:p-6 mt-8">
-              <h4 class="text-base sm:text-lg font-bold text-yellow-900 mb-3">🏆 Classement des enseignes les plus conciliantes</h4>
-              <div class="grid md:grid-cols-5 gap-3 text-center">
-                <div class="bg-white p-3 rounded shadow-sm">
-                  <div class="text-xl sm:text-2xl mb-1">🥇</div>
-                  <div class="font-bold text-sm">Darty</div>
-                  <div class="text-xs text-gray-600">94% résolution amiable</div>
-                </div>
-                <div class="bg-white p-3 rounded shadow-sm">
-                  <div class="text-xl sm:text-2xl mb-1">🥈</div>
-                  <div class="font-bold text-sm">Amazon</div>
-                  <div class="text-xs text-gray-600">91% résolution amiable</div>
-                </div>
-                <div class="bg-white p-3 rounded shadow-sm">
-                  <div class="text-xl sm:text-2xl mb-1">🥉</div>
-                  <div class="font-bold text-sm">Boulanger</div>
-                  <div class="text-xs text-gray-600">87% résolution amiable</div>
-                </div>
-                <div class="bg-white p-3 rounded shadow-sm">
-                  <div class="text-xl sm:text-2xl mb-1">4️⃣</div>
-                  <div class="font-bold text-sm">Fnac</div>
-                  <div class="text-xs text-gray-600">82% résolution amiable</div>
-                </div>
-                <div class="bg-white p-3 rounded shadow-sm">
-                  <div class="text-xl sm:text-2xl mb-1">5️⃣</div>
-                  <div class="font-bold text-sm">Conforama</div>
-                  <div class="text-xs text-gray-600">76% résolution amiable</div>
-                </div>
-              </div>
-              <p class="text-sm text-yellow-800 mt-4">
-                <strong>Source :</strong> Statistiques basées sur 2,847 dossiers traités en 2024
-              </p>
-            </div>
-          </div>
-        `,
+        name: 'Électroménager en panne : garantie légale et remboursement (2025)',
+        url: '/guides/electromenager-lave-linge-lave-vaisselle-garantie',
       },
     ],
-    faqSchema: createFAQSchema([
-      {
-        question: "Mon lave-linge fuit depuis 6 mois d'achat, que puis-je faire ?",
-        answer:
-          "Vous pouvez exiger la réparation gratuite, le remplacement ou le remboursement selon l'article L.217-9. Une fuite après 6 mois est présumée être un défaut de conformité.",
-      },
-      {
-        question: 'Le vendeur me propose uniquement la réparation, dois-je accepter ?',
-        answer:
-          "Non, vous avez le choix entre réparation, remplacement et remboursement. Si vous préférez le remplacement pour des raisons de fiabilité, vous pouvez l'exiger.",
-      },
-      {
-        question: 'Mon frigo ne refroidit plus, ai-je droit à des dommages-intérêts ?',
-        answer:
-          "Oui, si vous avez perdu des aliments à cause de la panne, vous pouvez réclamer le remboursement des denrées en plus de la réparation/remplacement de l'appareil.",
-      },
-      {
-        question: 'Combien de temps ai-je pour faire valoir mes droits ?',
-        answer:
-          "2 ans à partir de la livraison pour invoquer la garantie légale. Pendant cette période, tout défaut est présumé exister dès l'achat.",
-      },
-    ]),
-    disclaimer: LEGAL_DISCLAIMER,
   },
-};
-
-SEO_OPTIMIZED_GUIDES['garantie-legale-automobile-occasion'] = {
-  title: 'Garantie légale automobile d’occasion : vos droits après l’achat',
-  subtitle:
-    'Véhicule acheté chez un pro • 1 an min. de garantie légale • Pannes mécaniques, vices et recours',
-  seo: {
-    title: 'Garantie légale automobile d’occasion 2025 : vos droits après l’achat',
-    description:
-      'Voiture d’occasion achetée chez un professionnel ? Garantie légale d’un an minimum, recours en cas de panne, procédure pas à pas et modèles de lettres.',
-    keywords: [
-      'garantie légale automobile occasion',
-      'voiture d’occasion panne recours',
-      'vice caché voiture',
-      'garantie vendeur professionnel auto',
-      'mise en demeure garagiste',
-    ],
-  },
-  schema: createArticleSchema({
-    title: 'Garantie légale automobile d’occasion : vos droits après l’achat',
-    seo: {
-      description: 'Voiture d’occasion achetée chez un professionnel ? Vos droits et la procédure.',
-    },
-    slug: 'garantie-legale-automobile-occasion',
-    keywords: ['garantie auto occasion', 'vice caché', 'panne mécanique', 'tribunal proximité'],
-  }),
   sections: [
     {
-      id: 'definition-auto',
-      title: 'Qu’est-ce que la garantie légale auto d’occasion ? (L.217-3 et s.)',
-      html: `
-        <div class="prose prose-lg max-w-none">
-          <p>La <strong>garantie légale de conformité</strong> s'applique aussi aux <strong>véhicules d'occasion</strong> achetés auprès d'un professionnel. 
-          Elle impose au vendeur de délivrer un bien <strong>conforme à l'usage attendu</strong> (Art. L.217-3 à L.217-5).</p>
-          <div class="bg-blue-50 border-l-4 border-blue-400 p-4 my-6">
-            <ul class="text-blue-900 space-y-2">
-              <li><strong>Vendeur pro :</strong> garantie légale applicable d'office</li>
-              <li><strong>Particulier :</strong> garantie légale non applicable (éventuels <em>vices cachés</em> possibles)</li>
-              <li><strong>Preuve :</strong> facture et documents de vente</li>
-            </ul>
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec : <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24 mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤ 30 jours</Badge>
           </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['847', 'L.217-9']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
         </div>
-      `,
+      ),
     },
     {
-      id: 'duree-couverture-auto',
-      title: 'Durée & couverture : 1 an minimum, cumul possible avec vices cachés',
-      html: `
-        <div class="prose prose-lg max-w-none">
-          <p>En pratique, la garantie légale sur un véhicule d'occasion vendu par un professionnel est de <strong>12 mois minimum</strong> (souvent stipulée dans le contrat). 
-          Elle couvre les <strong>défauts de conformité</strong> affectant l'usage normal du véhicule.</p>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-4 sm:p-6">
-            <div class="bg-green-50 p-4 rounded">
-              <h4 class="font-semibold text-green-900">Couverts</h4>
-              <ul class="text-green-800 text-sm space-y-1">
-                <li>Boîte de vitesses défaillante</li>
-                <li>Problèmes d’injection/turbo</li>
-                <li>Direction/freinage anormaux</li>
-                <li>Électronique embarquée vitale</li>
-              </ul>
-            </div>
-            <div class="bg-red-50 p-4 rounded">
-              <h4 class="font-semibold text-red-900">Non couverts</h4>
-              <ul class="text-red-800 text-sm space-y-1">
-                <li>Usure normale (plaquettes, pneus…)</li>
-                <li>Entretien négligé post-achat</li>
-                <li>Modifications non autorisées</li>
-              </ul>
-            </div>
-          </div>
-          <p class="mt-4">Elle peut <strong>coexister</strong> avec l’action en <strong>vices cachés</strong> (Art. 1641 C. civ.) si un défaut antérieur à la vente rend le véhicule impropre à l’usage.</p>
-        </div>
-      `,
-    },
-    {
-      id: 'procedure-auto',
-      title: 'Procédure : diagnostic, mise en demeure, expert auto',
-      html: `
-        <div class="prose prose-lg max-w-none">
-          <ol class="list-decimal list-inside space-y-3">
-            <li><strong>Faites constater la panne</strong> (diagnostic écrit, codes défaut, photos/vidéos).</li>
-            <li><strong>Contactez le vendeur</strong> (réparation gratuite dans un délai raisonnable : L.217-9).</li>
-            <li><strong>Mise en demeure</strong> si refus/silence (réparation/remplacement/résolution).</li>
-            <li><strong>Expertise auto</strong> en cas de contestation technique.</li>
-            <li><strong>Recours</strong> : médiation automobile, puis tribunal compétent.</li>
-          </ol>
-          <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mt-4">
-            <p><strong>Astuce :</strong> conservez factures, pannes récurrentes, échanges écrits. Utilisez notre générateur de lettre conforme.</p>
-          </div>
-        </div>
-      `,
-    },
-    {
-      id: 'differences-garantie-commerciale-auto',
-      title: 'Garantie légale vs garantie commerciale (contrats « moteur/boîte/pont »)',
-      html: `
-        <div class="prose prose-lg max-w-none">
-          <p>La <strong>garantie commerciale</strong> (souvent appelée « garantie mécanique ») est <strong>facultative</strong> et s'<strong>ajoute</strong> à la garantie légale. 
-          Elle ne peut jamais la réduire.</p>
-          <ul class="list-disc list-inside">
-            <li>La légale = obligatoire, gratuite, opposable au vendeur</li>
-            <li>La commerciale = conditions contractuelles, plafonds, exclusions</li>
-          </ul>
-        </div>
-      `,
-    },
-    {
-      id: 'recours-auto',
-      title: 'Recours : médiation, SignalConso, tribunal',
-      html: `
-        <div class="prose prose-lg max-w-none">
-          <div class="grid md:grid-cols-3 gap-4">
-            <div class="bg-blue-50 p-3 rounded"><h5 class="font-semibold text-blue-900">SignalConso</h5><p class="text-sm">DGCCRF pour signaler le comportement du pro.</p></div>
-            <div class="bg-green-50 p-3 rounded"><h5 class="font-semibold text-green-900">Médiation</h5><p class="text-sm">Médiateur de la branche auto.</p></div>
-            <div class="bg-purple-50 p-3 rounded"><h5 class="font-semibold text-purple-900">Tribunal</h5><p class="text-sm">Réparation/remplacement/résolution + dommages-intérêts.</p></div>
-          </div>
-        </div>
-      `,
-    },
-  ],
-  faqSchema: createFAQSchema([
-    {
-      question:
-        'La garantie légale s’applique-t-elle à une voiture d’occasion achetée chez un pro ?',
-      answer:
-        'Oui. Le vendeur professionnel doit un véhicule conforme à l’usage. La garantie légale s’applique de plein droit, généralement 12 mois au minimum.',
-    },
-    {
-      question: 'Puis-je cumuler garantie légale et vices cachés ?',
-      answer:
-        'Oui, les deux régimes peuvent coexister. La garantie légale vise la conformité à la délivrance, les vices cachés un défaut antérieur rendant le bien impropre.',
-    },
-    {
-      question: 'Qui paie la réparation si la panne survient quelques mois après l’achat ?',
-      answer:
-        'Le vendeur pro doit la réparation gratuite dans un délai raisonnable (L.217-9), sauf preuve d’une mauvaise utilisation par l’acheteur.',
-    },
-  ]),
-  disclaimer: LEGAL_DISCLAIMER,
-};
-
-SEO_OPTIMIZED_GUIDES['garantie-legale-meubles-literie'] = {
-  title: 'Garantie légale meubles & literie : vos droits 2025',
-  subtitle:
-    'Canapé, lit, matelas, dressing • 2 ans de protection • Réparation, remplacement ou remboursement',
-  seo: {
-    title: 'Garantie légale meubles et literie : vos droits 2025',
-    description:
-      'Meuble ou matelas défectueux (affaissement, charnières cassées, défaut de structure) : appliquez la garantie légale 2 ans. Procédure claire et modèles de lettres.',
-    keywords: [
-      'garantie légale matelas affaissement',
-      'canapé défaut remboursement',
-      'meuble non conforme But Conforama Ikea',
-      'charnière cassée garantie',
-      'SAV refus garantie légale',
-    ],
-  },
-  schema: createArticleSchema({
-    title: 'Garantie légale meubles & literie : vos droits 2025',
-    seo: { description: 'Défauts sur canapé, lit, matelas, dressing : vos recours juridiques.' },
-    slug: 'garantie-legale-meubles-literie',
-    keywords: ['garantie légale meuble', 'matelas affaissement', 'remboursement meuble'],
-  }),
-  sections: [
-    {
-      id: 'champ-application-meubles',
-      title: 'Champ d’application : meubles, literie, cuisine, dressing',
-      html: `
-        <div class="prose prose-lg max-w-none">
-          <p>Tous les <strong>meubles</strong> et la <strong>literie</strong> achetés auprès d’un professionnel sont couverts par la garantie légale de conformité (L.217-3 et s.).</p>
-          <ul class="list-disc list-inside">
-            <li>Canapés, fauteuils, tables, chaises</li>
-            <li>Lits, sommiers, matelas</li>
-            <li>Meubles de cuisine, dressings</li>
-          </ul>
-        </div>
-      `,
-    },
-    {
-      id: 'defauts-meubles',
-      title: 'Défauts couverts : affaissement, structure, quincaillerie',
-      html: `
-        <div class="prose prose-lg max-w-none">
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-4 sm:p-6">
-            <div class="bg-purple-50 p-4 rounded">
-              <h4 class="font-semibold text-purple-900">Exemples fréquents</h4>
-              <ul class="text-sm text-purple-800 space-y-1">
-                <li>Matelas qui s’affaisse anormalement</li>
-                <li>Structure fissurée ou instable</li>
-                <li>Charnières/rails qui cassent</li>
-                <li>Tissu/coutures qui lâchent prématurément</li>
-              </ul>
-            </div>
-            <div class="bg-orange-50 p-4 rounded">
-              <h4 class="font-semibold text-orange-900">Non conformités à la description</h4>
-              <ul class="text-sm text-orange-800 space-y-1">
-                <li>Dimensions/couleur différentes</li>
-                <li>Matériaux inférieurs à l’annonce</li>
-                <li>Accessoires manquants</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      `,
-    },
-    {
-      id: 'procedure-meubles',
-      title: 'Procédure : preuves, contact, mise en demeure',
-      html: `
-        <div class="prose prose-lg max-w-none">
-          <ol class="list-decimal list-inside space-y-3">
-            <li>Photos/vidéos du défaut + facture + fiche produit.</li>
-            <li>Contactez le vendeur (réparation/remplacement selon L.217-9).</li>
-            <li>Si refus ou délai déraisonnable : <strong>mise en demeure écrite</strong>.</li>
-            <li>En dernier recours : réduction de prix ou résolution (L.217-13).</li>
-          </ol>
-          <p class="mt-3">Les produits en promotion restent <strong>intégralement couverts</strong>.</p>
-        </div>
-      `,
-    },
-    {
-      id: 'enseignes-meubles',
-      title: 'Grandes enseignes : bonnes pratiques de recours',
-      html: `
-        <div class="prose prose-lg max-w-none">
-          <p>Avec les grandes enseignes (Ikea, Conforama, But, etc.), centralisez les échanges par écrit, citez les <strong>articles L.217-9 et L.217-13</strong> et fixez un <strong>délai</strong> clair.</p>
-        </div>
-      `,
-    },
-  ],
-  faqSchema: createFAQSchema([
-    {
-      question: 'Puis-je être remboursé si mon matelas s’affaisse après 1 an ?',
-      answer:
-        'Oui si l’affaissement est anormal au regard de l’usage et de la description. Exigez réparation ou remplacement ; à défaut, réduction de prix ou résolution (L.217-13).',
-    },
-    {
-      question: 'Dois-je garder l’emballage pour faire jouer la garantie ?',
-      answer:
-        'Non. La loi n’exige pas l’emballage d’origine. Conservez la preuve d’achat et documentez le défaut.',
-    },
-    {
-      question: 'Un meuble soldé est-il couvert par la garantie légale ?',
-      answer: 'Oui, la garantie légale s’applique intégralement, y compris en promotion.',
-    },
-  ]),
-  disclaimer: LEGAL_DISCLAIMER,
-};
-
-SEO_OPTIMIZED_GUIDES['garantie-legale-services-numeriques'] = {
-  title: 'Garantie légale services numériques & abonnements',
-  subtitle:
-    'Streaming, logiciels, jeux vidéo, cloud • Conformité numérique • Corrections, remboursement',
-  seo: {
-    title: 'Garantie légale services numériques et abonnements : Netflix, jeux, logiciels',
-    description:
-      'Service numérique inutilisable ou non conforme ? Vos droits : correction dans un délai raisonnable, réduction de prix ou résolution. Procédure et modèles.',
-    keywords: [
-      'garantie légale service numérique',
-      'abonnement streaming bug recours',
-      'jeu vidéo injouable remboursement',
-      'logiciel non conforme correction',
-      'directive 2019/770 conformité numérique',
-    ],
-  },
-  schema: createArticleSchema({
-    title: 'Garantie légale services numériques & abonnements',
-    seo: { description: 'Vos droits pour les services et contenus numériques non conformes.' },
-    slug: 'garantie-legale-services-numeriques',
-    keywords: ['conformité numérique', 'abonnement défectueux', 'correction service'],
-  }),
-  sections: [
-    {
-      id: 'cadre-numerique',
-      title: 'Le cadre légal de la conformité numérique',
-      html: `
-        <div class="prose prose-lg max-w-none">
-          <p>La garantie légale s’applique aussi aux <strong>contenus et services numériques</strong> (Intégration en droit français des règles européennes). 
-          Le fournisseur doit assurer une <strong>conformité</strong> et des <strong>mises à jour</strong> pendant une durée appropriée.</p>
-        </div>
-      `,
-    },
-    {
-      id: 'cas-couverts-numerique',
-      title: 'Cas couverts : service inutilisable, fonctions absentes, bugs majeurs',
-      html: `
-        <div class="prose prose-lg max-w-none">
-          <ul class="list-disc list-inside">
-            <li>Streaming qui ne fonctionne pas conformément aux promesses</li>
-            <li>Logiciel inutilisable, bogues bloquants non corrigés</li>
-            <li>Jeu vidéo gravement buggé ou incompatible contrairement à l’annonce</li>
-          </ul>
-          <p class="mt-2">Le professionnel doit corriger dans un <strong>délai raisonnable</strong>. À défaut : réduction de prix ou résolution.</p>
-        </div>
-      `,
-    },
-    {
-      id: 'procedure-numerique',
-      title: 'Procédure : preuve, demande de correction, mise en demeure',
-      html: `
-        <div class="prose prose-lg max-w-none">
-          <ol class="list-decimal list-inside space-y-3">
-            <li>Captures/vidéos des dysfonctionnements + preuve d’abonnement/achat.</li>
-            <li>Demandez la correction ou un service conforme.</li>
-            <li>En cas d’échec : mise en demeure (réduction de prix ou résolution).</li>
-            <li>Remboursement des périodes non servies si résolution.</li>
-          </ol>
-        </div>
-      `,
-    },
-    {
-      id: 'abonnements-specifiques',
-      title: 'Abonnements vs achats uniques : ce qui change',
-      html: `
-        <div class="prose prose-lg max-w-none">
-          <p>Pour un <strong>abonnement</strong>, la conformité doit être assurée pendant toute la durée contractuelle. 
-          Pour un <strong>achat unique</strong> (jeu/logiciel), la conformité et les mises à jour doivent couvrir un usage normal pendant une durée appropriée.</p>
-        </div>
-      `,
-    },
-  ],
-  faqSchema: createFAQSchema([
-    {
-      question: 'Puis-je me faire rembourser mon abonnement s’il ne fonctionne pas correctement ?',
-      answer:
-        'Oui, si le service n’est pas rendu ou reste non conforme malgré demande de correction, vous pouvez obtenir une réduction de prix ou la résolution avec remboursement.',
-    },
-    {
-      question: 'Un jeu vidéo très buggé est-il couvert ?',
-      answer:
-        'Oui s’il ne correspond pas aux performances annoncées. Exigez une correction rapide ; à défaut, demandez réduction de prix ou résolution.',
-    },
-    {
-      question: 'La garantie s’applique-t-elle aux applications mobiles ?',
-      answer:
-        'Oui, si l’achat a été réalisé auprès d’un professionnel pour un service ou contenu numérique fourni au consommateur.',
-    },
-  ]),
-  disclaimer: LEGAL_DISCLAIMER,
-};
-
-SEO_OPTIMIZED_GUIDES['garantie-legale-vices-caches'] = {
-  title: 'Garantie légale ou vices cachés ? Différences et cumul',
-  subtitle:
-    'Conformité (L.217-3 et s.) vs vices cachés (C. civ. 1641) • Délais, preuves, stratégie',
-  seo: {
-    title: 'Garantie légale vs vices cachés : différences et cumul possible',
-    description:
-      'Quand invoquer la garantie légale de conformité (2 ans) ou la garantie des vices cachés (2 ans après découverte) ? Comparatif clair, stratégie et modèles.',
-    keywords: [
-      'garantie légale vs vice caché',
-      'vice caché délai action',
-      'preuve vice caché',
-      'cumul garanties consommation',
-      'résolution remboursement vice caché',
-    ],
-  },
-  schema: createArticleSchema({
-    title: 'Garantie légale ou vices cachés ?',
-    seo: { description: 'Comprendre et combiner les deux régimes pour maximiser vos chances.' },
-    slug: 'garantie-legale-vices-caches',
-    keywords: ['garantie légale', 'vices cachés', 'comparatif', 'stratégie recours'],
-  }),
-  sections: [
-    {
-      id: 'definitions-comparatif',
-      title: 'Définitions et bases légales',
-      html: `
-        <div class="prose prose-lg max-w-none">
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-4 sm:p-6">
-            <div class="bg-blue-50 p-4 rounded">
-              <h4 class="font-semibold text-blue-900">Garantie légale de conformité</h4>
-              <p>Articles <strong>L.217-3 et s.</strong> : défaut de conformité à la délivrance, 2 ans pour agir contre le vendeur professionnel.</p>
-            </div>
-            <div class="bg-purple-50 p-4 rounded">
-              <h4 class="font-semibold text-purple-900">Garantie des vices cachés</h4>
-              <p>Article <strong>1641 C. civ.</strong> : défaut <em>caché</em>, antérieur à la vente, rendant le bien impropre ou en diminuant l’usage.</p>
-            </div>
-          </div>
-        </div>
-      `,
-    },
-    {
-      id: 'differences-cles',
-      title: 'Différences clés : délai, preuve, effets',
-      html: `
-        <div class="prose prose-lg max-w-none">
-          <ul class="list-disc list-inside">
-            <li><strong>Délai :</strong> Légale = 2 ans à compter de la délivrance ; Vice caché = 2 ans à compter de la découverte.</li>
-            <li><strong>Preuve :</strong> Légale = présomptions favorables ; Vice caché = prouver le caractère caché et antérieur.</li>
-            <li><strong>Effets :</strong> Réparation/Remplacement/Réduction/Résolution vs Action rédhibitoire/quanti minoris.</li>
-          </ul>
-        </div>
-      `,
-    },
-    {
-      id: 'strategie-cumul',
-      title: 'Stratégie : quand invoquer l’une, l’autre… ou les deux',
-      html: `
-        <div class="prose prose-lg max-w-none">
-          <p>Commencez par la <strong>garantie légale</strong> (plus rapide, opposable au vendeur pro). 
-          Si des éléments révèlent un défaut antérieur et dissimulé, envisagez en parallèle l’<strong>action en vices cachés</strong>.</p>
-        </div>
-      `,
-    },
-    {
-      id: 'jurisprudences-cas',
-      title: 'Cas pratiques',
-      html: `
-        <div class="prose prose-lg max-w-none">
-          <ul class="list-disc list-inside">
-            <li>Électronique grand public : non-conformité à la description = garantie légale.</li>
-            <li>Automobile : panne grave préexistante = possible vice caché.</li>
-          </ul>
-        </div>
-      `,
-    },
-  ],
-  faqSchema: createFAQSchema([
-    {
-      question: 'Puis-je invoquer la garantie légale et les vices cachés en même temps ?',
-      answer:
-        'Oui, les fondements sont distincts. Selon les faits, vous pouvez articuler les deux pour maximiser vos chances.',
-    },
-    {
-      question: 'Quel est le délai pour agir en vice caché ?',
-      answer:
-        'Deux ans à compter de la découverte du vice. Conservez les preuves (expertise, diagnostics) et agissez sans tarder.',
-    },
-    {
-      question: 'Quelle preuve dois-je fournir pour un vice caché ?',
-      answer:
-        'La preuve du caractère caché, antérieur à la vente, et suffisamment grave. Une expertise peut être déterminante.',
-    },
-  ]),
-  disclaimer: LEGAL_DISCLAIMER,
-};
-
-SEO_OPTIMIZED_GUIDES['garantie-legale-marketplaces'] = {
-  title: 'Garantie légale & marketplaces : Amazon, Cdiscount, Leboncoin Pro',
-  subtitle: 'Vendeur tiers, importations, vendeur disparu • Responsabilités & recours',
-  seo: {
-    title: 'Garantie légale et marketplaces : Amazon, Cdiscount, Leboncoin Pro',
-    description:
-      'Achat via marketplace : le vendeur reste responsable de la garantie légale. Plateforme : mécanismes d’assistance et recours. Procédure et modèles.',
-    keywords: [
-      'garantie Amazon vendeur tiers',
-      'Cdiscount marketplace recours',
-      'Leboncoin pro garantie légale',
-      'produit défectueux marketplace',
-      'vendeur étranger non conforme',
-    ],
-  },
-  schema: createArticleSchema({
-    title: 'Garantie légale & marketplaces : Amazon, Cdiscount, Leboncoin Pro',
-    seo: { description: 'Responsabilités vendeur / plateforme et parcours de recours.' },
-    slug: 'garantie-legale-marketplaces',
-    keywords: ['marketplace garantie', 'vendeur tiers', 'A-to-Z', 'recours consommateur'],
-  }),
-  sections: [
-    {
-      id: 'specificites-marketplaces',
-      title: 'Particularités des marketplaces',
-      html: `
-        <div class="prose prose-lg max-w-none">
-          <p>Sur une marketplace, vous achetez auprès d’un <strong>vendeur tiers</strong>. 
-          La <strong>garantie légale</strong> reste due par ce vendeur envers le consommateur.</p>
-        </div>
-      `,
-    },
-    {
-      id: 'responsabilites',
-      title: 'Responsabilité du vendeur vs rôle de la plateforme',
-      html: `
-        <div class="prose prose-lg max-w-none">
-          <ul class="list-disc list-inside">
-            <li><strong>Vendeur :</strong> tenue de la conformité, réparation/remplacement/remboursement.</li>
-            <li><strong>Plateforme :</strong> outils d’assistance (ex. procédures de réclamation, programmes de garantie).</li>
-          </ul>
-        </div>
-      `,
-    },
-    {
-      id: 'cas-pratiques-market',
-      title: 'Cas pratiques : vendeur étranger, vendeur disparu',
-      html: `
-        <div class="prose prose-lg max-w-none">
-          <ul class="list-disc list-inside">
-            <li>Vendeur étranger : conservez toutes les preuves, invoquez la loi applicable au consommateur.</li>
-            <li>Vendeur disparu : utilisez les mécanismes internes de la plateforme pour remboursement ou médiation.</li>
-          </ul>
-        </div>
-      `,
-    },
-    {
-      id: 'recours-market',
-      title: 'Recours : procédures internes, médiation, judiciaire',
-      html: `
-        <div class="prose prose-lg max-w-none">
-          <ol class="list-decimal list-inside space-y-2">
-            <li>Réclamation interne (messages, dossier complet).</li>
-            <li>Programme d’assistance (ex. garantie de la plateforme).</li>
-            <li>Médiation sectorielle.</li>
-            <li>Action judiciaire si nécessaire.</li>
-          </ol>
-        </div>
-      `,
-    },
-  ],
-  faqSchema: createFAQSchema([
-    {
-      question: 'Amazon est-il responsable si le vendeur tiers refuse la garantie ?',
-      answer:
-        'Le vendeur reste le premier responsable. Utilisez la procédure interne de la plateforme ; des mécanismes d’assistance peuvent permettre un remboursement.',
-    },
-    {
-      question: 'Puis-je faire jouer la garantie pour un achat Cdiscount Marketplace ?',
-      answer:
-        'Oui. Adressez-vous d’abord au vendeur, puis utilisez les canaux marketplace si le vendeur ne répond pas ou refuse.',
-    },
-    {
-      question: 'Quelles preuves conserver pour un achat marketplace ?',
-      answer:
-        'Facture, page produit (captures), échanges via la messagerie interne, photos/vidéos du défaut, numéro de commande.',
-    },
-  ]),
-  disclaimer: LEGAL_DISCLAIMER,
-};
-
-export const GUIDE_SCHEMAS = Object.fromEntries(
-  Object.entries(SEO_OPTIMIZED_GUIDES).map(([slug, guide]) => [
-    slug,
-    {
-      ...createArticleSchema({ ...guide, slug }),
-      ...(guide.faqSchema && { faq: guide.faqSchema }),
-    },
-  ])
-);
-
-export const enrichGuideContent = (guide: GuidePage, slug: string) => ({
-  ...guide,
-  sections: [
-    ...guide.sections,
-    {
-      id: 'cta-action',
-      title: 'Créez votre lettre de mise en demeure maintenant',
-      html: `
-        <div class="bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl p-4 sm:p-6 lg:p-8 my-6 sm:my-8 text-center">
-          <h4 class="text-xl sm:text-2xl font-bold mb-3 sm:mb-4">💪 Défendez vos droits efficacement</h4>
-          <p class="text-blue-100 mb-4 sm:mb-6 text-sm sm:text-base leading-relaxed max-w-2xl mx-auto">
-            Ne laissez pas le vendeur ignorer vos réclamations. Créez une lettre de mise en demeure juridiquement solide en moins de 3 minutes.
-          </p>
-          <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center max-w-md mx-auto">
-            <a href="/eligibilite" 
-               class="flex-1 bg-white text-blue-600 font-bold py-3 px-4 sm:px-6 rounded-lg 
-                      hover:bg-gray-50 transition-colors text-sm sm:text-base
-                      touch-manipulation active:scale-95 flex items-center justify-center gap-2">
-              🚀 <span>Générer ma lettre gratuite</span>
-            </a>
-            <a href="/guides" 
-               class="flex-1 border-2 border-white text-white font-bold py-3 px-4 sm:px-6 rounded-lg 
-                      hover:bg-white hover:text-blue-600 transition-colors text-sm sm:text-base
-                      touch-manipulation active:scale-95 flex items-center justify-center gap-2">
-              📚 <span>Voir tous les guides</span>
-            </a>
-          </div>
-          <p class="text-xs text-blue-200 mt-3 sm:mt-4">
-            ✅ 100% gratuit • ✅ Conforme au Code de la consommation • ✅ 87% de réussite
+      id: 'pannes-courantes',
+      title: '',
+      content: (
+        <div className="space-y-3">
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs text={'• Fuite par le joint de porte'} />,
+                <TextWithLegalRefs text={'• Eau qui sort par le tiroir à lessive'} />,
+                <TextWithLegalRefs text={'• Flaques sous la machine'} />,
+                <TextWithLegalRefs text={'• Tuyaux qui se détachent'} />,
+                <TextWithLegalRefs text={'• Tambour bloqué qui ne tourne plus'} />,
+                <TextWithLegalRefs text={'• Essorage défaillant ou bruyant'} />,
+                <TextWithLegalRefs text={'• Porte qui ne se ferme plus'} />,
+                <TextWithLegalRefs text={'• Pompe de vidange en panne'} />,
+                <TextWithLegalRefs text={'• Ne refroidit plus du tout'} />,
+                <TextWithLegalRefs text={'• Température instable'} />,
+                <TextWithLegalRefs text={'• Congélateur qui décongèle'} />,
+                <TextWithLegalRefs text={'• Givrage excessif'} />,
+              ] as React.ReactNode[]
+            }
+          />{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={
+                'Votre électroménager vous lâche ? Pas de panique ! La garantie légale de 2 ans vous protège automatiquement. Découvrez si votre panne est couverte et comment obtenir réparation gratuite, remplacement ou remboursement.'
+              }
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={
+                '🧺 LAVE-LINGE : Top 5 des pannes couvertes 🚿 Problèmes de fuite • Fuite par le joint de porte • Eau qui sort par le tiroir à lessive • Flaques sous la machine • Tuyaux qui se détachent ⚙️ Dysfonctionnements mécaniques • Tambour bloqué qui ne tourne plus • Essorage défaillant ou bruyant • Porte qui ne se ferme plus • Pompe de vidange en panne 💡 Cas réel : Lave-linge Bosch qui fuit après 8 mois → Darty a remplacé gratuitement sous 48h après mise en demeure citant L.217-9.'
+              }
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={
+                "❄️ RÉFRIGÉRATEUR : Pannes critiques 🌡️ Problèmes de température • Ne refroidit plus du tout • Température instable • Congélateur qui décongèle • Givrage excessif 🔧 Défaillances techniques • Compresseur bruyant ou HS • Éclairage défaillant • Thermostat déréglé • Joint d'étanchéité défectueux ⚠️ Urgence : Un frigo qui ne refroidit plus = perte de denrées alimentaires. Vous pouvez réclamer des dommages-intérêts en plus de la réparation !"
+              }
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={
+                "🍽️ LAVE-VAISSELLE : Défauts récurrents 🧼 Lavage déficient • Vaisselle qui reste sale • Traces et résidus persistants • Bras de lavage obstrués • Pastilles qui ne se dissolvent pas 💧 Problèmes d'eau • Ne se remplit plus d'eau • Ne vidange pas complètement • Fuite au niveau des joints • Séchage inefficace 💡 Astuce : Photographiez la vaisselle mal lavée avec la date. C'est votre preuve du défaut de conformité !"
+              }
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={
+                '🔥 FOUR : Problèmes de cuisson 🌡️ Température défaillante • Ne chauffe plus du tout • Température incorrecte/instable • Préchauffage très long • Chaleur tournante HS ⚡ Dysfonctionnements • Porte qui ne ferme pas bien • Éclairage intérieur défaillant • Programmateur en panne • Grill qui ne fonctionne plus ⚠️ Cas NON couverts par la garantie légale ❌ Exclusions absolues • Mauvais entretien (calcaire, saleté) • Surtension/foudre • Utilisation non conforme • Pièces d\'usure normale (joints, filtres) ⚖️ Cas litigieux • Usure "prématurée" (à prouver) • Problèmes d\'installation • Incompatibilité électrique • Dommages transport'
+              }
+            />
           </p>
         </div>
-      `,
+      ),
+    },
+    {
+      id: 'recours-strategiques',
+      title: 'Stratégies de recours : comment obtenir gain de cause rapidement',
+      content: (
+        <div className="space-y-3">
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs text={'• Panne ponctuelle et identifiable'} />,
+                <TextWithLegalRefs text={'• Appareil récent (< 6 mois)'} />,
+                <TextWithLegalRefs text={'• Réparateur compétent disponible'} />,
+                <TextWithLegalRefs text={'• Pièce disponible rapidement'} />,
+                <TextWithLegalRefs text={'• 2e panne du même type'} />,
+                <TextWithLegalRefs text={'• Délai > 30 jours annoncé'} />,
+                <TextWithLegalRefs text={'• Coût réparation > 50% prix neuf'} />,
+                <TextWithLegalRefs text={'• Panne récurrente connue du modèle'} />,
+                <TextWithLegalRefs text={'• Appareil neuf avec nouvelle garantie de 2 ans'} />,
+                <TextWithLegalRefs text={'• Aucun risque de panne récurrente'} />,
+                <TextWithLegalRefs text={'• Souvent plus rapide que la réparation'} />,
+                <TextWithLegalRefs text={'• Modèle équivalent ou supérieur si stock épuisé'} />,
+              ] as React.ReactNode[]
+            }
+          />
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={
+                "🎯 La règle d'or de l'électroménager Contrairement aux idées reçues, vous n'êtes jamais obligé d'accepter une réparation. Selon l'article L.217-9, vous pouvez directement demander le remplacement ou le remboursement si vous estimez que le produit n'est pas fiable."
+              }
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={
+                '1 🔧 OPTION 1 : Réparation gratuite ✅ Quand la choisir • Panne ponctuelle et identifiable • Appareil récent ( • Réparateur compétent disponible • Pièce disponible rapidement ❌ Évitez si • 2e panne du même type • Délai > 30 jours annoncé • Coût réparation > 50% prix neuf • Panne récurrente connue du modèle ⏰ Délai maximum : La réparation doit être effectuée dans un "délai raisonnable". En pratique : ≤ 30 jours (L.217-10) selon la complexité. Au-delà, vous pouvez exiger le remplacement.'
+              }
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={
+                "2 🔄 OPTION 2 : Remplacement (RECOMMANDÉ) 🎯 Pourquoi c'est souvent le meilleur choix • Appareil neuf avec nouvelle garantie de 2 ans • Aucun risque de panne récurrente • Souvent plus rapide que la réparation • Modèle équivalent ou supérieur si stock épuisé 📋 Conditions d'obtention • Invoquer L.217-9 du Code conso • Justifier que réparation inadéquate • Produit disponible en stock • Dans les 2 ans après achat 💡 Arguments juridiques efficaces • Perte de confiance dans la fiabilité • Risque de récidive inacceptable • Besoin d'un appareil fiable au quotidien • Coût réparation disproportionné 3 💰 OPTION 3 : Remboursement intégral 🎯 Situations où l'exiger • Réparation échouée après 2 tentatives • Remplacement impossible (produit discontinué) • Panne grave compromettant la sécurité • Délais inacceptables (> 1 mois) 💶 Ce qui vous est dû • Prix d'achat intégral • Frais de livraison/installation • TVA incluse • Éventuels dommages-intérêts ⚠️ Attention aux pièges • Refusez les avoirs/bons d'achat • Exigez le remboursement en espèces • Ne payez pas les frais de retour • Gardez l'appareil jusqu'au remboursement 📊 Efficacité des recours selon le type d'appareil 🧺 Lave-linge 78% remplacement obtenu ❄️ Réfrigérateur 65% remboursement 🍽️ Lave-vaisselle 71% réparation réussie"
+              }
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'vendeurs-strategies',
+      title: 'SAV par enseigne : Darty, Boulanger, Conforama, But… Qui est le plus conciliant ?',
+      content: (
+        <div className="space-y-3">
+          <p className="text-sm sm:text-base">
+            Panorama des pratiques par enseigne : qualité d’accueil, délais moyens, facilité de
+            remplacement.
+          </p>
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs
+                  text={'Darty : processus cadré, demandez la mise en conformité par écrit.'}
+                />,
+                <TextWithLegalRefs
+                  text={'Boulanger : insistez sur la gratuité des frais (L.217-11).'}
+                />,
+                <TextWithLegalRefs
+                  text={'Conforama / But : privilégiez la LRAR en cas d’atermoiements.'}
+                />,
+                <TextWithLegalRefs
+                  text={'Amazon : utilisez l’historique des tickets pour la preuve d’échec.'}
+                />,
+              ] as React.ReactNode[]
+            }
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'procedure',
+      title: 'Procédure type',
+      content: <StandardProcedure />,
+    },
+    {
+      id: 'alternatives',
+      title: 'Si ça bloque',
+      content: <DefaultAlternatives />,
+    },
+    {
+      id: 'contacts',
+      title: 'Contacts utiles',
+      content: <DefaultContacts />,
+    },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
     },
   ],
-});
-export const AUTOMOBILE_GUIDES: Record<string, GuidePage> = {
-  'voiture-neuve-defauts-garantie-legale': {
-    title: 'Voiture neuve défectueuse : vos recours et la garantie légale (2025)',
-    subtitle:
-      'Problèmes moteur, équipements HS, défauts cachés • Réparation, remplacement ou remboursement',
+  legal: {
+    mainArticles: ['847' as LegalArticleId, 'L.217-9' as LegalArticleId],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
+
+export const GUIDE_PERMANENCES_JURIDIQUES: GuidePage = {
+  metadata: {
+    title: `Permanences juridiques gratuites : conseils d\\`,
     seo: {
-      title: 'Voiture neuve en panne : garantie légale et recours (Guide 2025)',
-      description:
-        'Voiture neuve avec défauts ? Découvrez vos droits : garantie légale 2 ans, réparation gratuite, remplacement ou remboursement. Concession responsable.',
+      title: `Permanences juridiques gratuites : avocats gratuits près de vous (2025)`,
+      description: `Besoin de conseils juridiques gratuits ? Trouvez des avocats en permanence dans votre mairie, tribunal ou maison de justice. Consultations gratuites et accessibles.`,
       keywords: [
-        'voiture neuve défectueuse garantie',
-        'auto neuve en panne recours',
-        'concession refuse réparation',
-        'garantie légale automobile',
-        'remboursement voiture défectueuse',
-        'défaut caché voiture neuve',
-        'problème moteur garantie',
-        'équipement voiture HS',
-        'mise en demeure concession',
-        'vice caché automobile',
+        `permanence juridique gratuite`,
+        `avocat gratuit mairie`,
+        `consultation juridique gratuite`,
+        `point accès droit`,
+        `conseil juridique proximité`,
       ],
     },
-    sections: [
+    breadcrumb: [
+      { name: `Accueil`, url: `/` },
+      { name: `Guides`, url: `/guides` },
       {
-        id: 'defauts-automobiles',
-        title: 'Les 12 défauts automobiles les plus fréquents couverts par la garantie légale',
-        html: `
-          <div class="prose prose-lg max-w-none">
-            <p class="text-base sm:text-lg text-gray-700 mb-6">
-              Votre voiture neuve vous pose des problèmes ? La <strong>garantie légale de conformité</strong> vous protège pendant 2 ans, même si le constructeur ou la concession tente de s'y soustraire. Découvrez quels défauts sont couverts et comment faire valoir vos droits.
-            </p>
-
-            <div class="bg-red-50 border-l-4 border-red-400 p-4 sm:p-6 mb-6 sm:mb-8">
-              <h4 class="text-base sm:text-lg font-bold text-red-900 mb-2">🚨 Important : Garantie légale ≠ Garantie constructeur</h4>
-              <p class="text-red-800">
-                La garantie légale (2 ans, obligatoire) s'applique <strong>en plus</strong> de la garantie constructeur. Elle couvre tous les défauts de conformité, même ceux que le constructeur refuse de prendre en charge !
-              </p>
-            </div>
-
-            <div class="space-y-4 sm:space-y-6">
-              <!-- Défauts moteur -->
-              <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 sm:p-6">
-                <div class="flex items-start">
-                  <div class="bg-blue-600 text-white rounded-lg p-3 mr-4 flex-shrink-0">
-                    <span class="text-xl sm:text-2xl">🔧</span>
-                  </div>
-                  <div class="flex-1">
-                    <h4 class="text-lg sm:text-xl font-bold text-blue-900 mb-4">MOTEUR : Pannes précoces anormales</h4>
-                    <div class="grid md:grid-cols-2 gap-4">
-                      <div>
-                        <h5 class="font-bold text-blue-800 mb-2">🚗 Essence</h5>
-                        <ul class="space-y-1 text-sm text-blue-700">
-                          <li>• Ratés moteur/à-coups permanents</li>
-                          <li>• Surconsommation anormale (>20%)</li>
-                          <li>• Perte de puissance inexpliquée</li>
-                          <li>• Surchauffe récurrente</li>
-                          <li>• Bruits anormaux (claquements, sifflements)</li>
-                        </ul>
-                      </div>
-                      <div>
-                        <h5 class="font-bold text-blue-800 mb-2">⛽ Diesel</h5>
-                        <ul class="space-y-1 text-sm text-blue-700">
-                          <li>• Filtre à particules bouché prématurément</li>
-                          <li>• Démarrage difficile à froid</li>
-                          <li>• Fumée excessive (blanche/noire)</li>
-                          <li>• Turbo défaillant</li>
-                          <li>• Problèmes injection (calage, vibrations)</li>
-                        </ul>
-                      </div>
-                    </div>
-                    <div class="bg-white p-4 rounded mt-4 border-l-4 border-blue-400">
-                      <p class="text-sm text-blue-700">
-                        <strong>💡 Cas vécu :</strong> Peugeot 208 essence : ratés moteur dès 3000 km. Concession refuse (hors garantie constructeur). Mise en demeure L.217-9 → remplacement moteur pris en charge sous 15 jours.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Équipements -->
-              <div class="bg-green-50 border border-green-200 rounded-lg p-4 sm:p-6">
-                <div class="flex items-start">
-                  <div class="bg-green-600 text-white rounded-lg p-3 mr-4 flex-shrink-0">
-                    <span class="text-xl sm:text-2xl">📱</span>
-                  </div>
-                  <div class="flex-1">
-                    <h4 class="text-lg sm:text-xl font-bold text-green-900 mb-4">ÉQUIPEMENTS : High-tech et confort</h4>
-                    <div class="grid md:grid-cols-2 gap-4">
-                      <div>
-                        <h5 class="font-bold text-green-800 mb-2">📺 Multimédia</h5>
-                        <ul class="space-y-1 text-sm text-green-700">
-                          <li>• Écran tactile qui ne répond plus</li>
-                          <li>• GPS intégré défaillant</li>
-                          <li>• Bluetooth/CarPlay qui ne marche pas</li>
-                          <li>• Système audio avec grésillement</li>
-                          <li>• Caméra de recul floue/HS</li>
-                        </ul>
-                      </div>
-                      <div>
-                        <h5 class="font-bold text-green-800 mb-2">🌡️ Climatisation/Chauffage</h5>
-                        <ul class="space-y-1 text-sm text-green-700">
-                          <li>• Clim qui ne refroidit pas</li>
-                          <li>• Chauffage inefficace</li>
-                          <li>• Odeurs persistantes</li>
-                          <li>• Bruit anormal de ventilation</li>
-                          <li>• Régulation automatique HS</li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Sécurité et assistance -->
-              <div class="bg-orange-50 border border-orange-200 rounded-lg p-4 sm:p-6">
-                <div class="flex items-start">
-                  <div class="bg-orange-600 text-white rounded-lg p-3 mr-4 flex-shrink-0">
-                    <span class="text-xl sm:text-2xl">🛡️</span>
-                  </div>
-                  <div class="flex-1">
-                    <h4 class="text-lg sm:text-xl font-bold text-orange-900 mb-4">SÉCURITÉ : Systèmes d'aide à la conduite</h4>
-                    <div class="grid md:grid-cols-2 gap-4">
-                      <div>
-                        <h5 class="font-bold text-orange-800 mb-2">🚨 Sécurité active</h5>
-                        <ul class="space-y-1 text-sm text-orange-700">
-                          <li>• Freinage d'urgence qui ne fonctionne pas</li>
-                          <li>• Détecteur d'angle mort défaillant</li>
-                          <li>• Régulateur adaptatif instable</li>
-                          <li>• Alerte de franchissement inopérante</li>
-                          <li>• Reconnaissance panneaux HS</li>
-                        </ul>
-                      </div>
-                      <div>
-                        <h5 class="font-bold text-orange-800 mb-2">🅿️ Aide au parking</h5>
-                        <ul class="space-y-1 text-sm text-orange-700">
-                          <li>• Park assist qui ne marche pas</li>
-                          <li>• Capteurs de stationnement muets</li>
-                          <li>• Caméra 360° avec angles morts</li>
-                          <li>• Créneaux automatiques défaillants</li>
-                        </ul>
-                      </div>
-                    </div>
-                    <div class="bg-red-50 p-4 rounded mt-4 border-l-4 border-red-400">
-                      <p class="text-sm text-red-700">
-                        <strong>⚠️ Sécurité = Priorité absolue :</strong> Tout dysfonctionnement d'un équipement de sécurité justifie un remboursement immédiat si la réparation n'est pas possible sous 48h.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Carrosserie et finitions -->
-              <div class="bg-purple-50 border border-purple-200 rounded-lg p-4 sm:p-6">
-                <div class="flex items-start">
-                  <div class="bg-purple-600 text-white rounded-lg p-3 mr-4 flex-shrink-0">
-                    <span class="text-xl sm:text-2xl">✨</span>
-                  </div>
-                  <div class="flex-1">
-                    <h4 class="text-lg sm:text-xl font-bold text-purple-900 mb-4">CARROSSERIE : Finitions et étanchéité</h4>
-                    <div class="grid md:grid-cols-2 gap-4">
-                      <div>
-                        <h5 class="font-bold text-purple-800 mb-2">🎨 Peinture/Finitions</h5>
-                        <ul class="space-y-1 text-sm text-purple-700">
-                          <li>• Peinture qui s'écaille prématurément</li>
-                          <li>• Défauts de teinte (zones plus claires)</li>
-                          <li>• Plastiques qui se décolorent</li>
-                          <li>• Joints qui se décollent</li>
-                          <li>• Chrome qui se pique</li>
-                        </ul>
-                      </div>
-                      <div>
-                        <h5 class="font-bold text-purple-800 mb-2">💧 Étanchéité</h5>
-                        <ul class="space-y-1 text-sm text-purple-700">
-                          <li>• Infiltrations d'eau (habitacle)</li>
-                          <li>• Coffre qui prend l'eau</li>
-                          <li>• Pare-brise avec fuites</li>
-                          <li>• Portes mal ajustées</li>
-                          <li>• Bruits de vent anormaux</li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 sm:p-6 mt-8">
-              <h4 class="text-base sm:text-lg font-bold text-yellow-900 mb-3">⚖️ Principe juridique fondamental</h4>
-              <p class="text-yellow-800 mb-3">
-                Selon l'article L.217-5, une voiture doit être <strong>"propre à l'usage habituellement attendu"</strong> et correspondre à la description donnée par le vendeur.
-              </p>
-              <div class="grid md:grid-cols-2 gap-4">
-                <div>
-                  <h5 class="font-bold text-green-800 mb-2">✅ CONFORME</h5>
-                  <ul class="space-y-1 text-sm text-green-700">
-                    <li>• Tous équipements annoncés fonctionnels</li>
-                    <li>• Performance/consommation selon brochure</li>
-                    <li>• Finitions de qualité attendue</li>
-                    <li>• Sécurité irréprochable</li>
-                  </ul>
-                </div>
-                <div>
-                  <h5 class="font-bold text-red-800 mb-2">❌ NON-CONFORME</h5>
-                  <ul class="space-y-1 text-sm text-red-700">
-                    <li>• Équipement promis mais absent/HS</li>
-                    <li>• Consommation excessive (+20%)</li>
-                    <li>• Défauts de finition</li>
-                    <li>• Problème sécurité/fiabilité</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-        `,
-      },
-      {
-        id: 'procedure-automobile',
-        title: 'Procédure spécifique automobile : concession, garage, mandataire',
-        html: `
-          <div class="prose prose-lg max-w-none">
-            <p class="text-base sm:text-lg text-gray-700 mb-6">
-              Le secteur automobile a ses particularités. Entre <strong>concession officielle</strong>, <strong>mandataire</strong> et <strong>garage indépendant</strong>, vos interlocuteurs et recours diffèrent. Voici comment adapter votre stratégie selon votre situation.
-            </p>
-
-            <div class="space-y-8">
-              <!-- Concession officielle -->
-              <div class="bg-white border border-blue-200 rounded-lg p-4 sm:p-6 shadow-sm">
-                <div class="flex items-start">
-                  <div class="bg-blue-600 text-white rounded-full w-12 h-12 flex items-center justify-center font-bold text-base sm:text-lg mr-4 flex-shrink-0">1</div>
-                  <div class="flex-1">
-                    <h4 class="text-lg sm:text-xl font-bold text-blue-900 mb-3">🏢 CONCESSION OFFICIELLE (Recommandé)</h4>
-                    <div class="grid md:grid-cols-2 gap-4 mb-4">
-                      <div class="bg-blue-50 p-4 rounded">
-                        <h5 class="font-bold text-blue-800 mb-2">✅ Avantages majeurs</h5>
-                        <ul class="space-y-1 text-sm text-blue-700">
-                          <li>• Interlocuteur unique et responsable</li>
-                          <li>• Accès direct aux pièces constructeur</li>
-                          <li>• Personnel formé sur vos droits</li>
-                          <li>• Image de marque à préserver</li>
-                          <li>• Réseau de concessions solidaires</li>
-                        </ul>
-                      </div>
-                      <div class="bg-red-50 p-4 rounded">
-                        <h5 class="font-bold text-red-800 mb-2">⚠️ Pièges possibles</h5>
-                        <ul class="space-y-1 text-sm text-red-700">
-                          <li>• Tentent de renvoyer vers le constructeur</li>
-                          <li>• Privilégient la garantie constructeur</li>
-                          <li>• Peuvent minimiser les défauts</li>
-                          <li>• Délais parfois longs</li>
-                        </ul>
-                      </div>
-                    </div>
-                    
-                    <div class="bg-green-50 border-l-4 border-green-400 p-4">
-                      <h5 class="font-bold text-green-800 mb-2">🎯 Stratégie concession</h5>
-                      <ol class="list-decimal list-inside space-y-1 text-sm text-green-700">
-                        <li>Prenez RDV avec le <strong>chef d'atelier</strong> ou <strong>responsable SAV</strong></li>
-                        <li>Présentez votre dossier complet (facture + photos + descriptif)</li>
-                        <li>Mentionnez immédiatement la <strong>garantie légale L.217-9</strong></li>
-                        <li>Précisez que vous ne souhaitez <strong>pas être renvoyé</strong> vers le constructeur</li>
-                        <li>Demandez un <strong>écrit</strong> avec diagnostic et solution proposée</li>
-                      </ol>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Mandataire -->
-              <div class="bg-white border border-orange-200 rounded-lg p-4 sm:p-6 shadow-sm">
-                <div class="flex items-start">
-                  <div class="bg-orange-600 text-white rounded-full w-12 h-12 flex items-center justify-center font-bold text-base sm:text-lg mr-4 flex-shrink-0">2</div>
-                  <div class="flex-1">
-                    <h4 class="text-lg sm:text-xl font-bold text-orange-900 mb-3">🤝 MANDATAIRE AUTO (Attention)</h4>
-                    <div class="bg-orange-50 p-4 rounded mb-4">
-                      <h5 class="font-bold text-orange-800 mb-2">⚠️ Spécificité mandataire</h5>
-                      <p class="text-orange-700 text-sm">
-                        Le mandataire n'est qu'un <strong>intermédiaire</strong>. Le vendeur légal est la concession européenne qui a livré la voiture. Vos recours sont plus complexes mais possibles.
-                      </p>
-                    </div>
-                    
-                    <div class="grid md:grid-cols-2 gap-4">
-                      <div class="bg-red-50 p-4 rounded">
-                        <h5 class="font-bold text-red-800 mb-2">❌ Difficultés</h5>
-                        <ul class="space-y-1 text-sm text-red-700">
-                          <li>• Responsabilité parfois diluée</li>
-                          <li>• Vendeur réel à l'étranger</li>
-                          <li>• Garantie constructeur limitée</li>
-                          <li>• SAV plus compliqué</li>
-                          <li>• Barrière de la langue possible</li>
-                        </ul>
-                      </div>
-                      <div class="bg-green-50 p-4 rounded">
-                        <h5 class="font-bold text-green-800 mb-2">✅ Solutions</h5>
-                        <ul class="space-y-1 text-sm text-green-700">
-                          <li>• Garantie légale française applicable</li>
-                          <li>• Mandataire responsable solidaire</li>
-                          <li>• Tribunaux français compétents</li>
-                          <li>• Recours contre le mandataire</li>
-                        </ul>
-                      </div>
-                    </div>
-
-                    <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mt-4">
-                      <h5 class="font-bold text-yellow-800 mb-2">💡 Stratégie mandataire</h5>
-                      <p class="text-yellow-700 text-sm">
-                        <strong>1.</strong> Mettez en demeure le mandataire français<br>
-                        <strong>2.</strong> Exigez qu'il se retourne contre le vendeur européen<br>
-                        <strong>3.</strong> Si refus, assignez le mandataire devant tribunal français<br>
-                        <strong>4.</strong> Invoquez sa responsabilité commerciale (défaut d'information)
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Garage indépendant -->
-              <div class="bg-white border border-green-200 rounded-lg p-4 sm:p-6 shadow-sm">
-                <div class="flex items-start">
-                  <div class="bg-green-600 text-white rounded-full w-12 h-12 flex items-center justify-center font-bold text-base sm:text-lg mr-4 flex-shrink-0">3</div>
-                  <div class="flex-1">
-                    <h4 class="text-lg sm:text-xl font-bold text-green-900 mb-3">🔧 GARAGE INDÉPENDANT</h4>
-                    <div class="grid md:grid-cols-2 gap-4 mb-4">
-                      <div class="bg-green-50 p-4 rounded">
-                        <h5 class="font-bold text-green-800 mb-2">✅ Points positifs</h5>
-                        <ul class="space-y-1 text-sm text-green-700">
-                          <li>• Relation de proximité</li>
-                          <li>• Flexibilité commerciale</li>
-                          <li>• Évite les contentieux</li>
-                          <li>• Connaissance du droit français</li>
-                        </ul>
-                      </div>
-                      <div class="bg-red-50 p-4 rounded">
-                        <h5 class="font-bold text-red-800 mb-2">⚠️ Limites</h5>
-                        <ul class="space-y-1 text-sm text-red-700">
-                          <li>• Moyens techniques limités</li>
-                          <li>• Accès pièces parfois difficile</li>
-                          <li>• Formation variable sur garanties</li>
-                          <li>• Capacité financière réduite</li>
-                        </ul>
-                      </div>
-                    </div>
-
-                    <div class="bg-blue-50 border-l-4 border-blue-400 p-4">
-                      <h5 class="font-bold text-blue-800 mb-2">🎯 Approche garage indépendant</h5>
-                      <ul class="space-y-1 text-sm text-blue-700">
-                        <li>• Privilégiez le dialogue et la négociation</li>
-                        <li>• Expliquez calmement la garantie légale</li>
-                        <li>• Proposez des solutions (réparation/échange)</li>
-                        <li>• Mentionnez les recours en dernier ressort</li>
-                        <li>• Valorisez la relation commerciale</li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="bg-gradient-to-r from-red-50 to-orange-50 border border-red-200 rounded-lg p-4 sm:p-6 mt-8">
-              <h4 class="text-base sm:text-lg font-bold text-red-900 mb-4">🚨 Cas d'urgence : véhicule dangereux</h4>
-              <div class="grid md:grid-cols-2 gap-4">
-                <div>
-                  <h5 class="font-bold text-red-800 mb-2">⚠️ Défauts de sécurité</h5>
-                  <ul class="space-y-1 text-sm text-red-700">
-                    <li>• Freinage défaillant</li>
-                    <li>• Direction qui accroche</li>
-                    <li>• Airbags qui ne se déclenchent pas</li>
-                    <li>• Perte de puissance brutale</li>
-                    <li>• Problème suspension majeur</li>
-                  </ul>
-                </div>
-                <div>
-                  <h5 class="font-bold text-green-800 mb-2">🆘 Actions immédiates</h5>
-                  <ul class="space-y-1 text-sm text-green-700">
-                    <li>• <strong>Cessez l'utilisation</strong> immédiatement</li>
-                    <li>• <strong>Mise en demeure 48h</strong> max</li>
-                    <li>• <strong>Véhicule de remplacement</strong> exigé</li>
-                    <li>• <strong>Signalement DGCCRF</strong> si refus</li>
-                    <li>• <strong>Expertise indépendante</strong> si nécessaire</li>
-                  </ul>
-                </div>
-              </div>
-              <div class="bg-white p-4 rounded mt-4 border-l-4 border-red-400">
-                <p class="text-sm text-red-700">
-                  <strong>⚖️ Responsabilité pénale :</strong> Un professionnel qui refuse de réparer un défaut de sécurité connu engage sa responsabilité pénale (mise en danger d'autrui).
-                </p>
-              </div>
-            </div>
-          </div>
-        `,
+        name: `Permanences juridiques gratuites : conseils d\\`,
+        url: `/guides/permanences-juridiques`,
       },
     ],
-    faqSchema: createFAQSchema([
-      {
-        question:
-          'Ma voiture neuve a un problème moteur, la concession peut-elle me renvoyer vers le constructeur ?',
-        answer:
-          "Non, c'est strictement interdit par l'article L.217-14. La concession qui vous a vendu la voiture est votre seul interlocuteur légal pour la garantie légale.",
-      },
-      {
-        question: "J'ai acheté via un mandataire, qui est responsable en cas de défaut ?",
-        answer:
-          "Le mandataire français reste responsable même si le vendeur réel est européen. Vous pouvez le mettre en demeure et l'assigner devant les tribunaux français.",
-      },
-      {
-        question: 'Combien de temps ai-je pour signaler un défaut sur ma voiture neuve ?',
-        answer:
-          "2 ans à partir de la livraison. Pendant cette période, tout défaut est présumé exister dès la livraison selon l'article L.217-7.",
-      },
-      {
-        question: 'Un équipement de sécurité ne fonctionne pas, que dois-je faire ?',
-        answer:
-          "Cessez immédiatement l'utilisation et mettez en demeure sous 48h. Exigez un véhicule de remplacement et la réparation urgente. C'est un cas prioritaire.",
-      },
-    ]),
-    disclaimer: LEGAL_DISCLAIMER,
   },
-};
-
-export const generateRelatedContent = (currentGuide: string, guides: Record<string, GuidePage>) => {
-  const currentCategory = getCurrentCategory(currentGuide);
-  const relatedGuides = Object.entries(guides)
-    .filter(([slug, guide]) => slug !== currentGuide && isRelated(slug, currentCategory))
-    .slice(0, 3)
-    .map(([slug, guide]) => ({
-      slug,
-      title: guide.title,
-      description: guide.seo.description.substring(0, 150) + '...',
-    }));
-
-  return relatedGuides;
-};
-
-// Catégorisation robuste, compatible avec tes retours actuels
-// Retourne: 'tech' | 'home' | 'auto' | 'general'
-export const getCurrentCategory = (guideSlug: string): string => {
-  const norm = (s: string) =>
-    s
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/\p{Diacritic}/gu, '') // enlève accents
-      .replace(/[_\s]+/g, '-'); // homogénéise séparateurs
-
-  const s = norm(guideSlug);
-
-  // --- PRIORITÉ: on matche du plus spécifique au plus générique ---
-
-  // 1) AUTO / MOBILITÉ (voiture, moto, scooter, camping-car, VAE, trottinettes, autoradio…)
-  const AUTO_PATTERNS: RegExp[] = [
-    /\b(voiture|auto|vehicule|vehicule-electrique|ve|hybride|hybrid)\b/,
-    /\b(camping-?car|van-?amenage)\b/,
-    /\b(moto|scooter)\b/,
-    /\b(autoradio|infotainment|ecran-tactile-auto|gps-voiture)\b/,
-    // mobilité légère électrique → on considère côté "auto" (proche usage transport)
-    /\b(velo(-| )electrique|vae|trottinette(-| )electrique)\b/,
-  ];
-  if (AUTO_PATTERNS.some(r => r.test(s))) return 'auto';
-
-  // 2) TECH (high-tech grand public : audio, vidéo, informatique, photo, réseau, gaming…)
-  const TECH_PATTERNS: RegExp[] = [
-    // téléphonie / mobile
-    /\b(smartphone|telephone|iphone|android|pixel-phone|galaxy)\b/,
-    // ordinateurs
-    /\b(ordinateur(-| )portable|pc(-| )portable|laptop|macbook|notebook)\b/,
-    // tablettes / montres
-    /\b(tablette|ipad)\b/,
-    /\b(smartwatch|montre(-| )connectee)\b/,
-    // audio
-    /\b(casque(-| )audio|ecouteurs|earbuds|airpods|barre(-| )de(-| )son|home(-| )cinema|soundbar)\b/,
-    // photo / vidéo
-    /\b(appareil(-| )photo|hybride(-| )photo|boitier(-| )hybride|camera)\b/,
-    // réseau
-    /\b(routeur|router|wifi|wi-?fi|mesh|modem|ethernet)\b/,
-    // gaming portable
-    /\b(console(-| )portable|steam(-| )deck|switch|rog(-| )ally|joystick|drift)\b/,
-    // aspirateur robot (tech embarquée, app & navigation)
-    /\b(aspirateur(-| )robot|robot(-| )aspirateur)\b/,
-    // domotique côté passerelles/capteurs (tech orientée réseau)
-    /\b(domotique|passerelle|gateway|capteurs(-| )iot|zigbee|zwave|homekit)\b/,
-  ];
-  if (TECH_PATTERNS.some(r => r.test(s))) return 'tech';
-
-  // 3) HOME (électroménager + maison: froid, lavage, cuisson, HVAC, sécurité, petit électro)
-  const HOME_PATTERNS: RegExp[] = [
-    // électroménager lavage / cuisine
-    /\b(electromenager)\b/,
-    /\b(lave(-| )linge|lave(-| )vaisselle|seche(-| )linge)\b/,
-    /\b(refrigerateur|congelateur|frigo)\b/,
-    /\b(micro(-| )ondes|four|plaque(-| )cuisson)\b/,
-    /\b(friteuse|mixeur|blender|extracteur(-| )de(-| )jus|yaourtiere|machine(-| )a(-| )pain|centrale(-| )vapeur)\b/,
-    // HVAC / eau chaude / ventilation
-    /\b(climatisation|clim|vmc|chaudiere|pompe(-| )a(-| )chaleur|chauffe(-| )eau|cumulus)\b/,
-    // sécurité / accès
-    /\b(alarme|sirene|capteurs(-| )ouverture|portail(-| )motorise)\b/,
-    // fitness maison “non mobilité”
-    /\b(tapis(-| )de(-| )course|rameur|velo(-| )dappartement|home(-| )trainer|materiel(-| )fitness)\b/,
-    // cuisine/maison divers
-    /\b(yaourt|petrin|cuve|resistance|thermostat)\b/,
-  ];
-  if (HOME_PATTERNS.some(r => r.test(s))) return 'home';
-
-  // 4) Filets de sécurité (mots généraux qui basculent vers une catégorie logique)
-  if (/\b(garantie|sav|mise(-| )en(-| )demeure)\b/.test(s)) {
-    // Heuristique: si rien n’a matché avant et que ça parle d’un produit tech courant
-    if (
-      /\b(casque|ecouteurs|smartwatch|tablette|console|routeur|ordinateur|laptop|smartphone|appareil(-| )photo)\b/.test(
-        s
-      )
-    ) {
-      return 'tech';
-    }
-    // Produits maison courants
-    if (
-      /\b(lave|vaisselle|linge|frigo|micro|four|clim|vmc|chaudiere|pompe|chauffe(-| )eau|aspirateur|barre(-| )de(-| )son)\b/.test(
-        s
-      )
-    ) {
-      return 'home';
-    }
-    // Mobilité
-    if (/\b(voiture|auto|moto|scooter|camping(-| )car|velo|trottinette)\b/.test(s)) {
-      return 'auto';
-    }
-  }
-
-  // 5) Défaut: général
-  return 'general';
-};
-
-const isRelated = (guideSlug: string, category: string): boolean => {
-  const guideCategory = getCurrentCategory(guideSlug);
-  return guideCategory === category || category === 'general';
-};
-
-export const getAllOptimizedGuides = () => ({
-  ...SEO_OPTIMIZED_GUIDES,
-  ...AUTOMOBILE_GUIDES,
-});
-
-export const GUIDES_SEO_CONFIG = {
-  baseUrl: 'https://jemedefends.fr/guides/',
-  defaultImage: 'https://jemedefends.fr/images/guides-og-default.jpg',
-  organization: {
-    name: 'Je me défends',
-    url: 'https://jemedefends.fr',
-    logo: 'https://jemedefends.fr/logo.png',
-  },
-  breadcrumbsBase: [
-    { name: 'Accueil', url: 'https://jemedefends.fr' },
-    { name: 'Guides', url: 'https://jemedefends.fr/guides' },
+  sections: [
+    {
+      id: `intro`,
+      title: `L’essentiel`,
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec : <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24&nbsp;mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤&nbsp;30&nbsp;jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: `types-permanences`,
+      title: `Types de permanences et lieux d\\`,
+      content: (
+        <div className="space-y-3">
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs text={`• Fréquence : 1er et 3e samedi du mois`} />,
+                <TextWithLegalRefs text={`• Horaires : 9h-12h généralement`} />,
+                <TextWithLegalRefs text={`• Durée consultation : 30 minutes`} />,
+                <TextWithLegalRefs text={`• Sur RDV : prise au secrétariat mairie`} />,
+                <TextWithLegalRefs text={`• Zones : toutes communes > 20 000 habitants`} />,
+                <TextWithLegalRefs text={`• Barreaux locaux : roulement organisé`} />,
+                <TextWithLegalRefs
+                  text={`• Spécialisations variées : consommation, famille, travail`}
+                />,
+                <TextWithLegalRefs text={`• Expérience confirmée : minimum 5 ans`} />,
+                <TextWithLegalRefs text={`• Déontologie : secret professionnel garanti`} />,
+                <TextWithLegalRefs text={`• Tribunaux judiciaires : hall d'accueil`} />,
+                <TextWithLegalRefs text={`• Tribunaux de proximité : selon disponibilité`} />,
+                <TextWithLegalRefs text={`• Cours d'appel : grandes villes`} />,
+              ] as React.ReactNode[]
+            }
+          />
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Les permanences juridiques gratuites sont organisées par les points d'accès au droit sur tout le territoire français, en application de la loi du 10 juillet 1991 .`}
+            />
+          </p>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`🏛️ Permanences en mairie 📅 Organisation type • Fréquence : 1er et 3e samedi du mois • Horaires : 9h-12h généralement • Durée consultation : 30 minutes • Sur RDV : prise au secrétariat mairie • Zones : toutes communes > 20 000 habitants ⚖️ Avocats présents • Barreaux locaux : roulement organisé • Spécialisations variées : consommation, famille, travail • Expérience confirmée : minimum 5 ans • Déontologie : secret professionnel garanti 🔍 Trouver : Contactez votre mairie ou consultez le site de votre préfecture`}
+            />
+          </p>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`⚖️ Points d'accès au droit (tribunaux) 🏛️ Localisations • Tribunaux judiciaires : hall d'accueil • Tribunaux de proximité : selon disponibilité • Cours d'appel : grandes villes • Accès direct : pas de RDV parfois 🕐 Créneaux • Matinées : mardi, jeudi souvent • Consultations : 20-30 minutes • File d'attente : premier arrivé, premier servi • Capacité : 10-15 personnes/séance 📍 Localiser : justice.fr → "Points d'accès au droit" → votre département`}
+            />
+          </p>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`🏠 Maisons de justice et du droit 🌟 Services étendus • Accueil personnalisé : orientation juridique • Consultations d'avocats : sur RDV • Médiateurs : règlement amiable • Notaires : conseils patrimoniaux • Huissiers : procédures recouvrement 📞 Modalités • RDV obligatoire : par téléphone • Délai : 2-3 semaines généralement • Durée : 45 minutes à 1h • Suivi possible : selon les cas 🗺️ Carte : conseil-national.mediation.fr → "Annuaire des maisons de justice"`}
+            />
+          </p>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`🤝 Autres lieux d'accès 🏘️ Centres sociaux • Quartiers populaires • Proximité habitants • Horaires adaptés • Accompagnement social 🏢 Préfectures/sous-préfectures • Droit des étrangers • Procédures administratives • Recours préfectoraux • Contentieux public 🚂 Antennes mobiles • Zones rurales isolées • Caravanes du droit • Planning tournant • Bus juridiques`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: `preparation-consultation`,
+      title: `Préparer sa consultation juridique`,
+      content: (
+        <div className="space-y-3">
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs text={`• Carte d'identité ou passeport`} />,
+                <TextWithLegalRefs text={`• Justificatif domicile récent`} />,
+                <TextWithLegalRefs text={`• Situation familiale : livret famille si pertinent`} />,
+                <TextWithLegalRefs text={`• Chronologie écrite : dates clés`} />,
+                <TextWithLegalRefs text={`• Contrats : vente, service, garantie`} />,
+                <TextWithLegalRefs text={`• Correspondances : emails, courriers`} />,
+                <TextWithLegalRefs text={`• Preuves : photos, factures, témoignages`} />,
+                <TextWithLegalRefs text={`• "Ai-je des droits dans cette situation ?"`} />,
+                <TextWithLegalRefs text={`• "Quels textes de loi s'appliquent ?"`} />,
+                <TextWithLegalRefs text={`• "Quelles sont mes chances de succès ?"`} />,
+                <TextWithLegalRefs text={`• "Quels sont les risques si j'échoue ?"`} />,
+                <TextWithLegalRefs text={`• "Par quoi commencer concrètement ?"`} />,
+              ] as React.ReactNode[]
+            }
+          />
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`📁 Documents à apporter 🆔 Pièces d'identité • Carte d'identité ou passeport • Justificatif domicile récent • Situation familiale : livret famille si pertinent 📋 Dossier litige • Chronologie écrite : dates clés • Contrats : vente, service, garantie • Correspondances : emails, courriers • Preuves : photos, factures, témoignages ❓ Questions essentielles à poser ⚖️ Analyse juridique • "Ai-je des droits dans cette situation ?" • "Quels textes de loi s"appliquent ?" • "Quelles sont mes chances de succès ?" • "Quels sont les risques si j'échoue ?" 🎯 Stratégie pratique • "Par quoi commencer concrètement ?" • "Quels délais dois-je respecter ?" • "Combien cela va-t-il me coûter ?" • "Puis-je avoir des dommages-intérêts ?" ⚠️ Limites des consultations gratuites ❌ Ce qu'elles ne font PAS • Rédaction d'actes : mises en demeure, requêtes • Représentation : audience, négociation • Suivi long : accompagnement durable • Urgences : référés, saisines immédiates ✅ Ce qu'elles offrent • Diagnostic juridique : faisabilité • Orientation : vers bons interlocuteurs • Information : droits et obligations • Première approche : débroussaillage 🚀 Suites possibles après consultation 💼 Avocat payant • Si dossier complexe • Honoraires : 150-500€/h • Aide juridictionnelle possible • Assurance protection juridique 🤝 Solutions amiables • Médiation consommation • Conciliateur de justice • Associations de consommateurs • SignalConso ⚖️ Action en justice • Procédure simplifiée • Tribunal judiciaire • Référé si urgence • Sans avocat possible`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: `procedure`,
+      title: `Procédure type`,
+      content: <StandardProcedure />,
+    },
+    {
+      id: `alternatives`,
+      title: `Si ça bloque`,
+      content: <DefaultAlternatives />,
+    },
+    {
+      id: `contacts`,
+      title: `Contacts utiles`,
+      content: <DefaultContacts />,
+    },
+    {
+      id: `cta`,
+      title: `Passer à l’action`,
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
   ],
+  legal: {
+    mainArticles: [],
+    disclaimer: true,
+    lastUpdated: `2025-09-09`,
+  },
 };
 
-export const validateMobileContent = (content: string): boolean => {
-  const mobileChecks = [
-    content.includes('text-sm sm:text-') || content.includes('text-base sm:text-'),
-    content.includes('p-4 sm:p-') || content.includes('p-3 sm:p-'),
-    content.includes('gap-4 sm:gap-') || content.includes('space-y-4 sm:space-y-'),
-    content.includes('grid-cols-1 sm:grid-cols-'),
-    !content.includes('md:grid-cols-3') || content.includes('lg:grid-cols-3'),
-    content.includes('touch-manipulation') || !content.includes('<a '),
-  ];
-
-  return mobileChecks.filter(Boolean).length >= 4;
+export const GUIDE_FNAC_SAV_RECOURS: GuidePage = {
+  metadata: {
+    title: 'Fnac : SAV et garanties, vos droits de consommateur (2025)',
+    seo: {
+      title: 'SAV Fnac : vos droits garantie légale et recours (Guide 2025)',
+      description:
+        'Problème avec un achat Fnac ? Garantie légale 2 ans obligatoire, extensions payantes, marketplace. Procédure SAV, recours et médiation Fnac-Darty.',
+      keywords: [
+        'SAV Fnac garantie légale',
+        'Fnac refuse réparation',
+        'extension garantie Fnac',
+        'marketplace Fnac vendeur tiers',
+        'médiation Fnac Darty',
+      ],
+    },
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
+      {
+        name: 'Fnac : SAV et garanties, vos droits de consommateur (2025)',
+        url: '/guides/fnac-sav-recours',
+      },
+    ],
+  },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec: <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24&nbsp;mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤&nbsp;30&nbsp;jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['L.217-28', 'L.217-3', 'L.217-9']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'fnac-garanties',
+      title: 'Garanties Fnac : légale vs commerciale vs extensions',
+      content: (
+        <div className="space-y-3">
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs text={`• Durée : 2 ans produits neufs`} />,
+                <TextWithLegalRefs text={`• Présomption : défaut pendant 24 mois`} />,
+                <TextWithLegalRefs text={`• Gratuite : réparation, remplacement`} />,
+                <TextWithLegalRefs text={`• Fnac responsable : en tant que vendeur`} />,
+                <TextWithLegalRefs text={`• Base légale : Articles L.217-3 à L.217-28`} />,
+                <TextWithLegalRefs
+                  text={`• Tous produits : culturels, high-tech, électroménager`}
+                />,
+                <TextWithLegalRefs text={`• SAV intégré : ateliers de réparation`} />,
+                <TextWithLegalRefs text={`• Échange possible : si réparation > 15 jours`} />,
+                <TextWithLegalRefs text={`• Remboursement : si échec réparation/remplacement`} />,
+                <TextWithLegalRefs text={`• Fnac+ : +1 an (total 3 ans)`} />,
+                <TextWithLegalRefs text={`• Fnac++ : +2 ans (total 4 ans)`} />,
+                <TextWithLegalRefs text={`• Casse accidentelle : option payante`} />,
+              ] as React.ReactNode[]
+            }
+          />
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`La Fnac, comme tout vendeur, est tenue de respecter la garantie légale de conformité (2 ans). S'ajoutent ses garanties commerciales et extensions payantes qui complètent mais ne remplacent jamais vos droits.`}
+            />
+          </p>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`⚖️ Garantie légale (obligatoire) 📋 Caractéristiques • Durée : 2 ans produits neufs • Présomption : défaut pendant 24 mois • Gratuite : réparation, remplacement • Fnac responsable : en tant que vendeur • Base légale : Articles L.217-3 à L.217-28 🎯 Spécificités Fnac • Tous produits : culturels, high-tech, électroménager • SAV intégré : ateliers de réparation • Échange possible : si réparation > 15 jours • Remboursement : si échec réparation/remplacement 💳 Extensions de garantie Fnac ⚠️ Rappel : Ces extensions sont facultatives et s'ajoutent aux 2 ans légaux. Le vendeur ne peut pas conditionner la vente à leur souscription.`}
+            />
+          </p>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`📱 High-tech • Fnac+ : +1 an (total 3 ans) • Fnac++ : +2 ans (total 4 ans) • Casse accidentelle : option payante • Vol/vandalisme : selon contrat • Coût : 10-20% prix d'achat 🎵 Produits culturels • Échange : CD/DVD rayés (30 jours) • Satisfait ou remboursé : livres (15 jours) • Vinyles : garantie qualité audio • Instruments : réglages gratuits 1 an 🏪 Fnac Marketplace (vendeurs tiers) 🔍 Identifier le vendeur • "Vendu par Fnac" : Fnac responsable • "Vendu par [Nom]" : vendeur tiers responsable • Expédition : peut être Fnac même si vendeur tiers • Fiche produit : mention claire obligatoire ⚖️ Droits selon vendeur • Vendeur UE : garantie légale applicable • Vendeur hors UE : droit local (attention !) • Protection Fnac : remboursement si problème • Contact : vendeur d'abord, puis Fnac`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'procedure-sav-fnac',
+      title: 'Procédure SAV Fnac étape par étape',
+      content: (
+        <div className="space-y-3">
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs text={`• Site web : fnac.com → "Mon compte" → "SAV"`} />,
+                <TextWithLegalRefs text={`• Téléphone : 0892 350 300 (0,35€/min)`} />,
+                <TextWithLegalRefs text={`• Magasin : retour au point de vente`} />,
+                <TextWithLegalRefs text={`• Chat : assistance en ligne 9h-20h`} />,
+                <TextWithLegalRefs text={`• N° de commande (email confirmation)`} />,
+                <TextWithLegalRefs text={`• Référence produit exacte`} />,
+                <TextWithLegalRefs text={`• Description du problème`} />,
+                <TextWithLegalRefs text={`• Date d'achat et première utilisation`} />,
+                <TextWithLegalRefs text={`• Diagnostic immédiat : techniciens sur place`} />,
+                <TextWithLegalRefs text={`• Ateliers intégrés : réparation directe`} />,
+                <TextWithLegalRefs text={`• Échange sur place : si stock disponible`} />,
+                <TextWithLegalRefs text={`• Sans RDV : aux horaires d'ouverture`} />,
+              ] as React.ReactNode[]
+            }
+          />
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`1 📞 Contact SAV Fnac 🌐 Canaux disponibles • Site web : fnac.com → "Mon compte" → "SAV" • Téléphone : 0892 350 300 (0,35€/min) • Magasin : retour au point de vente • Chat : assistance en ligne 9h-20h 📋 Informations requises • N° de commande (email confirmation) • Référence produit exacte • Description du problème • Date d'achat et première utilisation 💡 Astuce : Mentionnez "garantie légale de conformité" dès le premier contact pour éviter qu'on vous oriente vers le fabricant.`}
+            />
+          </p>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`2 🔧 Diagnostic et réparation 🏪 En magasin (recommandé) • Diagnostic immédiat : techniciens sur place • Ateliers intégrés : réparation directe • Échange sur place : si stock disponible • Sans RDV : aux horaires d'ouverture 📦 Envoi en atelier • Colissimo gratuit : étiquette fournie • Diagnostic sous 5 jours : notification par email • Réparation 10-15 jours : selon disponibilité pièces • Retour gratuit : livraison domicile/magasin 3 ❌ Gestion des refus 🚫 Refus abusifs fréquents • "C"est la garantie constructeur" → FAUX : Art. L.217-9 vous protège • "Garantie expirée" → Rappeler les 2 ans légaux • "Usure normale" → Exiger rapport d'expertise • "Mauvaise utilisation" → Preuve à la charge de Fnac 📞 Escalade interne • Service réclamations : fnac.com • Responsable magasin • Direction régionale • Service consommateurs siège ⚖️ Recours externes • Médiation : mediateur-fnac-darty.com • 60 Millions : support UFC • SignalConso : DGCCRF 4 🤝 Médiation Fnac-Darty La Fnac et Darty partagent le même médiateur de la consommation depuis leur rapprochement.`}
+            />
+          </p>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`📋 Conditions de saisine • Recours préalable : échec SAV obligatoire • Délai : 1 an après réclamation • Gratuit : pour le consommateur • Dématérialisé : dossier en ligne ⏱️ Procédure • Dépôt : mediateur-fnac-darty.com • Délai : 90 jours maximum • Avis motivé : solution proposée • Exécution : libre adhésion`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    { id: 'procedure', title: 'Procédure type', content: <StandardProcedure /> },
+    { id: 'alternatives', title: 'Si ça bloque', content: <DefaultAlternatives /> },
+    { id: 'contacts', title: 'Contacts utiles', content: <DefaultContacts /> },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: [
+      'L.217-28' as LegalArticleId,
+      'L.217-3' as LegalArticleId,
+      'L.217-9' as LegalArticleId,
+    ],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
 };
 
-export const optimizeHTMLForMobile = (html: string): string => {
-  let optimized = html;
+export const GUIDE_BOULANGER_GARANTIES: GuidePage = {
+  metadata: {
+    title: 'Boulanger : SAV et garanties électroménager (2025)',
+    seo: {
+      title: 'SAV Boulanger : vos droits et garanties électroménager (Guide 2025)',
+      description:
+        'Problème avec un achat Boulanger ? Garantie légale 2 ans, installation gratuite, extensions payantes. Procédure SAV complète et recours.',
+      keywords: [
+        'SAV Boulanger garantie légale',
+        'Boulanger installation gratuite',
+        'extension garantie Boulanger',
+        'électroménager Boulanger panne',
+        'réclamation Boulanger',
+      ],
+    },
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
+      {
+        name: 'Boulanger : SAV et garanties électroménager (2025)',
+        url: '/guides/boulanger-garanties',
+      },
+    ],
+  },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec: <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24&nbsp;mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤&nbsp;30&nbsp;jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'boulanger-services',
+      title: 'Services et garanties Boulanger',
+      content: (
+        <div className="space-y-3">
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs text={`• Gros électroménager : pose standard incluse`} />,
+                <TextWithLegalRefs text={`• Raccordements : eau, évacuation, électricité`} />,
+                <TextWithLegalRefs text={`• Mise en service : premier démarrage`} />,
+                <TextWithLegalRefs text={`• Évacuation ancien : reprise gratuite`} />,
+                <TextWithLegalRefs text={`• Délai : RDV sous 48-72h`} />,
+                <TextWithLegalRefs text={`• Déballage : mise en place incluse`} />,
+                <TextWithLegalRefs text={`• Première installation : paramétrage de base`} />,
+                <TextWithLegalRefs text={`• Raccordement : selon complexité`} />,
+                <TextWithLegalRefs text={`• Formation : utilisation basics`} />,
+                <TextWithLegalRefs text={`• 2 ans produits neufs`} />,
+                <TextWithLegalRefs text={`• Réparation gratuite prioritaire`} />,
+                <TextWithLegalRefs text={`• Remplacement si réparation impossible`} />,
+              ] as React.ReactNode[]
+            }
+          />
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Boulanger, spécialiste de l'électroménager, propose des services d'installation et doit respecter la garantie légale 2 ans + ses garanties commerciales spécialisées.`}
+            />
+          </p>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`🛠️ Services inclus Boulanger 🏠 Installation gratuite • Gros électroménager : pose standard incluse • Raccordements : eau, évacuation, électricité • Mise en service : premier démarrage • Évacuation ancien : reprise gratuite • Délai : RDV sous 48-72h 📺 High-tech • Déballage : mise en place incluse • Première installation : paramétrage de base • Raccordement : selon complexité • Formation : utilisation basics ⚖️ Garanties applicables 📋 Garantie légale (obligatoire) • 2 ans produits neufs • Réparation gratuite prioritaire • Remplacement si réparation impossible • Installation incluse dans réparation • Boulanger responsable comme vendeur 🎯 Spécificités électroménager • Installation défaillante : reprise gratuite • Panne liée pose : Boulanger responsable • Produit de remplacement : réinstallation incluse • Délai réparation : prêt d'appareil si > 7 jours 💳 Extensions payantes Sérénité 3 ans : +1 an après garantie légale Sérénité 4 ans : +2 ans pièces et main d'œuvre Sérénité 5 ans : Couverture maximale 🔧 SAV spécialisé électroménager 🏠 Intervention à domicile • Diagnostic gratuit : technicien qualifié • Réparation sur place : si pièces disponibles • RDV rapide : 48-72h selon urgence • Déplacement gratuit : sous garantie 🏭 Ateliers centralisés • Enlèvement gratuit : si réparation impossible domicile • Atelier agréé : toutes marques • Pièces d'origine : garanties constructeur • Livraison/réinstallation : incluses`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    { id: 'procedure', title: 'Procédure type', content: <StandardProcedure /> },
+    { id: 'alternatives', title: 'Si ça bloque', content: <DefaultAlternatives /> },
+    { id: 'contacts', title: 'Contacts utiles', content: <DefaultContacts /> },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: [],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
 
-  const replacements = {
-    'class="grid md:grid-cols-2 gap-6"': 'class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6"',
-    'class="grid md:grid-cols-3 gap-6"':
-      'class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"',
-    'class="p-6"': 'class="p-4 sm:p-6"',
-    'class="mb-8"': 'class="mb-6 sm:mb-8"',
-    'class="space-y-6"': 'class="space-y-4 sm:space-y-6"',
-    'class="text-lg"': 'class="text-base sm:text-lg"',
-    'class="text-xl"': 'class="text-lg sm:text-xl"',
-    'class="text-2xl"': 'class="text-xl sm:text-2xl"',
-  };
+export const GUIDE_CDISCOUNT_MARKETPLACE: GuidePage = {
+  metadata: {
+    title: 'Cdiscount marketplace : vos droits avec les vendeurs tiers (2025)',
+    seo: {
+      title: 'Cdiscount marketplace : vos droits vendeurs tiers (Guide 2025)',
+      description:
+        'Achat chez un vendeur tiers sur Cdiscount ? Distinguez Pro/Particulier, garantie légale applicable, A-Z Protection. Procédure complète de recours.',
+      keywords: [
+        'Cdiscount marketplace vendeur tiers',
+        'Cdiscount A-Z protection',
+        'vendeur pro Cdiscount droits',
+        'garantie légale Cdiscount',
+        'réclamation vendeur Cdiscount',
+      ],
+    },
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
+      {
+        name: 'Cdiscount marketplace : vos droits avec les vendeurs tiers (2025)',
+        url: '/guides/cdiscount-marketplace',
+      },
+    ],
+  },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec: <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24&nbsp;mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤&nbsp;30&nbsp;jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'cdiscount-responsabilites',
+      title: 'Cdiscount vs vendeurs tiers : qui est responsable ?',
+      content: (
+        <div className="space-y-3">
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs text={`• "Vendu et expédié par Cdiscount"`} />,
+                <TextWithLegalRefs text={`• Logo Cdiscount sans mention vendeur`} />,
+                <TextWithLegalRefs text={`• "Cdiscount à volonté" éligible`} />,
+                <TextWithLegalRefs text={`• Garantie légale 2 ans française`} />,
+                <TextWithLegalRefs text={`• Cdiscount responsable directement`} />,
+                <TextWithLegalRefs text={`• SAV centralisé Cdiscount`} />,
+                <TextWithLegalRefs text={`• Retour ≤ 30 jours (L.217-10) selon produit`} />,
+                <TextWithLegalRefs text={`• Remboursement rapide`} />,
+                <TextWithLegalRefs text={`• "Vendu par [Nom vendeur]"`} />,
+                <TextWithLegalRefs text={`• "Expédié par Cdiscount" ou vendeur`} />,
+                <TextWithLegalRefs text={`• Nom société visible sur fiche`} />,
+                <TextWithLegalRefs text={`• Vendeur Pro UE : garantie légale 2 ans`} />,
+              ] as React.ReactNode[]
+            }
+          />
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Cdiscount fonctionne principalement comme marketplace : distinguer Cdiscount vendeur direct des milliers de vendeurs tiers est crucial pour vos recours.`}
+            />
+          </p>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs text={`🛒 Cdiscount vendeur direct 🔍 Comment identifier :`} />
+          </p>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`• "Vendu et expédié par Cdiscount" • Logo Cdiscount sans mention vendeur • "Cdiscount à volonté" éligible ✅ Vos droits • Garantie légale 2 ans française • Cdiscount responsable directement • SAV centralisé Cdiscount • Retour ≤ 30 jours (L.217-10) selon produit • Remboursement rapide 🏪 Vendeurs tiers marketplace 🔍 Comment identifier :`}
+            />
+          </p>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`• "Vendu par [Nom vendeur]" • "Expédié par Cdiscount" ou vendeur • Nom société visible sur fiche ⚖️ Vos droits • Vendeur Pro UE : garantie légale 2 ans • Vendeur particulier : pas de garantie légale • Vendeur hors UE : droit local • A-Z Protection : recours Cdiscount • Contact vendeur obligatoire d'abord 🔍 Identifier le statut du vendeur 🏢 Vendeur Professionnel • Mention "Pro" sur fiche • SIRET visible • CGV détaillées • Garantie légale applicable 👤 Vendeur Particulier • Mention "Particulier" • Pas de SIRET • Vente occasionnelle • Pas de garantie légale 🌍 Vendeur étranger • Adresse hors France • Délais livraison longs • Droit local applicable • A-Z Protection essentielle`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    { id: 'procedure', title: 'Procédure type', content: <StandardProcedure /> },
+    { id: 'alternatives', title: 'Si ça bloque', content: <DefaultAlternatives /> },
+    { id: 'contacts', title: 'Contacts utiles', content: <DefaultContacts /> },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: [],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
 
-  for (const [old, newClass] of Object.entries(replacements)) {
-    optimized = optimized.replace(new RegExp(old, 'g'), newClass);
-  }
+export const GUIDE_REFERE_CONSOMMATION: GuidePage = {
+  metadata: {
+    title: 'Référé consommation : procédure d\\',
+    seo: {
+      title: 'Référé consommation : procédure urgence tribunal (Guide 2025)',
+      description: 'Litige consommation urgent ? Le référé permet d\\',
+      keywords: [
+        'référé consommation urgent',
+        'procédure référé tribunal',
+        'urgence litige consommation',
+        'mesures conservatoires référé',
+        'juge référés saisine',
+      ],
+    },
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
+      {
+        name: 'Référé consommation : procédure d\\',
+        url: '/guides/refere-consommation',
+      },
+    ],
+  },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec: <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24&nbsp;mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤&nbsp;30&nbsp;jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['808']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'conditions-refere',
+      title: 'Conditions et cas d\\',
+      content: (
+        <div className="space-y-3">
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs text={`• Préjudice imminent : risque de dommage`} />,
+                <TextWithLegalRefs
+                  text={`• Impossibilité d'attendre : procédure normale trop lente`}
+                />,
+                <TextWithLegalRefs text={`• Caractère objectif : apprécié par le juge`} />,
+                <TextWithLegalRefs text={`• Lien avec le litige : urgence liée au fond`} />,
+                <TextWithLegalRefs text={`• Droit apparent : vraisemblance juridique`} />,
+                <TextWithLegalRefs text={`• Preuve prima facie : éléments suffisants`} />,
+                <TextWithLegalRefs text={`• Contestation non fondée : défense fragile`} />,
+                <TextWithLegalRefs text={`• Provisoire : sans préjuger du fond`} />,
+                <TextWithLegalRefs text={`• Coupure services : électricité, gaz, eau`} />,
+                <TextWithLegalRefs text={`• Denrées périssables : réfrigération HS`} />,
+                <TextWithLegalRefs text={`• Sécurité : produit dangereux non rappelé`} />,
+                <TextWithLegalRefs text={`• Logement : chauffage en hiver, infiltrations`} />,
+              ] as React.ReactNode[]
+            }
+          />
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Le référé permet d'obtenir rapidement des mesures provisoires du juge en cas d' urgence manifeste ( Articles 808 et suivants CPC ).`}
+            />
+          </p>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`⚡ Conditions strictes (Art. 808 CPC) 🚨 Urgence manifeste • Préjudice imminent : risque de dommage • Impossibilité d'attendre : procédure normale trop lente • Caractère objectif : apprécié par le juge • Lien avec le litige : urgence liée au fond ⚖️ Absence de contestation sérieuse • Droit apparent : vraisemblance juridique • Preuve prima facie : éléments suffisants • Contestation non fondée : défense fragile • Provisoire : sans préjuger du fond 🎯 Cas pratiques en consommation ✅ Urgence reconnue • Coupure services : électricité, gaz, eau • Denrées périssables : réfrigération HS • Sécurité : produit dangereux non rappelé • Logement : chauffage en hiver, infiltrations • Professionnel : outil de travail HS • Santé : matériel médical défaillant ❌ Pas d'urgence • Confort : TV, ordinateur personnel • Esthétique : rayures, défauts mineurs • Financier pur : remboursement sans préjudice • Litige complexe : expertise nécessaire • Délai écoulé : urgence non caractérisée ⚖️ Types de mesures possibles 🛡️ Conservatoires • Interdiction de vente • Séquestre du produit • Consignation sommes • Expertise contradictoire 🔧 Remise en état • Réparation immédiate • Remplacement urgent • Remise en service • Produit de substitution 💰 Financières • Provision dommages-intérêts • Remboursement partiel • Paiement créance certaine • Astreinte si non-exécution`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    { id: 'procedure', title: 'Procédure type', content: <StandardProcedure /> },
+    { id: 'alternatives', title: 'Si ça bloque', content: <DefaultAlternatives /> },
+    { id: 'contacts', title: 'Contacts utiles', content: <DefaultContacts /> },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: ['808' as LegalArticleId],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
 
-  if (optimized.includes('<a ') && !optimized.includes('touch-manipulation')) {
-    optimized = optimized.replace(
-      /(<a[^>]*class="[^"]*)(rounded[^"]*")/g,
-      '$1$2 touch-manipulation active:scale-95'
-    );
-  }
+export const GUIDE_ACTION_GROUPE: GuidePage = {
+  metadata: {
+    title: 'Action de groupe consommation : class action française (2025)',
+    seo: {
+      title: 'Action de groupe consommation : class action française (Guide 2025)',
+      description: 'Victime d\\',
+      keywords: [
+        'action de groupe consommation',
+        'class action française',
+        'association action groupe',
+        'préjudice collectif consommation',
+        'indemnisation collective',
+      ],
+    },
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
+      {
+        name: 'Action de groupe consommation : class action française (2025)',
+        url: '/guides/action-groupe',
+      },
+    ],
+  },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec: <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24&nbsp;mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤&nbsp;30&nbsp;jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'principe-action-groupe',
+      title: 'Principe et conditions de l\\',
+      content: (
+        <div className="space-y-3">
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs text={`• Consommateurs multiples : nombre significatif`} />,
+                <TextWithLegalRefs text={`• Situation similaire : même origine du préjudice`} />,
+                <TextWithLegalRefs text={`• Intérêt à agir : lésion commune`} />,
+                <TextWithLegalRefs text={`• Représentativité : groupe homogène`} />,
+                <TextWithLegalRefs text={`• Obligations légales : Code consommation`} />,
+                <TextWithLegalRefs text={`• Obligations contractuelles : CGV, garanties`} />,
+                <TextWithLegalRefs text={`• Pratiques déloyales : publicité, vente`} />,
+                <TextWithLegalRefs text={`• Sécurité produits : défauts en série`} />,
+                <TextWithLegalRefs text={`• Plus active en actions groupe`} />,
+                <TextWithLegalRefs text={`• Expertise juridique développée`} />,
+                <TextWithLegalRefs text={`• Ressources : avocats spécialisés`} />,
+                <TextWithLegalRefs text={`• Secteurs : tous domaines conso`} />,
+              ] as React.ReactNode[]
+            }
+          />
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`l' action de groupe permet aux associations de consommateurs agréées d'agir en justice pour défendre les intérêts collectifs des consommateurs ( Articles L.623-1 et suivants ).`}
+            />
+          </p>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`⚖️ Conditions d'ouverture 👥 Pluralité de victimes • Consommateurs multiples : nombre significatif • Situation similaire : même origine du préjudice • Intérêt à agir : lésion commune • Représentativité : groupe homogène 🎯 Manquement du professionnel • Obligations légales : Code consommation • Obligations contractuelles : CGV, garanties • Pratiques déloyales : publicité, vente • Sécurité produits : défauts en série 🏛️ Associations habilitées Seules les associations agréées au niveau national peuvent initier une action de groupe.`}
+            />
+          </p>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`UFC-Que Choisir • Plus active en actions groupe • Expertise juridique développée • Ressources : avocats spécialisés • Secteurs : tous domaines conso CLCV • Spécialisation : logement, énergie • Actions ciblées : services publics • Expertise technique : secteurs spécialisés Autres (CSF, AFOC) • Actions ponctuelles • Spécialisations sectorielles • Partenariats avec UFC 📊 Exemples d'actions réussies 🎯 Cas emblématiques • Dieselgate : Volkswagen (moteurs truqués) • iPhone : Apple (batterie bridée) • Linky : Enedis (compteurs défaillants) • Pesticides : Roundup (glyphosate) 💰 Indemnisations obtenues • Individuelles : 50€ à 5000€ selon préjudice • Collectives : millions d'euros au total • Mesures correctrices : modification pratiques • Publicité : condamnation publique`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    { id: 'procedure', title: 'Procédure type', content: <StandardProcedure /> },
+    { id: 'alternatives', title: 'Si ça bloque', content: <DefaultAlternatives /> },
+    { id: 'contacts', title: 'Contacts utiles', content: <DefaultContacts /> },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: [],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
 
-  return optimized;
+export const GUIDE_PRESCRIPTION_DELAIS: GuidePage = {
+  metadata: {
+    title: 'Prescription et délais en droit de la consommation (2025)',
+    seo: {
+      title: 'Prescription délais consommation : ne ratez plus vos recours (2025)',
+      description:
+        'Délais pour agir en consommation : 2 ans garantie légale, 2 ans vices cachés après découverte, 5 ans responsabilité. Interruption et suspension.',
+      keywords: [
+        'prescription délais consommation',
+        'délai action garantie légale',
+        'prescription vices cachés',
+        'interruption prescription',
+        'délai recours consommateur',
+      ],
+    },
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
+      {
+        name: 'Prescription et délais en droit de la consommation (2025)',
+        url: '/guides/prescription-delais',
+      },
+    ],
+  },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec : <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24&nbsp;mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤&nbsp;30&nbsp;jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['1648', 'L.217-7', 'L.612-4']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'delais-prescription',
+      title: 'Délais de prescription par type d\\',
+      content: (
+        <div className="space-y-3">
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs text={`• 2 ans à compter de la livraison`} />,
+                <TextWithLegalRefs text={`• 1 an minimum pour l'occasion (pro)`} />,
+                <TextWithLegalRefs text={`• Point de départ : délivrance conforme`} />,
+                <TextWithLegalRefs text={`• Présomption : défaut pendant 24 mois`} />,
+                <TextWithLegalRefs text={`• Livraison échelonnée : dernier élément`} />,
+                <TextWithLegalRefs text={`• Installation complexe : mise en service`} />,
+                <TextWithLegalRefs text={`• Découverte tardive : pas d'extension`} />,
+                <TextWithLegalRefs text={`• Réparation sous garantie : nouveau délai`} />,
+                <TextWithLegalRefs text={`• 2 ans après découverte du vice`} />,
+                <TextWithLegalRefs text={`• Point de départ : connaissance certaine`} />,
+                <TextWithLegalRefs text={`• Preuve : date de découverte à établir`} />,
+                <TextWithLegalRefs text={`• Délai butoir : 20 ans après la vente`} />,
+              ] as React.ReactNode[]
+            }
+          />
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`La prescription éteint le droit d'agir en justice après un certain délai. En droit de la consommation, les délais varient selon le fondement juridique invoqué.`}
+            />
+          </p>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`⚖️ Garantie légale de conformité 📅 Délai principal (Art. L.217-7) • 2 ans à compter de la livraison • 1 an minimum pour l'occasion (pro) • Point de départ : délivrance conforme • Présomption : défaut pendant 24 mois 🔍 Cas particuliers • Livraison échelonnée : dernier élément • Installation complexe : mise en service • Découverte tardive : pas d'extension • Réparation sous garantie : nouveau délai 🔍 Vices cachés (Code civil) ⏰ Délai de découverte (Art. 1648) • 2 ans après découverte du vice • Point de départ : connaissance certaine • Preuve : date de découverte à établir • Délai butoir : 20 ans après la vente 📋 Appréciation découverte • Manifestation claire : du défaut • Expertise : confirmant le vice • Impossibilité d'ignorer : évidence • Pas de soupçons : certitude requise ⚖️ Action en responsabilité 🎯 Délai général (Art. 2224 C.civ) • 5 ans après fait dommageable • Point de départ : dommage + auteur connus • Applications : défaut produit dangereux • Cumul possible : avec garantie légale 💥 Responsabilité produits défectueux • 3 ans : après connaissance dommage + défaut • 10 ans : à compter mise en circulation • Producteur : responsabilité automatique • Dommages corporels : régime spécial 📋 Autres délais spéciaux 💳 Crédit consommation • 2 ans : vices du consentement • 5 ans : nullité du contrat • Point de départ : signature 🏠 Démarchage domicile • 14 jours : rétractation • 1 an : si info manquante • 3 mois : + 14 jours si régularisation 🌐 Vente distance • 14 jours : rétractation • 12 mois : si info manquante • Service : exécution immédiate possible`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'interruption-suspension',
+      title: 'Interruption et suspension de la prescription',
+      content: (
+        <div className="space-y-3">
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs text={`• Citation en justice : assignation au fond`} />,
+                <TextWithLegalRefs text={`• Requête : procédure simplifiée`} />,
+                <TextWithLegalRefs text={`• Référé : même conservatoire`} />,
+                <TextWithLegalRefs text={`• Déclaration : greffe compétent`} />,
+                <TextWithLegalRefs text={`• Commandement : huissier de justice`} />,
+                <TextWithLegalRefs text={`• Reconnaissance expresse : écrite du débiteur`} />,
+                <TextWithLegalRefs text={`• Paiement partiel : reconnaissance implicite`} />,
+                <TextWithLegalRefs text={`• Demande délai : reconnaissance de la dette`} />,
+                <TextWithLegalRefs text={`• Offre transaction : selon les termes`} />,
+                <TextWithLegalRefs text={`• Saisine médiateur : consommation agréé`} />,
+                <TextWithLegalRefs text={`• Durée : jusqu'à fin de médiation`} />,
+                <TextWithLegalRefs text={`• Maximum : 90 jours généralement`} />,
+              ] as React.ReactNode[]
+            }
+          />
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`⏹️ Interruption de la prescription L'interruption efface le délai écoulé et fait courir un nouveau délai intégral.`}
+            />
+          </p>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`⚖️ Actes judiciaires (Art. 2241 C.civ) • Citation en justice : assignation au fond • Requête : procédure simplifiée • Référé : même conservatoire • Déclaration : greffe compétent • Commandement : huissier de justice 📞 Actes de reconnaissance (Art. 2240) • Reconnaissance expresse : écrite du débiteur • Paiement partiel : reconnaissance implicite • Demande délai : reconnaissance de la dette • Offre transaction : selon les termes ⏸️ Suspension de la prescription La suspension arrête temporairement le délai qui reprend ensuite où il s'était arrêté.`}
+            />
+          </p>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`🤝 Médiation (Art. L.612-4) • Saisine médiateur : consommation agréé • Durée : jusqu'à fin de médiation • Maximum : 90 jours généralement • Notification : au professionnel ⚖️ Autres causes suspension • Force majeure : impossibilité absolue • Conciliation : devant conciliateur • Expertise : judiciaire ordonnée • Procédure collective : du débiteur 🎯 Stratégie pour préserver vos droits 📅 Calendrier délais • Noter : date livraison exacte • Calculer : échéance -3 mois • Alertes : rappels automatiques • Documents : classement chronologique ✍️ Actes conservatoires • Mise en demeure : LRAR systématique • Médiation : si délai proche • Citation : en urgence si nécessaire • Référé : mesures conservatoires 🔍 Preuves de dates • Factures : avec mentions légales • Bons livraison : signés datés • Emails : horodatages serveur • Photos : métadonnées EXIF`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    { id: 'procedure', title: 'Procédure type', content: <StandardProcedure /> },
+    { id: 'alternatives', title: 'Si ça bloque', content: <DefaultAlternatives /> },
+    { id: 'contacts', title: 'Contacts utiles', content: <DefaultContacts /> },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: [
+      '1648' as LegalArticleId,
+      'L.217-7' as LegalArticleId,
+      'L.612-4' as LegalArticleId,
+    ],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
+
+export const GUIDE_CONSTITUER_PREUVES: GuidePage = {
+  metadata: {
+    title: 'Constituer un dossier de preuves solide en consommation (2025)',
+    seo: {
+      title: 'Constituer preuves litige consommation : dossier solide (Guide 2025)',
+      description:
+        'Comment constituer un dossier de preuves efficace pour votre litige consommation : documents, photos, expertises, témoignages. Recevabilité et conservation.',
+      keywords: [
+        'constituer preuves consommation',
+        'dossier litige documentation',
+        'photos preuves défaut produit',
+        'correspondances vendeur preuves',
+        'expertise judiciaire consommation',
+      ],
+    },
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
+      {
+        name: 'Constituer un dossier de preuves solide en consommation (2025)',
+        url: '/guides/constituer-preuves',
+      },
+    ],
+  },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec: <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24&nbsp;mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤&nbsp;30&nbsp;jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    { id: 'procedure', title: 'Procédure type', content: <StandardProcedure /> },
+    { id: 'alternatives', title: 'Si ça bloque', content: <DefaultAlternatives /> },
+    { id: 'contacts', title: 'Contacts utiles', content: <DefaultContacts /> },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: [],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
+
+export const GUIDE_ALTERNATIVES: GuidePage = {
+  metadata: {
+    title: 'SignalConso : mode d\\',
+    seo: {
+      title: 'SignalConso : comment signaler un professionnel défaillant (Guide 2025)',
+      description:
+        'Signalement sur SignalConso en 5 étapes : quand, comment, quels documents. Taux de réussite 96%. Pression officielle sur le professionnel.',
+      keywords: [
+        'SignalConso mode emploi',
+        'signaler professionnel DGCCRF',
+        'signal conso efficacité',
+        'signalement consommateur gratuit',
+        'DGCCRF contrôle entreprise',
+      ],
+    },
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
+      { name: 'SignalConso : mode d\\', url: '/guides/alternatives' },
+    ],
+  },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec: <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24&nbsp;mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤&nbsp;30&nbsp;jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['843']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'quand-signaler',
+      title: 'Quand utiliser SignalConso ?',
+      content: (
+        <div className="space-y-3">
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs text={`• Refus de garantie abusif`} />,
+                <TextWithLegalRefs text={`• Clauses contractuelles illégales`} />,
+                <TextWithLegalRefs text={`• Publicité mensongère`} />,
+                <TextWithLegalRefs text={`• Vente forcée / pratiques agressives`} />,
+                <TextWithLegalRefs text={`• Non-respect droit de rétractation`} />,
+                <TextWithLegalRefs text={`• Prix abusifs / entente`} />,
+                <TextWithLegalRefs text={`• Défaut d'information précontractuelle`} />,
+                <TextWithLegalRefs text={`• SAV inexistant`} />,
+                <TextWithLegalRefs text={`• Sécurité produit défaillante`} />,
+                <TextWithLegalRefs text={`• Hygiène / traçabilité`} />,
+              ] as React.ReactNode[]
+            }
+          />
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`SignalConso est le service officiel de signalement des anomalies de consommation à la DGCCRF (Direction générale de la concurrence, de la consommation et de la répression des fraudes).`}
+            />
+          </p>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`✅ Situations où SignalConso est efficace • Refus de garantie abusif • Clauses contractuelles illégales • Publicité mensongère • Vente forcée / pratiques agressives • Non-respect droit de rétractation • Prix abusifs / entente • Défaut d'information précontractuelle • SAV inexistant • Sécurité produit défaillante • Hygiène / traçabilité 📊 Efficacité prouvée 96% de résolution après signalement 15j délai moyen de réponse pro 0€ 100% gratuit`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'procedure-signalement',
+      title: 'Procédure de signalement en 5 étapes',
+      content: (
+        <div className="space-y-3">
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs text={`• Pratique commerciale déloyale`} />,
+                <TextWithLegalRefs text={`• Non-respect réglementation`} />,
+                <TextWithLegalRefs text={`• Sécurité des produits`} />,
+                <TextWithLegalRefs text={`• Problème généralisé`} />,
+                <TextWithLegalRefs text={`• Litige contractuel individuel`} />,
+                <TextWithLegalRefs text={`• Conflit de voisinage`} />,
+                <TextWithLegalRefs text={`• Services bancaires`} />,
+                <TextWithLegalRefs text={`• Professions libérales`} />,
+                <TextWithLegalRefs text={`• Principe : échange contradictoire obligatoire`} />,
+                <TextWithLegalRefs text={`• Délai : 15 jours avant audience`} />,
+                <TextWithLegalRefs text={`• Modalités : LRAR ou remise contre récépissé`} />,
+                <TextWithLegalRefs text={`• Bordereau : inventaire des pièces joint`} />,
+              ] as React.ReactNode[]
+            }
+          />
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`1 🔍 Vérifier l'éligibilité Avant de signaler, vérifiez que votre cas relève bien de la DGCCRF :`}
+            />
+          </p>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`✅ OUI • Pratique commerciale déloyale • Non-respect réglementation • Sécurité des produits • Problème généralisé ❌ NON • Litige contractuel individuel • Conflit de voisinage • Services bancaires • Professions libérales 2 🎯 Se connecter sur signal.conso.gouv.fr Conseil : Créez un compte pour suivre votre signalement et être recontacté.`}
+            />
+          </p>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`💡 Astuce mobile : L'interface est optimisée smartphone, vous pouvez signaler depuis votre téléphone. 3 📝 Remplir le formulaire détaillé ⚠️ Important : Conservez le récépissé et notez le numéro RG (Répertoire Général). C"est votre référence pour tous les échanges ultérieurs.`}
+            />
+          </p>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`3 📬 Notification et échanges Le greffe notifie votre requête au défendeur qui a 15 jours pour répondre (Art. 843 CPC).`}
+            />
+          </p>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`📨 Communication des pièces • Principe : échange contradictoire obligatoire • Délai : 15 jours avant audience • Modalités : LRAR ou remise contre récépissé • Bordereau : inventaire des pièces joint ⚖️ Réponse du défendeur • Conclusions : défense écrite • Demande reconventionnelle : contre-attaque possible • Défaut : si pas de réponse, jugement possible • Transaction : accord amiable jusqu'à l'audience 4 🏛️ Audience et jugement 📅 Déroulement audience • Appel de l'affaire : présence obligatoire • Exposé des parties : 5-10 min chacune • Questions du juge : clarifications • Tentative conciliation : solution amiable • Mise en délibéré : date du jugement ⚖️ Issues possibles • Jugement au fond : décision sur le litige • Mesures d'instruction : expertise ordonnée • Conciliation homologuée : accord devant juge • Renvoi : complément d'information 💡 Conseils pour l'audience • Ponctualité : arrivée 15 min avant • Tenue correcte : respect de l'institution • Documents organisés : classeur avec onglets • Synthèse orale : reprendre les points clés • Respect : vouvoiement, "Monsieur/Madame le Juge"`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    { id: 'procedure', title: 'Procédure type', content: <StandardProcedure /> },
+    { id: 'alternatives', title: 'Si ça bloque', content: <DefaultAlternatives /> },
+    { id: 'contacts', title: 'Contacts utiles', content: <DefaultContacts /> },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: ['843' as LegalArticleId],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
+
+export const GUIDE_SIGNALCONSO: GuidePage = {
+  metadata: {
+    title: 'Vices cachés : action en garantie au-delà de 2 ans (2025)',
+    seo: {
+      title: 'Vices cachés : agir au-delà de la garantie légale (Guide 2025)',
+      description: 'Défaut découvert après 2 ans ? Les vices cachés (Code civil) permettent d\\',
+      keywords: [
+        'vices cachés code civil',
+        'action garantie vices cachés',
+        'défaut antérieur vente',
+        'recours après 2 ans',
+        'articles 1641 1649',
+      ],
+    },
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
+      {
+        name: 'Vices cachés : action en garantie au-delà de 2 ans (2025)',
+        url: '/guides/signalconso',
+      },
+    ],
+  },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec: <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24&nbsp;mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤&nbsp;30&nbsp;jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['1641', '1644', '1645', '1648', '1649']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'definition-vices-caches',
+      title: 'Définition et conditions des vices cachés',
+      content: (
+        <div className="space-y-3">
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs text={`• Test : acheteur diligent n'aurait pas pu déceler`} />,
+                <TextWithLegalRefs text={`• Moment : appréciation à la date de vente`} />,
+                <TextWithLegalRefs text={`• Connaissance vendeur : sans incidence`} />,
+                <TextWithLegalRefs text={`• Critère : usage normal attendu`} />,
+                <TextWithLegalRefs text={`• Appréciation : in concreto (votre situation)`} />,
+                <TextWithLegalRefs text={`• Seuil : trouble suffisamment important`} />,
+                <TextWithLegalRefs text={`• Preuve : à la charge de l'acheteur`} />,
+                <TextWithLegalRefs text={`• Indices : nature du défaut, évolution`} />,
+                <TextWithLegalRefs text={`• Expertise : souvent nécessaire`} />,
+                <TextWithLegalRefs text={`• Test : comportement rationnel`} />,
+                <TextWithLegalRefs text={`• Preuve : présomption simple`} />,
+                <TextWithLegalRefs text={`• Réfutation : vendeur peut contester`} />,
+              ] as React.ReactNode[]
+            }
+          />
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Les vices cachés sont régis par les articles 1641 à 1649 du Code civil . Ils permettent d'agir même après expiration de la garantie légale de conformité.`}
+            />
+          </p>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`⚖️ 4 conditions cumulatives (Article 1641) 1️⃣ Défaut caché Non apparent lors de la vente, même avec examen attentif`}
+            />
+          </p>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`• Test : acheteur diligent n'aurait pas pu déceler • Moment : appréciation à la date de vente • Connaissance vendeur : sans incidence 2️⃣ Défaut grave Rend la chose impropre à l'usage ou diminue cet usage`}
+            />
+          </p>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`• Critère : usage normal attendu • Appréciation : in concreto (votre situation) • Seuil : trouble suffisamment important 3️⃣ Défaut antérieur Existait déjà au moment de la vente`}
+            />
+          </p>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`• Preuve : à la charge de l'acheteur • Indices : nature du défaut, évolution • Expertise : souvent nécessaire 4️⃣ Connaissance présumée l'acheteur n'aurait pas acheté ou à prix moindre`}
+            />
+          </p>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`• Test : comportement rationnel • Preuve : présomption simple • Réfutation : vendeur peut contester 🔍 Vices cachés vs Garantie légale 🆚 Différences clés Délai : Vices cachés : 2 ans après découverte Garantie légale : 2 ans après livraison Preuve : Vices cachés : charge acheteur Garantie légale : présomption 24 mois Conditions : Vices cachés : 4 conditions strictes Garantie légale : simple non-conformité 🎯 Stratégie juridique • privilégier garantie légale • > 2 ans : vices cachés seule option • Cumul possible : selon les faits • Action subsidiaire : vices cachés en 2ème • Choix tactique : selon la preuve disponible 📋 Exemples concrets de vices cachés 🚗 Automobile • Moteur réparé non déclaré • Accident antérieur masqué • Kilométrage trafiqué • Corrosion structurelle 🏠 Immobilier • Infiltrations cachées • Termites non déclarés • Fissures structurelles • Installation électrique dangereuse 📱 Électronique • Composant défaillant interne • Réparation antérieure cachée • Oxydation non visible • Logiciel piraté/modifié`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'procedure-vices-caches',
+      title: 'Procédure et délais d\\',
+      content: (
+        <div className="space-y-3">
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs text={`• Manifestation claire du défaut`} />,
+                <TextWithLegalRefs text={`• Diagnostic professionnel confirmant`} />,
+                <TextWithLegalRefs text={`• Impossibilité d'ignorer le problème`} />,
+                <TextWithLegalRefs text={`• Lien de causalité établi`} />,
+                <TextWithLegalRefs text={`• Dies a quo : jour de découverte certaine`} />,
+                <TextWithLegalRefs text={`• Interruption : citation en justice`} />,
+                <TextWithLegalRefs text={`• Suspension : expertise amiable`} />,
+                <TextWithLegalRefs text={`• Forclusion : délai dépassé = irrecevabilité`} />,
+                <TextWithLegalRefs
+                  text={`• Expert judiciaire : inscription sur liste cour d'appel`}
+                />,
+                <TextWithLegalRefs text={`• Expertise amiable : plus rapide et moins chère`} />,
+                <TextWithLegalRefs text={`• Contre-expertise : droit du vendeur`} />,
+                <TextWithLegalRefs text={`• Coût : 800-3000€ selon complexité`} />,
+              ] as React.ReactNode[]
+            }
+          />
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`⏰ Délai d'action : 2 ans après découverte (Art. 1648) Point de départ : connaissance certaine du vice, pas des simples soupçons ou dysfonctionnements mineurs.`}
+            />
+          </p>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`🔍 Moment de la découverte • Manifestation claire du défaut • Diagnostic professionnel confirmant • Impossibilité d'ignorer le problème • Lien de causalité établi 📅 Calcul du délai • Dies a quo : jour de découverte certaine • Interruption : citation en justice • Suspension : expertise amiable • Forclusion : délai dépassé = irrecevabilité 🔎 Constitution de la preuve La preuve des vices cachés incombe entièrement à l'acheteur . Une expertise technique est souvent indispensable.`}
+            />
+          </p>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`🧪 Expertise technique • Expert judiciaire : inscription sur liste cour d'appel • Expertise amiable : plus rapide et moins chère • Contre-expertise : droit du vendeur • Coût : 800-3000€ selon complexité • Contradictoire : parties convoquées 📋 Éléments de preuve • Rapport d'expertise circonstancié • Photos datées de l'évolution • Témoignages de professionnels • Documents techniques : notices, réparations • Correspondances avec le vendeur ⚖️ Actions et sanctions (Art. 1644) L'acheteur peut choisir entre résolution (remboursement) ou réduction du prix , plus dommages-intérêts si vendeur connaissait le vice.`}
+            />
+          </p>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`🔄 Action résolutoire • Principe : remboursement intégral • Restitution : chose vendue en l'état • Frais : remboursement frais acquisition • Usage : indemnité possible si enrichissement • Délai : rétroactivité à la vente 💰 Action estimatoire • Principe : conservation + réduction prix • Calcul : expertise évalue moins-value • Avantage : garde la chose malgré le vice • Cumul : réparation aux frais vendeur possible • Choix : souvent plus pratique 💸 Dommages-intérêts (Art. 1645) Condition : vendeur professionnel présumé connaître le vice, ou vendeur particulier ayant eu connaissance.`}
+            />
+          </p>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`• Préjudice direct : coût réparations tentées • Préjudice d'usage : privation de jouissance • Préjudice économique : perte d'exploitation • Préjudice moral : trouble, désagrément`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    { id: 'procedure', title: 'Procédure type', content: <StandardProcedure /> },
+    { id: 'alternatives', title: 'Si ça bloque', content: <DefaultAlternatives /> },
+    { id: 'contacts', title: 'Contacts utiles', content: <DefaultContacts /> },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: [
+      '1641' as LegalArticleId,
+      '1644' as LegalArticleId,
+      '1645' as LegalArticleId,
+      '1648' as LegalArticleId,
+      '1649' as LegalArticleId,
+    ],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
+
+export const GUIDE_VICES_CACHES: GuidePage = {
+  metadata: {
+    title: 'Matériel audio/vidéo défectueux : garantie légale (2025)',
+    seo: {
+      title: 'Audio/vidéo défectueux : vos droits garantie légale (Guide 2025)',
+      description:
+        'TV, enceintes, casques en panne ? Qualité son dégradée, image défaillante ? 2 ans de garantie légale : réparation gratuite, remplacement ou remboursement.',
+      keywords: [
+        'matériel audio vidéo défectueux',
+        'TV défaillante garantie légale',
+        'enceintes casques en panne',
+        'qualité son image dégradée',
+        'barre de son dysfonctionnements',
+      ],
+    },
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
+      {
+        name: 'Matériel audio/vidéo défectueux : garantie légale (2025)',
+        url: '/guides/vices-caches',
+      },
+    ],
+  },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec: <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24&nbsp;mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤&nbsp;30&nbsp;jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'defauts-audio-video',
+      title: 'Défauts audio/vidéo couverts par la garantie légale',
+      content: (
+        <div className="space-y-3">
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs text={`• Pixels morts : > 5 pixels sur dalle neuve`} />,
+                <TextWithLegalRefs text={`• Bandes verticales/horizontales : défaut dalle`} />,
+                <TextWithLegalRefs text={`• Rétroéclairage défaillant : zones sombres`} />,
+                <TextWithLegalRefs text={`• Dalle fissurée : sans choc externe`} />,
+                <TextWithLegalRefs text={`• Couleurs délavées : calibrage défaillant`} />,
+                <TextWithLegalRefs text={`• Connectique HS : HDMI, USB ne fonctionnent plus`} />,
+                <TextWithLegalRefs text={`• Smart TV lente : < 50% performances annoncées`} />,
+                <TextWithLegalRefs text={`• Grésillements : parasites constants`} />,
+                <TextWithLegalRefs text={`• Coupures audio : son qui s'interrompt`} />,
+                <TextWithLegalRefs text={`• Déséquilibre stéréo : canal gauche/droit`} />,
+                <TextWithLegalRefs text={`• Saturation : distorsion à volume normal`} />,
+                <TextWithLegalRefs text={`• Bluetooth instable : connexion qui chute`} />,
+              ] as React.ReactNode[]
+            }
+          />
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`Les équipements audio/vidéo doivent délivrer la qualité promise et fonctionner conformément aux caractéristiques annoncées. Tout défaut dans les 2 ans est couvert.`}
+            />
+          </p>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`📺 TV et écrans ❌ Défauts fréquents • Pixels morts : > 5 pixels sur dalle neuve • Bandes verticales/horizontales : défaut dalle • Rétroéclairage défaillant : zones sombres • Dalle fissurée : sans choc externe • Couleurs délavées : calibrage défaillant • Connectique HS : HDMI, USB ne fonctionnent plus • Smart TV lente : Norme pixels morts : ISO 13406-2 : Class II = max 2 pixels morts + 5 pixels bloqués`}
+            />
+          </p>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`🔊 Équipements audio ❌ Problèmes sonores • Grésillements : parasites constants • Coupures audio : son qui s'interrompt • Déséquilibre stéréo : canal gauche/droit • Saturation : distorsion à volume normal • Bluetooth instable : connexion qui chute • Réponse fréquence : basses/aigus absents • Puissance insuffisante : Tests objectifs : applications de mesure (SpeakerTest, AudioTool) pour preuves`}
+            />
+          </p>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`🎯 Critères de conformité spécifiques 📊 Performances • Résolution : native annoncée (4K, 8K) • Fréquence : 50/60/120 Hz selon modèle • Luminosité : nits conformes spécifications • Contraste : ratio annoncé respecté • Puissance audio : watts RMS réels 🔌 Connectivité • Ports annoncés : tous fonctionnels • Standards respectés : HDMI 2.1, USB 3.0 • Wi-Fi/Bluetooth : portée et stabilité • Compatibilité : codecs promis (Dolby, DTS) • Débit : bande passante suffisante ⚙️ Fonctionnalités • Smart TV : applications installables • HDR : formats supportés effectifs • Télécommande : toutes fonctions opérationnelles • Enregistrement : si prévu constructeur • Calibrage : modes image/son disponibles 🧪 Tests et diagnostic 📱 Applications de test • Pixels morts : Dead Pixel Test • Audio : Tone Generator, SpeakerTest • Couleurs : DisplayCAL, ColorHCFR • Latence : Leo Bodnar Input Lag Tester 📊 Mesures objectives • Captures d'écran : défauts visuels • Enregistrements audio : distorsions • Mesures décibels : sonomètre smartphone • Chronométrage : temps de réponse`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    { id: 'procedure', title: 'Procédure type', content: <StandardProcedure /> },
+    { id: 'alternatives', title: 'Si ça bloque', content: <DefaultAlternatives /> },
+    { id: 'contacts', title: 'Contacts utiles', content: <DefaultContacts /> },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: [],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
+
+export const GUIDE_PROTECTION_JURIDIQUE: GuidePage = {
+  metadata: {
+    title: 'Protection juridique : votre assurance peut-elle couvrir votre litige ? (2025)',
+    seo: {
+      title: 'Protection juridique assurance : comment l\\',
+      description:
+        'Votre assurance habitation ou auto inclut souvent une protection juridique. Découvrez comment vérifier et activer cette garantie pour vos litiges consommation.',
+      keywords: [
+        'protection juridique assurance',
+        'garantie défense recours',
+        'assurance litige consommation',
+        'frais avocat pris en charge',
+        'protection juridique habitation auto',
+      ],
+    },
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
+      {
+        name: 'Protection juridique : votre assurance peut-elle couvrir votre litige ? (2025)',
+        url: '/guides/protection-juridique',
+      },
+    ],
+  },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec: <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24&nbsp;mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤&nbsp;30&nbsp;jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'verification-contrat',
+      title: 'Vérifier si vous avez une protection juridique',
+      content: (
+        <div className="space-y-3">
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs text={`• Multirisques habitation`} />,
+                <TextWithLegalRefs text={`• Garantie "Défense-Recours"`} />,
+                <TextWithLegalRefs text={`• "Protection juridique"`} />,
+                <TextWithLegalRefs text={`• Montant : 3 000€ à 15 000€`} />,
+                <TextWithLegalRefs text={`• Tous risques ou tiers+`} />,
+                <TextWithLegalRefs text={`• Protection juridique étendue`} />,
+                <TextWithLegalRefs text={`• Défense pénale et recours`} />,
+                <TextWithLegalRefs text={`• Souvent 7 500€ à 20 000€`} />,
+                <TextWithLegalRefs text={`• Visa Premier, Gold MasterCard`} />,
+                <TextWithLegalRefs text={`• Assistance juridique`} />,
+                <TextWithLegalRefs text={`• Litiges e-commerce inclus`} />,
+                <TextWithLegalRefs text={`• Montants variables`} />,
+              ] as React.ReactNode[]
+            }
+          />
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`90% des français possèdent une protection juridique sans le savoir ! Cette garantie est souvent incluse dans vos contrats d'assurance existants.`}
+            />
+          </p>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`🔍 Où chercher votre protection juridique ? 🏠 Assurance habitation • Multirisques habitation • Garantie "Défense-Recours" • "Protection juridique" • Montant : 3 000€ à 15 000€ 🚗 Assurance automobile • Tous risques ou tiers+ • Protection juridique étendue • Défense pénale et recours • Souvent 7 500€ à 20 000€ 💳 Carte bancaire premium • Visa Premier, Gold MasterCard • Assistance juridique • Litiges e-commerce inclus • Montants variables 🏢 Assurance professionnelle • RC professionnelle • Multirisques entreprise • Protection juridique pro • Couvre litiges perso parfois 📋 Documents à examiner Conditions générales Chapitre "Protection juridique" Tableau des garanties Montants et plafonds Conditions particulières Vos garanties spécifiques`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'activation-garantie',
+      title: 'Comment activer votre protection juridique ?',
+      content: (
+        <div className="space-y-3">
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs text={`• Téléphone : n° sur votre contrat`} />,
+                <TextWithLegalRefs text={`• Email : sinistres@assureur.fr`} />,
+                <TextWithLegalRefs text={`• Courrier RAR (+ sûr)`} />,
+                <TextWithLegalRefs text={`• Espace client en ligne`} />,
+                <TextWithLegalRefs text={`• N° de contrat et nom assuré`} />,
+                <TextWithLegalRefs text={`• Date et nature du litige`} />,
+                <TextWithLegalRefs text={`• Adversaire (nom, adresse)`} />,
+                <TextWithLegalRefs text={`• Montant en jeu`} />,
+                <TextWithLegalRefs text={`• Facture d'achat`} />,
+                <TextWithLegalRefs text={`• Correspondances avec le pro`} />,
+                <TextWithLegalRefs text={`• Photos du défaut`} />,
+                <TextWithLegalRefs text={`• Conditions générales de vente`} />,
+              ] as React.ReactNode[]
+            }
+          />
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`1 📞 Déclarer le sinistre Délai impératif : 5 jours ouvrés après connaissance du litige (souvent extensible à 20 jours)`}
+            />
+          </p>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`📧 Moyens de déclaration • Téléphone : n° sur votre contrat • Email : sinistres@assureur.fr • Courrier RAR (+ sûr) • Espace client en ligne 📋 Informations à donner • N° de contrat et nom assuré • Date et nature du litige • Adversaire (nom, adresse) • Montant en jeu 2 📄 Constituer le dossier 🗂️ Pièces indispensables • Facture d'achat • Correspondances avec le pro • Photos du défaut • Conditions générales de vente • Devis de réparation • Expertise technique si existante • Mise en demeure envoyée • Tout élément de preuve 💡 Conseil : Numérisez tous vos documents. La plupart des assureurs acceptent maintenant les envois dématérialisés.`}
+            />
+          </p>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`3 ⚖️ Analyse juridique L'assureur fait analyser votre dossier par un juriste pour évaluer vos chances de succès.`}
+            />
+          </p>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`✅ Si chances > 50% • Prise en charge immédiate • Assignation d'un avocat • Avance des frais • Négociation amiable d'abord ❌ Si chances • Refus de prise en charge • Possibilité de recours interne • Médiation avec l'assureur • Expertise contradictoire`}
+            />
+          </p>
+        </div>
+      ),
+    },
+    { id: 'procedure', title: 'Procédure type', content: <StandardProcedure /> },
+    { id: 'alternatives', title: 'Si ça bloque', content: <DefaultAlternatives /> },
+    { id: 'contacts', title: 'Contacts utiles', content: <DefaultContacts /> },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: [],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
+
+export const GUIDE_MEDIATION_CONSOMMATION: GuidePage = {
+  metadata: {
+    title: 'Ordinateur défectueux : garantie légale et recours (2025)',
+    seo: {
+      title: 'Ordinateur en panne : vos droits et recours garantie légale (2025)',
+      description:
+        'Ordinateur lent, qui surchauffe ou ne démarre plus ? Découvrez vos droits : 2 ans de garantie légale, réparation gratuite ou remboursement. Procédure étape par étape.',
+      keywords: [
+        'ordinateur défectueux garantie légale',
+        'PC portable en panne recours',
+        'ordinateur lent remboursement',
+        'surchauffe ordinateur SAV',
+        'garantie légale informatique',
+        'Mac défectueux réparation',
+      ],
+    },
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
+      {
+        name: 'Ordinateur défectueux : garantie légale et recours (2025)',
+        url: '/guides/mediation-consommation',
+      },
+    ],
+  },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec : <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24 mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤ 30 jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['L.217-13', 'L.217-5', 'L.217-9']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'defauts-ordinateurs',
+      title: 'Défauts d\\',
+      content: (
+        <div className="space-y-3">
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs text={'• Écran défaillant : pixels morts, dalle cassée'} />,
+                <TextWithLegalRefs text={'• Clavier/touchpad : touches qui ne répondent plus'} />,
+                <TextWithLegalRefs text={'• Connectique : ports USB, HDMI, jack HS'} />,
+                <TextWithLegalRefs text={'• Alimentation : ne charge plus, chargeur défectueux'} />,
+                <TextWithLegalRefs text={'• Ventilation : surchauffe anormale'} />,
+                <TextWithLegalRefs text={'• Disque dur/SSD : erreurs, lenteurs excessives'} />,
+                <TextWithLegalRefs text={'• RAM : erreurs mémoire, instabilité'} />,
+                <TextWithLegalRefs text={'• Ne démarre plus : écran noir, bootloop'} />,
+                <TextWithLegalRefs text={'• Lenteurs anormales : en deçà des specs'} />,
+                <TextWithLegalRefs text={'• Plantages fréquents : écrans bleus/kernel panic'} />,
+                <TextWithLegalRefs text={'• Wi-Fi défaillant : connexion instable'} />,
+                <TextWithLegalRefs text={'• Autonomie : batterie qui ne tient pas'} />,
+              ] as React.ReactNode[]
+            }
+          />
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={
+                'Un ordinateur doit fonctionner conformément à sa destination et aux caractéristiques annoncées. La garantie légale de conformité vous protège 2 ans contre les défauts.'
+              }
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={
+                '❌ Défauts fréquents couverts 💻 Pannes matérielles • Écran défaillant : pixels morts, dalle cassée • Clavier/touchpad : touches qui ne répondent plus • Connectique : ports USB, HDMI, jack HS • Alimentation : ne charge plus, chargeur défectueux • Ventilation : surchauffe anormale • Disque dur/SSD : erreurs, lenteurs excessives • RAM : erreurs mémoire, instabilité ⚙️ Dysfonctionnements système • Ne démarre plus : écran noir, bootloop • Lenteurs anormales : en deçà des specs • Plantages fréquents : écrans bleus/kernel panic • Wi-Fi défaillant : connexion instable • Autonomie : batterie qui ne tient pas • Logiciels préinstallés : dysfonctionnements • Pilotes : composants non reconnus 📏 Critères de conformité (Article L.217-5) ✅ Conforme • Performances annoncées (processeur, RAM) • Autonomie proche de celle annoncée • Tous logiciels préinstallés fonctionnels • Connectique opérationnelle • Température normale en usage ❌ Non conforme • Performances • Autonomie • Surchauffe récurrente (> 85°C) • Composants absents ou HS • Incompatibilité avec usage normal ⚠️ Usure normale non couverte • Rayures esthétiques sans impact fonctionnel'
+              }
+            />
+          </p>{' '}
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={'• Dégradation batterie normale : -20% après 2 ans acceptable'}
+            />
+          </p>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={'• Lenteur liée aux mises à jour OS (sauf si rend inutilisable)'}
+            />
+          </p>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={'• Usure mécanique normale : touches brillantes, trackpad poli'}
+            />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'procedure-recours',
+      title: 'Procédure étape par étape pour faire valoir vos droits',
+      content: (
+        <div className="space-y-3">
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs text={'• Benchmark : UserBenchmark, Geekbench'} />,
+                <TextWithLegalRefs text={'• Température : HWMonitor, Core Temp'} />,
+                <TextWithLegalRefs text={'• Disque : CrystalDiskInfo, HDTune'} />,
+                <TextWithLegalRefs text={'• RAM : MemTest86, Windows Memory'} />,
+                <TextWithLegalRefs text={'• Stress test : Prime95, FurMark'} />,
+                <TextWithLegalRefs text={"• Captures écrans d'erreur"} />,
+                <TextWithLegalRefs text={'• Photos du problème physique'} />,
+                <TextWithLegalRefs text={'• Résultats des tests'} />,
+                <TextWithLegalRefs text={'• Vidéo du dysfonctionnement'} />,
+                <TextWithLegalRefs text={"• Messages d'erreur système"} />,
+                <TextWithLegalRefs text={'• Référence exacte du modèle'} />,
+                <TextWithLegalRefs text={"• Date d'achat (< 2 ans)"} />,
+              ] as React.ReactNode[]
+            }
+          />
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`1 🔍 Documenter le défaut 📊 Tests à effectuer • Benchmark : UserBenchmark, Geekbench • Température : HWMonitor, Core Temp • Disque : CrystalDiskInfo, HDTune • RAM : MemTest86, Windows Memory • Stress test : Prime95, FurMark 📸 Preuves à collecter • Captures écrans d'erreur • Photos du problème physique • Résultats des tests • Vidéo du dysfonctionnement • Messages d'erreur système 2 📞 Contact initial avec le vendeur ⚖️ Base légale : Article L.217-9 - Le vendeur doit proposer gratuitement la réparation ou le remplacement.`}
+            />
+          </p>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={`📧 Informations à communiquer • Référence exacte du modèle • Date d'achat ( • Description précise du défaut • Impact sur l'utilisation • Exigence : réparation gratuite ⏰ Délais légaux • Réponse : délai raisonnable • Réparation : maximum 30 jours • Inconvénient majeur : prêt obligatoire • Échec : remplacement/remboursement 3 📮 Mise en demeure (si nécessaire) ✍️ Points clés de la lettre • Rappel de l'achat et du défaut constaté • Article L.217-9 : droit à réparation gratuite • Article L.217-14, L.217-16, L.217-17 : remplacement si réparation impossible • Délai de 15 jours pour répondre • Envoi en recommandé avec AR 🚀 Générer ma lettre de mise en demeure Service gratuit, conforme au Code de la consommation`}
+            />
+          </p>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={"4 ⚖️ Escalade en cas d'échec 🏛️ SignalConso Signalement DGCCRF"}
+            />
+          </p>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs text={'Gratuit • Pression officielle'} />
+          </p>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs text={'🤝 Médiation Conciliateur conso'} />
+          </p>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs text={'Gratuit • Délai 60 jours'} />
+          </p>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs text={'⚖️ Tribunal Procédure simplifiée'} />
+          </p>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs text={'< 5000€ sans avocat'} />
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'procedure',
+      title: 'Procédure type',
+      content: <StandardProcedure />,
+    },
+    {
+      id: 'alternatives',
+      title: 'Si ça bloque',
+      content: <DefaultAlternatives />,
+    },
+    {
+      id: 'contacts',
+      title: 'Contacts utiles',
+      content: <DefaultContacts />,
+    },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: [
+      'L.217-13' as LegalArticleId,
+      'L.217-5' as LegalArticleId,
+      'L.217-9' as LegalArticleId,
+    ],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
+
+export const GUIDE_AMAZON_GARANTIE_RETOURS: GuidePage = {
+  metadata: {
+    title: 'Électroménager en panne : garantie légale et recours (2025)',
+    seo: {
+      title: 'Électroménager défaillant : vos droits garantie légale (Guide 2025)',
+      description:
+        'Lave-linge, lave-vaisselle, réfrigérateur en panne ? 2 ans de garantie légale : réparation gratuite obligatoire, remplacement ou remboursement. Procédure complète.',
+      keywords: [
+        'électroménager panne garantie légale',
+        'lave-linge défaillant recours',
+        'lave-vaisselle HS réparation',
+        'réfrigérateur panne SAV',
+        'four défectueux remboursement',
+      ],
+    },
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
+      {
+        name: 'Électroménager en panne : garantie légale et recours (2025)',
+        url: '/guides/amazon-garantie-retours',
+      },
+    ],
+  },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec : <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24 mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤ 30 jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['L.217-7']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'pannes-electromenager',
+      title: "Pannes d'électroménager",
+      content: (
+        <div className="space-y-3">
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs text={"• Fuite d'eau : joint, durite, pompe"} />,
+                <TextWithLegalRefs text={'• Essorage défaillant : linge trempé'} />,
+                <TextWithLegalRefs text={'• Chauffage HS : eau froide constante'} />,
+                <TextWithLegalRefs text={'• Tambour bloqué : roulement usé'} />,
+                <TextWithLegalRefs text={'• Vidange impossible : pompe HS'} />,
+                <TextWithLegalRefs text={'• Électronique : programmateur défaillant'} />,
+                <TextWithLegalRefs text={'• Température instable : +/- 5°C'} />,
+                <TextWithLegalRefs text={'• Compresseur bruyant : > 45 dB'} />,
+                <TextWithLegalRefs text={'• Dégivrage automatique HS'} />,
+                <TextWithLegalRefs text={"• Joint défaillant : fuite d'air"} />,
+                <TextWithLegalRefs text={'• Éclairage défaillant permanent'} />,
+                <TextWithLegalRefs text={'• Consommation excessive : +50% annoncée'} />,
+              ] as React.ReactNode[]
+            }
+          />
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={
+                "L'électroménager doit être conforme à l'usage attendu et fonctionner selon les caractéristiques annoncées. Tout défaut survenant dans les 2 ans est présumé exister dès l'achat ( Article L.217-7 )."
+              }
+            />
+          </p>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={
+                "🌊 Lave-linge / Lave-vaisselle ❌ Pannes fréquentes • Fuite d'eau : joint, durite, pompe • Essorage défaillant : linge trempé • Chauffage HS : eau froide constante • Tambour bloqué : roulement usé • Vidange impossible : pompe HS • Électronique : programmateur défaillant 💡 Conseil : Une panne récurrente après réparation SAV = défaut de conformité manifeste"
+              }
+            />
+          </p>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={
+                "❄️ Réfrigérateur / Congélateur ❌ Dysfonctionnements • Température instable : +/- 5°C • Compresseur bruyant : > 45 dB • Dégivrage automatique HS • Joint défaillant : fuite d'air • Éclairage défaillant permanent • Consommation excessive : +50% annoncée ⚠️ Urgence : Perte d'aliments = dommages-intérêts en plus de la réparation"
+              }
+            />
+          </p>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={
+                "🔥 Four / Plaques cuisson ❌ Défauts courants • Température incorrecte : écart > 20°C • Résistance grillée : plus de chaleur • Ventilation HS : cuisson inégale • Porte défaillante : ne ferme plus • Programmateur : ne démarre pas • Pyrolyse défaillante ☕ Petit électroménager ❌ Problèmes fréquents • Cafetière : fuite, chauffe pas • Grille-pain : résistance, éjection • Mixeur : moteur, lames émoussées • Aspirateur : perte succion, filtre • Fer à repasser : semelle, vapeur 📏 Critères de conformité électroménager Performance Conforme aux specs (conso, efficacité) Durabilité Résiste à l'usage normal intensif Sécurité Normes CE, pas de danger"
+              }
+            />
+          </p>
+        </div>
+      ),
+    },
+
+    {
+      id: 'procedure',
+      title: 'Procédure type',
+      content: <StandardProcedure />,
+    },
+    {
+      id: 'alternatives',
+      title: 'Si ça bloque',
+      content: <DefaultAlternatives />,
+    },
+    {
+      id: 'contacts',
+      title: 'Contacts utiles',
+      content: <DefaultContacts />,
+    },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: ['L.217-7' as LegalArticleId],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
+
+export const GUIDE_MISSING_15: GuidePage = {
+  metadata: {
+    title: 'Médiation de la consommation : résoudre votre litige gratuitement (2025)',
+    seo: {
+      title: 'Médiation consommation : mode d\\',
+      description:
+        'Litige non résolu ? La médiation de la consommation est gratuite et obligatoire. Trouvez votre médiateur, procédure complète, délais et efficacité.',
+      keywords: [
+        'médiation consommation gratuite',
+        'médiateur sectoriel litige',
+        'résolution amiable conflit',
+        'alternative tribunal consommation',
+      ],
+    },
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
+      {
+        name: 'Médiation de la consommation : résoudre votre litige gratuitement (2025)',
+        url: '/guides/missing-15',
+      },
+    ],
+  },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec : <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24&nbsp;mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤&nbsp;30&nbsp;jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['L.612-1']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'principe-mediation',
+      title: 'Principe et avantages de la médiation',
+      content: (
+        <div className="space-y-3">
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs text="• 100% gratuit pour le consommateur" />,
+                <TextWithLegalRefs text="• Procédure dématérialisée possible" />,
+                <TextWithLegalRefs text="• Pas d'avocat obligatoire" />,
+                <TextWithLegalRefs text="• Langue française garantie" />,
+                <TextWithLegalRefs text="• Délai maximum : 90 jours" />,
+                <TextWithLegalRefs text="• Taux de succès : 65% d'accords" />,
+                <TextWithLegalRefs text="• Solution personnalisée" />,
+                <TextWithLegalRefs text="• Préserve la relation commerciale" />,
+                <TextWithLegalRefs text="• Litige contractuel consommateur/professionnel" />,
+                <TextWithLegalRefs text="• Vente de biens ou prestation de services" />,
+                <TextWithLegalRefs text="• Refus application garantie légale" />,
+                <TextWithLegalRefs text="• Défaut d'information précontractuelle" />,
+              ] as React.ReactNode[]
+            }
+          />
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs text="La médiation de la consommation est un mode de résolution amiable des litiges obligatoire et gratuit instauré par la loi Hamon de 2014 ( Articles L.612-1 et suivants )." />
+          </p>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs text="✅ Avantages de la médiation 💰 Coût et facilité • 100% gratuit pour le consommateur • Procédure dématérialisée possible • Pas d'avocat obligatoire • Langue française garantie ⏱️ Délais et efficacité • Délai maximum : 90 jours • Taux de succès : 65% d'accords • Solution personnalisée • Préserve la relation commerciale 🎯 Litiges concernés ✅ Éligible à la médiation • Litige contractuel consommateur/professionnel • Vente de biens ou prestation de services • Refus application garantie légale • Défaut d'information précontractuelle • Non-respect délais de livraison ❌ Exclus de la médiation • Litiges entre particuliers • Services publics (poste, SNCF) • Santé (responsabilité médicale) • Réclamations frivoles ou abusives • Procédure judiciaire en cours" />
+          </p>
+        </div>
+      ),
+    },
+    { id: 'procedure', title: 'Procédure type', content: <StandardProcedure /> },
+    { id: 'alternatives', title: 'Si ça bloque', content: <DefaultAlternatives /> },
+    { id: 'contacts', title: 'Contacts utiles', content: <DefaultContacts /> },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: ['L.612-1' as LegalArticleId],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
+
+export const GUIDE_MISSING_16: GuidePage = {
+  metadata: {
+    title: 'Amazon : garantie légale et politique de retours (2025)',
+    seo: {
+      title: 'Amazon garantie et retours : vos droits sur la marketplace (2025)',
+      description:
+        'Produit défectueux sur Amazon ? Distinguez vendeurs Amazon/tiers, 30 jours retour + 2 ans garantie légale, A-Z Protection. Procédure complète.',
+      keywords: [
+        'Amazon garantie légale retours',
+        'marketplace vendeur tiers droits',
+        'Amazon A-Z protection',
+        'produit défectueux Amazon recours',
+      ],
+    },
+    breadcrumb: [
+      { name: 'Accueil', url: '/' },
+      { name: 'Guides', url: '/guides' },
+      {
+        name: 'Amazon : garantie légale et politique de retours (2025)',
+        url: '/guides/missing-16',
+      },
+    ],
+  },
+  sections: [
+    {
+      id: 'intro',
+      title: 'L’essentiel',
+      content: (
+        <div className="space-y-3">
+          <ErrorAlert type="info" className="text-sm sm:text-base">
+            Exigez la <strong>mise en conformité</strong> (réparation ou remplacement). En cas
+            d’échec : <strong>réduction du prix</strong> ou <strong>résolution</strong>. Tous frais
+            incombent au vendeur.
+          </ErrorAlert>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Présomption 24&nbsp;mois</Badge>
+            <Badge>Frais vendeur</Badge>
+            <Badge>≤&nbsp;30&nbsp;jours</Badge>
+          </div>
+          <LegalNote
+            title="Références légales"
+            explanation="Articles détectés automatiquement dans ce guide."
+            examples={['']}
+            disclaimer="Informations générales — ceci n’est pas un conseil juridique individualisé."
+            defaultOpen={false}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'amazon-responsabilites',
+      title: 'Amazon vendeur vs Marketplace : qui est responsable ?',
+      content: (
+        <div className="space-y-3">
+          <DefaultGrid
+            items={
+              [
+                <TextWithLegalRefs text='• "Vendu par Amazon"' />,
+                <TextWithLegalRefs text='• "Expédié par Amazon"' />,
+                <TextWithLegalRefs text="• Pas de nom vendeur tiers" />,
+                <TextWithLegalRefs text="• 30 jours retour Amazon sans motif" />,
+                <TextWithLegalRefs text="• 2 ans garantie légale française" />,
+                <TextWithLegalRefs text="• Amazon responsable directement" />,
+                <TextWithLegalRefs text="• Service client Amazon compétent" />,
+                <TextWithLegalRefs text="• Remboursement rapide (3-5 jours)" />,
+                <TextWithLegalRefs text='• "Vendu par [Nom société]"' />,
+                <TextWithLegalRefs text='• "Expédié par Amazon" possible' />,
+                <TextWithLegalRefs text="• Nom vendeur visible sur fiche" />,
+                <TextWithLegalRefs text="• 14 jours rétractation (droit européen)" />,
+              ] as React.ReactNode[]
+            }
+          />
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs text="Amazon fonctionne comme marketplace : Amazon peut être vendeur direct ou simple intermédiaire. Vos droits et interlocuteurs diffèrent selon le cas." />
+          </p>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs text="📦 Amazon vendeur direct 🔍 Comment identifier :" />
+          </p>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs text='• "Vendu par Amazon" • "Expédié par Amazon" • Pas de nom vendeur tiers ✅ Vos droits • 30 jours retour Amazon sans motif • 2 ans garantie légale française • Amazon responsable directement • Service client Amazon compétent • Remboursement rapide (3-5 jours) 🏪 Vendeur tiers sur Amazon 🔍 Comment identifier :' />
+          </p>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs
+              text={
+                '• "Vendu par [Nom société]" • "Expédié par Amazon" possible • Nom vendeur visible sur fiche ⚖️ Vos droits • 14 jours rétractation (droit européen) • 2 ans garantie légale si vendeur UE • Vendeur responsable principal • A-Z Protection Amazon si échec • Contact vendeur obligatoire d\'abord ⚠️ Cas particulier : vendeur hors UE • Garantie légale française non applicable si vendeur hors UE'
+              }
+            />
+          </p>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs text="• A-Z Protection Amazon devient votre principal recours" />
+          </p>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs text="• Délai 90 jours pour saisir Amazon après livraison" />
+          </p>
+          <p className="text-sm sm:text-base">
+            <TextWithLegalRefs text="• Montant plafonné selon politique Amazon" />
+          </p>
+        </div>
+      ),
+    },
+    { id: 'procedure', title: 'Procédure type', content: <StandardProcedure /> },
+    { id: 'alternatives', title: 'Si ça bloque', content: <DefaultAlternatives /> },
+    { id: 'contacts', title: 'Contacts utiles', content: <DefaultContacts /> },
+    {
+      id: 'cta',
+      title: 'Passer à l’action',
+      content: (
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Button asChild>
+            <a href="/eligibilite">🚀 Générer ma mise en demeure</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/guides">📚 Voir tous les guides</a>
+          </Button>
+        </div>
+      ),
+    },
+  ],
+  legal: {
+    mainArticles: [],
+    disclaimer: true,
+    lastUpdated: '2025-09-09',
+  },
+};
+
+export const ALL_GUIDES: Record<string, GuidePage> = {
+  'garantie-legale-conformite-guide-complet': GUIDE_GARANTIE_LEGALE_CONFORMITE_GUIDE_COMPLET,
+  'smartphone-ecran-batterie-defaut-garantie-legale':
+    GUIDE_SMARTPHONE_ECRAN_BATTERIE_DEFAUT_GARANTIE_LEGALE,
+  'ordinateur-portable-panne-garantie-legale': GUIDE_ORDINATEUR_PORTABLE_PANNE_GARANTIE_LEGALE,
+  'routeur-wifi-mesh-deconnexions-garantie-legale':
+    GUIDE_ROUTEUR_WIFI_MESH_DECONNEXIONS_GARANTIE_LEGALE,
+  'appareil-photo-hybride-defaut-garantie-legale':
+    GUIDE_APPAREIL_PHOTO_HYBRIDE_DEFAUT_GARANTIE_LEGALE,
+  'lave-linge-panne-garantie-legale': GUIDE_LAVE_LINGE_PANNE_GARANTIE_LEGALE,
+  'lave-vaisselle-defaut-garantie-legale': GUIDE_LAVE_VAISSELLE_DEFAUT_GARANTIE_LEGALE,
+  'refrigerateur-congelateur-defaut-garantie-legale':
+    GUIDE_REFRIGERATEUR_CONGELATEUR_DEFAUT_GARANTIE_LEGALE,
+  'aspirateur-robot-panne-garantie-legale': GUIDE_ASPIRATEUR_ROBOT_PANNE_GARANTIE_LEGALE,
+  'micro-ondes-panne-garantie-legale': GUIDE_MICRO_ONDES_PANNE_GARANTIE_LEGALE,
+  'chauffe-eau-electrique-defaut-garantie-legale':
+    GUIDE_CHAUFFE_EAU_ELECTRIQUE_DEFAUT_GARANTIE_LEGALE,
+  'portail-motorise-defaut-garantie-legale': GUIDE_PORTAIL_MOTORISE_DEFAUT_GARANTIE_LEGALE,
+  'autoradio-infotainment-defaut-garantie-legale':
+    GUIDE_AUTORADIO_INFOTAINMENT_DEFAUT_GARANTIE_LEGALE,
+  'home-trainer-connecte-defaut-garantie-legale':
+    GUIDE_HOME_TRAINER_CONNECTE_DEFAUT_GARANTIE_LEGALE,
+  'smartphone-telephone-panne-garantie-legale': GUIDE_SMARTPHONE_TELEPHONE_PANNE_GARANTIE_LEGALE,
+  'casque-audio-haut-de-gamme-defaut-garantie-legale':
+    GUIDE_CASQUE_AUDIO_HAUT_DE_GAMME_DEFAUT_GARANTIE_LEGALE,
+  'ecouteurs-sans-fil-defaut-connexion-garantie-legale':
+    GUIDE_ECOUTEURS_SANS_FIL_DEFAUT_CONNEXION_GARANTIE_LEGALE,
+  'smartwatch-batterie-faible-garantie-legale': GUIDE_SMARTWATCH_BATTERIE_FAIBLE_GARANTIE_LEGALE,
+  'tablette-tactile-ecran-surchauffe-garantie-legale':
+    GUIDE_TABLETTE_TACTILE_ECRAN_SURCHAUFFE_GARANTIE_LEGALE,
+  'tv-oled-ecran-marques-garantie-legale': GUIDE_TV_OLED_ECRAN_MARQUES_GARANTIE_LEGALE,
+  'videoprojecteur-panne-garantie-legale': GUIDE_VIDEOPROJECTEUR_PANNE_GARANTIE_LEGALE,
+  'serveur-nas-panne-garantie-legale': GUIDE_SERVEUR_NAS_PANNE_GARANTIE_LEGALE,
+  'imprimante-defaut-garantie-legale': GUIDE_IMPRIMANTE_DEFAUT_GARANTIE_LEGALE,
+  'ecran-pc-pixels-morts-garantie-legale': GUIDE_ECRAN_PC_PIXELS_MORTS_GARANTIE_LEGALE,
+  'aspirateur-balai-panne-garantie-legale': GUIDE_ASPIRATEUR_BALAI_PANNE_GARANTIE_LEGALE,
+  'purificateur-air-defaut-garantie-legale': GUIDE_PURIFICATEUR_AIR_DEFAUT_GARANTIE_LEGALE,
+  'plaque-induction-defaut-garantie-legale': GUIDE_PLAQUE_INDUCTION_DEFAUT_GARANTIE_LEGALE,
+  'four-encastrable-panne-garantie-legale': GUIDE_FOUR_ENCASTRABLE_PANNE_GARANTIE_LEGALE,
+  'cafetiere-expresso-broyeur-defaut-garantie-legale':
+    GUIDE_CAFETIERE_EXPRESSO_BROYEUR_DEFAUT_GARANTIE_LEGALE,
+  'borne-recharge-domestique-ve-defaut-garantie-legale':
+    GUIDE_BORNE_RECHARGE_DOMESTIQUE_VE_DEFAUT_GARANTIE_LEGALE,
+  'serrure-connectee-defaut-garantie-legale': GUIDE_SERRURE_CONNECTEE_DEFAUT_GARANTIE_LEGALE,
+  'console-portable-ecran-defectueux-garantie-legale':
+    GUIDE_CONSOLE_PORTABLE_ECRAN_DEFECTUEUX_GARANTIE_LEGALE,
+  'home-cinema-barre-de-son-panne-garantie-legale':
+    GUIDE_HOME_CINEMA_BARRE_DE_SON_PANNE_GARANTIE_LEGALE,
+  'friteuse-electrique-panne-garantie-legale': GUIDE_FRITEUSE_ELECTRIQUE_PANNE_GARANTIE_LEGALE,
+  'mixeur-blender-panne-garantie-legale': GUIDE_MIXEUR_BLENDER_PANNE_GARANTIE_LEGALE,
+  'extracteur-de-jus-panne-garantie-legale': GUIDE_EXTRACTEUR_DE_JUS_PANNE_GARANTIE_LEGALE,
+  'yaourtiere-defaut-temperature-garantie-legale':
+    GUIDE_YAOURTIERE_DEFAUT_TEMPERATURE_GARANTIE_LEGALE,
+  'machine-a-pain-panne-garantie-legale': GUIDE_MACHINE_A_PAIN_PANNE_GARANTIE_LEGALE,
+  'centrale-vapeur-fuite-panne-garantie-legale': GUIDE_CENTRALE_VAPEUR_FUITE_PANNE_GARANTIE_LEGALE,
+  'voiture-electrique-defaut-garantie-legale': GUIDE_VOITURE_ELECTRIQUE_DEFAUT_GARANTIE_LEGALE,
+  'voiture-hybride-defaut-garantie-legale': GUIDE_VOITURE_HYBRIDE_DEFAUT_GARANTIE_LEGALE,
+  'camping-car-defauts-garantie-legale': GUIDE_CAMPING_CAR_DEFAUTS_GARANTIE_LEGALE,
+  'moto-defaut-garantie-legale': GUIDE_MOTO_DEFAUT_GARANTIE_LEGALE,
+  'scooter-defaut-garantie-legale': GUIDE_SCOOTER_DEFAUT_GARANTIE_LEGALE,
+  'climatisation-en-panne-garantie-legale': GUIDE_CLIMATISATION_EN_PANNE_GARANTIE_LEGALE,
+  'vmc-habitation-panne-garantie-legale': GUIDE_VMC_HABITATION_PANNE_GARANTIE_LEGALE,
+  'chaudiere-domestique-defaut-garantie-legale': GUIDE_CHAUDIERE_DOMESTIQUE_DEFAUT_GARANTIE_LEGALE,
+  'pompe-a-chaleur-defaut-garantie-legale': GUIDE_POMPE_A_CHALEUR_DEFAUT_GARANTIE_LEGALE,
+  'alarme-maison-defaut-garantie-legale': GUIDE_ALARME_MAISON_DEFAUT_GARANTIE_LEGALE,
+  'domotique-passerelle-capteurs-garantie-legale':
+    GUIDE_DOMOTIQUE_PASSERELLE_CAPTEURS_GARANTIE_LEGALE,
+  'velo-electrique-defaut-garantie-legale': GUIDE_VELO_ELECTRIQUE_DEFAUT_GARANTIE_LEGALE,
+  'trottinette-electrique-defaut-garantie-legale':
+    GUIDE_TROTTINETTE_ELECTRIQUE_DEFAUT_GARANTIE_LEGALE,
+  'equipement-fitness-maison-garantie-legale': GUIDE_EQUIPEMENT_FITNESS_MAISON_GARANTIE_LEGALE,
+  'ski-equipement-defaut-garantie-legale': GUIDE_SKI_EQUIPEMENT_DEFAUT_GARANTIE_LEGALE,
+  'electromenager-lave-linge-lave-vaisselle-garantie':
+    GUIDE_ELECTROMENAGER_LAVE_LINGE_LAVE_VAISSELLE_GARANTIE,
+  'permanences-juridiques': GUIDE_PERMANENCES_JURIDIQUES,
+  'fnac-sav-recours': GUIDE_FNAC_SAV_RECOURS,
+  'boulanger-garanties': GUIDE_BOULANGER_GARANTIES,
+  'cdiscount-marketplace': GUIDE_CDISCOUNT_MARKETPLACE,
+  'refere-consommation': GUIDE_REFERE_CONSOMMATION,
+  'action-groupe': GUIDE_ACTION_GROUPE,
+  'prescription-delais': GUIDE_PRESCRIPTION_DELAIS,
+  'constituer-preuves': GUIDE_CONSTITUER_PREUVES,
+  alternatives: GUIDE_ALTERNATIVES,
+  signalconso: GUIDE_SIGNALCONSO,
+  'vices-caches': GUIDE_VICES_CACHES,
+  'protection-juridique': GUIDE_PROTECTION_JURIDIQUE,
+  'mediation-consommation': GUIDE_MEDIATION_CONSOMMATION,
+  'amazon-garantie-retours': GUIDE_AMAZON_GARANTIE_RETOURS,
+  'missing-15': GUIDE_MISSING_15,
+  'missing-16': GUIDE_MISSING_16,
 };

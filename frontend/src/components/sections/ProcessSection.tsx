@@ -1,9 +1,10 @@
 'use client';
 
+import { HelpCircle, Shield, FileText, Zap, Sparkles } from 'lucide-react';
 import * as React from 'react';
+
 import { Section, Container, Reveal, Badge, Button } from '@/components/ui';
 import Skeleton from '@/components/ui/Skeleton';
-import { HelpCircle, Shield, FileText, Zap, Sparkles } from 'lucide-react';
 
 const STEPS = [
   {

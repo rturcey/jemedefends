@@ -1,8 +1,9 @@
 'use client';
-import React from 'react';
-import Link from 'next/link';
-import { Sparkles, ArrowUp } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Sparkles, ArrowUp } from 'lucide-react';
+import Link from 'next/link';
+import React from 'react';
+
 import { useMobileOptimization } from '@/hooks/useMobileOptimization';
 
 export default function StickyMobileCTA() {

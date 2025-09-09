@@ -1,9 +1,11 @@
 'use client';
-import * as React from 'react';
 import { motion } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
+import * as React from 'react';
+
 import Container from '@/components/ui/Container';
 import Skeleton from '@/components/ui/Skeleton';
+
 import GradientBlobs from './GradientBlobs';
 
 type HeroProps = {

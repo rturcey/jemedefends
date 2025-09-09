@@ -1,7 +1,8 @@
 'use client';
 
+import { AlertTriangle, RefreshCw, MessageCircle } from 'lucide-react';
 import React from 'react';
-import { AlertTriangle, RefreshCw, MessageCircle, ArrowLeft } from 'lucide-react';
+
 import { Container, Button } from '@/components/ui';
 
 export default function Error({

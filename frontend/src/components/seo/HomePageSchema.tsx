@@ -116,7 +116,7 @@ export default function HomepageSchema() {
             name: 'Quelle est la base juridique ?',
             acceptedAnswer: {
               '@type': 'Answer',
-              text: 'Uniquement les articles pertinents du Code de la consommation français (ex. L.217-3, L.217-8, L.217-10). Aucune invention, que du droit applicable.',
+              text: 'Uniquement les articles pertinents du Code de la consommation français <LegalReference code="L217_3" /> <LegalReference code="L217_8" /> <LegalReference code="L217_10"/> Aucune invention, que du droit applicable.',
             },
           },
         ],

@@ -1,6 +1,7 @@
-import Link from 'next/link';
-import Container from '@/components/ui/Container';
 import { Shield } from 'lucide-react';
+import Link from 'next/link';
+
+import Container from '@/components/ui/Container';
 
 function Footer() {
   return (

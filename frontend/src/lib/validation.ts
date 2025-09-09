@@ -1,15 +1,3 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
-import {
-  ChevronLeft,
-  ChevronRight,
-  Check,
-  AlertCircle,
-  MapPin,
-  ArrowRight,
-  Sparkles,
-  X,
-} from 'lucide-react';
-
 // ==========================================
 // TYPES & VALIDATION
 // ==========================================
@@ -120,7 +108,7 @@ export function gatedValidation(
   value: any,
   rules: any,
   validateField?: ValidateFn,
-  isInteracted?: IsInteractedFn
+  isInteracted?: IsInteractedFn,
 ) {
   const touched = isInteracted?.(fieldName) === true;
   const hasValue =

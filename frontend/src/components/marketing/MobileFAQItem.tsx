@@ -1,7 +1,8 @@
 'use client';
-import * as React from 'react';
-import { ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronDown } from 'lucide-react';
+import * as React from 'react';
+
 import { cn } from '@/lib/utils';
 
 interface MobileFAQItemProps {
@@ -34,7 +35,7 @@ export default function MobileFAQItem({
           'focus-visible:ring-blue-500 focus-visible:ring-inset',
           'flex items-center justify-between gap-3',
           'transition-colors duration-200',
-          'min-h-[44px] touch-manipulation'
+          'min-h-[44px] touch-manipulation',
         )}
         aria-expanded={isOpen}
         aria-controls={`faq-answer-${question.replace(/\s+/g, '-').toLowerCase()}`}
@@ -43,7 +44,7 @@ export default function MobileFAQItem({
         <ChevronDown
           className={cn(
             'w-4 h-4 text-gray-500 transition-transform duration-200 flex-shrink-0',
-            isOpen && 'rotate-180'
+            isOpen && 'rotate-180',
           )}
           aria-hidden="true"
         />

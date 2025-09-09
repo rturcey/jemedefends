@@ -1,8 +1,8 @@
 // components/signature/SignaturePad.tsx
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
 import { Trash2 } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
 
 interface SignaturePadProps {
   onSignatureChange: (signature: string) => void;

@@ -1,7 +1,8 @@
 'use client';
 
+import { CheckCircle, Download } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
-import { CheckCircle, Download, Mail } from 'lucide-react';
+
 import { Container, Section, Button } from '@/components/ui';
 
 const ConfirmationPage: React.FC = () => {
@@ -17,7 +18,7 @@ const ConfirmationPage: React.FC = () => {
     try {
       const data = JSON.parse(success);
       setPaymentData(data);
-    } catch (err) {
+    } catch {
       window.location.href = '/formulaire';
     }
   }, []);

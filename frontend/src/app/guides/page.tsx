@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+
 import GuidesClientPage from './client-page';
 
 // Métadonnées SEO (côté serveur)

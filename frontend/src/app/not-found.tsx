@@ -1,6 +1,7 @@
+import { AlertTriangle, Home, Search, MessageCircle } from 'lucide-react';
 import React from 'react';
-import { AlertTriangle, Home, Search, MessageCircle, ArrowLeft } from 'lucide-react';
-import { Container, Button } from '@/components/ui';
+
+import { Container } from '@/components/ui';
 
 export default function NotFound() {
   return (

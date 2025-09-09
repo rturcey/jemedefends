@@ -1,9 +1,10 @@
 'use client';
 
 import * as React from 'react';
-import ProgressBar from '@/components/ui/progress/ProgressBar';
-import SaveStatus from '@/components/form/SaveStatus';
+
 import MobileNavigation from '@/components/form/MobileNavigation';
+import SaveStatus from '@/components/form/SaveStatus';
+import ProgressBar from '@/components/ui/progress/ProgressBar';
 
 interface FormLayoutProps {
   children: React.ReactNode;

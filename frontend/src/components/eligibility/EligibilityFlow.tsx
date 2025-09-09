@@ -1,7 +1,8 @@
 'use client';
 
-import * as React from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
+import * as React from 'react';
+
 import EligibilityForm from '@/components/eligibility/EligibilityForm';
 import ResultPanel from '@/components/eligibility/ResultPanel';
 

@@ -1,6 +1,7 @@
+import { FileText, Scale, MessageCircle, Home, Search } from 'lucide-react';
 import type { Metadata } from 'next';
+
 import { Container, Section } from '@/components/ui';
-import { FileText, Scale, MessageCircle, Users, Home, Search } from 'lucide-react';
 
 export const metadata: Metadata = {
   title: 'Plan du site | Je me défends',

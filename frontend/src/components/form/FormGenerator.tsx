@@ -1,13 +1,15 @@
 // frontend/src/components/form/FormGenerator.tsx
-import React, { createContext, ReactNode, useContext, useMemo } from 'react';
+import type { ReactNode } from 'react';
+import React, { createContext, useContext, useMemo } from 'react';
+
 import useFormManager from '@/hooks/form';
 import { STEPS } from '@/types/form';
-import FormLayout from './FormLayout';
 
+import FormLayout from './FormLayout';
 import BuyerInfoStep from './steps/BuyerInfoStep';
-import SellerInfoStep from './steps/SellerInfoStep';
-import PurchaseInfoStep from './steps/PurchaseInfoStep';
 import ProblemInfoStep from './steps/ProblemInfoStep';
+import PurchaseInfoStep from './steps/PurchaseInfoStep';
+import SellerInfoStep from './steps/SellerInfoStep';
 
 interface FormGeneratorProps {
   formSlug: string;
@@ -66,7 +68,7 @@ const FormGenerator: React.FC<FormGeneratorProps> = ({ formSlug }) => {
       onPrev: () => goToStep(Math.max(currentStepIndex - 1, 0), true),
       isSubmitting,
     }),
-    [formData, validation, updateField, currentStepIndex, goToStep, isSubmitting]
+    [formData, validation, updateField, currentStepIndex, goToStep, isSubmitting],
   );
 
   const renderStepContent = useMemo(() => {

@@ -1,6 +1,9 @@
 import type { Metadata } from 'next';
 import Script from 'next/script';
-import { LegalLayout, LegalSection, KeyValue } from '@/components/legal';
+
+import { KeyValue } from '@/components';
+import LegalLayout from '@/components/legal/LegalLayout';
+import LegalSection from '@/components/legal/LegalSection';
 
 export const metadata: Metadata = {
   title: "Conditions générales d'utilisation | Je me défends",

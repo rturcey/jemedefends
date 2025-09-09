@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import Script from 'next/script';
-import { LegalLayout, LegalSection } from '@/components/legal';
+
+import LegalLayout from '@/components/legal/LegalLayout';
+import LegalSection from '@/components/legal/LegalSection';
 
 const metadata: Metadata = {
   title: 'Politique de confidentialité | Je me défends',

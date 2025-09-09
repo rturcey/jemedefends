@@ -1,4 +1,5 @@
-import { Metadata } from 'next';
+import type { Metadata } from 'next';
+
 import EligibilityClientPage from './client-page';
 
 export const metadata: Metadata = {

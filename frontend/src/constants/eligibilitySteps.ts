@@ -1,6 +1,5 @@
 // src/constants/eligibilitySteps.ts
 import type { EligibilityStep } from '@/types/eligibility';
-import { LEGAL } from '@/constants/legal';
 
 export const ELIGIBILITY_STEPS: EligibilityStep[] = [
   {
@@ -9,8 +8,9 @@ export const ELIGIBILITY_STEPS: EligibilityStep[] = [
     question: "Avez-vous acheté auprès d'un vendeur professionnel ?",
     description: "La garantie légale s'applique uniquement aux achats pro ↔ consommateur",
     legal: {
-      article: LEGAL.L217_3.ref,
-      explanation: LEGAL.L217_3.summary,
+      article: 'L.217-3',
+      explanation:
+        'Garantie légale de conformité pour les ventes entre un professionnel et un consommateur.',
       examples: [
         '✅ Darty, Fnac, Apple Store',
         '✅ Vendeur pro sur Amazon',
@@ -40,8 +40,9 @@ export const ELIGIBILITY_STEPS: EligibilityStep[] = [
     question: 'Achat pour un usage personnel (consommateur) ?',
     description: 'La garantie protège les achats destinés à un usage privé',
     legal: {
-      article: LEGAL.ARTICLE_LIMINAIRE.ref,
-      explanation: LEGAL.ARTICLE_LIMINAIRE.summary,
+      article: 'Article liminaire (Code de la consommation)',
+      explanation:
+        'Le “consommateur” est une personne physique agissant à des fins non professionnelles.',
       examples: [
         '✅ Usage domestique',
         '✅ Cadeau à un proche',
@@ -63,8 +64,9 @@ export const ELIGIBILITY_STEPS: EligibilityStep[] = [
     question: 'Quel est le type de produit ?',
     description: 'Biens matériels et, selon les cas, contenus/services numériques',
     legal: {
-      article: `${LEGAL.L217_3.ref} ; ${LEGAL.L224_25_12.ref}`,
-      explanation: `${LEGAL.L217_3.summary} ${LEGAL.L224_25_12.summary}`,
+      article: 'L.217-3 ; L.224-25-12',
+      explanation:
+        'Biens (L.217-3) et biens comportant des éléments numériques / contenus & services numériques (L.224-25-12 et s.).',
       examples: ['📱 Bien : smartphone, électroménager', '💻 Numérique : app, SaaS, streaming'],
     },
     ui: {
@@ -84,7 +86,7 @@ export const ELIGIBILITY_STEPS: EligibilityStep[] = [
     legal: {
       article: 'Conditions d’application territoriales (appréciation par indices)',
       explanation:
-        'Le Code conso s’applique lorsque le contrat concerne un consommateur en France et que l’activité du pro est dirigée vers la France (langue/€, livraison, SAV…).',
+        'Le Code conso s’applique quand le contrat vise un consommateur en France et que l’activité du pro est dirigée vers la France (langue/€, livraison, SAV…).',
       examples: ['✅ Site en français + €', '✅ Livraison France', '✅ SAV FR'],
     },
     ui: {
@@ -101,10 +103,11 @@ export const ELIGIBILITY_STEPS: EligibilityStep[] = [
     title: "Ancienneté de l'achat",
     question: 'Votre achat a-t-il moins de 2 ans ?',
     description:
-      'Biens : éligible jusqu’à 24 mois. La présomption (charge de la preuve au vendeur) joue pendant 12 mois — au-delà, vous restez éligible mais la présomption est moins favorable.',
+      'Biens : éligible jusqu’à 24 mois. La présomption (charge de la preuve au vendeur) joue 24 mois (12 mois pour un bien d’occasion).',
     legal: {
-      article: `${LEGAL.L217_3.ref} ; ${LEGAL.L217_7.ref}`,
-      explanation: `Biens : délai de 2 ans (${LEGAL.L217_3.ref}). Présomption d’antériorité jusqu’à 12 mois pour l’occasion (${LEGAL.L217_7.ref}).`,
+      article: 'L.217-3 ; L.217-7',
+      explanation:
+        'Délai d’action de 2 ans (L.217-3). Présomption d’antériorité des défauts : 24 mois (12 mois pour l’occasion) — L.217-7.',
       examples: ['📅 < 2 ans : éligible', '📅 > 2 ans : trop tard (biens)'],
     },
     ui: {
@@ -122,8 +125,9 @@ export const ELIGIBILITY_STEPS: EligibilityStep[] = [
     question: 'Le produit présente-t-il un défaut de conformité ?',
     description: 'Panne, dysfonctionnement, non-conformité aux spécifications',
     legal: {
-      article: LEGAL.L217_5.ref,
-      explanation: LEGAL.L217_5.summary,
+      article: 'L.217-5',
+      explanation:
+        'Critères de conformité : aux stipulations du contrat (usage spécial, accessoires, mises à jour) et critères objectifs (qualités attendues, déclarations publiques, etc.).',
       examples: ['❌ Panne prématurée', '❌ Fonctionnalité manquante', '❌ Qualité insuffisante'],
     },
     ui: {

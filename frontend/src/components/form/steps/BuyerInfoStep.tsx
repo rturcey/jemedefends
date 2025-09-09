@@ -1,11 +1,11 @@
 'use client';
 
 import React from 'react';
-import FormField from '@/components/form/FormField';
+
 import AddressInput from '@/components/form/AddressInput';
-import { gatedValidation } from '@/lib/validation';
-import { normalizeName } from '@/lib/validation';
-import { StepProps } from '@/types/form';
+import FormField from '@/components/form/FormField';
+import { gatedValidation, normalizeName } from '@/lib/validation';
+import type { StepProps } from '@/types/form';
 
 const BuyerInfoStep: React.FC<StepProps> = ({ data, validation, onFieldChange, onNext }) => {
   const d = (data ?? {}) as Record<string, any>;
@@ -61,7 +61,7 @@ const BuyerInfoStep: React.FC<StepProps> = ({ data, validation, onFieldChange, o
               maxLength: 100,
             }),
             validation?.validateField,
-            validation?.isInteracted
+            validation?.isInteracted,
           )}
         />
 
@@ -87,7 +87,7 @@ const BuyerInfoStep: React.FC<StepProps> = ({ data, validation, onFieldChange, o
               maxLength: 255,
             }),
             validation?.validateField,
-            validation?.isInteracted
+            validation?.isInteracted,
           )}
         />
       </div>
