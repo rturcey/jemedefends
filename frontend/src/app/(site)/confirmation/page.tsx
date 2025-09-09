@@ -1,4 +1,5 @@
-import { Metadata } from 'next';
+import type { Metadata } from 'next';
+
 import ConfirmationPage from '@/components/payment/ConfirmationPage';
 
 export const metadata: Metadata = {

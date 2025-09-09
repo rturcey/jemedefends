@@ -1,8 +1,9 @@
 'use client';
 
 import React from 'react';
-import Skeleton from '@/components/ui/Skeleton';
+
 import Container from '@/components/ui/Container';
+import Skeleton from '@/components/ui/Skeleton';
 import { useMobileOptimization } from '@/hooks/useMobileOptimization';
 
 interface SkeletonFactoryProps {
@@ -373,7 +374,7 @@ export const useSkeletonState = (delay: number = 100) => {
       () => {
         setIsLoading(false);
       },
-      isSlowConnection ? delay * 2 : delay
+      isSlowConnection ? delay * 2 : delay,
     );
 
     return () => clearTimeout(timeout);

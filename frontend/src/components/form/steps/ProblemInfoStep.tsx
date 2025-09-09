@@ -1,11 +1,12 @@
 'use client';
 
 import React, { useEffect, useRef, useState, useCallback } from 'react';
-import TextAreaField from '@/components/form/TextAreaField';
+
 import RadioGroup from '@/components/form/RadioGroup';
 import ReformatDescriptionModal from '@/components/form/ReformatDescriptionModal';
+import TextAreaField from '@/components/form/TextAreaField';
 import { gatedValidation } from '@/lib/validation';
-import { StepProps } from '@/types/form';
+import type { StepProps } from '@/types/form';
 
 interface ProblemInfoStepProps extends StepProps {
   /** Le parent enregistre ici un handler pour ouvrir la modale depuis la nav mobile. */
@@ -120,7 +121,7 @@ const ProblemInfoStep: React.FC<ProblemInfoStepProps> = ({
               data.defect_type || '',
               validation?.getFieldRules?.('defect_type', { required: true }),
               validation?.validateField,
-              validation?.isInteracted
+              validation?.isInteracted,
             )}
           />
 
@@ -146,7 +147,7 @@ const ProblemInfoStep: React.FC<ProblemInfoStepProps> = ({
                   maxLength: 1000,
                 } as any),
                 validation?.validateField,
-                validation?.isInteracted
+                validation?.isInteracted,
               )}
             />
 

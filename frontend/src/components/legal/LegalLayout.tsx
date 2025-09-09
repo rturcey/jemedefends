@@ -1,8 +1,9 @@
 'use client';
-import * as React from 'react';
-import { Reveal } from '@/components/ui';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
+import * as React from 'react';
+
+import { Reveal } from '@/components/ui';
 
 function LegalLayout({
   title,

@@ -1,15 +1,15 @@
 // app/guides/client-page.tsx - Mise à jour avec recherche unifiée
 'use client';
 
-import React, { useState, useMemo, useEffect, useCallback } from 'react';
-import Link from 'next/link';
 import { FileText, ArrowRight, Clock, Star, Filter, X, BookOpen, TrendingUp } from 'lucide-react';
+import Link from 'next/link';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 
+import { Reveal } from '@/components';
+import SearchBar from '@/components/guides/SearchBar';
+import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import Container from '@/components/ui/Container';
 import Skeleton from '@/components/ui/Skeleton';
-import Breadcrumbs from '@/components/ui/Breadcrumbs';
-import SearchBar from '@/components/guides/SearchBar';
-import { Reveal } from '@/components';
 import { getAllGuides, getCategories, type Guide, type Category } from '@/lib/guide-utils';
 import { createAdvancedUnifiedSearchFilter, GUIDE_SEARCH_CONFIG } from '@/lib/search-utils';
 
@@ -277,7 +277,7 @@ export default function GuidesClientPage() {
                     onClick={() => setSelectedCategory(category.id)}
                     className={`flex items-center gap-2 px-4 py-2 rounded-xl font-medium text-sm transition-all duration-200 min-h-[44px] touch-manipulation ${getCategoryColors(
                       category.color,
-                      selectedCategory === category.id
+                      selectedCategory === category.id,
                     )}`}
                   >
                     {category.emoji} {category.name} ({category.count})

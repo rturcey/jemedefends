@@ -43,7 +43,7 @@ export function normalizeText(text: string): string {
  */
 export function createUnifiedSearchFilter<T extends SearchableItem>(
   searchQuery: string,
-  searchFields: SearchField[]
+  searchFields: SearchField[],
 ) {
   if (!searchQuery.trim()) return (items: T[]) => items;
 
@@ -110,7 +110,7 @@ export function createUnifiedSearchFilter<T extends SearchableItem>(
 export function generateUnifiedSuggestions<T extends SearchableItem>(
   items: T[],
   query: string,
-  searchFields: SearchField[]
+  searchFields: SearchField[],
 ): string[] {
   if (query.length < 2) return [];
 
@@ -188,7 +188,7 @@ function getNestedProperty(obj: any, path: string): any {
  */
 export function createAdvancedUnifiedSearchFilter<T extends SearchableItem>(
   searchQuery: string,
-  searchFields: SearchField[]
+  searchFields: SearchField[],
 ) {
   if (!searchQuery.trim()) return (items: T[]) => items;
 
@@ -200,7 +200,7 @@ export function createAdvancedUnifiedSearchFilter<T extends SearchableItem>(
       let score = 0;
 
       searchFields.forEach(({ key, weight, isArray }) => {
-        let value = getNestedProperty(item, key);
+        const value = getNestedProperty(item, key);
         if (!value) return;
 
         const texts = isArray ? value : [value];

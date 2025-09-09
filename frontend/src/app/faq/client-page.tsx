@@ -1,8 +1,6 @@
 // app/faq/client-page.tsx - Mise à jour avec recherche unifiée
 'use client';
 
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import Link from 'next/link';
 import {
   Search,
   Filter,
@@ -15,13 +13,15 @@ import {
   X,
   Star,
 } from 'lucide-react';
+import Link from 'next/link';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 
+import { Reveal } from '@/components';
+import SearchBar from '@/components/guides/SearchBar';
+import MobileFAQItem from '@/components/marketing/MobileFAQItem';
+import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import Container from '@/components/ui/Container';
 import Skeleton from '@/components/ui/Skeleton';
-import Breadcrumbs from '@/components/ui/Breadcrumbs';
-import MobileFAQItem from '@/components/marketing/MobileFAQItem';
-import SearchBar from '@/components/guides/SearchBar';
-import { Reveal } from '@/components';
 import { useMobileOptimization } from '@/hooks/useMobileOptimization';
 import {
   createAdvancedUnifiedSearchFilter,
@@ -38,7 +38,7 @@ interface FAQItem extends SearchableItem {
   icon?: string;
 }
 
-// --- LÉGAL / SERVICE / TECHNIQUE : FAQ optimisée SEO + conversion, conforme L.217-3 à L.217-28
+// --- LÉGAL / SERVICE / TECHNIQUE : FAQ optimisée SEO + conversion, conforme <LegalReference code="L217_3" label={LEGAL.L217_3.ref} /> à <LegalReference code="L217_28" label={LEGAL.L217_28.ref} />
 const ALL_FAQ_ITEMS: FAQItem[] = [
   // --- LÉGAL ---
   {
@@ -55,7 +55,7 @@ const ALL_FAQ_ITEMS: FAQItem[] = [
   {
     id: 'gratuit-obligatoire',
     question: 'La garantie légale est-elle vraiment gratuite et obligatoire ?',
-    answer: `Oui. Elle est <strong>gratuite</strong> et <strong>automatique</strong> dès l’achat auprès d’un professionnel (L.217-3 et s.). 
+    answer: `Oui. Elle est <strong>gratuite</strong> et <strong>automatique</strong> dès l’achat auprès d’un professionnel (<LegalReference code="L217_3" label={LEGAL.L217_3.ref} /> et s.). 
       Elle s’impose au vendeur, qui ne peut ni la limiter ni vous renvoyer vers le fabricant.`,
     category: 'legal',
     keywords: ['gratuite', 'obligatoire', 'automatique', 'vendeur', 'fabricant'],
@@ -65,19 +65,25 @@ const ALL_FAQ_ITEMS: FAQItem[] = [
   {
     id: 'preuve-defaut',
     question: 'Dois-je prouver que le défaut existait à l’achat ?',
-    answer: `Pendant la période de présomption (24 mois neuf ; au moins 12 mois occasion), le défaut est <strong>présumé</strong> exister à la livraison (L.217-7). 
+    answer: `Pendant la période de présomption (24 mois neuf ; au moins 12 mois occasion), le défaut est <strong>présumé</strong> exister à la livraison (<LegalReference code="L217_7" label={LEGAL.L217_7.ref} />). 
       Le vendeur peut renverser cette présomption en prouvant un mauvais usage ou une cause externe.`,
     category: 'legal',
-    keywords: ['preuve', 'présomption', 'L.217-7', 'livraison', 'occasion'],
+    keywords: [
+      'preuve',
+      'présomption',
+      '<LegalReference code="L217_7" label={LEGAL.L217_7.ref} />',
+      'livraison',
+      'occasion',
+    ],
     isPopular: true,
     icon: '🔍',
   },
   {
     id: 'recours-possibles',
     question: 'Quels sont mes recours si mon produit ne marche pas ?',
-    answer: `Vous disposez de 4 recours (L.217-9, L.217-13) : <strong>réparation</strong> ou <strong>remplacement</strong> ; 
+    answer: `Vous disposez de 4 recours (<LegalReference code="L217_9" label={LEGAL.L217_9.ref} />, <LegalReference code="L217_13" label={LEGAL.L217_13.ref} />) : <strong>réparation</strong> ou <strong>remplacement</strong> ; 
       si impossibles ou échouent, <strong>réduction du prix</strong> ou <strong>remboursement</strong>. 
-      Tous les frais de mise en conformité sont à la charge du <strong>vendeur</strong> (L.217-11).`,
+      Tous les frais de mise en conformité sont à la charge du <strong>vendeur</strong> (<LegalReference code="L217_11" label={LEGAL.L217_11.ref} />).`,
     category: 'legal',
     keywords: ['réparation', 'remplacement', 'réduction du prix', 'remboursement', 'frais vendeur'],
     isPopular: true,
@@ -86,15 +92,15 @@ const ALL_FAQ_ITEMS: FAQItem[] = [
   {
     id: 'vendeur-refuse',
     question: 'Le vendeur refuse d’appliquer la garantie légale, que faire ?',
-    answer: `Rappelez-lui par écrit la garantie légale (L.217-3, L.217-9) et exigez une <strong>mise en conformité</strong> sous <em>délai raisonnable</em>. 
-      À défaut, adressez une <strong>mise en demeure</strong> et demandez le <strong>remboursement</strong> ou la <strong>réduction de prix</strong> (L.217-13).`,
+    answer: `Rappelez-lui par écrit la garantie légale (<LegalReference code="L217_3" label={LEGAL.L217_3.ref} />, <LegalReference code="L217_9" label={LEGAL.L217_9.ref} />) et exigez une <strong>mise en conformité</strong> sous <em>délai raisonnable</em>. 
+      À défaut, adressez une <strong>mise en demeure</strong> et demandez le <strong>remboursement</strong> ou la <strong>réduction de prix</strong> (<LegalReference code="L217_13" label={LEGAL.L217_13.ref} />).`,
     category: 'legal',
     keywords: [
       'vendeur refuse',
       'mise en demeure',
       'délai raisonnable',
       'remboursement',
-      'L.217-13',
+      '<LegalReference code="L217_13" label={LEGAL.L217_13.ref} />',
     ],
     icon: '📝',
   },
@@ -102,52 +108,81 @@ const ALL_FAQ_ITEMS: FAQItem[] = [
     id: 'frais-a-la-charge-du-vendeur',
     question: 'Qui paie les frais de retour, transport et main-d’œuvre ?',
     answer: `Tous les frais liés à la <strong>mise en conformité</strong> (diagnostic, transport, pièces, main-d’œuvre) 
-      sont à la charge du <strong>vendeur</strong> (L.217-11). Refusez tout devis “hors garantie légale”.`,
+      sont à la charge du <strong>vendeur</strong> (<LegalReference code="L217_11" label={LEGAL.L217_11.ref} />). Refusez tout devis “hors garantie légale”.`,
     category: 'legal',
-    keywords: ['frais', 'transport', 'diagnostic', 'main-d’œuvre', 'L.217-11'],
+    keywords: [
+      'frais',
+      'transport',
+      'diagnostic',
+      'main-d’œuvre',
+      '<LegalReference code="L217_11" label={LEGAL.L217_11.ref} />',
+    ],
     icon: '🚚',
   },
   {
     id: 'delai-raisonnable',
     question: 'Quel délai pour réparer ou remplacer ?',
-    answer: `Le vendeur doit agir dans un <strong>délai raisonnable</strong> après votre demande (L.217-9). 
-      Si l’immobilisation est longue ou si l’intervention échoue, exigez <strong>remplacement</strong> ou <strong>remboursement</strong> (L.217-13).`,
+    answer: `Le vendeur doit agir dans un <strong>délai raisonnable</strong> après votre demande (<LegalReference code="L217_9" label={LEGAL.L217_9.ref} />). 
+      Si l’immobilisation est longue ou si l’intervention échoue, exigez <strong>remplacement</strong> ou <strong>remboursement</strong> (<LegalReference code="L217_13" label={LEGAL.L217_13.ref} />).`,
     category: 'legal',
-    keywords: ['délai raisonnable', 'immobilisation', 'réparation', 'remplacement', 'L.217-9'],
+    keywords: [
+      'délai raisonnable',
+      'immobilisation',
+      'réparation',
+      'remplacement',
+      '<LegalReference code="L217_9" label={LEGAL.L217_9.ref} />',
+    ],
     icon: '⏳',
   },
   {
     id: 'maj-logicielle-obligation',
     question: 'Les mises à jour logicielles sont-elles obligatoires ?',
     answer: `Pour un bien avec <strong>éléments numériques</strong> (smartphone, TV connectée, etc.), 
-      les mises à jour <strong>nécessaires au maintien de la conformité</strong> doivent être fournies pendant la période prévue (L.217-19 à L.217-21).`,
+      les mises à jour <strong>nécessaires au maintien de la conformité</strong> doivent être fournies pendant la période prévue (<LegalReference code="L217_19" label={LEGAL.L217_19.ref} /> à <LegalReference code="L217_21" label={LEGAL.L217_21.ref} />).`,
     category: 'legal',
-    keywords: ['mises à jour', 'éléments numériques', 'L.217-19', 'L.217-21', 'conformité'],
+    keywords: [
+      'mises à jour',
+      'éléments numériques',
+      '<LegalReference code="L217_19" label={LEGAL.L217_19.ref} />',
+      '<LegalReference code="L217_21" label={LEGAL.L217_21.ref} />',
+      'conformité',
+    ],
     icon: '🔄',
   },
   {
     id: 'occasion-presomption',
     question: 'Et pour un produit d’occasion ?',
     answer: `La garantie légale dure <strong>2 ans</strong>. 
-      La <strong>présomption</strong> d’existence du défaut est d’au moins <strong>12 mois</strong> (L.217-7). 
+      La <strong>présomption</strong> d’existence du défaut est d’au moins <strong>12 mois</strong> (<LegalReference code="L217_7" label={LEGAL.L217_7.ref} />). 
       Le vendeur doit prouver une cause excluante pour refuser la garantie.`,
     category: 'legal',
-    keywords: ['occasion', '2 ans', '12 mois', 'présomption', 'L.217-7'],
+    keywords: [
+      'occasion',
+      '2 ans',
+      '12 mois',
+      'présomption',
+      '<LegalReference code="L217_7" label={LEGAL.L217_7.ref} />',
+    ],
     icon: '♻️',
   },
   {
     id: 'choix-consommateur',
     question: 'Qui choisit entre réparation et remplacement ?',
-    answer: `Vous choisissez <strong>réparation</strong> ou <strong>remplacement</strong> (L.217-9). 
+    answer: `Vous choisissez <strong>réparation</strong> ou <strong>remplacement</strong> (<LegalReference code="L217_9" label={LEGAL.L217_9.ref} />). 
       Le vendeur ne peut imposer l’autre option que si la vôtre est <strong>impossible</strong> ou <strong>disproportionnée</strong> au regard du coût.`,
     category: 'legal',
-    keywords: ['choix réparation', 'remplacement', 'disproportionné', 'L.217-9'],
+    keywords: [
+      'choix réparation',
+      'remplacement',
+      'disproportionné',
+      '<LegalReference code="L217_9" label={LEGAL.L217_9.ref} />',
+    ],
     icon: '🎛️',
   },
   {
     id: 'extension-garantie',
     question: 'Différence entre garantie légale et « extension de garantie » ?',
-    answer: `La <strong>garantie légale</strong> (L.217-3 à L.217-28) est <strong>obligatoire et gratuite</strong>. 
+    answer: `La <strong>garantie légale</strong> (<LegalReference code="L217_3" label={LEGAL.L217_3.ref} /> à <LegalReference code="L217_28" label={LEGAL.L217_28.ref} />) est <strong>obligatoire et gratuite</strong>. 
       L’<strong>extension</strong> est un contrat payant <em>facultatif</em> qui n’affecte pas vos droits légaux. 
       Faites d’abord valoir la garantie légale auprès du vendeur.`,
     category: 'legal',
@@ -157,10 +192,15 @@ const ALL_FAQ_ITEMS: FAQItem[] = [
   {
     id: 'diagnostic-payant',
     question: 'Le vendeur peut-il me facturer un diagnostic ?',
-    answer: `Non, si le diagnostic est nécessaire à la <strong>mise en conformité</strong> : il reste à la charge du vendeur (L.217-11). 
+    answer: `Non, si le diagnostic est nécessaire à la <strong>mise en conformité</strong> : il reste à la charge du vendeur (<LegalReference code="L217_11" label={LEGAL.L217_11.ref} />). 
       Demandez un écrit si on vous le réclame et rappelez l’article.`,
     category: 'legal',
-    keywords: ['diagnostic payant', 'mise en conformité', 'L.217-11', 'frais'],
+    keywords: [
+      'diagnostic payant',
+      'mise en conformité',
+      '<LegalReference code="L217_11" label={LEGAL.L217_11.ref} />',
+      'frais',
+    ],
     icon: '🧾',
   },
 
@@ -196,7 +236,7 @@ const ALL_FAQ_ITEMS: FAQItem[] = [
   {
     id: 'aide-redaction',
     question: 'Aidez-vous à rédiger ma réclamation ?',
-    answer: `Oui. Nous insérons automatiquement les <strong>bons articles</strong> (L.217-3, L.217-7, L.217-9, L.217-11, L.217-13) 
+    answer: `Oui. Nous insérons automatiquement les <strong>bons articles</strong> (<LegalReference code="L217_3" label={LEGAL.L217_3.ref} />, <LegalReference code="L217_7" label={LEGAL.L217_7.ref} />, <LegalReference code="L217_9" label={LEGAL.L217_9.ref} />, <LegalReference code="L217_11" label={LEGAL.L217_11.ref} />, <LegalReference code="L217_13" label={LEGAL.L217_13.ref} />) 
       et structurons vos <strong>preuves</strong> pour renforcer votre demande.`,
     category: 'service',
     keywords: ['aide rédaction', 'articles de loi', 'mise en demeure', 'preuves'],
@@ -205,7 +245,7 @@ const ALL_FAQ_ITEMS: FAQItem[] = [
   {
     id: 'reussite-taux',
     question: 'Quel est votre taux de réussite ?',
-    answer: `Pas de pourcentages invérifiables. Nos modèles sont <strong>conformes au Code</strong> (L.217-3 à L.217-28) 
+    answer: `Pas de pourcentages invérifiables. Nos modèles sont <strong>conformes au Code</strong> (<LegalReference code="L217_3" label={LEGAL.L217_3.ref} /> à <LegalReference code="L217_28" label={LEGAL.L217_28.ref} />) 
       et optimisés pour une <strong>mise en conformité</strong> rapide.`,
     category: 'service',
     keywords: ['taux de réussite', 'efficacité', 'conforme', 'code consommation'],
@@ -261,7 +301,7 @@ const ALL_FAQ_ITEMS: FAQItem[] = [
     id: 'pieces-disponibilite',
     question: 'Et si la pièce n’est plus disponible ?',
     answer: `Si la <strong>réparation</strong> est impossible (pièce indisponible) ou <strong>disproportionnée</strong>, 
-      demandez le <strong>remplacement</strong> ou, à défaut, la <strong>réduction du prix</strong> / le <strong>remboursement</strong> (L.217-9, L.217-13).`,
+      demandez le <strong>remplacement</strong> ou, à défaut, la <strong>réduction du prix</strong> / le <strong>remboursement</strong> (<LegalReference code="L217_9" label={LEGAL.L217_9.ref} />, <LegalReference code="L217_13" label={LEGAL.L217_13.ref} />).`,
     category: 'technique',
     keywords: ['pièce indisponible', 'réparation impossible', 'remplacement', 'remboursement'],
     icon: '🧩',
@@ -270,9 +310,15 @@ const ALL_FAQ_ITEMS: FAQItem[] = [
     id: 'donnees-personnelles-produit',
     question: 'Que faire de mes données avant un retour SAV ?',
     answer: `Sauvegardez vos données et <strong>réinitialisez</strong> l’appareil si possible. 
-      La garantie légale porte sur la <strong>conformité</strong> (L.217-5) ; protégez votre confidentialité par précaution.`,
+      La garantie légale porte sur la <strong>conformité</strong> (<LegalReference code="L217_5" label={LEGAL.L217_5.ref} />) ; protégez votre confidentialité par précaution.`,
     category: 'technique',
-    keywords: ['réinitialisation', 'données', 'confidentialité', 'L.217-5', 'SAV'],
+    keywords: [
+      'réinitialisation',
+      'données',
+      'confidentialité',
+      '<LegalReference code="L217_5" label={LEGAL.L217_5.ref} />',
+      'SAV',
+    ],
     icon: '🗂️',
   },
 ];
@@ -443,7 +489,7 @@ export default function FAQClientPage() {
                         onClick={() => setSelectedCategory(cat.id)}
                         className={`flex items-center gap-2 px-4 py-2 rounded-xl font-medium text-sm transition-all duration-200 min-h-[44px] touch-manipulation ${getCategoryColors(
                           cat.color,
-                          selectedCategory === cat.id
+                          selectedCategory === cat.id,
                         )}`}
                       >
                         {cat.icon}

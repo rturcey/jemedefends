@@ -1,6 +1,7 @@
 // src/app/layout.tsx
 import './globals.css';
 import type { Metadata } from 'next';
+
 import { SiteLayout } from '@/components/layout';
 
 const siteUrl = 'https://jemedefends.fr';
@@ -23,7 +24,7 @@ export const metadata: Metadata = {
   // === FAVICONS & ICONES ===
   icons: {
     icon: [
-      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/favicon-64x64.png', sizes: '64x64', type: 'image/png' },
       { url: '/favicon.ico', sizes: 'any' }, // fallback universel
     ],
     // si tu ajoutes le fichier, décommente la ligne ci-dessous :
@@ -70,9 +71,15 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="fr">
-      <body className="antialiased">
-        <SiteLayout>{children}</SiteLayout>
+    <html className="scroll-smooth" className="scroll-smooth" lang="fr">
+      <body
+        className="focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600/50"
+        className="focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600/50"
+        className="antialiased"
+      >
+        <RenderWatchdog maxRendersPerSecond={80} maxHeapMB={1024}>
+          <SiteLayout>{children}</SiteLayout>
+        </RenderWatchdog>
       </body>
     </html>
   );

@@ -1,6 +1,7 @@
+import { FileText, Scale, MessageCircle, Home, Search } from 'lucide-react';
 import type { Metadata } from 'next';
+
 import { Container, Section } from '@/components/ui';
-import { FileText, Scale, MessageCircle, Users, Home, Search } from 'lucide-react';
 
 export const metadata: Metadata = {
   title: 'Plan du site | Je me défends',
@@ -16,9 +17,17 @@ export default function PlanDuSitePage() {
       icon: <Home className="w-6 h-6 text-blue-600" />,
       links: [
         { href: '/', title: 'Accueil', description: "Page d'accueil du service" },
-        { href: '/eligibilite', title: 'Éligibilité', description: 'Vérifiez vos droits' },
+        {
+          href: '/eligibilite',
+          title: 'Éligibilité',
+          description: 'Vérifiez vos droits',
+        },
         { href: '/formulaire', title: 'Générateur', description: 'Créez votre lettre' },
-        { href: '/a-propos', title: 'À propos', description: 'Notre mission et équipe' },
+        {
+          href: '/a-propos',
+          title: 'À propos',
+          description: 'Notre mission et équipe',
+        },
         { href: '/contact', title: 'Contact', description: 'Support et assistance' },
       ],
     },
@@ -26,9 +35,13 @@ export default function PlanDuSitePage() {
       title: 'Guides juridiques',
       icon: <Scale className="w-6 h-6 text-green-600" />,
       links: [
-        { href: '/guides', title: 'Hub des guides', description: 'Tous nos guides pratiques' },
         {
-          href: '/guides/garantie-legale-conformite',
+          href: '/guides',
+          title: 'Hub des guides',
+          description: 'Tous nos guides pratiques',
+        },
+        {
+          href: '/guides/garantie-legale-conformite-guide-complet',
           title: 'Garantie légale',
           description: 'Guide complet',
         },
@@ -54,7 +67,11 @@ export default function PlanDuSitePage() {
       icon: <MessageCircle className="w-6 h-6 text-purple-600" />,
       links: [
         { href: '/faq', title: 'FAQ', description: 'Questions fréquentes' },
-        { href: '/contact', title: 'Nous contacter', description: 'Support personnalisé' },
+        {
+          href: '/contact',
+          title: 'Nous contacter',
+          description: 'Support personnalisé',
+        },
       ],
     },
     {

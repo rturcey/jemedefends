@@ -1,9 +1,10 @@
 // src/components/ui/Breadcrumbs.tsx
 'use client';
 
-import React from 'react';
-import Link from 'next/link';
 import { ChevronRight, Home, MoreHorizontal } from 'lucide-react';
+import Link from 'next/link';
+import React from 'react';
+
 import { useMobileOptimization } from '@/hooks/useMobileOptimization';
 
 interface BreadcrumbItem {

@@ -1,6 +1,7 @@
 import * as React from 'react';
-import TopBar from './TopBar';
+
 import Footer from './Footer';
+import TopBar from './TopBar';
 
 function SiteLayout({ children }: React.PropsWithChildren) {
   return (

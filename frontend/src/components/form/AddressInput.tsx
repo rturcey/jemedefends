@@ -2,6 +2,7 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
+
 import type { FormData, ValidationManager } from '@/types/form';
 
 type AddressFeature = {
@@ -73,7 +74,7 @@ const AddressInput: React.FC<AddressInputProps> = ({
       const timeoutId = setTimeout(() => controller.abort(), 6000);
       const res = await fetch(
         `https://api-adresse.data.gouv.fr/search/?q=${encodeURIComponent(query)}&limit=6`,
-        { signal: controller.signal, mode: 'cors' }
+        { signal: controller.signal, mode: 'cors' },
       );
       clearTimeout(timeoutId);
       const json: AddressSearchResponse = await res.json();

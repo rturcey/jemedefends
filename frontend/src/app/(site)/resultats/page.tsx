@@ -1,5 +1,6 @@
 // app/resultats/page.tsx
-import { Metadata } from 'next';
+import type { Metadata } from 'next';
+
 import ResultsPage from '@/components/results/ResultsPage';
 
 export const metadata: Metadata = {

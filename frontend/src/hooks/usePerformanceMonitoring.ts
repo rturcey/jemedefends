@@ -2,8 +2,9 @@
 'use client';
 
 import { useEffect } from 'react';
-import { measurePerformance } from '@/lib/performance';
+
 import { trackEvent } from '@/lib/analytics';
+import { measurePerformance } from '@/lib/performance';
 
 export const usePerformanceMonitoring = () => {
   useEffect(() => {

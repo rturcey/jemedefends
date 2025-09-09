@@ -2,6 +2,7 @@
 'use client';
 
 import React, { memo, useCallback, useRef } from 'react';
+
 import { useMobileOptimization } from '@/hooks/useMobileOptimization';
 import { debounce } from '@/lib/performance';
 
@@ -51,9 +52,9 @@ const useRealtimeValidation = (value: string, required: boolean, type: string) =
 
         return null;
       },
-      isSlowConnection ? 800 : 400
+      isSlowConnection ? 800 : 400,
     ),
-    [required, type, isSlowConnection]
+    [required, type, isSlowConnection],
   );
 
   return validateField;
@@ -85,7 +86,7 @@ const FormField = memo<FormFieldProps>(
       required,
       type,
       undefined,
-      name
+      name,
     );
 
     // Handler optimisé pour les changements
@@ -102,7 +103,7 @@ const FormField = memo<FormFieldProps>(
           validateField(newValue);
         }
       },
-      [onChange, validateField, markInteracted]
+      [onChange, validateField, markInteracted],
     );
 
     // Handler optimisé pour le blur
@@ -230,7 +231,7 @@ const FormField = memo<FormFieldProps>(
         )}
       </div>
     );
-  }
+  },
 );
 
 FormField.displayName = 'FormField';

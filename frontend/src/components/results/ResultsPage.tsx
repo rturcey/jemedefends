@@ -1,8 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Modal } from '@/components/ui';
 import {
   CheckCircle,
   Download,
@@ -21,7 +19,10 @@ import {
   Calendar,
   Check,
 } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+
 import HomepageSchema from '@/components/seo/HomePageSchema';
+import { Modal } from '@/components/ui';
 
 // ===============================
 // NEW — Pricing constants & utils
@@ -83,7 +84,7 @@ const useResultsPage = () => {
 
     if (iframe && (iframe as HTMLIFrameElement).src) {
       const match = (iframe as HTMLIFrameElement).src.match(
-        /\/letters\/([0-9a-fA-F-]{36})\/preview/
+        /\/letters\/([0-9a-fA-F-]{36})\/preview/,
       );
       if (match) {
         letterId = match[1];
@@ -176,12 +177,12 @@ const useResultsPage = () => {
             email,
             letterId,
             amount,
-          })
+          }),
         );
 
         // Redirection vers paiement (montant dynamique)
         window.location.href = `/paiement?type=${type}&amount=${amount}&email=${encodeURIComponent(
-          email
+          email,
         )}`;
       } catch (err) {
         const message = err instanceof Error ? err.message : 'Erreur de génération';
@@ -467,7 +468,8 @@ const FreeModal: React.FC<FreeModalProps> = ({
                 <span className="font-medium text-green-900">Texte généré avec succès</span>
               </div>
               <p className="text-sm text-green-800">
-                Votre mise en demeure est basée sur les articles L.217-3 et suivants du Code de la
+                Votre mise en demeure est basée sur les articles{' '}
+                <LegalReference code="L217_3" label={LEGAL.L217_3.ref} /> et suivants du Code de la
                 consommation
               </p>
             </div>
@@ -1135,8 +1137,9 @@ export default function ResultsPage() {
               <div className="font-semibold mb-1">Information importante</div>
               <p>
                 Ce service génère des modèles de lettres basés sur le Code de la consommation
-                (articles L.217-3 et suivants). Il ne constitue pas un conseil juridique
-                personnalisé. Pour des situations complexes, consultez un professionnel du droit.
+                (articles <LegalReference code="L217_3" label={LEGAL.L217_3.ref} /> et suivants). Il
+                ne constitue pas un conseil juridique personnalisé. Pour des situations complexes,
+                consultez un professionnel du droit.
               </p>
             </div>
           </div>

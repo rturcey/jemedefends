@@ -1,6 +1,6 @@
 // frontend/src/middleware.ts - CSP corrigée
-import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/request';
+import { NextResponse } from 'next/server';
 
 export function middleware(request: NextRequest) {
   const response = NextResponse.next();
@@ -32,5 +32,7 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml).*)'],
+  matcher: [
+    '/((?!api|_next/static|_next/image|favicon.ico|favicon-64x64.png|robots.txt|sitemap.xml).*)',
+  ],
 };

@@ -1,8 +1,8 @@
 'use client';
 
-import * as React from 'react';
-import { ArrowLeft } from 'lucide-react';
 import clsx from 'clsx';
+import { ArrowLeft } from 'lucide-react';
+import * as React from 'react';
 
 interface BackOnlyNavigationProps {
   canGoPrev: boolean;
@@ -43,7 +43,7 @@ const BackOnlyNavigation: React.FC<BackOnlyNavigationProps> = ({
                 'inline-flex items-center gap-2 rounded-xl px-4 py-2 font-medium transition-colors',
                 isDisabled
                   ? 'bg-gray-50 text-gray-400 cursor-not-allowed'
-                  : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
+                  : 'bg-gray-100 text-gray-800 hover:bg-gray-200',
               )}
             >
               <ArrowLeft className="h-4 w-4" />
@@ -65,7 +65,7 @@ const BackOnlyNavigation: React.FC<BackOnlyNavigationProps> = ({
                 'w-full inline-flex items-center justify-center gap-2 rounded-xl px-4 py-3 font-semibold transition-colors',
                 isDisabled
                   ? 'bg-gray-50 text-gray-400 cursor-not-allowed'
-                  : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
+                  : 'bg-gray-100 text-gray-800 hover:bg-gray-200',
               )}
             >
               <ArrowLeft className="h-5 w-5" />

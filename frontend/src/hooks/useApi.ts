@@ -1,14 +1,9 @@
 // hooks/useApi.ts - Hooks pour l'intégration API
 
 import { useState, useEffect, useCallback, useRef } from 'react';
-import {
-  FormDraft,
-  Letter,
-  ApiResponse,
-  GetFormDraftResponse,
-  SubmitFormResponse,
-  API_ENDPOINTS,
-} from '@/types/api';
+
+import type { FormDraft, Letter, GetFormDraftResponse, SubmitFormResponse } from '@/types/api';
+import { API_ENDPOINTS } from '@/types/api';
 
 // === HOOK DE BASE POUR LES REQUÊTES ===
 
@@ -21,7 +16,7 @@ interface UseApiOptions {
 export function useApi<T = any>(
   url: string | null,
   options: RequestInit = {},
-  apiOptions: UseApiOptions = {}
+  apiOptions: UseApiOptions = {},
 ) {
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState(false);
@@ -74,7 +69,7 @@ export function useApi<T = any>(
         setLoading(false);
       }
     },
-    [url, options, apiOptions]
+    [url, options, apiOptions],
   );
 
   useEffect(() => {
@@ -117,7 +112,7 @@ export function useFormDraft(formSlug: string) {
           });
         }
       },
-    }
+    },
   );
 
   // Sauvegarde automatique
@@ -133,7 +128,7 @@ export function useFormDraft(formSlug: string) {
         setSaveStatus('error');
         setTimeout(() => setSaveStatus('idle'), 3000);
       },
-    }
+    },
   );
 
   // Soumission finale
@@ -148,7 +143,7 @@ export function useFormDraft(formSlug: string) {
           window.location.href = response.redirect_url;
         }
       },
-    }
+    },
   );
 
   const autosave = useCallback(
@@ -168,7 +163,7 @@ export function useFormDraft(formSlug: string) {
         console.error('Erreur autosave:', error);
       }
     },
-    [saveDraft]
+    [saveDraft],
   );
 
   const debouncedAutosave = useCallback(
@@ -181,7 +176,7 @@ export function useFormDraft(formSlug: string) {
         autosave(data);
       }, delay);
     },
-    [autosave]
+    [autosave],
   );
 
   const submitForm = useCallback(
@@ -198,7 +193,7 @@ export function useFormDraft(formSlug: string) {
         }),
       });
     },
-    [autosave, submitDraft]
+    [autosave, submitDraft],
   );
 
   // Initialisation
@@ -235,7 +230,7 @@ export function useLetter(letterId: string | null) {
   } = useApi<Letter>(
     letterId ? API_ENDPOINTS.getLetter(letterId) : null,
     { method: 'GET' },
-    { immediate: !!letterId }
+    { immediate: !!letterId },
   );
 
   const downloadFree = useCallback(async () => {
@@ -298,7 +293,7 @@ export function useLetter(letterId: string | null) {
         throw error;
       }
     },
-    [letterId]
+    [letterId],
   );
 
   const completeService = useCallback(
@@ -325,7 +320,7 @@ export function useLetter(letterId: string | null) {
         throw error;
       }
     },
-    [letterId]
+    [letterId],
   );
 
   return {
@@ -405,7 +400,7 @@ export function useValidation(rules: ValidationRules) {
       setErrors(prev => ({ ...prev, [name]: null }));
       return true;
     },
-    [rules]
+    [rules],
   );
 
   const validateAll = useCallback(
@@ -419,7 +414,7 @@ export function useValidation(rules: ValidationRules) {
 
       return allValid;
     },
-    [rules, validateField]
+    [rules, validateField],
   );
 
   const clearErrors = useCallback(() => {
@@ -512,7 +507,7 @@ export function useErrorHandler() {
         }
       };
     },
-    [handleError]
+    [handleError],
   );
 
   return {
@@ -535,7 +530,7 @@ export function useFormSteps(totalSteps: number, validationRules: ValidationRule
       // Peut aller aux étapes déjà complétées ou à la suivante
       return stepIndex <= currentStep || completedSteps.has(stepIndex);
     },
-    [currentStep, completedSteps]
+    [currentStep, completedSteps],
   );
 
   const goToStep = useCallback(
@@ -544,7 +539,7 @@ export function useFormSteps(totalSteps: number, validationRules: ValidationRule
         setCurrentStep(stepIndex);
       }
     },
-    [totalSteps, canGoToStep]
+    [totalSteps, canGoToStep],
   );
 
   const nextStep = useCallback(
@@ -556,7 +551,7 @@ export function useFormSteps(totalSteps: number, validationRules: ValidationRule
       }
       return false;
     },
-    [currentStep, totalSteps, validateAll]
+    [currentStep, totalSteps, validateAll],
   );
 
   const previousStep = useCallback(() => {
@@ -601,28 +596,28 @@ export function useAnalytics() {
     (page: string) => {
       trackEvent('page_view', { page });
     },
-    [trackEvent]
+    [trackEvent],
   );
 
   const trackFormStep = useCallback(
     (step: number, stepName: string) => {
       trackEvent('form_step_completed', { step, step_name: stepName });
     },
-    [trackEvent]
+    [trackEvent],
   );
 
   const trackFormSubmission = useCallback(
     (formSlug: string, formula: string) => {
       trackEvent('form_submitted', { form_slug: formSlug, formula });
     },
-    [trackEvent]
+    [trackEvent],
   );
 
   const trackDownload = useCallback(
     (type: 'free' | 'pdf', letterId: string) => {
       trackEvent('letter_downloaded', { type, letter_id: letterId });
     },
-    [trackEvent]
+    [trackEvent],
   );
 
   return {

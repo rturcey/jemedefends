@@ -29,8 +29,8 @@ const SaveStatus: React.FC<SaveStatusProps> = ({ status }) => {
       };
 
       return {
-        type: status as 'saving' | 'saved' | 'error',
-        message: messages[status as keyof typeof messages] || status,
+        type: status,
+        message: messages[status] || status,
       };
     }
 

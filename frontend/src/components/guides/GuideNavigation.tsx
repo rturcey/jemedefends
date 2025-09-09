@@ -1,9 +1,9 @@
 'use client';
 
+import { motion } from 'framer-motion';
+import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { ArrowRight } from 'lucide-react';
-import { motion } from 'framer-motion';
 
 interface Guide {
   slug: string;

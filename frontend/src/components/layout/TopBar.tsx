@@ -1,10 +1,11 @@
 'use client';
 
-import React from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { FileText, ChevronDown } from 'lucide-react';
+import Image from 'next/image';
+import Link from 'next/link';
+import React from 'react';
+
 import { Container, Button } from '@/components/ui';
 
 // --- NavLink Component ---
@@ -28,18 +29,18 @@ function GuidesDropdown() {
   const timeoutRef = React.useRef<NodeJS.Timeout>();
 
   // CORRECTION: Gestion sécurisée des imports avec fallback
-  const { PAGES, isLoading } = React.useMemo(() => {
+  const { ALL_GUIDES, isLoading } = React.useMemo(() => {
     try {
       const guidesModule = require('@/content/guides');
-      const pages = guidesModule?.PAGES || guidesModule?.default?.PAGES || {};
+      const pages = guidesModule?.ALL_GUIDES || guidesModule?.default?.ALL_GUIDES || {};
       return {
-        PAGES: pages,
+        ALL_GUIDES: pages,
         isLoading: false,
       };
     } catch (error) {
       console.warn('Could not load guides:', error);
       return {
-        PAGES: {},
+        ALL_GUIDES: {},
         isLoading: false,
       };
     }
@@ -47,15 +48,15 @@ function GuidesDropdown() {
 
   // CORRECTION: Vérification de sécurité avant Object.keys
   const guidesCount = React.useMemo(() => {
-    if (!PAGES || typeof PAGES !== 'object') {
+    if (!ALL_GUIDES || typeof ALL_GUIDES !== 'object') {
       return 0;
     }
     try {
-      return Object.keys(PAGES).length;
+      return Object.keys(ALL_GUIDES).length;
     } catch {
       return 0;
     }
-  }, [PAGES]);
+  }, [ALL_GUIDES]);
 
   const handleMouseEnter = () => {
     if (timeoutRef.current) {
@@ -90,7 +91,7 @@ function GuidesDropdown() {
             <h3 className="font-semibold text-gray-900 mb-2">Guides les plus consultés</h3>
             <div className="space-y-2">
               <Link
-                href="/guides/garantie-legale-conformite"
+                href="/guides/garantie-legale-conformite-guide-complet"
                 className="block text-sm text-gray-600 hover:text-blue-600 transition-colors"
               >
                 📋 Guide général de la garantie légale
@@ -144,7 +145,7 @@ function TopBar({ ctaHref = '/eligibilite#start' }: { ctaHref?: string }) {
       <Container className="h-full flex justify-between items-center">
         <Link href="/" aria-label="Je me défends – Accueil" className="flex items-center gap-3">
           <Image
-            src="/images/logo_jemedefends.svg"
+            src="/images/logo_jemedefends.png"
             alt="Je me défends – Mes droits, simplement"
             width={160}
             height={48}

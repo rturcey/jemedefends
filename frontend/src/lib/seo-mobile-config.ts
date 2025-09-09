@@ -1,4 +1,4 @@
-import { Metadata } from 'next';
+import type { Metadata } from 'next';
 
 // Types pour la configuration SEO mobile
 export interface MobileSEOConfig {
@@ -227,7 +227,7 @@ export const optimizeForMobile = (config: Partial<MobileSEOConfig>): MobileSEOCo
 
   // Fusion des mots-clés
   const keywords = [...defaults.defaultKeywords, ...(config.keywords || [])].filter(
-    (keyword, index, array) => array.indexOf(keyword) === index
+    (keyword, index, array) => array.indexOf(keyword) === index,
   );
 
   return {
@@ -274,7 +274,7 @@ export const useMobileSEO = (config: MobileSEOConfig) => {
 
 // Validation SEO mobile
 export const validateMobileSEO = (
-  config: MobileSEOConfig
+  config: MobileSEOConfig,
 ): { valid: boolean; errors: string[]; warnings: string[] } => {
   const errors: string[] = [];
   const warnings: string[] = [];

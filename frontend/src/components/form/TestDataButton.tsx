@@ -2,6 +2,7 @@
 'use client';
 
 import React, { memo } from 'react';
+
 import { useMobileOptimization } from '@/hooks/useMobileOptimization';
 
 interface TestDataButtonProps {
@@ -45,7 +46,7 @@ const TestDataButton = memo<TestDataButtonProps>(
         )}
       </button>
     );
-  }
+  },
 );
 
 TestDataButton.displayName = 'TestDataButton';

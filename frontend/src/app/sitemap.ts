@@ -1,4 +1,4 @@
-import { MetadataRoute } from 'next';
+import type { MetadataRoute } from 'next';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://jemedefends.fr';
@@ -63,7 +63,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   // Pages guides spécifiques
   const guidePages = [
-    'garantie-legale-conformite',
+    'garantie-legale-conformite-guide-complet',
     'electromenager-garantie-legale',
     'smartphone-garantie-legale',
     'informatique-garantie-legale',

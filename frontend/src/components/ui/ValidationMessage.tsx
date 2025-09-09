@@ -1,7 +1,7 @@
 'use client';
 
-import React from 'react';
 import { CheckCircle, XCircle, AlertTriangle, Info } from 'lucide-react';
+import React from 'react';
 
 interface ValidationMessageProps {
   type: 'error' | 'warning' | 'success' | 'info';

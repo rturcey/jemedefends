@@ -1,9 +1,11 @@
 'use client';
-import * as React from 'react';
-import Button from '@/components/ui/Button';
-import Skeleton from '@/components/ui/Skeleton';
-import MobileFAQItem from '@/components/marketing/MobileFAQItem';
 import { ArrowRight, HelpCircle, ChevronDown, CheckCircle, Shield } from 'lucide-react';
+import * as React from 'react';
+
+import MobileFAQItem from '@/components/marketing/MobileFAQItem';
+import Button from '@/components/ui/Button';
+import LegalReference from '@/components/ui/LegalReference';
+import Skeleton from '@/components/ui/Skeleton';
 import { useMobileOptimization } from '@/hooks/useMobileOptimization';
 
 type FAQItem = { q: string; a: React.ReactNode };
@@ -31,8 +33,15 @@ const FAQ_ITEMS: FAQItem[] = [
     q: 'Base juridique ?',
     a: (
       <>
-        Uniquement les <strong>articles pertinents</strong> du Code de la consommation (ex. L.217-3,
-        L.217-8, L.217-10). Aucune invention, que du droit applicable.
+        Uniquement les <strong>articles pertinents</strong> du Code de la consommation :
+        <br />
+        <LegalReference code="L.217-3" />
+        <br />
+        <LegalReference code="L.217-8" />
+        <br />
+        <LegalReference code="L.217-10" />
+        <br />
+        Aucune invention, que du droit applicable.
       </>
     ),
   },

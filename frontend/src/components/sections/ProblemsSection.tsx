@@ -1,9 +1,10 @@
 'use client';
 
-import * as React from 'react';
-import Link from 'next/link';
-import { Container, Reveal, Badge, Button } from '@/components/ui';
 import { ArrowRight, Shield, Clock, CheckCircle } from 'lucide-react';
+import Link from 'next/link';
+import * as React from 'react';
+
+import { Container, Reveal, Badge, Button } from '@/components/ui';
 
 type Problem = {
   emoji: string;
@@ -122,37 +123,6 @@ const ProblemCard: React.FC<{ problem: Problem }> = ({ problem }) => {
   );
 };
 
-// Composant Stats mobile-optimisé
-const StatsBar: React.FC = () => (
-  <div className="bg-white rounded-xl shadow-sm border p-4 sm:p-6 mb-6 sm:mb-8">
-    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
-      <div className="text-center">
-        <div className="flex items-center justify-center mb-2">
-          <Shield className="h-5 w-5 text-blue-600 mr-2" />
-          <span className="text-2xl sm:text-3xl font-bold text-blue-600">2 ans</span>
-        </div>
-        <p className="text-xs sm:text-sm text-gray-600">de protection légale</p>
-      </div>
-
-      <div className="text-center">
-        <div className="flex items-center justify-center mb-2">
-          <Clock className="h-5 w-5 text-green-600 mr-2" />
-          <span className="text-2xl sm:text-3xl font-bold text-green-600">3 min</span>
-        </div>
-        <p className="text-xs sm:text-sm text-gray-600">pour créer votre lettre</p>
-      </div>
-
-      <div className="text-center">
-        <div className="flex items-center justify-center mb-2">
-          <CheckCircle className="h-5 w-5 text-purple-600 mr-2" />
-          <span className="text-2xl sm:text-3xl font-bold text-purple-600">Conforme</span>
-        </div>
-        <p className="text-xs sm:text-sm text-gray-600">au Code de la consommation</p>
-      </div>
-    </div>
-  </div>
-);
-
 export default function ProblemsSection() {
   return (
     <section
@@ -181,9 +151,6 @@ export default function ProblemsSection() {
                 réparation, remplacement ou remboursement.
               </p>
             </div>
-
-            {/* Stats bar */}
-            <StatsBar />
 
             {/* Grid de problèmes mobile-first */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-8 sm:mb-12">
@@ -336,4 +303,4 @@ const GuideLayout: React.FC<{
 };
 
 // Export des utilitaires mobile
-export { ProblemCard, StatsBar, useResponsive, GuideLayout };
+export { ProblemCard, useResponsive, GuideLayout };

@@ -1,11 +1,9 @@
 'use client';
 
-import type { Metadata } from 'next';
-import Script from 'next/script';
+import { Mail, Clock, MapPin, MessageCircle } from 'lucide-react';
 import { useState } from 'react';
-import { Mail, Clock, MapPin, Send, MessageCircle, CheckCircle, AlertTriangle } from 'lucide-react';
-import { Container, Section, Button } from '@/components/ui';
-import FormField from '@/components/form/FormField';
+
+import { Container } from '@/components/ui';
 
 const ContactPage: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -55,7 +53,7 @@ const ContactPage: React.FC = () => {
       } else {
         setSubmitStatus('error');
       }
-    } catch (error) {
+    } catch {
       setSubmitStatus('error');
     } finally {
       setIsSubmitting(false);

@@ -1,7 +1,8 @@
+import { Shield } from 'lucide-react';
 import type { Metadata } from 'next';
 import Script from 'next/script';
-import { Shield, Heart, Users, Globe, Award, Target, CheckCircle, Code } from 'lucide-react';
-import { Container, Section, Reveal } from '@/components/ui';
+
+import { Container, Reveal } from '@/components/ui';
 
 export const metadata: Metadata = {
   title: 'À propos | Je me défends',

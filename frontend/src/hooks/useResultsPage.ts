@@ -280,7 +280,7 @@ export function useResultsPage(): UseResultsPageReturn {
       await navigator.clipboard.writeText(text);
       console.log('✅ Texte copié dans le presse-papier');
       return true;
-    } catch (error) {
+    } catch {
       console.warn('⚠️ Clipboard API non disponible, fallback...');
       // Fallback pour navigateurs plus anciens
       const textArea = document.createElement('textarea');

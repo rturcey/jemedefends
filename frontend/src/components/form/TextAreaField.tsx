@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useId, useMemo, useState } from 'react';
-import { ValidationResult } from '@/types/form';
+
+import type { ValidationResult } from '@/types/form';
 
 type Props = {
   name: string;

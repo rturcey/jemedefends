@@ -2,6 +2,7 @@
 
 import type { Metadata } from 'next';
 import React from 'react';
+
 import FormGenerator from '@/components/form/FormGenerator';
 
 const metadata: Metadata = {

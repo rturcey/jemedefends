@@ -1,165 +1,195 @@
-// lib/guide-utils.ts
-import { getAllOptimizedGuides } from '@/content/guides';
+// lib/guide-utils.ts - FONCTIONS UTILITAIRES PURES
+// Pas de dépendances vers des registries ou caches
 
-export interface Guide {
-  slug: string;
-  title: string;
-  description: string;
-  category: {
-    id: string;
-    name: string;
-    emoji: string;
-    color: string;
-  };
-  readingTime: number;
-  rating: number;
-  difficulty: 'facile' | 'moyen' | 'difficile';
-  isPopular: boolean;
-  keywords?: string[];
-}
+import type { GuidePage } from '@/types/guides';
 
-export interface Category {
-  id: string;
-  name: string;
-  emoji: string;
-  color: string;
-  count: number;
-}
+/**
+ * Calcule le temps de lecture estimé d'un guide
+ */
+export function calculateReadingTime(guide: GuidePage): number {
+  let totalWords = 0;
 
-export function getAllGuides(): Guide[] {
-  const guides = getAllOptimizedGuides();
+  guide.sections.forEach(section => {
+    // Contenu string
+    if (typeof section.content === 'string') {
+      totalWords += section.content.split(/\s+/).filter(word => word.length > 0).length;
+    }
 
-  return Object.entries(guides).map(([slug, guide]) => ({
-    slug,
-    title: guide.title,
-    description: guide.seo.description,
-    category: getCategoryFromSlug(slug),
-    readingTime: Math.ceil(guide.sections.length * 2),
-    rating: 4.0 + Math.random() * 0.8,
-    difficulty: getDifficultyFromSlug(slug),
-    isPopular: [
-      'garantie-legale-conformite-guide-complet',
-      'smartphone-telephone-panne-garantie-legale',
-    ].includes(slug),
-    keywords: guide.seo.keywords || [],
-  }));
-}
+    // Steps (procédures)
+    if (section.steps?.length) {
+      totalWords += section.steps.length * 20;
+    }
 
-export function getCategories(): Category[] {
-  const guides = getAllGuides();
-  const categoryMap = new Map<string, number>();
+    // FAQ
+    if (section.faqItems?.length) {
+      totalWords += section.faqItems.length * 30;
+    }
 
-  guides.forEach(guide => {
-    const id = guide.category?.id ?? 'general';
-    categoryMap.set(id, (categoryMap.get(id) || 0) + 1);
+    // Items (grilles)
+    if (section.items?.length) {
+      totalWords += section.items.length * 15;
+    }
+
+    // Tables
+    if (section.tableData?.length) {
+      totalWords += section.tableData.length * 10;
+    }
   });
 
-  return [
-    {
-      id: 'tech',
-      name: 'High-Tech',
-      emoji: '📱',
-      color: 'blue',
-      count: categoryMap.get('tech') || 0,
-    },
-    {
-      id: 'home',
-      name: 'Maison & Électroménager',
-      emoji: '🏡',
-      color: 'green',
-      count: categoryMap.get('home') || 0,
-    },
-    {
-      id: 'auto',
-      name: 'Auto & Mobilité',
-      emoji: '🚗',
-      color: 'red',
-      count: categoryMap.get('auto') || 0,
-    },
-    {
-      id: 'general',
-      name: 'Général',
-      emoji: '📋',
-      color: 'gray',
-      count: categoryMap.get('general') || 0,
-    },
-  ];
+  // Minimum 2 minutes, puis calcul basé sur 200 mots/minute
+  return Math.max(Math.ceil(totalWords / 200), 2);
 }
 
-// -- Helpers
-const norm = (s: string) =>
-  s
+/**
+ * Calcule la difficulté d'un guide basé sur sa complexité
+ */
+export function calculateDifficulty(guide: GuidePage): 'facile' | 'moyen' | 'difficile' {
+  const articleCount = guide.legal.mainArticles.length;
+  const sectionCount = guide.sections.length;
+  const hasComplexTypes = guide.sections.some(s => s.type === 'table' || s.type === 'timeline');
+
+  // Logique de calcul
+  if (articleCount <= 3 && sectionCount <= 4 && !hasComplexTypes) {
+    return 'facile';
+  }
+  if (articleCount <= 6 && sectionCount <= 6) {
+    return 'moyen';
+  }
+  return 'difficile';
+}
+
+/**
+ * Détermine la catégorie d'un guide basé sur son slug
+ */
+export function getCategoryFromSlug(slug: string): {
+  name: string;
+  color: string;
+  emoji: string;
+} {
+  // High-Tech
+  if (
+    slug.includes('smartphone') ||
+    slug.includes('ordinateur') ||
+    slug.includes('tech') ||
+    slug.includes('casque') ||
+    slug.includes('ecouteurs') ||
+    slug.includes('smartwatch') ||
+    slug.includes('tablette') ||
+    slug.includes('tv-') ||
+    slug.includes('videoprojecteur') ||
+    slug.includes('serveur-nas') ||
+    slug.includes('imprimante') ||
+    slug.includes('ecran-pc') ||
+    slug.includes('console-') ||
+    slug.includes('home-cinema') ||
+    slug.includes('serrure-connectee')
+  ) {
+    return { name: 'High-Tech', color: 'blue', emoji: '📱' };
+  }
+
+  // Automobile
+  if (
+    slug.includes('voiture') ||
+    slug.includes('auto') ||
+    slug.includes('vehicule') ||
+    slug.includes('camping-car') ||
+    slug.includes('moto') ||
+    slug.includes('borne-recharge') ||
+    slug.includes('autoradio')
+  ) {
+    return { name: 'Automobile', color: 'red', emoji: '🚗' };
+  }
+
+  // Maison & Électroménager
+  if (
+    slug.includes('maison') ||
+    slug.includes('electromenager') ||
+    slug.includes('lave-') ||
+    slug.includes('refrigerateur') ||
+    slug.includes('micro-ondes') ||
+    slug.includes('chauffe-eau') ||
+    slug.includes('portail') ||
+    slug.includes('aspirateur') ||
+    slug.includes('purificateur') ||
+    slug.includes('plaque-induction') ||
+    slug.includes('four-') ||
+    slug.includes('cafetiere') ||
+    slug.includes('friteuse') ||
+    slug.includes('mixeur') ||
+    slug.includes('extracteur') ||
+    slug.includes('yaourtiere') ||
+    slug.includes('machine-a-pain') ||
+    slug.includes('centrale-vapeur')
+  ) {
+    return { name: 'Maison', color: 'green', emoji: '🏠' };
+  }
+
+  // Général (par défaut)
+  return { name: 'Général', color: 'purple', emoji: '⚖️' };
+}
+
+/**
+ * Hash simple pour générer des valeurs déterministes
+ */
+export function hashString(str: string): number {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
+    hash = (hash << 5) - hash + char;
+    hash = hash & hash; // Convert to 32-bit integer
+  }
+  return Math.abs(hash);
+}
+
+/**
+ * Génère une valeur entre 0 et 1 basée sur un string
+ */
+export function hash01(str: string): number {
+  return hashString(str) / 2147483647;
+}
+
+/**
+ * Formate une date en français
+ */
+export function formatDate(date: Date | string): string {
+  const d = typeof date === 'string' ? new Date(date) : date;
+  return d.toLocaleDateString('fr-FR', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
+}
+
+/**
+ * Slugifie un string (pour URLs)
+ */
+export function slugify(text: string): string {
+  return text
     .toLowerCase()
     .normalize('NFD')
-    .replace(/\p{Diacritic}/gu, '') // retire les accents
-    .replace(/[_\s]+/g, '-'); // homogénéise
-
-// -- Catégorisation robuste
-function getCategoryFromSlug(slug: string) {
-  const s = norm(slug);
-
-  // 1) AUTO & mobilité (voiture, moto, scooter, VAE, trottinette, camping-car, autoradio, borne VE)
-  const AUTO_PATTERNS: RegExp[] = [
-    /\b(voiture|auto|vehicule|vehicule-electrique|ve|hybride|hybrid)\b/,
-    /\b(camping-?car|van-?amenage)\b/,
-    /\b(moto|scooter)\b/,
-    /\b(autoradio|infotainment|ecran-tactile-auto|gps-voiture)\b/,
-    /\b(velo(-| )electrique|vae|trottinette(-| )electrique|borne(-| )recharge|wallbox)\b/,
-  ];
-  if (AUTO_PATTERNS.some(r => r.test(s))) {
-    return { id: 'auto', name: 'Auto & Mobilité', emoji: '🚗', color: 'red' };
-  }
-
-  // 2) TECH (smartphone, ordi, tablette, montre, audio, photo, réseau, consoles, robots, domotique "passerelles")
-  const TECH_PATTERNS: RegExp[] = [
-    /\b(smartphone|telephone|iphone|android|pixel-phone|galaxy)\b/,
-    /\b(ordinateur(-| )portable|pc(-| )portable|laptop|macbook|notebook)\b/,
-    /\b(tablette|ipad)\b/,
-    /\b(smartwatch|montre(-| )connectee)\b/,
-    /\b(casque(-| )audio|ecouteurs|earbuds|airpods|barre(-| )de(-| )son|home(-| )cinema|soundbar)\b/,
-    /\b(appareil(-| )photo|hybride(-| )photo|boitier(-| )hybride|camera)\b/,
-    /\b(routeur|router|wifi|wi-?fi|mesh|ethernet|nas)\b/,
-    /\b(console(-| )portable|steam(-| )deck|switch|rog(-| )ally|joystick|drift)\b/,
-    /\b(aspirateur(-| )robot|robot(-| )aspirateur)\b/,
-    /\b(domotique|passerelle|gateway|zigbee|zwave|homekit|serrure(-| )connectee)\b/,
-    /\b(tv|television|oled|videoprojecteur|projecteur|ecran-?pc|moniteur)\b/,
-    /\b(imprimante)\b/,
-  ];
-  if (TECH_PATTERNS.some(r => r.test(s))) {
-    return { id: 'tech', name: 'High-Tech', emoji: '📱', color: 'blue' };
-  }
-
-  // 3) HOME (maison & électroménager : lavage, froid, cuisson, HVAC, VMC, sécurité, petit électro)
-  const HOME_PATTERNS: RegExp[] = [
-    /\b(electromenager)\b/, // legacy
-    /\b(lave(-| )linge|lave(-| )vaisselle|seche(-| )linge)\b/,
-    /\b(refrigerateur|congelateur|frigo)\b/,
-    /\b(micro(-| )ondes|four|plaque(-| )induction|plaque(-| )cuisson)\b/,
-    /\b(friteuse|mixeur|blender|extracteur(-| )de(-| )jus|yaourtiere|machine(-| )a(-| )pain|centrale(-| )vapeur|cafetiere|expresso|broyeur)\b/,
-    /\b(climatisation|clim|vmc|chaudiere|pompe(-| )a(-| )chaleur|chauffe(-| )eau|cumulus|purificateur(-| )air)\b/,
-    /\b(alarme|sirene|capteurs(-| )ouverture|portail(-| )motorise)\b/,
-    /\b(aspirateur(-| )balai)\b/,
-  ];
-  if (HOME_PATTERNS.some(r => r.test(s))) {
-    return { id: 'home', name: 'Maison & Électroménager', emoji: '🏡', color: 'green' };
-  }
-
-  // 4) défaut
-  return { id: 'general', name: 'Général', emoji: '📋', color: 'gray' };
+    .replace(/[\u0300-\u036f]/g, '') // Supprime les accents
+    .replace(/[^a-z0-9 -]/g, '') // Garde que alphanumeric, espaces et tirets
+    .replace(/\s+/g, '-') // Remplace espaces par tirets
+    .replace(/-+/g, '-') // Supprime tirets multiples
+    .trim();
 }
 
-// -- Difficulté un peu plus fine (guide complet, juridique => difficile ; HVAC/auto => moyen)
-function getDifficultyFromSlug(slug: string): 'facile' | 'moyen' | 'difficile' {
-  const s = norm(slug);
-  if (/\b(conformite|guide-complet|juridique)\b/.test(s)) return 'difficile';
-  if (
-    /\b(clim|vmc|chaudiere|pompe-a-chaleur|chauffe-eau|voiture|auto|hybride|camping-car|moto|scooter)\b/.test(
-      s
-    )
-  )
-    return 'moyen';
-  if (/\b(lave|refrigerateur|congelateur|micro-ondes|four|plaque|aspirateur|cafetiere)\b/.test(s))
-    return 'moyen';
-  if (/\b(routeur|nas|imprimante|ecran-pc|videoprojecteur|tv|oled)\b/.test(s)) return 'moyen';
-  return 'facile';
+/**
+ * Extrait un extrait de texte d'une longueur donnée
+ */
+export function excerpt(text: string, maxLength: number = 160): string {
+  if (text.length <= maxLength) return text;
+
+  const truncated = text.slice(0, maxLength);
+  const lastSpace = truncated.lastIndexOf(' ');
+
+  return lastSpace > 0 ? truncated.slice(0, lastSpace) + '...' : truncated + '...';
+}
+
+/**
+ * Valide un slug de guide
+ */
+export function isValidGuideSlug(slug: string): boolean {
+  const slugRegex = /^[a-z0-9-]+$/;
+  return slugRegex.test(slug) && slug.length > 0 && slug.length <= 100;
 }

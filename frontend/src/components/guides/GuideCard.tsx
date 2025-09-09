@@ -1,10 +1,11 @@
 // src/components/guides/GuideCard.tsx
 'use client';
 
-import React from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
 import { Clock, TrendingUp, Star, ArrowRight, BookOpen } from 'lucide-react';
+import Image from 'next/image';
+import Link from 'next/link';
+import React from 'react';
+
 import { useMobileOptimization } from '@/hooks/useMobileOptimization';
 
 interface Category {

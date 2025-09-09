@@ -1,4 +1,5 @@
-import { Metadata } from 'next';
+import type { Metadata } from 'next';
+
 import GuidePostLettre from '@/components/guides/GuidePostLettre';
 
 export const metadata: Metadata = {

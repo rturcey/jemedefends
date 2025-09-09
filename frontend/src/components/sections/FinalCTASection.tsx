@@ -1,12 +1,13 @@
 'use client';
 
-import * as React from 'react';
-import { Section, Container, Button, Reveal } from '@/components/ui';
 import { Zap, CheckCircle, ArrowRight, Shield, Clock } from 'lucide-react';
+import * as React from 'react';
+
+import { Container, Button, Reveal } from '@/components/ui';
 
 export default function FinalCTASection() {
   return (
-    <div className="relative">
+    <div className="relative bg-gradient-to-br from-surface-soft to-white">
       {/* Pattern de fond subtil */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 opacity-40" />
       <div className="absolute inset-0 opacity-20">
@@ -14,7 +15,7 @@ export default function FinalCTASection() {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(99,102,241,0.1),transparent_50%)]" />
       </div>
 
-      <div className="relative">
+      <div className="relative bg-gradient-to-br from-surface-soft to-white">
         <Container>
           <div className="py-16 sm:py-20 lg:py-24 px-4">
             {' '}

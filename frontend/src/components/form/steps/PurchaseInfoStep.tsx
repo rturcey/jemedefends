@@ -1,10 +1,11 @@
 'use client';
 
 import React from 'react';
+
 import FormField from '@/components/form/FormField';
 import RadioGroup from '@/components/form/RadioGroup';
 import { gatedValidation } from '@/lib/validation';
-import { StepProps } from '@/types/form';
+import type { StepProps } from '@/types/form';
 
 const PurchaseInfoStep: React.FC<StepProps> = ({
   data,
@@ -75,7 +76,7 @@ const PurchaseInfoStep: React.FC<StepProps> = ({
               maxLength: 120,
             }),
             validation?.validateField,
-            validation?.isInteracted
+            validation?.isInteracted,
           )}
         />
 
@@ -94,7 +95,7 @@ const PurchaseInfoStep: React.FC<StepProps> = ({
             d.purchase_date || '',
             validation?.getFieldRules?.('purchase_date', { required: true }),
             validation?.validateField,
-            validation?.isInteracted
+            validation?.isInteracted,
           )}
         />
 
@@ -119,7 +120,7 @@ const PurchaseInfoStep: React.FC<StepProps> = ({
               maxLength: 12,
             }),
             validation?.validateField,
-            validation?.isInteracted
+            validation?.isInteracted,
           )}
           helpText="Utilisez une virgule ou un point (ex. 149,90)."
         />
@@ -142,7 +143,7 @@ const PurchaseInfoStep: React.FC<StepProps> = ({
               maxLength: 120,
             }),
             validation?.validateField,
-            validation?.isInteracted
+            validation?.isInteracted,
           )}
         />
 
@@ -162,7 +163,7 @@ const PurchaseInfoStep: React.FC<StepProps> = ({
             d.product_condition || '',
             validation?.getFieldRules?.('product_condition', { required: true }),
             validation?.validateField,
-            validation?.isInteracted
+            validation?.isInteracted,
           )}
         />
       </div>

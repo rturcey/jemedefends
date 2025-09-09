@@ -1,21 +1,10 @@
 'use client';
 
+import { Lock, Loader2, ArrowLeft } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import {
-  Lock,
-  CreditCard,
-  ChevronLeft,
-  Check,
-  AlertTriangle,
-  Loader2,
-  Shield,
-  ArrowLeft,
-} from 'lucide-react';
 
 // Réutilisation des composants existants
-import { Button, Modal, Container, Section } from '@/components/ui';
-import FormField from '@/components/form/FormField';
+import { Container, Section } from '@/components/ui';
 
 // Types
 interface PaymentData {

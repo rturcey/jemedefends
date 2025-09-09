@@ -1,10 +1,13 @@
 'use client';
-import * as React from 'react';
 import { motion } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
+import * as React from 'react';
+
 import Container from '@/components/ui/Container';
 import Skeleton from '@/components/ui/Skeleton';
+
 import GradientBlobs from './GradientBlobs';
+import Image from 'next/image';
 
 type HeroProps = {
   title: React.ReactNode;
@@ -26,6 +29,33 @@ export default function Hero({ title, right, id = 'hero', className = '' }: Hero
       className={`hero-mobile-height flex items-center justify-center relative overflow-hidden ${className}`}
     >
       <GradientBlobs />
+      <div
+        aria-hidden
+        className="
+        pointer-events-none select-none
+        absolute
+        hidden md:block
+        z-[1]                      /* au-dessus des blobs, sous le contenu */
+        opacity-[0.035] lg:opacity-[0.03]
+      "
+        style={{
+          WebkitMaskImage:
+            'radial-gradient(closest-side at 70% 30%, rgba(0,0,0,1) 55%, rgba(0,0,0,0) 100%)',
+          maskImage:
+            'radial-gradient(closest-side at 70% 30%, rgba(0,0,0,1) 55%, rgba(0,0,0,0) 100%)',
+        }}
+      >
+        <div>
+          <Image
+            src="/images/filigrane.png" // public/images/filigrane.png
+            alt=""
+            width={859}
+            height={855}
+            priority
+            className="w-full h-auto"
+          />
+        </div>
+      </div>
       <Container>
         <div className="relative z-10 flex flex-col lg:flex-row items-center justify-center gap-6 lg:gap-10 py-6">
           <div className="flex-1 max-w-xl text-center lg:text-left">

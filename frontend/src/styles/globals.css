@@ -1,0 +1,61 @@
+/* JMD-GUIDES-REFRESH */
+:root {
+  --radius-xl: 1rem;
+}
+html {
+  font-size: 16px;
+}
+body {
+  line-height: 1.6;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+.prose-guide h1 {
+  font-size: clamp(1.8rem, 2vw+1rem, 2.4rem);
+  line-height: 1.2;
+}
+.prose-guide h2 {
+  font-size: clamp(1.4rem, 1.2vw+0.9rem, 1.8rem);
+  margin-top: 2rem;
+}
+.prose-guide h3 {
+  font-size: clamp(1.1rem, 0.8vw+0.8rem, 1.2rem);
+  margin-top: 1.25rem;
+}
+.prose-guide p,
+.prose-guide li {
+  font-size: 1rem;
+}
+.prose-guide a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.card-soft {
+  border: 1px solid hsl(220 14% 90%);
+  background: hsl(0 0% 100% / 0.75);
+  backdrop-filter: blur(2px);
+  border-radius: var(--radius-xl);
+}
+.list-check li {
+  padding-left: 1.6rem;
+  position: relative;
+}
+.list-check li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.35rem;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 0.25rem;
+  background: currentColor;
+  opacity: 0.1;
+}
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+@import './print.css';

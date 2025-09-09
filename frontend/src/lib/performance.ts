@@ -7,19 +7,19 @@ import { lazy } from 'react';
 export const LazyEligibilityForm = lazy(() =>
   import('@/components/eligibility/EligibilityForm').then(module => ({
     default: module.default,
-  }))
+  })),
 );
 
 export const LazyResultsDisplay = lazy(() =>
   import('@/components/eligibility/ResultsDisplay').then(module => ({
     default: module.default,
-  }))
+  })),
 );
 
 export const LazyExitIntentModal = lazy(() =>
   import('@/components/eligibility/ExitIntentModal').then(module => ({
     default: module.default,
-  }))
+  })),
 );
 
 // Preload des composants critiques
@@ -63,7 +63,7 @@ export const throttle = <T extends (...args: any[]) => any>(func: T, limit: numb
 // Intersection Observer pour le lazy loading
 export const createIntersectionObserver = (
   callback: (entries: IntersectionObserverEntry[]) => void,
-  options: IntersectionObserverInit = {}
+  options: IntersectionObserverInit = {},
 ): IntersectionObserver | null => {
   if (typeof window === 'undefined' || !window.IntersectionObserver) {
     return null;

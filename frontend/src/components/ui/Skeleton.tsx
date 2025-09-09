@@ -1,5 +1,6 @@
 'use client';
 import * as React from 'react';
+
 import { cn } from '@/lib/utils';
 
 interface SkeletonProps {
@@ -63,7 +64,7 @@ export default function Skeleton({
               variantClasses[variant],
               i === lines - 1 ? 'w-3/4' : 'w-full',
               'h-4',
-              className
+              className,
             )}
             style={{ animationDelay: `${i * 0.1}s` }}
           />
