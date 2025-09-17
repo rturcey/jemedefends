@@ -1,0 +1,120 @@
+title: 'Streaming musical (Spotify, Deezer, Apple Music) : vos droits en cas de panne ou de service incomplet'
+description: 'Un service inaccessible, une qualité sonore dégradée ou des playlists manquantes ? La garantie légale de conformité numérique (L.224-25-12 et suivants) protège vos abonnements de musique en ligne.'
+category: 'digital'
+slug: 'streaming-musical-garantie-numerique'
+
+seo:
+  title: 'Spotify, Deezer, Apple Music : garantie légale numérique et remboursements'
+  description: 'Streaming musical inaccessible, playlists promises absentes, son de mauvaise qualité : vos droits grâce à la garantie légale de conformité (articles L.224-25-12 et suivants du Code de la consommation).'
+  keywords:
+    - 'garantie légale spotify'
+    - 'deezer bug remboursement'
+    - 'apple music panne recours'
+    - 'streaming musical qualité mauvaise'
+    - 'L.224-25-12 contenu numérique'
+    - 'abonnement musique non conforme'
+
+legal:
+  mainArticles:
+    - 'L.224-25-12'
+    - 'L.224-25-13'
+    - 'L.224-25-14'
+    - 'L.224-25-19'
+    - 'L.224-25-20'
+    - 'L.224-25-25'
+  disclaimer: true
+  lastUpdated: '2025-09-22'
+
+sections:
+  - id: 'intro'
+    title: 'Vos abonnements de musique sont protégés par la loi'
+    type: 'content'
+    content: |
+      Que vous soyez abonné à **Spotify**, **Deezer**, **Apple Music** ou une autre plateforme de streaming musical, vous bénéficiez automatiquement de la **garantie légale de conformité numérique** (art. L.224-25-12 et suivants).  
+
+      Cette garantie impose au fournisseur de délivrer un service **conforme au contrat** : accès continu, qualité sonore attendue, fonctionnalités promises (playlists, téléchargements hors ligne…).  
+      Si le service est inaccessible, incomplet ou dégradé sans raison légitime, vous êtes en droit d’exiger la **mise en conformité gratuite**, puis, à défaut, une **réduction de prix** ou un **remboursement** (art. L.224-25-20).
+
+  - id: 'defauts'
+    title: 'Exemples de défauts couverts ou non couverts'
+    type: 'grid'
+    items:
+      - title: 'Défauts couverts'
+        description: |
+          - Service **inaccessible** plusieurs jours malgré un abonnement actif.  
+          - **Qualité sonore dégradée** par rapport à la formule souscrite (ex. HiFi/FLAC non disponible alors qu’elle était incluse).  
+          - **Playlists ou catalogue promis absents** (par ex. albums ou fonctionnalités mis en avant mais non accessibles).  
+          - **Application qui plante** systématiquement sur un appareil compatible.  
+          - Absence de mises à jour nécessaires pour maintenir la compatibilité avec les appareils récents.
+      - title: 'Situations non couvertes'
+        description: |
+          - Coupure ou mauvaise qualité due à votre **connexion internet** instable.  
+          - Utilisation sur un appareil trop ancien ou **non pris en charge**.  
+          - Problème lié à un **compte non payé** ou à une résiliation effective.  
+          - Suspension de compte pour **violation des CGU** (partage de compte abusif, utilisation frauduleuse).  
+          - Bug causé par une enceinte ou un périphérique tiers non certifié.
+
+  - id: 'procedure'
+    title: 'Comment agir en cas de problème'
+    type: 'timeline'
+    steps:
+      - title: '1) Vérifiez votre environnement'
+        description: |
+          Assurez-vous que votre connexion internet est stable et que l’application est bien à jour. Essayez sur plusieurs appareils pour écarter un problème matériel.  
+          Gardez des **captures d’écran** du bug ou des messages d’erreur.
+      - title: '2) Contactez le support du service'
+        description: |
+          Spotify, Deezer ou Apple Music disposent d’un support client. Adressez une réclamation claire en citant vos droits :  
+          *« Conformément aux articles L.224-25-12 et suivants du Code de la consommation, je demande la mise en conformité de mon abonnement »*.  
+          Décrivez précisément le défaut (ex. absence de HiFi, service inaccessible plusieurs jours).
+      - title: '3) Délai de correction (≤ 30 jours)'
+        description: |
+          Le fournisseur doit corriger le défaut dans un délai raisonnable **ne pouvant excéder 30 jours** (art. L.224-25-19).  
+          La correction doit être gratuite et sans inconvénient majeur.
+      - title: '4) Réduction ou remboursement'
+        description: |
+          En cas de refus, de correction impossible ou de délai dépassé, vous pouvez demander :  
+          - une **réduction du prix** (remboursement partiel du mois concerné),  
+          - ou la **résolution du contrat** avec remboursement des sommes versées (art. L.224-25-20).  
+          Pour faire valoir vos droits, il est conseillé d’envoyer une **mise en demeure en recommandé**.
+
+  - id: 'faq'
+    title: 'Questions fréquentes'
+    type: 'faq'
+    faqItems:
+      - q: 'Spotify ne marche pas depuis plusieurs jours, que puis-je faire ?'
+        a: 'Si la panne est imputable au service et non à votre connexion, vous pouvez exiger une mise en conformité puis une réduction du prix.'
+      - q: 'Je paie pour une offre HiFi mais je n’ai que du MP3, est-ce légal ?'
+        a: 'Non. L’absence de qualité promise constitue un défaut de conformité. Vous pouvez demander correction ou remboursement partiel.'
+      - q: 'Apple Music refuse de me rembourser malgré un bug persistant, est-ce normal ?'
+        a: 'Non. La garantie légale est d’ordre public : elle s’impose au fournisseur (art. L.224-25-12 et suivants).'
+      - q: 'Mon compte a été suspendu pour partage d’abonnement, puis-je agir ?'
+        a: 'Non, si la suspension est justifiée par une violation réelle des CGU. La garantie légale ne couvre pas les abus.'
+
+  - id: 'cta-lettre'
+    title: 'Passez à l’action'
+    type: 'content'
+    content: |
+      ✅ **Rédigez gratuitement** votre réclamation officielle au fournisseur de streaming musical.  
+      En cas d’absence de réponse, générez une **mise en demeure** avec les articles du Code de la consommation insérés automatiquement.  
+      Versions **payantes** : **PDF professionnel** (logo + signature en ligne) et **LRAR** avec suivi.
+    cta:
+      label: 'Rédiger ma réclamation'
+      href: '/outils/mise-en-demeure'
+      variant: 'primary'
+      icon: 'FileText'
+
+  - id: 'alternatives'
+    title: 'Si la garantie légale ne s’applique pas'
+    type: 'alternatives'
+
+  - id: 'contacts'
+    title: 'Contacts utiles'
+    type: 'contacts'
+
+  - id: 'disclaimer'
+    title: 'Important'
+    type: 'content'
+    content: |
+      Ce guide fournit une **information juridique générale** (articles L.224-25-12 et suivants du Code de la consommation).  
+      Il ne constitue pas un **conseil juridique individualisé**. Pour un suivi adapté, rapprochez-vous d’un **avocat** ou d’une **association de consommateurs**.

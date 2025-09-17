@@ -317,8 +317,8 @@ export default function LegalNote({
             {totalCount > 0 && (
               <p className="text-sm text-gray-600 mt-0.5">
                 {loadedCount > 0
-                  ? `${loadedCount}/${totalCount} articles chargés`
-                  : `${totalCount} articles disponibles`}
+                  ? `${loadedCount}/${totalCount} article(s) chargé(s)`
+                  : `${totalCount} articles disponible(s)`}
               </p>
             )}
           </div>

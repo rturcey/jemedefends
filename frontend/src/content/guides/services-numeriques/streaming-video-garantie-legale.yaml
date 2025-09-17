@@ -1,0 +1,125 @@
+title: 'Streaming vidéo (Netflix, Prime, Disney+) : vos droits en cas de panne ou de service défectueux'
+description: 'Un service de streaming inaccessible, une qualité d’image inférieure aux promesses ou des fonctionnalités manquantes ? La garantie légale de conformité numérique (L.224-25-12 et suivants) vous protège.'
+category: 'digital'
+slug: 'streaming-video-garantie-numerique'
+
+seo:
+  title: 'Netflix, Amazon Prime, Disney+ : garantie légale numérique et remboursements'
+  description: 'Streaming vidéo en panne, qualité dégradée, sous-titres absents : vos droits légaux. Procédure de mise en conformité et remboursement (articles L.224-25-12 et suivants du Code de la consommation).'
+  keywords:
+    - 'garantie légale netflix'
+    - 'amazon prime video panne recours'
+    - 'disney+ remboursement bug'
+    - 'streaming vidéo qualité mauvaise'
+    - 'sous-titres absents garantie légale'
+    - 'L.224-25-12 services numériques'
+
+legal:
+  mainArticles:
+    - 'L.224-25-12'
+    - 'L.224-25-13'
+    - 'L.224-25-14'
+    - 'L.224-25-19'
+    - 'L.224-25-20'
+    - 'L.224-25-25'
+  disclaimer: true
+  lastUpdated: '2025-09-22'
+
+sections:
+  - id: 'intro'
+    title: 'Un abonnement, des obligations légales'
+    type: 'content'
+    content: |
+      Quand vous souscrivez à un service de streaming vidéo (Netflix, Prime Video, Disney+, OCS, Apple TV+), vous concluez un **contrat de service numérique**.  
+
+      Le fournisseur doit vous délivrer un service **conforme au contrat** et aux attentes légitimes de l’utilisateur (art. L.224-25-12 à L.224-25-14).  
+      Concrètement, cela implique :  
+      - un **accès permanent** au service, hors maintenances courtes et justifiées ;  
+      - une **qualité d’image et de son conforme** aux promesses (HD, 4K, HDR, etc.) ;  
+      - la disponibilité des **fonctionnalités essentielles** (sous-titres, profils, téléchargement hors ligne si annoncé) ;  
+      - la fourniture des **mises à jour nécessaires** pour assurer la continuité du service (art. L.224-25-25).  
+
+      En cas de manquement, vous pouvez exiger la mise en conformité, et à défaut, obtenir une réduction du prix ou la résolution du contrat (art. L.224-25-20).
+
+  - id: 'defauts'
+    title: 'Exemples concrets : couverts ou non couverts'
+    type: 'grid'
+    items:
+      - title: 'Défauts couverts par la garantie'
+        description: |
+          - Service **inaccessible plusieurs jours** sans explication valable.  
+          - Qualité d’image très inférieure à la formule souscrite (ex. abonnement 4K mais lecture en SD en permanence).  
+          - **Sous-titres manquants** ou options essentielles absentes malgré les promesses.  
+          - **Application qui plante** systématiquement sur un appareil pourtant compatible.  
+          - Absence de mises à jour nécessaires pour maintenir la lecture sur les appareils récents.
+      - title: 'Situations non couvertes'
+        description: |
+          - Panne ou lenteur due à votre **connexion internet** (débit insuffisant, box défaillante).  
+          - Utilisation du service en dehors de la **zone géographique prévue** (ex. utilisation via VPN dans un pays non couvert).  
+          - Bug lié à un **appareil trop ancien ou non pris en charge**.  
+          - Suspension ou fermeture de compte en cas de **violation réelle des CGU** (ex. partage illégal de compte).
+
+  - id: 'procedure'
+    title: 'Comment agir en cas de problème'
+    type: 'timeline'
+    steps:
+      - title: '1) Vérifiez votre installation'
+        description: |
+          Testez votre connexion internet (débit, stabilité) et essayez sur plusieurs appareils. Si le problème persiste malgré un environnement correct, il peut s’agir d’un défaut de conformité.  
+          Conservez des **captures d’écran**, tests de débit et messages d’erreur.
+      - title: '2) Réclamez auprès du fournisseur'
+        description: |
+          Contactez le service client de Netflix, Amazon ou Disney+. Expliquez clairement le défaut et invoquez vos droits :  
+          *« Conformément aux articles L.224-25-12 et suivants du Code de la consommation, je demande la mise en conformité de mon service »*.  
+          Précisez la date, le problème rencontré et vos attentes (rétablissement de la qualité, correction du bug).
+      - title: '3) Mise en conformité sous 30 jours maximum'
+        description: |
+          Le fournisseur doit rétablir un service conforme **sans frais** et dans un délai raisonnable **qui ne peut excéder 30 jours** (art. L.224-25-19).  
+          Pendant ce temps, votre abonnement continue, mais vous êtes en droit d’exiger un rétablissement rapide.
+      - title: '4) Réduction ou remboursement'
+        description: |
+          Si la mise en conformité est impossible ou trop tardive, vous pouvez demander :  
+          - une **réduction du prix** (par exemple remboursement partiel du mois affecté),  
+          - ou la **résolution du contrat** avec remboursement des sommes versées (art. L.224-25-20).  
+          Pour formaliser, adressez une **mise en demeure par lettre recommandée**.
+
+  - id: 'faq'
+    title: 'Questions fréquentes'
+    type: 'faq'
+    faqItems:
+      - q: 'Netflix ne marche pas depuis plusieurs jours, est-ce un défaut de conformité ?'
+        a: 'Oui, si la panne vient du service et non de votre connexion. Vous pouvez exiger réparation, puis une réduction du prix si cela persiste.'
+      - q: 'J’ai un abonnement 4K mais je n’ai que de la SD, puis-je agir ?'
+        a: 'Oui. Si la qualité promise (HD/4K) n’est pas délivrée, c’est un défaut de conformité.'
+      - q: 'Disney+ refuse de me rembourser un mois perdu, est-ce légal ?'
+        a: 'Non. La garantie légale impose un droit à la réduction du prix ou à la résolution (art. L.224-25-20).'
+      - q: 'Amazon Prime bloque mon compte pour suspicion d’abus, est-ce couvert ?'
+        a: 'Non, si la suspension est justifiée par une violation réelle des conditions d’utilisation.'
+
+  - id: 'cta-lettre'
+    title: 'Passez à l’action'
+    type: 'content'
+    content: |
+      ✅ **Rédigez gratuitement** une réclamation officielle au service de streaming.  
+      En cas de silence ou de refus, générez une **mise en demeure** juridiquement solide, avec les articles de loi automatiquement insérés.  
+      Versions **payantes** : **PDF professionnel** (logo + signature en ligne) et **LRAR** avec suivi.
+    cta:
+      label: 'Rédiger ma réclamation'
+      href: '/outils/mise-en-demeure'
+      variant: 'primary'
+      icon: 'FileText'
+
+  - id: 'alternatives'
+    title: 'Si la garantie légale ne s’applique pas'
+    type: 'alternatives'
+
+  - id: 'contacts'
+    title: 'Contacts utiles'
+    type: 'contacts'
+
+  - id: 'disclaimer'
+    title: 'Important'
+    type: 'content'
+    content: |
+      Ce guide fournit une **information juridique générale** (articles L.224-25-12 et suivants du Code de la consommation).  
+      Il ne remplace pas un **conseil juridique individualisé**. Pour un suivi adapté, contactez un **avocat** ou une **association de consommateurs**.

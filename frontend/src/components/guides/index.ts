@@ -7,8 +7,6 @@ export { default as TableOfContents } from './TableOfContents';
 // Ajouter les nouveaux composants
 export { default as GuideHero } from './GuideHero';
 export { default as GuideEssentials } from './GuideEssentials';
-export { default as GuideSummary } from './GuideSummary';
-export { default as GuideMobileNavigation } from './GuideMobileNavigation';
 export { default as GuideSection } from './GuideSection';
 export { default as TableComparison } from './TableComparison';
 export { default as ContextualCTA } from './ContextualCTA';
@@ -19,3 +17,5 @@ export { default as GuideTOCMobile } from './GuideTOCMobile';
 export { default as GuideTOCDesktop } from './GuideTOCDesktop';
 export { default as GuideProgress } from './GuideProgress';
 export { default as GuideRightSidebar } from './GuideRightSidebar';
+export { default as EligibilityChecklist } from './EligibilityChecklist';
+export { default as OptionsTable } from './OptionsTable';

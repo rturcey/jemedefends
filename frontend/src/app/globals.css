@@ -572,3 +572,37 @@ html {
     scroll-behavior: auto;
   }
 }
+
+/* globals.css ou composant parent */
+.guide-section {
+  @apply mb-8 lg:mb-12; /* Plus d'air entre sections */
+}
+
+.guide-section:last-child {
+  @apply mb-0;
+}
+
+.guide-content {
+  /* Amélioration de la lisibilité */
+  @apply leading-relaxed;
+  line-height: 1.7; /* Plus généreux que 1.5 par défaut */
+}
+
+.guide-content h2 {
+  @apply mb-6 mt-8 first:mt-0;
+}
+
+.guide-content h3 {
+  @apply mb-4 mt-6;
+}
+
+/* Mobile first avec breakpoints adaptés au contenu */
+.guide-grid {
+  @apply grid grid-cols-1 gap-4;
+  @apply sm:grid-cols-2 sm:gap-6;
+  @apply lg:grid-cols-3 lg:gap-8;
+}
+
+.guide-table-responsive {
+  @apply block lg:table;
+}

@@ -69,7 +69,7 @@ db-shell:
 # Vérification database (RÈGLE MANQUANTE AJOUTÉE)
 db-check:
 	@echo "🔍 Checking database status..."
-	@if ! cd backend && docker-compose ps postgres 2>/dev/null | grep -q "Up"; then \
+	@if ! cd backend && docker-compose ps postgres 2>/div/null | grep -q "Up"; then \
 		echo "⚠️ Database not running. Starting it..."; \
 		$(MAKE) db-up; \
 	else \
@@ -99,7 +99,7 @@ dev-auto: db-check
 		echo "Starting backend..."; \
 		cd backend && uv run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000 & \
 		echo "Starting frontend..."; \
-		cd frontend && npm run dev & \
+		cd frontend && node scripts/build-guides.js && npm run dev & \
 		echo ""; \
 		echo "✅ Both services started!"; \
 		echo "Press Ctrl+C to stop"; \
@@ -152,16 +152,20 @@ PKG := $(shell \
 ifeq ($(PKG),pnpm)
 	PRETTIER_EXEC = pnpm exec prettier
 	ESLINT_EXEC   = pnpm exec eslint
+	KNIP_EXEC     = pnpm exec knip
 else ifeq ($(PKG),yarn)
 	PRETTIER_EXEC = yarn dlx prettier
 	ESLINT_EXEC   = yarn dlx eslint
+	KNIP_EXEC     = yarn dlx knip
 else
 	PRETTIER_EXEC = npx prettier
 	ESLINT_EXEC   = npx eslint
+	KNIP_EXEC     = npx knip
 endif
 
 ESLINT_EXTS := .js,.jsx,.ts,.tsx
 PRETTIER_PATTERNS := "**/*.{js,jsx,ts,tsx,css,scss,md,mdx,json,yml,yaml}"
+TSC_EXEC := npx tsc
 
 # ===========================
 # Backend (Python)
@@ -211,7 +215,7 @@ backend.format:
 	@cd "$(BACKEND_DIR)" && $(BLACK) $(BLACK_ARGS) .
 
 # --------- Frontend targets ---------
-.PHONY: frontend.lint frontend.fix frontend.format
+.PHONY: frontend.lint frontend.fix frontend.format frontend.typecheck
 frontend.lint:
 	@echo "🔎 ESLint (no fix) → $(FRONTEND_DIR)"
 	@cd "$(FRONTEND_DIR)" && $(ESLINT_EXEC) . --ext $(ESLINT_EXTS)
@@ -224,7 +228,25 @@ frontend.format:
 	@echo "🧹 Prettier --write → $(FRONTEND_DIR)"
 	@cd "$(FRONTEND_DIR)" && $(PRETTIER_EXEC) --write $(PRETTIER_PATTERNS)
 	@echo "🛠  ESLint --fix → $(FRONTEND_DIR)"
-	@cd "$(FRONTEND_DIR)" && $(ESLINT_EXEC) . --ext $(ESLINT_EXTS) --fix
+	@cd "$(FRONTEND_DIR)" && $(ESLINT_EXEC) --fix . --ext $(ESLINT_EXTS)
+	@echo "🔎 ESLint (verify after fix) → $(FRONTEND_DIR)"
+	@cd "$(FRONTEND_DIR)" && $(ESLINT_EXEC) . --ext $(ESLINT_EXTS)
+
+frontend.typecheck:
+	@echo "🧠 TypeScript --noEmit → $(FRONTEND_DIR)"
+	@cd "$(FRONTEND_DIR)" && $(TSC_EXEC) --noEmit -p tsconfig.eslint.json
+
+# ===========================
+# Knip (unused files/exports)
+# ===========================
+.PHONY: knip knip-strict
+knip:
+	@echo "🔍 Knip (unused files/exports) → $(FRONTEND_DIR)"
+	@cd "$(FRONTEND_DIR)" && $(KNIP_EXEC)
+
+knip-strict:
+	@echo "🔍 Knip --strict (more rules) → $(FRONTEND_DIR)"
+	@cd "$(FRONTEND_DIR)" && $(KNIP_EXEC) --strict
 
 # ===========================
 # Agrégés non destructifs
@@ -243,10 +265,14 @@ fix::
 	@$(MAKE) frontend.fix
 	@$(MAKE) backend.fix
 
-# Format = Front (prettier) + Back (isort + black)
+# Format = Max de --fix puis lint complet (front + back) + Knip
 format::
 	@$(MAKE) frontend.format
-	@$(MAKE) backend.format
+	@$(MAKE) frontend.lint
+	@$(MAKE) frontend.typecheck
+	@$(MAKE) backend.fix
+	@$(MAKE) backend.lint
+	@$(MAKE) knip
 
 # Petit help complémentaire
 .PHONY: help-linting
@@ -254,9 +280,9 @@ help-linting:
 	@echo "Lint/Format intégrés :"
 	@echo "  make lint           → ESLint front + Ruff & mypy back (no fix)"
 	@echo "  make fix            → ESLint --fix front + isort/black/ruff --fix back"
-	@echo "  make format         → Prettier front + isort/black back"
-	@echo "  make backend.typecheck → mypy uniquement"
-
+	@echo "  make format         → Prettier + ESLint --fix + eslint + tsc (front) ; isort/black/ruff + ruff/mypy (back) ; Knip"
+	@echo "  make knip           → Détecte fichiers/exports non utilisés (Next-friendly)"
+	@echo "  make knip-strict    → Idem avec règles plus strictes"
 
 # Nettoyage
 clean:
@@ -289,7 +315,7 @@ help:
 	@echo "  make build       # Build production du frontend"
 	@echo "  make test        # Tests backend + type-check frontend"
 	@echo "  make lint        # Vérification du code"
-	@echo "  make format      # Formatage automatique"
+	@echo "  make format      # Formatage automatique + lint complet + Knip"
 	@echo "  make clean       # Nettoyage"
 	@echo ""
 	@echo "🌐 URLs de développement:"

@@ -1,5 +1,5 @@
-import React from 'react';
 import { Phone, ExternalLink } from 'lucide-react';
+import React from 'react';
 
 export default function DefaultContacts() {
   return (

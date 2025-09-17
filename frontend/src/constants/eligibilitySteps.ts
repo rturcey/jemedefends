@@ -101,7 +101,7 @@ export const ELIGIBILITY_STEPS: EligibilityStep[] = [
   {
     id: 'timing',
     title: "Ancienneté de l'achat",
-    question: 'Votre achat a-t-il moins de 2 ans ?',
+    question: "Votre achat a-t-il moins de 2 ans (1 an pour l'occasion) ?",
     description:
       'Biens : éligible jusqu’à 24 mois. La présomption (charge de la preuve au vendeur) joue 24 mois (12 mois pour un bien d’occasion).',
     legal: {
@@ -114,8 +114,8 @@ export const ELIGIBILITY_STEPS: EligibilityStep[] = [
       type: 'radio',
       required: true,
       options: [
-        { value: 'lt_2y', label: 'Moins de 2 ans' },
-        { value: 'gte_2y', label: 'Plus de 2 ans' },
+        { value: 'lt_2y', label: 'Oui' },
+        { value: 'gte_2y', label: 'Non' },
       ],
     },
   },

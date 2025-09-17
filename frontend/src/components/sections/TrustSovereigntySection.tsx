@@ -88,7 +88,7 @@ export default function TrustSovereigntySection() {
                 <h3 className="font-semibold text-gray-900">Envois 🇫🇷</h3>
               </div>
               <p className="mt-3 text-sm text-gray-700">
-                Service postal <strong>Merci Facteur</strong>. Suivi et preuve de réception
+                Envoi en recommandé via <strong>Merci Facteur</strong>. Suivi et preuve de réception
                 garantis.
               </p>
               <div className="mt-3">
@@ -106,7 +106,7 @@ export default function TrustSovereigntySection() {
                 <h3 className="font-semibold text-gray-900">Support illimité</h3>
               </div>
               <p className="mt-3 text-sm text-gray-700">
-                Équipe française dédiée. Contactez-nous à tout moment.
+                Équipe française dédiée pour les formules payantes. Contactez-nous à tout moment.
               </p>
               <div className="mt-3">
                 <Link

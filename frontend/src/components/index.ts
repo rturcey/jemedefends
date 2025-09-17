@@ -8,4 +8,5 @@ export * from './form';
 export * from './guides';
 export * from './seo';
 export * from './common';
+export * from './shared';
 export * from './cta';

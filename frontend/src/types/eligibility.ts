@@ -30,17 +30,12 @@ export interface EligibilityData {
   usage?: 'personal' | 'professional';
   productType?: 'physical' | 'digital';
   territory?: 'eu' | 'non_eu';
-
-  // NEW: on demande directement "<= 2 ans ?"
   withinTwoYears?: boolean;
-
-  // On conserve purchaseDate (facultatif) si tu veux revenir à une date plus tard
-  purchaseDate?: Date;
-
   hasDefect?: boolean;
 }
 
 export type StepValidationType = 'error' | 'warning' | 'info' | 'success';
+
 export interface StepValidation {
   isValid: boolean;
   message?: string;

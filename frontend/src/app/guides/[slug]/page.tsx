@@ -1,29 +1,18 @@
-// ============================================================================
-// PAGE GUIDE REDESIGNÉE - LAYOUT ÉQUILIBRÉ ET UX OPTIMISÉE
-// ============================================================================
-
-// *** src/app/guides/[slug]/page.tsx - VERSION REDESIGNÉE ***
-import React from 'react';
 import { notFound } from 'next/navigation';
+import React from 'react';
 
 // Composants guides
-import { GuideHero, RelatedGuides } from '@/components/guides';
 import { FinalCTASection } from '@/components';
-
-// TOC
-import GuideTOCMobile from '@/components/guides/GuideTOCMobile';
-import GuideTOCDesktop from '@/components/guides/GuideTOCDesktop';
-
-// Nouveaux composants pour la sidebar droite
-import GuideRightSidebar from '@/components/guides/GuideRightSidebar';
+import { RelatedGuides } from '@/components/guides';
 import GuideProgress from '@/components/guides/GuideProgress';
-
-// Composants dev
-import DevEditButton from '@/components/dev/DevEditButton';
-import DevToolbar from '@/components/dev/DevToolbar';
+import GuideRightSidebar from '@/components/guides/GuideRightSidebar';
+import GuideTOCDesktop from '@/components/guides/GuideTOCDesktop';
+import GuideTOCMobile from '@/components/guides/GuideTOCMobile';
+import GuideHero from '@/components/guides/GuideHero';
 
 // Données YAML
 import { getFullGuide } from '@/lib/guide-registry';
+import LegalFootnotes from '@/components/legal/LegalFootnotes';
 
 interface GuidePageProps {
   params: Promise<{ slug: string }>;
@@ -31,122 +20,86 @@ interface GuidePageProps {
 
 export default async function GuidePage({ params }: GuidePageProps) {
   const { slug } = await params;
+
+  // Chargement du guide
   const guide = getFullGuide(slug);
 
-  if (!guide) {
+  // Vérifier sections
+  if (!guide || !guide.sections || guide.sections.length === 0) {
     notFound();
   }
 
-  const relatedSlugs = [
-    'smartphone-telephone-panne-garantie-legale',
-    'ordinateur-portable-panne-garantie-legale',
-    'lave-linge-panne-garantie-legale',
-  ].filter(s => s !== slug);
+  const readingTime = guide.readingTime || 2;
+  const enrichedGuide = { ...guide, slug, readingTime };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Hero Section */}
-      <GuideHero guide={guide} readingTime={guide.readingTime} difficulty={guide.difficulty} />
+    <>
+      {/* Hero fonctionnel */}
+      <GuideHero guide={enrichedGuide} readingTime={readingTime} />
 
-      {/* Progress Bar Mobile */}
-      <GuideProgress className="lg:hidden" />
+      {/* TOC mobile sticky sous le topbar */}
+      <div className="md:hidden sticky top-[5rem] z-30">
+        <GuideTOCMobile guide={guide} className="lg:hidden" />
+      </div>
 
-      {/* TOC Mobile */}
-      <GuideTOCMobile />
+      {/* Progress bar FIXE sous le topbar */}
+      <div className="fixed top-12 lg:top-[5rem] left-0 right-0 z-40">
+        <GuideProgress />
+      </div>
 
-      {/* Layout Principal - ÉQUILIBRÉ avec 3 colonnes */}
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="lg:grid lg:grid-cols-[240px_1fr_280px] lg:gap-8 xl:gap-12">
-          {/* === SIDEBAR GAUCHE : TOC === */}
+      {/* Layout principal en 3 colonnes : TOC gauche / contenu / sidebar droite */}
+      <div className="max-w-7xl mx-auto px-4 py-6 lg:py-8">
+        <div className="grid grid-cols-1 lg:[grid-template-columns:16rem_minmax(0,1fr)_20rem] gap-6 lg:gap-8">
+          {/* TOC gauche sticky */}
           <aside className="hidden lg:block">
-            <div className="sticky top-24 space-y-6">
-              <GuideTOCDesktop />
-
-              {/* Mini CTA dans TOC */}
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-center">
-                <p className="text-sm text-blue-800 mb-3 font-medium">Vous avez ce problème ?</p>
-                <a
-                  href="/eligibilite"
-                  className="block bg-blue-600 text-white text-sm font-medium py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors"
-                >
-                  Créer ma lettre
-                </a>
-              </div>
+            <div className="sticky top-[6rem]">
+              <GuideTOCDesktop guide={guide} />
             </div>
           </aside>
 
-          {/* === CONTENU CENTRAL === */}
+          {/* Contenu principal */}
           <main className="min-w-0">
-            {/* Container optimisé pour la lecture */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200">
-              {/* Progress bar desktop intégrée */}
-              <div className="hidden lg:block sticky top-20 z-30">
-                <GuideProgress />
-              </div>
-
-              {/* Article avec largeur optimisée pour la lecture */}
-              <article className="prose prose-lg prose-blue max-w-none px-6 py-8 sm:px-8 lg:px-12">
-                {/* Largeur optimale pour la lecture : ~65-75 caractères par ligne */}
-                <div className="max-w-4xl mx-auto">
-                  {guide.sections.map((section, index) => (
-                    <section
-                      key={section.id}
-                      id={section.id}
-                      className="scroll-mt-24 mb-16 relative"
-                    >
-                      {/* Séparateur visuel entre sections */}
-                      {index > 0 && <div className="border-t border-gray-200 pt-16 -mt-8" />}
-
-                      {/* Contenu de la section */}
-                      <div className="not-prose">{section.content}</div>
-
-                      {/* CTA contextuel après certaines sections importantes */}
-                      {(section.id === 'droits' || section.id === 'procedure') && (
-                        <div className="mt-8 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl">
-                          <div className="text-center">
-                            <h3 className="text-lg font-semibold text-blue-900 mb-2">
-                              Vous êtes dans cette situation ?
-                            </h3>
-                            <p className="text-blue-700 mb-4 text-sm">
-                              Nos outils générateur automatiquement votre lettre personnalisée
-                            </p>
-                            <a
-                              href="/eligibilite"
-                              className="inline-flex items-center bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-md hover:shadow-lg"
-                            >
-                              🚀 Générer ma lettre maintenant
-                            </a>
-                          </div>
-                        </div>
-                      )}
-                    </section>
+            <article className="bg-white rounded-lg border border-gray-200 shadow-sm">
+              <div className="p-6 lg:p-8">
+                <div className="prose prose-lg max-w-none">
+                  {guide.sections.map((section: any, index: number) => (
+                    <div key={section.id || `section-${index}`} className="mb-8 last:mb-0">
+                      {section.content}
+                    </div>
                   ))}
                 </div>
-              </article>
-            </div>
+              </div>
+            </article>
+
+            {/* Hydratation des exposants + blocs Sources */}
+            <LegalFootnotes scopeSelector="main article" />
           </main>
 
-          {/* === SIDEBAR DROITE : ÉLÉMENTS CONTEXTUELS === */}
-          <aside className="hidden lg:block">
-            <GuideRightSidebar guide={guide} />
+          {/* Sidebar droite sticky */}
+          <aside className="w-full lg:w-auto" data-toc-exclude>
+            <div className="lg:sticky lg:top-[6rem] space-y-6">
+              <GuideRightSidebar guide={enrichedGuide} />
+            </div>
           </aside>
         </div>
       </div>
 
-      {/* Guides liés */}
-      <RelatedGuides currentGuide={guide} relatedSlugs={relatedSlugs} />
+      {/* Section guides connexes */}
+      {guide.relatedGuides && guide.relatedGuides.length > 0 && (
+        <RelatedGuides
+          currentGuide={enrichedGuide}
+          relatedSlugs={enrichedGuide.relatedGuides}
+          variant="section"
+        />
+      )}
 
-      {/* CTA final */}
+      {/* CTA finale */}
       <FinalCTASection />
-
-      {/* Composants dev */}
-      <DevToolbar />
-      <DevEditButton slug={slug} className="mb-20 sm:mb-4" />
-    </div>
+    </>
   );
 }
 
-// Métadonnées inchangées...
+// Métadonnées de page
 export async function generateMetadata({ params }: GuidePageProps) {
   const { slug } = await params;
   const guide = getFullGuide(slug);
@@ -158,27 +111,35 @@ export async function generateMetadata({ params }: GuidePageProps) {
     };
   }
 
+  const title = guide.metadata.title;
+  const description =
+    guide.metadata.seo?.description ||
+    `Guide pratique pour ${title}. Défendez vos droits de consommateur avec nos conseils juridiques et modèles de lettres.`;
+
   return {
-    title: guide.metadata.seo?.title || guide.metadata.title,
-    description: guide.metadata.seo?.description || 'Guide pratique Je me défends',
-    keywords: guide.metadata.seo?.keywords?.join(', '),
+    title,
+    description,
+    keywords: guide.metadata.seo?.keywords || [],
     openGraph: {
-      title: guide.metadata.title,
-      description: guide.metadata.seo?.description,
+      title,
+      description,
       type: 'article',
+      publishedTime: guide.legal?.lastUpdated,
+      authors: ['Je me défends'],
+      section: guide.category?.name || 'Guides',
     },
     twitter: {
       card: 'summary_large_image',
-      title: guide.metadata.title,
-      description: guide.metadata.seo?.description,
+      title,
+      description,
+    },
+    alternates: {
+      canonical: `/guides/${slug}`,
     },
   };
 }
 
+// Génération statique des pages
 export async function generateStaticParams() {
-  return [
-    { slug: 'garantie-legale-conformite-guide-complet' },
-    { slug: 'smartphone-telephone-panne-garantie-legale' },
-    { slug: 'ordinateur-portable-panne-garantie-legale' },
-  ];
+  return [];
 }

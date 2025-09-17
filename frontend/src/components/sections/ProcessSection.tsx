@@ -87,7 +87,7 @@ export default function ProcessSection() {
               </Badge>
               <div className="h-3"></div>
               <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-6">
-                4 étapes pour récupérer votre argent
+                4 étapes pour obtenir réparation
               </h2>
               <p className="text-lg text-slate-600">
                 Un processus simple et rapide pour faire valoir vos droits de consommateur.
@@ -148,7 +148,7 @@ export default function ProcessSection() {
               <Button href="/eligibilite#start" size="lg" icon={<Sparkles />}>
                 Tester gratuitement mes droits
               </Button>
-              <p className="mt-4 text-sm text-slate-500">Gratuit • 2 minutes • Résultat immédiat</p>
+              <p className="text-sm text-slate-500">Gratuit • 2 minutes • Résultat immédiat</p>
             </div>
           </Reveal>
         </Skeleton>

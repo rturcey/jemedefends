@@ -1,0 +1,230 @@
+title: 'Appareil photo défectueux : activer la garantie légale de conformité (guide 2025)'
+description: 'Pannes d’autofocus, capteur, obturateur, batterie, objectifs/incompatibilités… Faites valoir la garantie légale de conformité : mise en conformité ≤ 30 jours, 0 € de frais, réparation/remplacement, à défaut réduction/remboursement. Modèles et procédure.'
+category: 'tech'
+slug: 'appareil-photo-garantie-legale'
+
+seo:
+  title: 'Garantie légale appareil photo 2025 : droits, délais 30 jours, modèles et procédure'
+  description: 'Guide pas-à-pas : présomption 24/12 mois, mise en conformité ≤ 30 jours, aucun frais, réduction/résolution. Cas fréquents (AF, capteur, obturateur, charge, objectif). Modèles et LRAR en 1 clic.'
+  keywords:
+    - 'garantie légale appareil photo'
+    - 'appareil photo défectueux'
+    - 'autofocus panne'
+    - 'capteur taches pixels morts'
+    - 'obturateur HS'
+    - 'batterie ne tient pas'
+    - 'L.217-10 délai 30 jours'
+    - 'L.217-11 aucun frais'
+    - 'réparation remplacement'
+    - 'réduction remboursement'
+    - 'LRAR modèle gratuit'
+
+legal:
+  mainArticles:
+    [
+      'L.217-3',
+      'L.217-5',
+      'L.217-7',
+      'L.217-8',
+      'L.217-9',
+      'L.217-10',
+      'L.217-11',
+      'L.217-12',
+      'L.217-13',
+      'L.217-14',
+      'L.217-15',
+      'L.217-16',
+      'L.217-17',
+      'L.217-19',
+      'L.212-1',
+    ]
+  disclaimer: true
+  lastUpdated: '2025-09-16'
+
+sections:
+  - id: 'intro'
+    title: 'Pourquoi ce guide peut vraiment vous aider'
+    icon: 'Search'
+    type: 'content'
+    content: |
+      Votre **appareil photo** (hybride, reflex, compact) présente un défaut : **autofocus instable**, **taches sur le capteur**, **obturateur bloqué**, **batterie qui chute**, **surchauffe**, **écran ou viseur défectueux**, ou encore **incompatibilités d’objectif** qui ne correspondent pas à la fiche produit ?  
+      La **garantie légale de conformité** oblige le **vendeur professionnel** à livrer un bien conforme et à le **mettre en conformité** — **réparer ou remplacer** — **sans frais** et **dans un délai raisonnable qui ne peut pas dépasser 30 jours** L.217-9 L.217-10 L.217-11.
+
+      Ce guide concret vous permet d’identifier vos droits, d’**argumenter correctement** auprès du vendeur, et de **déclencher la bonne procédure** (modèles fournis).
+
+    alert:
+      type: 'info'
+      title: '💡 Conseil pratique'
+      content: 'Gardez toujours des preuves : exemples de photos affectées, vidéos du comportement du boîtier, messages d’erreur, copies d’écran des réglages. Chaque mention « L.xxx » renvoie à l’article **Légifrance**.'
+
+    badges:
+      - text: 'Guide 2025'
+        tone: 'blue'
+      - text: 'Cas pratiques photo'
+        tone: 'green'
+      - text: 'Vérifié juridiquement'
+        tone: 'purple'
+
+    cta:
+      label: 'Tester mon éligibilité'
+      href: '/eligibilite'
+      icon: 'ChevronRight'
+      variant: 'primary'
+
+  - id: 'definition'
+    title: 'La garantie légale appliquée à l’appareil photo'
+    icon: 'BookOpen'
+    type: 'content'
+    content: |
+      La **garantie légale de conformité** est **gratuite** et **obligatoire** : elle s’applique à votre boîtier et aux objectifs **achetés auprès d’un professionnel** en France L.217-3.
+
+      ### Quand parle-t-on de non-conformité ? L.217-5
+      - Le boîtier **ne correspond pas** à la description (ex. compatible « plein format » annoncé, mais vignettage/limitations non précisées).  
+      - Il **n’est pas apte à l’usage** attendu : AF qui décroche dans des situations normales, **obturateur** qui claque puis affiche une erreur, **capteur** avec **pixels morts/taches** rapidement après l’achat, **stabilisation** défaillante, **batterie** qui chute anormalement malgré une utilisation standard.  
+      - Les **qualités promises** (fiche produit, vendeur) ne sont **pas au rendez-vous** (ex. cadence/rafale ou compatibilité RAW annoncée mais non tenues).
+
+      ### Présomption de défaut L.217-7
+      - **24 mois** pour un **boîtier neuf**.  
+      - **12 mois** pour un **boîtier d’occasion**.  
+      Pendant cette période, le défaut apparu est **présumé exister** au jour de la délivrance : **au vendeur** d’apporter la preuve contraire.
+
+    alert:
+      type: 'success'
+      title: '✅ À retenir'
+      content: 'Le **vendeur** (et pas seulement la marque) est responsable. La garantie légale **ne peut pas être écartée** au profit d’une garantie constructeur.'
+
+  - id: 'droits'
+    title: 'Vos droits en cas de non-conformité'
+    icon: 'Scale'
+    type: 'timeline'
+    content: |
+      Vous pouvez exiger une **mise en conformité** L.217-9 :  
+      **Réparation** (ex. remplacement du bloc obturateur/capteur, MAJ firmware si nécessaire) **ou remplacement** du boîtier.
+
+      ### Conditions impératives
+      - **Délai raisonnable ≤ 30 jours** L.217-10  
+      - **Zéro frais** : pièces, main d’œuvre, transport/retour atelier **à charge du vendeur** L.217-11  
+      - **Sans inconvénient majeur** (pas de délais excessifs, pas d’allers-retours injustifiés) L.217-11
+
+      ### Si la mise en conformité échoue L.217-14
+      - **Réduction du prix** (proportionnelle).  
+      - **Résolution** (remboursement) si le défaut est suffisamment grave.
+
+      ### Cas liés aux appareils photo
+      - **Capteur** : taches récurrentes/pixels morts apparus rapidement → **réparation** ou **remplacement**.  
+      - **Autofocus** : défaillance répétée dans des scènes usuelles → **réglage/MAJ** ou **réparation**.  
+      - **Obturateur** : erreur systématique / nombre de cycles très faible → **remplacement du module**.  
+      - **Batterie/charge** : chute anormale sans usage intensif → **remplacement**.  
+      - **Compatibilités d’objectifs** annoncées mais non réelles → **mise en conformité** ou **résolution** selon gravité.
+
+    cta:
+      label: 'Créer ma mise en demeure'
+      href: '/eligibilite'
+      icon: 'FileText'
+      variant: 'primary'
+
+  - id: 'procedure'
+    title: 'Procédure pas à pas'
+    icon: 'CheckSquare'
+    type: 'timeline'
+    content: |
+      ### Étape 1 : Constituer un dossier clair
+      - **Preuve d’achat** (facture), numéro de série.  
+      - **Photos/vidéos** montrant le défaut (avant/après nettoyage capteur si pertinent).  
+      - **Conditions d’usage** : descriptif simple (modes utilisés, objectifs montés, cartes mémoire, température).  
+      - **Fiche produit**/publicité sauvegardée (qualités annoncées) L.217-5.
+
+      ### Étape 2 : Demande amiable écrite
+      - Rappelez vos droits (**réparation ou remplacement**) L.217-9.  
+      - Exigez un **délai ≤ 30 jours** L.217-10 et **0 € de frais** L.217-11.  
+      - Laissez **15 jours ouvrés** pour une réponse écrite.
+
+      ### Étape 3 : Mise en demeure (LRAR)
+      - Citez **L.217-9**, **L.217-10**, **L.217-11**.  
+      - Décrivez le défaut et demandez **réparation/remplacement** sous **30 jours**.  
+      - Précisez qu’à défaut, vous solliciterez **réduction**/**résolution** L.217-14.  
+      - Envoyez en **LRAR** et conservez l’AR.
+
+      ### Étape 4 : Recours
+      - **Médiation de la consommation** (gratuite).  
+      - **Tribunal** : proximité (≤ 5 000 €) ou judiciaire (> 5 000 €).  
+      - Joignez toutes les pièces (tests, échanges, AR, devis atelier).
+
+    alert:
+      type: 'warning'
+      title: '⚠️ Délais'
+      content: 'La garantie légale s’exerce dans les **2 ans** suivant la délivrance (présomption 24/12 mois) L.217-7. **Formalisez vite** vos demandes par écrit.'
+
+  - id: 'cas-pratiques'
+    title: 'Cas pratiques fréquents (et comment répondre)'
+    icon: 'Camera'
+    type: 'content'
+    content: |
+      **1) Taches sur le capteur dès les premières semaines**  
+      - Nettoyage simple inefficace / taches reviennent → **non-conformité** probable.  
+      - Demandez **réparation** (ou remplacement) **≤ 30 jours**, **sans frais** L.217-10 L.217-11.
+
+      **2) Autofocus qui décroche** dans des scènes lumineuses standard  
+      - Fournissez **exemples horodatés** + réglages.  
+      - Si défaut reproductible et non attribuable au réglage utilisateur, **mise en conformité** due L.217-9.
+
+      **3) Obturateur HS / erreur** à faible déclenchement  
+      - Bloc obturateur à remplacer → **réparation** à charge du vendeur, délai **≤ 30 jours** L.217-10.
+
+      **4) Batterie chute anormale**  
+      - Sans usage intensif/conditions extrêmes → **remplacement** ou **réparation**.  
+      - Les consommables ne sont pas exclus **si la panne révèle une non-conformité** L.217-5.
+
+      **5) Compatibilité d’objectif promise** mais non réelle  
+      - Usage « attendu » non respecté → **mise en conformité** ou, si échec, **réduction/résolution** L.217-14.
+
+    badges:
+      - text: 'Exemples concrets'
+        tone: 'green'
+      - text: 'Arguments prêts'
+        tone: 'blue'
+
+  - id: 'outils'
+    title: 'Outils pour vous accompagner'
+    icon: 'Wrench'
+    type: 'content'
+    content: |
+      ### Test d’éligibilité
+      Vérifiez la pertinence de la garantie légale pour votre panne et obtenez le **plan d’action**.
+
+      ### Générateur de lettres
+      - **Gratuit** : lettre type à **imprimer**  
+      - **Pro** : document formalisé, prêt à **imprimer** et signer  
+      - **Premium** : document pro + **LRAR** + suivi
+
+      ### Suivi du dossier
+      Relances, conseils et jalons jusqu’à la résolution.
+
+    cta:
+      label: 'Commencer maintenant'
+      href: '/eligibilite'
+      icon: 'ArrowRight'
+      variant: 'primary'
+
+  - id: 'conclusion'
+    title: 'À retenir pour votre appareil photo'
+    icon: 'CheckCircle'
+    type: 'content'
+    content: |
+      - **Présomption 24/12 mois** : au vendeur de prouver la conformité L.217-7.  
+      - **Mise en conformité ≤ 30 jours**, **gratuite**, **sans inconvénient majeur** L.217-9 L.217-10 L.217-11.  
+      - Si échec : **réduction** du prix ou **résolution** (remboursement) L.217-14.  
+      - Conservez un **dossier probant** (échantillons, vidéos, réglages, échanges).
+
+      Nos outils transforment ces droits en **démarches concrètes** : diagnostic, lettre solide, LRAR, suivi — pour une issue **rapide** et **conforme à la loi**.
+
+    alert:
+      type: 'success'
+      title: '🚀 Prêt à agir ?'
+      content: 'Créez votre demande en 2 minutes. Citez les **bons articles** et cadrez le **délai de 30 jours**.'
+
+    cta:
+      label: 'Tester mon éligibilité gratuitement'
+      href: '/eligibilite'
+      icon: 'Zap'
+      variant: 'primary'

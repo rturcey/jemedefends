@@ -75,7 +75,7 @@ export default function HomeHeroLeft() {
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black leading-tight tracking-tight">
             <span className="block">Produit défaillant ?</span>
             <span className="block bg-gradient-to-r from-blue-700 to-indigo-600 bg-clip-text text-transparent">
-              Récupérez votre argent
+              Obtenez réparation
             </span>
             <span className="block text-2xl sm:text-3xl lg:text-4xl text-gray-600 font-semibold mt-2">
               en moins de 3 minutes

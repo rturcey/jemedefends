@@ -1,55 +1,81 @@
+// src/hooks/useExitIntent.ts - Hook pour détecter l'intention de sortie
 'use client';
 
-import { useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
-export const useExitIntent = (onExitIntent: () => void) => {
+interface UseExitIntentOptions {
+  enabled?: boolean;
+  delay?: number;
+  threshold?: number;
+  onExitIntent?: () => void;
+}
+
+interface UseExitIntentReturn {
+  showExitIntent: boolean;
+  triggerExitIntent: () => void;
+  resetExitIntent: () => void;
+}
+
+/**
+ * Hook pour détecter l'intention de quitter la page
+ * Détecte les mouvements de souris vers le haut de l'écran
+ */
+export function useExitIntent(options: UseExitIntentOptions = {}): UseExitIntentReturn {
+  const { enabled = true, delay = 1000, threshold = 50, onExitIntent } = options;
+
+  const [showExitIntent, setShowExitIntent] = useState(false);
+  const [hasTriggered, setHasTriggered] = useState(false);
+
+  const triggerExitIntent = useCallback(() => {
+    if (!hasTriggered && enabled) {
+      setShowExitIntent(true);
+      setHasTriggered(true);
+      onExitIntent?.();
+    }
+  }, [hasTriggered, enabled, onExitIntent]);
+
+  const resetExitIntent = useCallback(() => {
+    setShowExitIntent(false);
+    setHasTriggered(false);
+  }, []);
+
   useEffect(() => {
-    let timeOnPage = 0;
-    let hasTriggered = false;
+    if (!enabled || typeof window === 'undefined') {
+      return;
+    }
 
-    const interval = setInterval(() => {
-      timeOnPage += 1000;
-    }, 1000);
+    let timeoutId: NodeJS.Timeout;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      // Détecter si la souris sort vers le haut
+      if (e.clientY <= threshold && e.movementY < 0) {
+        triggerExitIntent();
+      }
+    };
 
     const handleMouseLeave = (e: MouseEvent) => {
-      if (e.clientY <= 0 && timeOnPage > 10000 && !hasTriggered) {
-        hasTriggered = true;
-        onExitIntent();
+      // Détecter si la souris quitte complètement la fenêtre vers le haut
+      if (e.clientY <= 0) {
+        triggerExitIntent();
       }
     };
 
-    const handleBeforeUnload = () => {
-      if (timeOnPage > 5000 && !hasTriggered) {
-        hasTriggered = true;
-        onExitIntent();
-      }
-    };
-
-    // Détection mobile - scroll rapide vers le haut
-    let lastScrollY = window.scrollY;
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      if (
-        currentScrollY < lastScrollY - 100 &&
-        currentScrollY < 50 &&
-        timeOnPage > 8000 &&
-        !hasTriggered
-      ) {
-        hasTriggered = true;
-        onExitIntent();
-      }
-      lastScrollY = currentScrollY;
-    };
-
-    document.addEventListener('mouseleave', handleMouseLeave);
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    window.addEventListener('scroll', handleScroll, { passive: true });
+    // Délai avant d'activer la détection (éviter les faux positifs)
+    timeoutId = setTimeout(() => {
+      document.addEventListener('mousemove', handleMouseMove, { passive: true });
+      document.addEventListener('mouseleave', handleMouseLeave, { passive: true });
+    }, delay);
 
     return () => {
-      clearInterval(interval);
+      clearTimeout(timeoutId);
+      document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseleave', handleMouseLeave);
-      window.removeEventListener('beforeunload', handleBeforeUnload);
-      window.removeEventListener('scroll', handleScroll);
     };
-  }, [onExitIntent]);
-};
+  }, [enabled, delay, threshold, triggerExitIntent]);
+
+  return {
+    showExitIntent,
+    triggerExitIntent,
+    resetExitIntent,
+  };
+}

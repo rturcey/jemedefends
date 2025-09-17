@@ -25,3 +25,4 @@ dist/
 backup_*/
 
 .idea
+frontend/src/lib/generated-guides.ts

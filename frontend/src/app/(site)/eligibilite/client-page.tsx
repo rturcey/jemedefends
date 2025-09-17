@@ -1,64 +1,59 @@
-// frontend/src/app/(site)/eligibilite/client-page.tsx - CORRECTION ERREUR 500
-
+// src/app/(site)/eligibilite/client-page.tsx - Version mise à jour avec nouveau ResultsDisplay
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
+import { CheckCircle, ArrowRight, Shield, Clock } from 'lucide-react';
 import dynamic from 'next/dynamic';
-import React, { useState, useCallback, Suspense } from 'react';
+import React, { useState, useCallback } from 'react';
 
 import EligibilityForm from '@/components/eligibility/EligibilityForm';
-import EligibilityHero from '@/components/eligibility/EligibilityHero';
 import ResultsDisplay from '@/components/eligibility/ResultsDisplay';
+import Container from '@/components/ui/Container';
 import { Skeleton } from '@/components/ui';
 import { useAnalytics } from '@/hooks/useApi';
 import { useExitIntent } from '@/hooks/useExitIntent';
 import { trackEligibilityEvents } from '@/lib/analytics';
 import type { EligibilityData } from '@/types/eligibility';
+import type { EligibilityResult } from '@/eligibility/engine';
 
-// CORRECTION: Imports statiques pour éviter les erreurs de lazy loading
-
-// Seul le modal reste en lazy loading (non critique)
+// Lazy loading pour les composants non critiques
 const ExitIntentModal = dynamic(() => import('@/components/eligibility/ExitIntentModal'), {
   ssr: false,
-  loading: () => null, // Pas de skeleton pour le modal
+  loading: () => null,
 });
 
-// ---- Skeletons spécifiques (mobile-first, simples et lisibles)
+// Skeletons harmonisés avec le nouveau design
 function FormSkeleton() {
   return (
-    <div className="max-w-2xl mx-auto px-4 py-8">
-      <Skeleton className="h-4 w-40 mb-4" />
-      <Skeleton className="h-8 w-3/4 mb-6" />
-      <div className="space-y-3">
-        <Skeleton className="h-16 w-full" />
-        <Skeleton className="h-16 w-full" />
-        <Skeleton className="h-16 w-full" />
-      </div>
-      <div className="mt-6">
-        <Skeleton className="h-10 w-44" />
-      </div>
-    </div>
-  );
-}
-
-// Fallback "overlay" pour le lazy-load des résultats : full-screen blanc + placeholders
-function ResultsOverlayFallback() {
-  return (
-    <div className="fixed inset-0 z-[80] bg-white">
-      <div className="max-w-[640px] mx-auto pt-6 md:pt-10 px-4">
-        <Skeleton className="h-8 w-52 mb-4" />
-        <Skeleton className="h-6 w-80 mb-6" />
-        <div className="space-y-3">
-          <Skeleton className="h-14 w-full" />
-          <Skeleton className="h-14 w-full" />
-          <Skeleton className="h-14 w-full" />
+    <Container variant="form" className="space-y-6">
+      <div className="flex items-center justify-center mb-8">
+        <div className="flex items-center space-x-2">
+          {[1, 2, 3, 4, 5, 6].map(i => (
+            <Skeleton key={i} className="w-10 h-10 rounded-full" />
+          ))}
         </div>
       </div>
-    </div>
+
+      <div className="flex items-center gap-3 mb-4">
+        <Skeleton className="w-12 h-12 rounded-lg" />
+        <div className="space-y-2">
+          <Skeleton className="h-6 w-48" />
+          <Skeleton className="h-4 w-64" />
+        </div>
+      </div>
+
+      <div className="bg-white rounded-2xl border border-gray-200 p-6">
+        <div className="space-y-3">
+          {[1, 2].map(i => (
+            <Skeleton key={i} className="h-16 w-full rounded-xl" />
+          ))}
+        </div>
+      </div>
+    </Container>
   );
 }
 
-// CORRECTION: ErrorBoundary spécifique pour les composants d'éligibilité
+// ErrorBoundary spécifique
 class EligibilityErrorBoundary extends React.Component<
   { children: React.ReactNode; onError?: () => void },
   { hasError: boolean; error?: Error }
@@ -69,32 +64,27 @@ class EligibilityErrorBoundary extends React.Component<
   }
 
   static getDerivedStateFromError(error: Error) {
-    console.error('EligibilityErrorBoundary caught error:', error);
     return { hasError: true, error };
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.error('Eligibility component error:', error, errorInfo);
+    console.error('EligibilityErrorBoundary caught an error:', error, errorInfo);
     this.props.onError?.();
   }
 
   render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen bg-white flex items-center justify-center p-4">
-          <div className="max-w-md text-center">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">Erreur de chargement</h2>
-            <p className="text-gray-600 mb-6">
-              Une erreur s'est produite lors du chargement du test d'éligibilité.
-            </p>
-            <button
-              onClick={() => window.location.reload()}
-              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
-            >
-              Recharger la page
-            </button>
-          </div>
-        </div>
+        <Container variant="form" className="py-12 text-center">
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">Une erreur s'est produite</h2>
+          <p className="text-gray-600 mb-6">Veuillez rafraîchir la page ou recommencer.</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
+          >
+            Rafraîchir la page
+          </button>
+        </Container>
       );
     }
 
@@ -102,194 +92,215 @@ class EligibilityErrorBoundary extends React.Component<
   }
 }
 
-const viewVariants = {
-  initial: { opacity: 0, y: 10 },
-  in: { opacity: 1, y: 0, transition: { duration: 0.25 } },
-  out: { opacity: 0, y: -10, transition: { duration: 0.2 } },
-};
+// Views du parcours
+type CurrentView = 'hero' | 'form' | 'results';
 
-// Variants pour l'overlay de résultat (backdrop + panel)
-const overlayBackdrop = {
-  initial: { opacity: 0 },
-  animate: { opacity: 1, transition: { duration: 0.12 } },
-  exit: { opacity: 0, transition: { duration: 0.12 } },
-};
+// Interface pour les données d'éligibilité étendues
+interface ExtendedEligibilityData extends EligibilityData {
+  result?: EligibilityResult;
+}
 
-const overlayPanel = {
-  initial: { opacity: 0, y: 10 },
-  animate: { opacity: 1, y: 0, transition: { duration: 0.22, ease: 'easeOut' } },
-  exit: { opacity: 0, y: -8, transition: { duration: 0.18, ease: 'easeIn' } },
-};
-
-const EligibilitePage: React.FC = () => {
-  // On garde les 3 "états de vue" existants, mais on NE démonte plus le form pendant les résultats
-  const [currentView, setCurrentView] = useState<'hero' | 'form' | 'results'>('hero');
-  const [eligibilityData, setEligibilityData] = useState<EligibilityData>({});
+export default function EligibilityClientPage() {
+  const [currentView, setCurrentView] = useState<CurrentView>('hero');
   const [currentStep, setCurrentStep] = useState(0);
-  const [showExitModal, setShowExitModal] = useState(false);
-  const [hasError, setHasError] = useState(false);
+  const [eligibilityData, setEligibilityData] = useState<ExtendedEligibilityData | null>(null);
 
-  // CORRECTION: Gestion sécurisée des hooks avec fallback
-  let trackEvent = () => {};
-  try {
-    const analytics = useAnalytics();
-    trackEvent = analytics.trackEvent;
-  } catch (error) {
-    console.warn('Analytics hook error:', error);
-  }
+  // Hooks pour analytics et exit intent
+  const { trackEvent } = useAnalytics();
+  const { resetExitIntent } = useExitIntent({
+    enabled: currentView === 'form',
+    onExitIntent: () => {
+      // Logique d'exit intent si nécessaire
+    },
+  });
 
-  // CORRECTION: Exit-intent sécurisé
-  try {
-    useExitIntent(() => {
-      if (currentView === 'form' && currentStep > 0 && !hasError) {
-        setShowExitModal(true);
-        try {
-          trackEligibilityEvents.exitIntentTriggered(currentStep);
-        } catch (error) {
-          console.warn('Exit intent tracking error:', error);
-        }
-      }
-    });
-  } catch (error) {
-    console.warn('Exit intent hook error:', error);
-  }
-
-  const handleStartTest = useCallback(() => {
-    try {
-      trackEligibilityEvents.testStarted('hero_cta');
-    } catch (error) {
-      console.warn('Tracking error:', error);
-    }
+  // Démarrer le test
+  const startTest = useCallback(() => {
     setCurrentView('form');
-  }, []);
-
-  const handleFormComplete = useCallback((data: EligibilityData) => {
-    setEligibilityData(data);
-    setCurrentView('results'); // ⚠️ on passe en "results" mais on ne démonte pas le form (voir rendu plus bas)
-
-    try {
-      trackEligibilityEvents.testCompleted((data as any).isEligible ? 'eligible' : 'not_eligible');
-    } catch (error) {
-      console.warn('Tracking error:', error);
-    }
-  }, []);
-
-  const handleRestart = useCallback(() => {
-    try {
-      trackEvent('eligibility_test_restarted');
-    } catch (error) {
-      console.warn('Tracking error:', error);
-    }
-    setCurrentView('hero');
     setCurrentStep(0);
-    setEligibilityData({});
+    setEligibilityData(null);
+    trackEvent?.('eligibility_test_started');
+
+    // Utilisation sécurisée de trackEligibilityEvents
+    if (typeof trackEligibilityEvents !== 'undefined' && trackEligibilityEvents.testStarted) {
+      trackEligibilityEvents.testStarted();
+    }
   }, [trackEvent]);
 
-  const handleStepChange = useCallback((step: number) => setCurrentStep(step), []);
+  // Gérer la completion du formulaire
+  const handleFormComplete = useCallback(
+    (result: EligibilityResult, data: EligibilityData) => {
+      const extendedData: ExtendedEligibilityData = {
+        ...data,
+        result,
+      };
 
-  const handleError = useCallback(() => {
-    setHasError(true);
+      setEligibilityData(extendedData);
+      setCurrentView('results');
+
+      trackEvent?.('eligibility_test_completed', {
+        verdict: result.isEligible ? 'eligible' : 'ineligible',
+      });
+
+      // Utilisation sécurisée de trackEligibilityEvents
+      if (typeof trackEligibilityEvents !== 'undefined' && trackEligibilityEvents.testCompleted) {
+        trackEligibilityEvents.testCompleted(result.isEligible ? 'eligible' : 'ineligible');
+      }
+    },
+    [trackEvent],
+  );
+
+  // Recommencer le test
+  const handleRestart = useCallback(() => {
+    setCurrentView('hero');
+    setEligibilityData(null);
+    setCurrentStep(0);
+    resetExitIntent();
+    trackEvent?.('eligibility_test_restarted');
+
+    // Utilisation sécurisée de trackEligibilityEvents
+    if (typeof trackEligibilityEvents !== 'undefined' && trackEligibilityEvents.testRestarted) {
+      trackEligibilityEvents.testRestarted();
+    }
+  }, [trackEvent, resetExitIntent]);
+
+  // Gérer les changements d'étape
+  const handleStepChange = useCallback((step: number) => {
+    setCurrentStep(step);
+
+    // Utilisation sécurisée de trackEligibilityEvents
+    if (typeof trackEligibilityEvents !== 'undefined' && trackEligibilityEvents.stepCompleted) {
+      trackEligibilityEvents.stepCompleted(step);
+    }
   }, []);
 
-  if (hasError) {
-    return (
-      <div className="min-h-screen bg-white flex items-center justify-center p-4">
-        <div className="max-w-md text-center">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">Erreur de chargement</h2>
-          <p className="text-gray-600 mb-6">
-            Une erreur s'est produite. Veuillez recharger la page.
-          </p>
-          <button
-            onClick={() => window.location.reload()}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
-          >
-            Recharger la page
-          </button>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <EligibilityErrorBoundary onError={handleError}>
-      <main className="min-h-screen bg-white">
+    <div className="min-h-screen bg-gray-50">
+      <EligibilityErrorBoundary onError={() => setCurrentView('hero')}>
         <AnimatePresence mode="wait">
           {currentView === 'hero' && (
-            <motion.section
+            <motion.div
               key="hero"
-              variants={viewVariants}
-              initial="initial"
-              animate="in"
-              exit="out"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
             >
-              <Suspense
-                fallback={
-                  <div className="p-6">
-                    <Skeleton className="h-10 w-64" />
-                  </div>
-                }
-              >
-                <EligibilityHero onStartTest={handleStartTest} />
-              </Suspense>
-            </motion.section>
+              <HeroSection onStartTest={startTest} />
+            </motion.div>
           )}
 
-          {/* ⚠️ Le formulaire reste monté pendant 'form' ET 'results' */}
-          {(currentView === 'form' || currentView === 'results') && (
-            <motion.section
+          {currentView === 'form' && (
+            <motion.div
               key="form"
-              variants={viewVariants}
-              initial="initial"
-              animate="in"
-              exit="out"
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -50 }}
+              transition={{ duration: 0.4 }}
             >
-              <Suspense fallback={<FormSkeleton />}>
-                <EligibilityForm onComplete={handleFormComplete} onStepChange={handleStepChange} />
-              </Suspense>
-            </motion.section>
+              <EligibilityForm onComplete={handleFormComplete} onStepChange={handleStepChange} />
+            </motion.div>
           )}
-        </AnimatePresence>
 
-        {/* Overlay des résultats : couvre le form, transition douce, aucun skeleton visible derrière */}
-        <AnimatePresence>
-          {currentView === 'results' && (
-            <>
-              {/* Backdrop blanc couvrant */}
-              <motion.div
-                key="results-backdrop"
-                {...overlayBackdrop}
-                className="fixed inset-0 z-[70] bg-white"
-                aria-hidden="true"
+          {currentView === 'results' && eligibilityData && eligibilityData.result && (
+            <motion.div
+              key="results"
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -50 }}
+              transition={{ duration: 0.4 }}
+            >
+              <ResultsDisplay
+                result={eligibilityData.result}
+                data={eligibilityData}
+                onRestart={handleRestart}
               />
-              {/* Panel résultats centré */}
-              <motion.div
-                key="results-panel"
-                {...overlayPanel}
-                className="fixed inset-0 z-[80] overflow-auto"
-              >
-                <div className="min-h-full flex items-start md:items-center justify-center pt-6 md:pt-10 px-4">
-                  <Suspense fallback={<ResultsOverlayFallback />}>
-                    <ResultsDisplay data={eligibilityData} onRestart={handleRestart} />
-                  </Suspense>
-                </div>
-              </motion.div>
-            </>
+            </motion.div>
           )}
         </AnimatePresence>
 
-        {/* Modale (lazy + no-SSR) - gestion d'erreur robuste */}
-        {showExitModal && (
-          <Suspense fallback={null}>
-            <ExitIntentModal
-              isOpen={showExitModal}
-              onClose={() => setShowExitModal(false)}
-              onContinue={() => setShowExitModal(false)}
-            />
-          </Suspense>
-        )}
-      </main>
-    </EligibilityErrorBoundary>
+        {/* Exit Intent Modal */}
+        <ExitIntentModal />
+      </EligibilityErrorBoundary>
+    </div>
+  );
+}
+
+// ✅ HERO SECTION MODERNE
+const HeroSection: React.FC<{ onStartTest: () => void }> = ({ onStartTest }) => {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center">
+      <Container variant="form" className="py-12 text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          {/* ✅ TITRE PRINCIPAL */}
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">
+            Test d'éligibilité
+            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">
+              gratuit et rapide
+            </span>
+          </h1>
+
+          <p className="text-lg md:text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
+            Vérifiez en 2 minutes si votre situation relève de la{' '}
+            <strong>garantie légale de conformité</strong>. Test basé sur le Code de la
+            consommation, 100% gratuit et confidentiel.
+          </p>
+
+          {/* ✅ TRUST INDICATORS */}
+          <div className="flex items-center justify-center gap-8 mb-8 text-sm text-gray-600">
+            <div className="flex items-center gap-2">
+              <CheckCircle className="w-5 h-5 text-green-600" />
+              <span>100% gratuit</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <CheckCircle className="w-5 h-5 text-green-600" />
+              <span>2 minutes</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <CheckCircle className="w-5 h-5 text-green-600" />
+              <span>RGPD conforme</span>
+            </div>
+          </div>
+
+          {/* ✅ BOUTON PRINCIPAL */}
+          <button
+            onClick={onStartTest}
+            className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-4 px-8 rounded-2xl transition-all transform hover:scale-105 shadow-lg text-lg"
+          >
+            <ArrowRight className="w-5 h-5 mr-2 inline" />
+            Commencer le test
+          </button>
+
+          {/* ✅ INFORMATIONS COMPLÉMENTAIRES */}
+          <div className="mt-12 grid md:grid-cols-3 gap-6">
+            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+              <Shield className="w-8 h-8 text-blue-600 mx-auto mb-3" />
+              <h3 className="font-semibold text-gray-900 mb-2">Sources juridiques</h3>
+              <p className="text-sm text-gray-600">
+                Basé sur le Code de la consommation, régulièrement mis à jour
+              </p>
+            </div>
+            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+              <CheckCircle className="w-8 h-8 text-green-600 mx-auto mb-3" />
+              <h3 className="font-semibold text-gray-900 mb-2">Données protégées</h3>
+              <p className="text-sm text-gray-600">
+                Aucune donnée personnelle collectée ou conservée
+              </p>
+            </div>
+            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+              <Clock className="w-8 h-8 text-purple-600 mx-auto mb-3" />
+              <h3 className="font-semibold text-gray-900 mb-2">Résultat immédiat</h3>
+              <p className="text-sm text-gray-600">
+                Diagnostic instantané avec solutions personnalisées
+              </p>
+            </div>
+          </div>
+        </motion.div>
+      </Container>
+    </div>
   );
 };
-
-export default EligibilitePage;

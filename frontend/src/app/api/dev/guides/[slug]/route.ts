@@ -1,45 +1,53 @@
-import { NextRequest, NextResponse } from 'next/server';
 import { promises as fs } from 'fs';
 import path from 'path';
-import { validateGuideYAML } from '@/lib/yaml-guide-converter';
-import { getFullGuide, addGuideYAML } from '@/lib/guide-registry';
+import { NextRequest, NextResponse } from 'next/server';
 
-// Chemin du fichier de persistence des overrides
-const DEV_OVERRIDES_PATH = path.join(process.cwd(), 'dev-guides-overrides.json');
+const GUIDES_BASE_PATH = path.join(process.cwd(), 'content/guides');
 
-interface DevOverrides {
-  [slug: string]: {
-    yaml: string;
-    lastModified: string;
-    originalBackup?: string;
-  };
-}
+// Mapping des catégories basé sur votre structure existante
+const CATEGORY_PATTERNS = {
+  'smartphone-': 'tech',
+  'ordinateur-': 'tech',
+  'routeur-': 'tech',
+  'casque-': 'tech',
+  'ecouteurs-': 'tech',
+  'appareil-photo': 'auto',
+  'autoradio-': 'auto',
+  'borne-recharge': 'auto',
+  'voiture-': 'auto',
+  'moto-': 'auto',
+  'velo-': 'auto',
+  'trottinette-': 'auto',
+  'lave-': 'home',
+  'micro-ondes': 'home',
+  refrigerateur: 'home',
+  climatisation: 'home',
+  chaudiere: 'home',
+  'pompe-': 'home',
+  'alarme-': 'home',
+  'domotique-': 'home',
+  'electromenager-': 'home',
+};
 
-/**
- * Charge les overrides depuis le fichier JSON
- */
-async function loadDevOverrides(): Promise<DevOverrides> {
-  try {
-    const content = await fs.readFile(DEV_OVERRIDES_PATH, 'utf8');
-    return JSON.parse(content);
-  } catch (error) {
-    // Fichier n'existe pas encore, retourner objet vide
-    return {};
+function getGuideCategory(slug: string): string {
+  for (const [pattern, category] of Object.entries(CATEGORY_PATTERNS)) {
+    if (slug.startsWith(pattern)) {
+      return category;
+    }
   }
+  return 'general';
+}
+
+function getGuideYAMLPath(slug: string): { category: string; filePath: string } {
+  const category = getGuideCategory(slug);
+  const filePath = path.join(GUIDES_BASE_PATH, category, `${slug}.yaml`);
+  return { category, filePath };
 }
 
 /**
- * Sauvegarde les overrides dans le fichier JSON
- */
-async function saveDevOverrides(overrides: DevOverrides): Promise<void> {
-  await fs.writeFile(DEV_OVERRIDES_PATH, JSON.stringify(overrides, null, 2), 'utf8');
-}
-
-/**
- * GET /api/dev/guides/[slug] - Récupère le YAML d'un guide
+ * GET - Récupérer le YAML d'un guide
  */
 export async function GET(request: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
-  // Sécurité : Seulement en développement
   if (process.env.NODE_ENV !== 'development') {
     return NextResponse.json(
       { error: 'API disponible uniquement en développement' },
@@ -49,45 +57,45 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
   try {
     const { slug } = await params;
+    const { category, filePath } = getGuideYAMLPath(slug);
 
-    // Charger les overrides
-    const overrides = await loadDevOverrides();
+    let yamlContent: string;
+    let exists = false;
 
-    // Si un override existe, le retourner
-    if (overrides[slug]) {
-      return NextResponse.json({
-        slug,
-        yaml: overrides[slug].yaml,
-        isOverride: true,
-        lastModified: overrides[slug].lastModified,
-      });
+    try {
+      yamlContent = await fs.readFile(filePath, 'utf8');
+      exists = true;
+    } catch (error) {
+      // Fichier n'existe pas, créer un template
+      yamlContent = generateYAMLTemplate(slug, category);
+      exists = false;
     }
 
-    // Sinon, récupérer depuis le registry original
-    const guide = getFullGuide(slug);
-    if (!guide) {
-      return NextResponse.json({ error: 'Guide non trouvé' }, { status: 404 });
+    // Récupérer les stats du fichier si existant
+    let lastModified = new Date().toISOString();
+    if (exists) {
+      const stats = await fs.stat(filePath);
+      lastModified = stats.mtime.toISOString();
     }
 
-    // Récupérer le YAML original depuis le registry
-    // Note: Il faudra peut-être ajouter une fonction pour récupérer le YAML brut
     return NextResponse.json({
       slug,
-      yaml: getOriginalYAMLForSlug(slug), // À implémenter
-      isOverride: false,
-      lastModified: new Date().toISOString(),
+      category,
+      yaml: yamlContent,
+      exists,
+      filePath: filePath.replace(process.cwd(), ''),
+      lastModified,
     });
   } catch (error) {
-    console.error('Erreur GET /api/dev/guides/[slug]:', error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
+    console.error('Erreur chargement guide:', error);
+    return NextResponse.json({ error: `Erreur chargement: ${error.message}` }, { status: 500 });
   }
 }
 
 /**
- * PUT /api/dev/guides/[slug] - Sauvegarde le YAML d'un guide
+ * PUT - Sauvegarder le YAML d'un guide
  */
 export async function PUT(request: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
-  // Sécurité : Seulement en développement
   if (process.env.NODE_ENV !== 'development') {
     return NextResponse.json(
       { error: 'API disponible uniquement en développement' },
@@ -97,95 +105,100 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
 
   try {
     const { slug } = await params;
-    const body = await request.json();
-    const { yaml } = body;
+    const { yaml } = await request.json();
 
-    if (!yaml) {
-      return NextResponse.json({ error: 'Contenu YAML requis' }, { status: 400 });
+    if (!yaml || typeof yaml !== 'string') {
+      return NextResponse.json({ error: 'Contenu YAML invalide' }, { status: 400 });
     }
 
-    // Validation du YAML
-    const validation = validateGuideYAML(yaml);
-    if (!validation.valid) {
-      return NextResponse.json(
-        {
-          error: 'YAML invalide',
-          validationErrors: validation.errors,
-        },
-        { status: 400 },
-      );
-    }
+    const { category, filePath } = getGuideYAMLPath(slug);
 
-    // Charger les overrides existants
-    const overrides = await loadDevOverrides();
+    // Créer le dossier de catégorie si nécessaire
+    const categoryDir = path.dirname(filePath);
+    await fs.mkdir(categoryDir, { recursive: true });
 
-    // Sauvegarder l'original si c'est la première modification
-    if (!overrides[slug]) {
-      overrides[slug] = {
-        yaml: '',
-        lastModified: '',
-        originalBackup: getOriginalYAMLForSlug(slug),
-      };
-    }
-
-    // Mettre à jour l'override
-    overrides[slug].yaml = yaml;
-    overrides[slug].lastModified = new Date().toISOString();
+    // Mettre à jour automatiquement la date updated
+    const updatedYaml = updateYAMLTimestamp(yaml);
 
     // Sauvegarder le fichier
-    await saveDevOverrides(overrides);
-
-    // Mettre à jour le cache en mémoire
-    addGuideYAML(slug, yaml);
+    await fs.writeFile(filePath, updatedYaml, 'utf8');
 
     return NextResponse.json({
       success: true,
-      slug,
-      lastModified: overrides[slug].lastModified,
+      filePath: filePath.replace(process.cwd(), ''),
+      lastModified: new Date().toISOString(),
+      category,
     });
   } catch (error) {
-    console.error('Erreur PUT /api/dev/guides/[slug]:', error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
+    console.error('Erreur sauvegarde guide:', error);
+    return NextResponse.json({ error: `Erreur sauvegarde: ${error.message}` }, { status: 500 });
   }
 }
 
 /**
- * DELETE /api/dev/guides/[slug] - Supprime l'override et restaure l'original
+ * Génère un template YAML de base
  */
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: Promise<{ slug: string }> },
-) {
-  if (process.env.NODE_ENV !== 'development') {
-    return NextResponse.json(
-      { error: 'API disponible uniquement en développement' },
-      { status: 403 },
-    );
-  }
+function generateYAMLTemplate(slug: string, category: string): string {
+  const title = slug
+    .split('-')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
 
-  try {
-    const { slug } = await params;
+  const today = new Date().toISOString().split('T')[0];
 
-    const overrides = await loadDevOverrides();
+  return `title: "${title}"
+description: "Description de votre guide"
+category: "${category}"
+slug: "${slug}"
 
-    if (!overrides[slug]) {
-      return NextResponse.json({ error: 'Aucun override à supprimer' }, { status: 404 });
-    }
+seo:
+  title: "${title} - Je me défends"
+  description: "Guide pratique pour comprendre vos droits"
+  keywords:
+    - "${slug}"
+    - "garantie légale"
+    - "consommation"
 
-    // Restaurer l'original
-    const originalYaml = overrides[slug].originalBackup || getOriginalYAMLForSlug(slug);
-    addGuideYAML(slug, originalYaml);
+legal:
+  mainArticles: ["L.217-9"]
+  disclaimer: true
+  lastUpdated: "${today}"
 
-    // Supprimer l'override
-    delete overrides[slug];
-    await saveDevOverrides(overrides);
+sections:
+  - id: "introduction"
+    title: "Introduction"
+    icon: "Info"
+    type: "content"
+    content: |
+      Votre contenu ici avec **gras** et _italique_.
+      
+      Vous pouvez référencer des articles (art. L.217-9).
+    
+    alert:
+      type: "info"
+      title: "À retenir"
+      content: "Point important à mettre en avant."
+    
+    badges:
+      - text: "Important"
+        tone: "red"
+      - text: "2024"
+        tone: "blue"
+    
+    cta:
+      label: "Créer ma lettre"
+      href: "/eligibilite"
+      icon: "ChevronRight"
+      variant: "primary"
+`;
+}
 
-    return NextResponse.json({
-      success: true,
-      message: 'Override supprimé, guide original restauré',
-    });
-  } catch (error) {
-    console.error('Erreur DELETE /api/dev/guides/[slug]:', error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
-  }
+/**
+ * Met à jour la date lastUpdated dans le YAML
+ */
+function updateYAMLTimestamp(yamlContent: string): string {
+  const today = new Date().toISOString().split('T')[0];
+
+  // Recherche et remplacement de la date lastUpdated
+  return yamlContent.replace(/(\s*)lastUpdated:\s*["']?[\d-]+["']?/, `$1lastUpdated: "${today}"`);
 }

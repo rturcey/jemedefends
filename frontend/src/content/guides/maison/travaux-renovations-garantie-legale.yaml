@@ -1,0 +1,123 @@
+title: 'Travaux et rénovations : vos droits en cas de malfaçons et retards'
+description: 'Peinture qui s’écaille, carrelage mal posé, chantier en retard : les travaux réalisés par un professionnel sont couverts par la garantie légale de conformité (articles L.217-3 et suivants).'
+category: 'home'
+slug: 'garantie-travaux-renovations'
+
+seo:
+  title: 'Travaux et rénovations : recours en cas de malfaçons et retards'
+  description: 'Quels sont vos droits si vos travaux présentent des malfaçons ou des retards ? Garantie légale de conformité (articles L.217-3 et suivants), garanties légales du bâtiment et recours.'
+  keywords:
+    - 'litige travaux malfaçon'
+    - 'chantier retard recours'
+    - 'garantie légale rénovation'
+    - 'défaut conformité travaux'
+    - 'recours contre artisan malfaçon'
+    - 'L.217-3 Code consommation travaux'
+
+legal:
+  mainArticles:
+    - 'L.217-3'
+    - 'L.217-4'
+    - 'L.217-5'
+    - 'L.217-7'
+    - 'L.217-9'
+    - 'L.217-10'
+    - 'L.217-11'
+    - '1792'
+    - '1792-2'
+    - '1792-3'
+  disclaimer: true
+  lastUpdated: '2025-09-22'
+
+sections:
+  - id: 'intro'
+    title: 'La garantie légale s’applique aussi aux travaux'
+    type: 'content'
+    content: |
+      Lorsque vous faites appel à un **artisan** ou une **entreprise de rénovation**, vous bénéficiez de la **garantie légale de conformité** (art. L.217-3 et suivants du Code de la consommation).  
+
+      👉 Cette garantie couvre les prestations de service : si les travaux ne sont pas conformes à ce qui était prévu, le professionnel doit corriger à ses frais.  
+
+      De plus, dans le domaine du bâtiment, s’appliquent aussi :  
+      - la **garantie de parfait achèvement** (art. 1792-6 C. civ.), valable 1 an ;  
+      - la **garantie biennale** (art. 1792-3 C. civ.), valable 2 ans ;  
+      - la **garantie décennale** (art. 1792 C. civ.), valable 10 ans pour les dommages graves.
+
+  - id: 'defauts'
+    title: 'Exemples de malfaçons couvertes'
+    type: 'grid'
+    items:
+      - title: 'Défauts de finition'
+        description: |
+          - Peinture qui s’écaille rapidement.  
+          - Carrelage fissuré ou mal aligné.  
+          - Jointures mal réalisées.
+      - title: 'Défauts structurels'
+        description: |
+          - Infiltrations d’eau après rénovation de toiture.  
+          - Murs fissurés après travaux.  
+          - Escalier ou garde-corps dangereux.
+      - title: 'Retards et inexécutions'
+        description: |
+          - Chantier qui prend plusieurs mois de retard sans justification.  
+          - Travaux interrompus sans reprise.  
+          - Devis non respecté dans la réalisation.
+
+  - id: 'procedure'
+    title: 'Que faire en cas de litige sur un chantier'
+    type: 'timeline'
+    steps:
+      - title: '1) Vérifier et documenter'
+        description: |
+          Prenez des photos, conservez les devis et factures, et notez les retards.  
+          Un constat d’huissier ou une expertise peut être utile.
+      - title: '2) Contacter l’artisan'
+        description: |
+          Signalez par écrit les malfaçons ou retards.  
+          Mentionnez la garantie légale de conformité (art. L.217-3).
+      - title: '3) Mise en demeure'
+        description: |
+          Si aucune réponse, envoyez une **mise en demeure** de corriger ou d’achever les travaux sous un délai précis.
+      - title: '4) Recours'
+        description: |
+          Vous pouvez saisir le **médiateur de la consommation**, ou directement le **tribunal judiciaire** pour obtenir réparation.
+
+  - id: 'faq'
+    title: 'Questions fréquentes'
+    type: 'faq'
+    faqItems:
+      - q: 'Les petits défauts esthétiques sont-ils couverts ?'
+        a: 'Oui, si la prestation n’est pas conforme au devis ou aux règles de l’art, même pour une finition.'
+      - q: 'Puis-je retenir le paiement si les travaux ne sont pas finis ?'
+        a: 'Oui, vous pouvez retenir une partie du prix tant que la prestation n’est pas conforme.'
+      - q: 'Quelle différence avec la garantie décennale ?'
+        a: 'La garantie légale couvre la conformité immédiate, tandis que la décennale couvre les dommages graves sur 10 ans.'
+      - q: 'Et si c’est un retard de plusieurs mois ?'
+        a: 'Vous pouvez invoquer la garantie légale et demander des pénalités de retard si elles sont prévues au contrat.'
+
+  - id: 'cta-lettre'
+    title: 'Passez à l’action'
+    type: 'content'
+    content: |
+      ✅ Rédigez gratuitement une réclamation pour exiger la correction des malfaçons ou la reprise du chantier.  
+      Versions payantes : **PDF professionnel** avec logo et signature électronique, ou **LRAR** avec suivi.
+    cta:
+      label: 'Rédiger ma réclamation'
+      href: '/outils/mise-en-demeure'
+      variant: 'primary'
+      icon: 'FileText'
+
+  - id: 'alternatives'
+    title: 'Autres recours possibles'
+    type: 'alternatives'
+
+  - id: 'contacts'
+    title: 'Contacts utiles'
+    type: 'contacts'
+
+  - id: 'disclaimer'
+    title: 'Important'
+    type: 'content'
+    content: |
+      Ce guide fournit une **information juridique générale** (articles L.217-3 du Code de la consommation et 1792 du Code civil).  
+      Il ne remplace pas un **conseil juridique personnalisé**. Pour une analyse adaptée, contactez un **avocat en droit de la construction** ou une **association de consommateurs**.
