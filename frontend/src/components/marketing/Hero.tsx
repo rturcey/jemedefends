@@ -1,13 +1,13 @@
 'use client';
 import { motion } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
+import Image from 'next/image';
 import * as React from 'react';
 
 import Container from '@/components/ui/Container';
 import Skeleton from '@/components/ui/Skeleton';
 
 import GradientBlobs from './GradientBlobs';
-import Image from 'next/image';
 
 type HeroProps = {
   title: React.ReactNode;

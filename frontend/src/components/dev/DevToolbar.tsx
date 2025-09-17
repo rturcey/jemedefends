@@ -1,7 +1,8 @@
 'use client';
 
+import { Code2 } from 'lucide-react';
 import React, { useState } from 'react';
-import { Code2, Settings } from 'lucide-react';
+
 import DevPanel from './DevPanel';
 
 export default function DevToolbar() {

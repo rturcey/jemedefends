@@ -1,8 +1,10 @@
 'use client';
 
+import { Edit3 } from 'lucide-react';
 import React, { useState } from 'react';
-import { Edit3, Code2, RefreshCw } from 'lucide-react';
+
 import { Button } from '@/components/ui';
+
 import YAMLEditor from './YAMLEditor';
 
 interface DevEditButtonProps {

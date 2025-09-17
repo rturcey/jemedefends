@@ -7,8 +7,6 @@ export { default as TableOfContents } from './TableOfContents';
 // Ajouter les nouveaux composants
 export { default as GuideHero } from './GuideHero';
 export { default as GuideEssentials } from './GuideEssentials';
-export { default as GuideSummary } from './GuideSummary';
-export { default as GuideMobileNavigation } from './GuideMobileNavigation';
 export { default as GuideSection } from './GuideSection';
 export { default as TableComparison } from './TableComparison';
 export { default as ContextualCTA } from './ContextualCTA';

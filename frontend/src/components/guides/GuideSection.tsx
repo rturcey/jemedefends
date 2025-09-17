@@ -20,14 +20,13 @@ import {
 } from 'lucide-react';
 import React from 'react';
 
-import TextWithLegalRefs from '@/components/ui/TextWithLegalRefs';
-import LegalNote from '@/components/ui/LegalNote';
-import TimelineProcess from '@/components/ui/TimelineProcess';
-import FAQ from '@/components/ui/FAQ';
-import DefaultGrid from '@/components/ui/DefaultGrid';
+import TableComparison from '@/components/guides/TableComparison';
 import DefaultAlternatives from '@/components/ui/DefaultAlternatives';
 import DefaultContacts from '@/components/ui/DefaultContacts';
-import TableComparison from '@/components/guides/TableComparison';
+import DefaultGrid from '@/components/ui/DefaultGrid';
+import FAQ from '@/components/ui/FAQ';
+import LegalNote from '@/components/ui/LegalNote';
+import TextWithLegalRefs from '@/components/ui/TextWithLegalRefs';
 import type { GuideSection } from '@/types/guides';
 
 interface GuideSectionProps {

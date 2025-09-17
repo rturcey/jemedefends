@@ -139,7 +139,7 @@ function TopBar({ ctaHref = '/eligibilite#start' }: { ctaHref?: string }) {
   return (
     <nav
       id="topbar"
-      className="site-header hidden md:block fixed top-0 w-full bg-white/80 backdrop-blur border-b border-gray-200 z-50 h-20"
+      className="site-header hidden md:block fixed top-0 w-full bg-white backdrop-blur border-b border-gray-200 z-50 h-20"
       aria-label="Navigation principale"
     >
       <Container className="h-full flex justify-between items-center">
@@ -160,8 +160,7 @@ function TopBar({ ctaHref = '/eligibilite#start' }: { ctaHref?: string }) {
           <NavLink href="/#fiabilite">Confiance</NavLink>
           <NavLink href="/faq">FAQ</NavLink>
           <GuidesDropdown />
-          <Button href={ctaHref}>
-            <FileText className="w-4 h-4" aria-hidden="true" />
+          <Button href={ctaHref} icon={<FileText className="w-4 h-4" aria-hidden="true" />}>
             Commencer
           </Button>
         </div>

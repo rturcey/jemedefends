@@ -1,6 +1,7 @@
 // ecouteurs-sans-fil-defaut-connexion-garantie-legale.tsx
 // Guide migré automatiquement - Ne pas modifier la structure
-import type { GuidePage } from '@/types/guides';
+import React from 'react';
+
 import {
   Badge,
   Button,
@@ -13,7 +14,7 @@ import {
   DefaultGrid,
 } from '@/components/ui';
 import type { LegalArticleId } from '@/legal/registry';
-import React from 'react';
+import type { GuidePage } from '@/types/guides';
 
 export const GUIDE_ECOUTEURS_SANS_FIL_DEFAUT_CONNEXION_GARANTIE_LEGALE: GuidePage = {
   metadata: {

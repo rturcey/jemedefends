@@ -2,6 +2,7 @@
 import './globals.css';
 import type { Metadata } from 'next';
 
+import RenderWatchdog from '@/app/_watchdog/RenderWatchdog';
 import { SiteLayout } from '@/components/layout';
 
 const siteUrl = 'https://jemedefends.fr';

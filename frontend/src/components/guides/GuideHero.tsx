@@ -1,181 +1,115 @@
-// src/components/guides/GuideHero.tsx - VERSION AMÉLIORÉE
-// Hero avec design moderne, breadcrumbs fonctionnels et badges colorés
+// src/components/guides/GuideHero.tsx
+// MODIFIÉ - Fond gradient identique à FinalCTASection
 
 'use client';
 
-import { Clock, Scale, FileText, Zap, ArrowRight, Home, ChevronRight } from 'lucide-react';
-import Link from 'next/link';
+import { Clock, Scale, FileText, Zap, CheckCircle } from 'lucide-react';
 import React from 'react';
 
-import Container from '@/components/ui/Container';
-import Button from '@/components/ui/Button';
 import Badge from '@/components/ui/Badge';
+import Breadcrumbs from '@/components/ui/Breadcrumbs';
+import Button from '@/components/ui/Button';
+import Container from '@/components/ui/Container';
 import type { GuidePage } from '@/types/guides';
+import { getCategoryWithIcon } from '@/lib/icon-utils';
 
 interface GuideHeroProps {
-  guide: GuidePage & { slug: string; readingTime: number; difficulty: string };
+  guide: GuidePage & { slug: string; readingTime: number };
   readingTime: number;
-  difficulty: string;
 }
 
-// Utilitaire pour obtenir les couleurs de difficulté
-function getDifficultyConfig(difficulty: string) {
-  switch (difficulty) {
-    case 'facile':
-      return {
-        color: 'bg-green-100 text-green-800 border-green-300',
-        icon: '✅',
-        label: 'Facile',
-      };
-    case 'moyen':
-      return {
-        color: 'bg-yellow-100 text-yellow-800 border-yellow-300',
-        icon: '⚠️',
-        label: 'Moyen',
-      };
-    case 'difficile':
-      return {
-        color: 'bg-red-100 text-red-800 border-red-300',
-        icon: '🔥',
-        label: 'Difficile',
-      };
-    default:
-      return {
-        color: 'bg-blue-100 text-blue-800 border-blue-300',
-        icon: '📖',
-        label: 'Guide',
-      };
-  }
-}
+export default function GuideHero({ guide, readingTime }: GuideHeroProps) {
+  const categoryWithIcon = getCategoryWithIcon(guide.slug, 'sm');
 
-// Utilitaire pour obtenir la catégorie depuis le slug
-function getCategoryConfig(slug: string) {
-  if (slug.includes('smartphone') || slug.includes('ordinateur') || slug.includes('tech')) {
-    return {
-      name: 'High-Tech',
-      emoji: '📱',
-      color: 'bg-blue-100 text-blue-800 border-blue-300',
-    };
-  }
-  if (slug.includes('electromenager') || slug.includes('maison') || slug.includes('lave-')) {
-    return {
-      name: 'Électroménager',
-      emoji: '🏠',
-      color: 'bg-green-100 text-green-800 border-green-300',
-    };
-  }
-  if (slug.includes('voiture') || slug.includes('auto')) {
-    return {
-      name: 'Automobile',
-      emoji: '🚗',
-      color: 'bg-red-100 text-red-800 border-red-300',
-    };
-  }
-  return {
-    name: 'Général',
-    emoji: '⚖️',
-    color: 'bg-purple-100 text-purple-800 border-purple-300',
-  };
-}
-
-// Composant Breadcrumbs fonctionnel
-function FunctionalBreadcrumbs({ guide }: { guide: GuidePage & { slug: string } }) {
   return (
-    <nav className="flex items-center text-sm text-gray-500 mb-4" aria-label="Fil d'Ariane">
-      <Link href="/" className="hover:text-blue-600 transition-colors flex items-center">
-        <Home className="w-4 h-4 mr-1" />
-        Accueil
-      </Link>
-
-      <ChevronRight className="w-4 h-4 mx-2" />
-
-      <Link href="/guides" className="hover:text-blue-600 transition-colors">
-        Guides
-      </Link>
-
-      <ChevronRight className="w-4 h-4 mx-2" />
-
-      <span className="text-gray-900 font-medium truncate">{guide.metadata.title}</span>
-    </nav>
-  );
-}
-
-// Utilitaire pour compter les références légales
-function countLegalReferences(guide: GuidePage): number {
-  return guide.legal.mainArticles.length;
-}
-
-const GuideHero = ({ guide, readingTime, difficulty }: any) => {
-  return (
-    <section className="relative bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-700 text-white overflow-hidden">
-      {/* Pattern background subtil */}
-      <div
-        className="absolute inset-0 opacity-10"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-        }}
-      />
-
-      <div className="relative max-w-7xl mx-auto px-4 py-12 lg:py-16">
-        <div className="max-w-4xl mx-auto text-center">
-          {/* Badge catégorie */}
-          <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 text-sm font-medium mb-6">
-            <span>{guide.category.emoji}</span>
-            <span>{guide.category.name}</span>
-          </div>
-
-          {/* Titre principal */}
-          <h1 className="text-3xl lg:text-4xl xl:text-5xl font-bold mb-6 leading-tight">
-            {guide.metadata.title}
-          </h1>
-
-          {/* Description */}
-          <p className="text-xl lg:text-2xl text-blue-100 mb-8 leading-relaxed max-w-3xl mx-auto">
-            {guide.metadata.seo?.description}
-          </p>
-
-          {/* Métriques en pills */}
-          <div className="flex flex-wrap justify-center gap-4 mb-8">
-            <div className="bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 flex items-center gap-2">
-              <span>⏱️</span>
-              <span className="text-sm font-medium">{readingTime} min de lecture</span>
-            </div>
-
-            <div className="bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 flex items-center gap-2">
-              <span>📊</span>
-              <span className="text-sm font-medium">Niveau {difficulty}</span>
-            </div>
-
-            <div className="bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 flex items-center gap-2">
-              <span>✅</span>
-              <span className="text-sm font-medium">Juridiquement vérifié</span>
-            </div>
-          </div>
-
-          {/* CTA principal */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button
-              href="/eligibilite"
-              className="bg-white text-blue-600 hover:bg-blue-50 font-bold px-8 py-4 text-lg shadow-xl hover:shadow-2xl"
-            >
-              🚀 Créer ma lettre maintenant
-            </Button>
-
-            <Button
-              href="#content"
-              variant="outline"
-              className="border-white/30 text-white hover:bg-white/10 font-medium px-8 py-4 text-lg"
-            >
-              📖 Lire le guide
-            </Button>
-          </div>
-        </div>
+    <div className="relative bg-gradient-to-br from-surface-soft to-white">
+      {/* Couches de fond identiques au FinalCTASection */}
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 opacity-40" />
+      <div className="absolute inset-0 opacity-20">
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-100/30 to-purple-100/30" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(99,102,241,0.1),transparent_50%)]" />
       </div>
 
-      {/* Gradient fade vers le contenu */}
-      <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-gray-50 to-transparent" />
-    </section>
-  );
-};
+      <div className="relative">
+        <Container className="max-w-4xl">
+          <div className="px-4 py-6">
+            {/* Breadcrumbs */}
+            <div className="mb-3">
+              <Breadcrumbs
+                items={
+                  guide.metadata.breadcrumb || [
+                    { label: 'Accueil', href: '/' },
+                    { label: 'Guides', href: '/guides' },
+                    {
+                      label: guide.metadata.title,
+                      href: `/guides/${guide.slug}`,
+                      isCurrentPage: true,
+                    },
+                  ]
+                }
+                maxItems={3}
+              />
+            </div>
 
-export default GuideHero;
+            {/* Badges */}
+            <div className="flex flex-wrap gap-2 mb-3">
+              <Badge variant="secondary" className="flex items-center gap-1.5 text-xs">
+                {categoryWithIcon.icon}
+                <span>{categoryWithIcon.name}</span>
+              </Badge>
+
+              {guide.legal?.lastUpdated && (
+                <Badge variant="success" className="flex items-center gap-1 text-xs">
+                  <CheckCircle className="w-3 h-3" />À jour
+                </Badge>
+              )}
+            </div>
+
+            {/* Titre */}
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3 leading-tight">
+              {guide.metadata.title}
+            </h1>
+
+            {/* Description */}
+            {guide.metadata.seo?.description && (
+              <p className="text-lg text-gray-700 mb-4 leading-relaxed">
+                {guide.metadata.seo.description}
+              </p>
+            )}
+
+            {/* Métadonnées */}
+            <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600 mb-6">
+              <div className="flex items-center gap-1.5">
+                <Clock className="w-4 h-4" />
+                <span>{readingTime} min de lecture</span>
+              </div>
+
+              <div className="flex items-center gap-1.5">
+                <Scale className="w-4 h-4" />
+                <span>Références légales</span>
+              </div>
+
+              <div className="flex items-center gap-1.5">
+                <FileText className="w-4 h-4" />
+                <span>Guide pratique</span>
+              </div>
+            </div>
+
+            {/* CTA Principal */}
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Button
+                href="/eligibilite"
+                variant="primary"
+                size="md"
+                icon={<Zap className="w-4 h-4" />}
+                className="flex-1 sm:flex-initial min-h-[44px] touch-manipulation"
+              >
+                Créer ma lettre
+              </Button>
+            </div>
+          </div>
+        </Container>
+      </div>
+    </div>
+  );
+}

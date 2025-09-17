@@ -1,4 +1,5 @@
 import React from 'react';
+
 import TextWithLegalRefs from './TextWithLegalRefs';
 
 export default function StandardProcedure() {

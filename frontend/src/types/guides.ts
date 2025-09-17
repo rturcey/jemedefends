@@ -54,7 +54,6 @@ export interface GuideLegal {
 export interface EnrichedGuide extends GuidePage {
   slug: string;
   readingTime: number;
-  difficulty: 'facile' | 'moyen' | 'difficile';
   relatedGuides: string[];
   category: {
     name: string;

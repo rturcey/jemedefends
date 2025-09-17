@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState } from 'react';
 
 export interface TOCItem {
   id: string;
@@ -22,44 +22,48 @@ export function useTableOfContents() {
   const [items, setItems] = useState<TOCItem[]>([]);
   const [activeId, setActiveId] = useState<string>('');
 
-  // Scan des headings dans le DOM
+  // ✅ FIX: Scan DOM une seule fois au mount
   useEffect(() => {
-    const headings = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
-    const tocItems: TOCItem[] = [];
+    const scanHeadings = () => {
+      const headings = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
+      const tocItems: TOCItem[] = [];
 
-    headings.forEach(heading => {
-      let id = heading.id;
+      headings.forEach(heading => {
+        let id = heading.id;
 
-      // Générer un ID si manquant
-      if (!id && heading.textContent) {
-        id = slugify(heading.textContent);
+        if (!id && heading.textContent) {
+          id = slugify(heading.textContent);
 
-        // S'assurer que l'ID est unique
-        let uniqueId = id;
-        let counter = 1;
-        while (document.getElementById(uniqueId)) {
-          uniqueId = `${id}-${counter}`;
-          counter++;
+          let uniqueId = id;
+          let counter = 1;
+          while (document.getElementById(uniqueId)) {
+            uniqueId = `${id}-${counter}`;
+            counter++;
+          }
+
+          heading.setAttribute('id', uniqueId);
+          id = uniqueId;
         }
 
-        heading.setAttribute('id', uniqueId);
-        id = uniqueId;
-      }
+        if (id && heading.textContent) {
+          const level = parseInt(heading.tagName.charAt(1), 10);
+          tocItems.push({
+            id,
+            title: heading.textContent.trim(),
+            level,
+          });
+        }
+      });
 
-      if (id && heading.textContent) {
-        const level = parseInt(heading.tagName.charAt(1), 10);
-        tocItems.push({
-          id,
-          title: heading.textContent.trim(),
-          level,
-        });
-      }
-    });
+      setItems(tocItems);
+    };
 
-    setItems(tocItems);
-  }, []);
+    // ✅ FIX: Délai pour éviter scan pendant render
+    const timer = setTimeout(scanHeadings, 100);
+    return () => clearTimeout(timer);
+  }, []); // ✅ FIX: Une seule fois au mount
 
-  // Observer pour l'élément actif (scrollspy)
+  // ✅ FIX: Observer optimisé avec cleanup propre
   useEffect(() => {
     if (items.length === 0) return;
 
@@ -68,29 +72,34 @@ export function useTableOfContents() {
         const visibleEntries = entries.filter(entry => entry.isIntersecting);
 
         if (visibleEntries.length > 0) {
-          // Prendre le premier élément visible (plus haut dans la page)
           const topEntry = visibleEntries.reduce((prev, current) =>
             prev.boundingClientRect.top < current.boundingClientRect.top ? prev : current,
           );
-          setActiveId(topEntry.target.id);
+
+          // ✅ FIX: Éviter setState inutiles
+          setActiveId(prev => (prev !== topEntry.target.id ? topEntry.target.id : prev));
         }
       },
       {
-        rootMargin: '-20% 0px -35% 0px', // Zone d'activation optimisée
+        rootMargin: '-20% 0px -35% 0px',
         threshold: [0, 0.25, 0.5, 0.75, 1],
       },
     );
 
-    // Observer tous les headings
+    const elements: Element[] = [];
     items.forEach(item => {
       const element = document.getElementById(item.id);
       if (element) {
         observer.observe(element);
+        elements.push(element);
       }
     });
 
-    return () => observer.disconnect();
-  }, [items]);
+    return () => {
+      elements.forEach(el => observer.unobserve(el));
+      observer.disconnect();
+    };
+  }, [items]); // ✅ FIX: Dépendance seulement sur items stable
 
   return { items, activeId };
 }

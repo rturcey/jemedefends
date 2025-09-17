@@ -5,10 +5,12 @@
 // *** src/components/dev/NewGuideCreator.tsx ***
 'use client';
 
+import { Plus } from 'lucide-react';
 import React, { useState } from 'react';
-import { Plus, FileText } from 'lucide-react';
+
 import { Button } from '@/components/ui';
 import { YAML_GUIDE_TEMPLATE } from '@/lib/yaml-templates';
+
 import YAMLEditor from './YAMLEditor';
 
 export default function NewGuideCreator() {

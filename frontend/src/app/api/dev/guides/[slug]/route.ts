@@ -1,8 +1,11 @@
-import { NextRequest, NextResponse } from 'next/server';
 import { promises as fs } from 'fs';
 import path from 'path';
-import { validateGuideYAML } from '@/lib/yaml-guide-converter';
+
+import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
+
 import { getFullGuide, addGuideYAML } from '@/lib/guide-registry';
+import { validateGuideYAML } from '@/lib/yaml-guide-converter';
 
 // Chemin du fichier de persistence des overrides
 const DEV_OVERRIDES_PATH = path.join(process.cwd(), 'dev-guides-overrides.json');

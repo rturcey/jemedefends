@@ -1,6 +1,7 @@
 // cafetiere-expresso-broyeur-defaut-garantie-legale.tsx
 // Guide migré automatiquement - Ne pas modifier la structure
-import type { GuidePage } from '@/types/guides';
+import React from 'react';
+
 import {
   Badge,
   Button,
@@ -13,7 +14,7 @@ import {
   DefaultGrid,
 } from '@/components/ui';
 import type { LegalArticleId } from '@/legal/registry';
-import React from 'react';
+import type { GuidePage } from '@/types/guides';
 
 export const GUIDE_CAFETIERE_EXPRESSO_BROYEUR_DEFAUT_GARANTIE_LEGALE: GuidePage = {
   metadata: {

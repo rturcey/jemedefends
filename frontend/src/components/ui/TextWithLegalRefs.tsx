@@ -8,6 +8,7 @@ import * as React from 'react';
 import { useMemo } from 'react';
 
 import { type LegalArticleId, isValidLegalArticleId } from '@/legal/registry';
+
 import LegalReference from './LegalReference';
 
 export interface TextWithLegalRefsProps extends React.HTMLAttributes<HTMLSpanElement> {

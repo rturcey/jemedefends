@@ -13,8 +13,11 @@ module.exports = {
   ],
   theme: {
     extend: {
-      colors: { brand: { 600: #2563EB, 700: #1D4ED8 }, surface: { soft: #F8FAFC } },
       colors: {
+        // tes alias custom
+        brand: { 600: '#2563EB', 700: '#1D4ED8' },
+        surface: { soft: '#F8FAFC' },
+
         // Palette mobile-optimisée avec contraste AAA
         blue: {
           50: '#eff6ff',

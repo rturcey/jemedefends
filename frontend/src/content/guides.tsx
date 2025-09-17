@@ -5,28 +5,45 @@
 import type { GuidePage } from '@/types/guides';
 
 // === Général (16) ===
-import { GUIDE_GARANTIE_LEGALE_CONFORMITE_GUIDE_COMPLET } from './guides/general/garantie-legale-conformite-guide-complet';
-import { GUIDE_HOME_TRAINER_CONNECTE_DEFAUT_GARANTIE_LEGALE } from './guides/general/home-trainer-connecte-defaut-garantie-legale';
-import { GUIDE_EQUIPEMENT_FITNESS_MAISON_GARANTIE_LEGALE } from './guides/general/equipement-fitness-maison-garantie-legale';
-import { GUIDE_SKI_EQUIPEMENT_DEFAUT_GARANTIE_LEGALE } from './guides/general/ski-equipement-defaut-garantie-legale';
-import { GUIDE_PERMANENCES_JURIDIQUES } from './guides/general/permanences-juridiques';
-import { GUIDE_FNAC_SAV_RECOURS } from './guides/general/fnac-sav-recours';
+import { GUIDE_APPAREIL_PHOTO_HYBRIDE_DEFAUT_GARANTIE_LEGALE } from './guides/auto/appareil-photo-hybride-defaut-garantie-legale';
+import { GUIDE_AUTORADIO_INFOTAINMENT_DEFAUT_GARANTIE_LEGALE } from './guides/auto/autoradio-infotainment-defaut-garantie-legale';
+import { GUIDE_BORNE_RECHARGE_DOMESTIQUE_VE_DEFAUT_GARANTIE_LEGALE } from './guides/auto/borne-recharge-domestique-ve-defaut-garantie-legale';
+import { GUIDE_CAMPING_CAR_DEFAUTS_GARANTIE_LEGALE } from './guides/auto/camping-car-defauts-garantie-legale';
+import { GUIDE_MOTO_DEFAUT_GARANTIE_LEGALE } from './guides/auto/moto-defaut-garantie-legale';
+import { GUIDE_SCOOTER_DEFAUT_GARANTIE_LEGALE } from './guides/auto/scooter-defaut-garantie-legale';
+import { GUIDE_TROTTINETTE_ELECTRIQUE_DEFAUT_GARANTIE_LEGALE } from './guides/auto/trottinette-electrique-defaut-garantie-legale';
+import { GUIDE_VELO_ELECTRIQUE_DEFAUT_GARANTIE_LEGALE } from './guides/auto/velo-electrique-defaut-garantie-legale';
+import { GUIDE_VOITURE_ELECTRIQUE_DEFAUT_GARANTIE_LEGALE } from './guides/auto/voiture-electrique-defaut-garantie-legale';
+import { GUIDE_VOITURE_HYBRIDE_DEFAUT_GARANTIE_LEGALE } from './guides/auto/voiture-hybride-defaut-garantie-legale';
+import { GUIDE_ACTION_GROUPE } from './guides/general/action-groupe';
+import { GUIDE_AMAZON_GARANTIE_RETOURS } from './guides/general/amazon-garantie-retours';
 import { GUIDE_BOULANGER_GARANTIES } from './guides/general/boulanger-garanties';
 import { GUIDE_CDISCOUNT_MARKETPLACE } from './guides/general/cdiscount-marketplace';
-import { GUIDE_REFERE_CONSOMMATION } from './guides/general/refere-consommation';
-import { GUIDE_ACTION_GROUPE } from './guides/general/action-groupe';
-import { GUIDE_PRESCRIPTION_DELAIS } from './guides/general/prescription-delais';
 import { GUIDE_CONSTITUER_PREUVES } from './guides/general/constituer-preuves';
+import { GUIDE_EQUIPEMENT_FITNESS_MAISON_GARANTIE_LEGALE } from './guides/general/equipement-fitness-maison-garantie-legale';
+import { GUIDE_FNAC_SAV_RECOURS } from './guides/general/fnac-sav-recours';
+import { GUIDE_HOME_TRAINER_CONNECTE_DEFAUT_GARANTIE_LEGALE } from './guides/general/home-trainer-connecte-defaut-garantie-legale';
+import { GUIDE_MEDIATION_CONSOMMATION } from './guides/general/mediation-consommation';
+import { GUIDE_PERMANENCES_JURIDIQUES } from './guides/general/permanences-juridiques';
+import { GUIDE_REFERE_CONSOMMATION } from './guides/general/refere-consommation';
+import { GUIDE_SKI_EQUIPEMENT_DEFAUT_GARANTIE_LEGALE } from './guides/general/ski-equipement-defaut-garantie-legale';
+import { GUIDE_PRESCRIPTION_DELAIS } from './guides/general/prescription-delais';
 import { GUIDE_VICES_CACHES } from './guides/general/vices-caches';
 import { GUIDE_PROTECTION_JURIDIQUE } from './guides/general/protection-juridique';
-import { GUIDE_MEDIATION_CONSOMMATION } from './guides/general/mediation-consommation';
-import { GUIDE_AMAZON_GARANTIE_RETOURS } from './guides/general/amazon-garantie-retours';
 
 // === High-Tech (18) ===
-import { GUIDE_SMARTPHONE_ECRAN_BATTERIE_DEFAUT_GARANTIE_LEGALE } from './guides/tech/smartphone-ecran-batterie-defaut-garantie-legale';
-import { GUIDE_ORDINATEUR_PORTABLE_PANNE_GARANTIE_LEGALE } from './guides/tech/ordinateur-portable-panne-garantie-legale';
-import { GUIDE_ROUTEUR_WIFI_MESH_DECONNEXIONS_GARANTIE_LEGALE } from './guides/tech/routeur-wifi-mesh-deconnexions-garantie-legale';
+import { GUIDE_ALARME_MAISON_DEFAUT_GARANTIE_LEGALE } from './guides/home/alarme-maison-defaut-garantie-legale';
+import { GUIDE_ASPIRATEUR_BALAI_PANNE_GARANTIE_LEGALE } from './guides/home/aspirateur-balai-panne-garantie-legale';
+import { GUIDE_CAFETIERE_EXPRESSO_BROYEUR_DEFAUT_GARANTIE_LEGALE } from './guides/home/cafetiere-expresso-broyeur-defaut-garantie-legale';
+import { GUIDE_CENTRALE_VAPEUR_FUITE_PANNE_GARANTIE_LEGALE } from './guides/home/centrale-vapeur-fuite-panne-garantie-legale';
+import { GUIDE_CHAUDIERE_DOMESTIQUE_DEFAUT_GARANTIE_LEGALE } from './guides/home/chaudiere-domestique-defaut-garantie-legale';
+import { GUIDE_CHAUFFE_EAU_ELECTRIQUE_DEFAUT_GARANTIE_LEGALE } from './guides/home/chauffe-eau-electrique-defaut-garantie-legale';
+import { GUIDE_FOUR_ENCASTRABLE_PANNE_GARANTIE_LEGALE } from './guides/home/four-encastrable-panne-garantie-legale';
+import { GUIDE_LAVE_LINGE_PANNE_GARANTIE_LEGALE } from './guides/home/lave-linge-panne-garantie-legale';
 import { GUIDE_ASPIRATEUR_ROBOT_PANNE_GARANTIE_LEGALE } from './guides/tech/aspirateur-robot-panne-garantie-legale';
+import { GUIDE_ORDINATEUR_PORTABLE_PANNE_GARANTIE_LEGALE } from './guides/tech/ordinateur-portable-panne-garantie-legale';
+import { GUIDE_SMARTPHONE_ECRAN_BATTERIE_DEFAUT_GARANTIE_LEGALE } from './guides/tech/smartphone-ecran-batterie-defaut-garantie-legale';
+import { GUIDE_ROUTEUR_WIFI_MESH_DECONNEXIONS_GARANTIE_LEGALE } from './guides/tech/routeur-wifi-mesh-deconnexions-garantie-legale';
 import { GUIDE_SMARTPHONE_TELEPHONE_PANNE_GARANTIE_LEGALE } from './guides/tech/smartphone-telephone-panne-garantie-legale';
 import { GUIDE_CASQUE_AUDIO_HAUT_DE_GAMME_DEFAUT_GARANTIE_LEGALE } from './guides/tech/casque-audio-haut-de-gamme-defaut-garantie-legale';
 import { GUIDE_ECOUTEURS_SANS_FIL_DEFAUT_CONNEXION_GARANTIE_LEGALE } from './guides/tech/ecouteurs-sans-fil-defaut-connexion-garantie-legale';
@@ -43,45 +60,26 @@ import { GUIDE_HOME_CINEMA_BARRE_DE_SON_PANNE_GARANTIE_LEGALE } from './guides/t
 import { GUIDE_DOMOTIQUE_PASSERELLE_CAPTEURS_GARANTIE_LEGALE } from './guides/tech/domotique-passerelle-capteurs-garantie-legale';
 
 // === Auto & Mobilité (10) ===
-import { GUIDE_APPAREIL_PHOTO_HYBRIDE_DEFAUT_GARANTIE_LEGALE } from './guides/auto/appareil-photo-hybride-defaut-garantie-legale';
-import { GUIDE_AUTORADIO_INFOTAINMENT_DEFAUT_GARANTIE_LEGALE } from './guides/auto/autoradio-infotainment-defaut-garantie-legale';
-import { GUIDE_BORNE_RECHARGE_DOMESTIQUE_VE_DEFAUT_GARANTIE_LEGALE } from './guides/auto/borne-recharge-domestique-ve-defaut-garantie-legale';
-import { GUIDE_VOITURE_ELECTRIQUE_DEFAUT_GARANTIE_LEGALE } from './guides/auto/voiture-electrique-defaut-garantie-legale';
-import { GUIDE_VOITURE_HYBRIDE_DEFAUT_GARANTIE_LEGALE } from './guides/auto/voiture-hybride-defaut-garantie-legale';
-import { GUIDE_CAMPING_CAR_DEFAUTS_GARANTIE_LEGALE } from './guides/auto/camping-car-defauts-garantie-legale';
-import { GUIDE_MOTO_DEFAUT_GARANTIE_LEGALE } from './guides/auto/moto-defaut-garantie-legale';
-import { GUIDE_SCOOTER_DEFAUT_GARANTIE_LEGALE } from './guides/auto/scooter-defaut-garantie-legale';
-import { GUIDE_VELO_ELECTRIQUE_DEFAUT_GARANTIE_LEGALE } from './guides/auto/velo-electrique-defaut-garantie-legale';
-import { GUIDE_TROTTINETTE_ELECTRIQUE_DEFAUT_GARANTIE_LEGALE } from './guides/auto/trottinette-electrique-defaut-garantie-legale';
 
 // === Maison & Électroménager (23) ===
-import { GUIDE_LAVE_LINGE_PANNE_GARANTIE_LEGALE } from './guides/home/lave-linge-panne-garantie-legale';
 import { GUIDE_LAVE_VAISSELLE_DEFAUT_GARANTIE_LEGALE } from './guides/home/lave-vaisselle-defaut-garantie-legale';
 import { GUIDE_REFRIGERATEUR_CONGELATEUR_DEFAUT_GARANTIE_LEGALE } from './guides/home/refrigerateur-congelateur-defaut-garantie-legale';
 import { GUIDE_MICRO_ONDES_PANNE_GARANTIE_LEGALE } from './guides/home/micro-ondes-panne-garantie-legale';
-import { GUIDE_CHAUFFE_EAU_ELECTRIQUE_DEFAUT_GARANTIE_LEGALE } from './guides/home/chauffe-eau-electrique-defaut-garantie-legale';
 import { GUIDE_PORTAIL_MOTORISE_DEFAUT_GARANTIE_LEGALE } from './guides/home/portail-motorise-defaut-garantie-legale';
-import { GUIDE_ASPIRATEUR_BALAI_PANNE_GARANTIE_LEGALE } from './guides/home/aspirateur-balai-panne-garantie-legale';
 import { GUIDE_PURIFICATEUR_AIR_DEFAUT_GARANTIE_LEGALE } from './guides/home/purificateur-air-defaut-garantie-legale';
 import { GUIDE_PLAQUE_INDUCTION_DEFAUT_GARANTIE_LEGALE } from './guides/home/plaque-induction-defaut-garantie-legale';
-import { GUIDE_FOUR_ENCASTRABLE_PANNE_GARANTIE_LEGALE } from './guides/home/four-encastrable-panne-garantie-legale';
-import { GUIDE_CAFETIERE_EXPRESSO_BROYEUR_DEFAUT_GARANTIE_LEGALE } from './guides/home/cafetiere-expresso-broyeur-defaut-garantie-legale';
 import { GUIDE_FRITEUSE_ELECTRIQUE_PANNE_GARANTIE_LEGALE } from './guides/home/friteuse-electrique-panne-garantie-legale';
 import { GUIDE_MIXEUR_BLENDER_PANNE_GARANTIE_LEGALE } from './guides/home/mixeur-blender-panne-garantie-legale';
 import { GUIDE_EXTRACTEUR_DE_JUS_PANNE_GARANTIE_LEGALE } from './guides/home/extracteur-de-jus-panne-garantie-legale';
 import { GUIDE_YAOURTIERE_DEFAUT_TEMPERATURE_GARANTIE_LEGALE } from './guides/home/yaourtiere-defaut-temperature-garantie-legale';
 import { GUIDE_MACHINE_A_PAIN_PANNE_GARANTIE_LEGALE } from './guides/home/machine-a-pain-panne-garantie-legale';
-import { GUIDE_CENTRALE_VAPEUR_FUITE_PANNE_GARANTIE_LEGALE } from './guides/home/centrale-vapeur-fuite-panne-garantie-legale';
 import { GUIDE_CLIMATISATION_EN_PANNE_GARANTIE_LEGALE } from './guides/home/climatisation-en-panne-garantie-legale';
 import { GUIDE_VMC_HABITATION_PANNE_GARANTIE_LEGALE } from './guides/home/vmc-habitation-panne-garantie-legale';
-import { GUIDE_CHAUDIERE_DOMESTIQUE_DEFAUT_GARANTIE_LEGALE } from './guides/home/chaudiere-domestique-defaut-garantie-legale';
 import { GUIDE_POMPE_A_CHALEUR_DEFAUT_GARANTIE_LEGALE } from './guides/home/pompe-a-chaleur-defaut-garantie-legale';
-import { GUIDE_ALARME_MAISON_DEFAUT_GARANTIE_LEGALE } from './guides/home/alarme-maison-defaut-garantie-legale';
 import { GUIDE_ELECTROMENAGER_LAVE_LINGE_LAVE_VAISSELLE_GARANTIE } from './guides/home/electromenager-lave-linge-lave-vaisselle-garantie';
 
 // Export principal - compatible avec l'existant
 export const ALL_GUIDES: Record<string, GuidePage> = {
-  'garantie-legale-conformite-guide-complet': GUIDE_GARANTIE_LEGALE_CONFORMITE_GUIDE_COMPLET,
   'smartphone-ecran-batterie-defaut-garantie-legale':
     GUIDE_SMARTPHONE_ECRAN_BATTERIE_DEFAUT_GARANTIE_LEGALE,
   'ordinateur-portable-panne-garantie-legale': GUIDE_ORDINATEUR_PORTABLE_PANNE_GARANTIE_LEGALE,
@@ -181,7 +179,6 @@ export const GUIDES_STATS = {
 };
 
 // Exports pour compatibilité (si nécessaires)
-export { GUIDE_GARANTIE_LEGALE_CONFORMITE_GUIDE_COMPLET } from './guides/general/garantie-legale-conformite-guide-complet';
 export { GUIDE_SMARTPHONE_ECRAN_BATTERIE_DEFAUT_GARANTIE_LEGALE } from './guides/tech/smartphone-ecran-batterie-defaut-garantie-legale';
 export { GUIDE_ORDINATEUR_PORTABLE_PANNE_GARANTIE_LEGALE } from './guides/tech/ordinateur-portable-panne-garantie-legale';
 export { GUIDE_ROUTEUR_WIFI_MESH_DECONNEXIONS_GARANTIE_LEGALE } from './guides/tech/routeur-wifi-mesh-deconnexions-garantie-legale';

@@ -19,6 +19,7 @@ export function useDevGuides(): UseDevGuidesReturn {
   const [overrides, setOverrides] = useState<DevOverride[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  // ✅ FIX: Fonction stable sans dépendances qui changent
   const fetchOverrides = useCallback(async () => {
     if (process.env.NODE_ENV !== 'development') {
       setOverrides([]);
@@ -31,6 +32,8 @@ export function useDevGuides(): UseDevGuidesReturn {
       if (response.ok) {
         const data = await response.json();
         setOverrides(data.overrides || []);
+      } else {
+        setOverrides([]);
       }
     } catch (error) {
       console.error('Erreur chargement overrides:', error);
@@ -38,27 +41,27 @@ export function useDevGuides(): UseDevGuidesReturn {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, []); // ✅ FIX: Pas de dépendances
 
-  const deleteOverride = useCallback(
-    async (slug: string): Promise<boolean> => {
-      try {
-        const response = await fetch(`/api/dev/guides/${slug}`, {
-          method: 'DELETE',
-        });
+  // ✅ FIX: deleteOverride sans dépendance circulaire
+  const deleteOverride = useCallback(async (slug: string): Promise<boolean> => {
+    try {
+      const response = await fetch(`/api/dev/guides/${slug}`, {
+        method: 'DELETE',
+      });
 
-        if (response.ok) {
-          await fetchOverrides(); // Refresh la liste
-          return true;
-        }
-      } catch (error) {
-        console.error('Erreur suppression override:', error);
+      if (response.ok) {
+        // ✅ FIX: Mise à jour directe du state au lieu de refetch
+        setOverrides(prev => prev.filter(override => override.slug !== slug));
+        return true;
       }
-      return false;
-    },
-    [fetchOverrides],
-  );
+    } catch (error) {
+      console.error('Erreur suppression override:', error);
+    }
+    return false;
+  }, []); // ✅ FIX: Pas de dépendance sur fetchOverrides
 
+  // ✅ FIX: Effet une seule fois
   useEffect(() => {
     fetchOverrides();
   }, [fetchOverrides]);

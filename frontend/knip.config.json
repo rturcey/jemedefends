@@ -1,0 +1,27 @@
+{
+  "$schema": "https://unpkg.com/knip/schemas/knip-config.json",
+  "project": ["src/**/*.{ts,tsx}"],
+  "ignore": [
+    "src/**/*.d.ts",
+    "src/app/**/page.tsx",
+    "src/app/**/layout.tsx",
+    "src/app/**/error.tsx",
+    "src/app/**/loading.tsx",
+    "src/app/**/template.tsx",
+    "src/app/**/route.ts",
+    "src/middleware.ts",
+    "public/**"
+  ],
+  "paths": {
+    "@/*": ["./src/*"],
+    "@/components/*": ["./src/components/*"],
+    "@/content/*": ["./src/content/*"],
+    "@/lib/*": ["./src/lib/*"],
+    "@/types/*": ["./src/types/*"],
+    "@/hooks/*": ["./src/hooks/*"],
+    "@/app/*": ["./src/app/*"],
+    "@/constants/*": ["./src/constants/*"]
+  },
+  "compilers": ["typescript"],
+  "entry": ["src/app/**/page.tsx", "src/app/**/route.ts", "src/middleware.ts"]
+}

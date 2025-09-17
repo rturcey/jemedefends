@@ -1,9 +1,10 @@
 'use client';
 
-import React from 'react';
 import { X, Trash2, RefreshCw, Code2 } from 'lucide-react';
-import { useDevGuides } from '@/hooks/useDevGuides';
+import React from 'react';
+
 import { Button } from '@/components/ui';
+import { useDevGuides } from '@/hooks/useDevGuides';
 
 interface DevPanelProps {
   isOpen: boolean;

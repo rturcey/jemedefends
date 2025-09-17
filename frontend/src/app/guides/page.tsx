@@ -1,6 +1,7 @@
+// src/app/guides/page.tsx - CORRIGÉ
 import type { Metadata } from 'next';
 
-import GuidesClientPage from './client-page';
+import GuidesClientPage from './client-page'; // ✅ Import du bon composant
 
 // Métadonnées SEO (côté serveur)
 export const metadata: Metadata = {
@@ -43,5 +44,5 @@ export const metadata: Metadata = {
 
 // Composant serveur qui wrap le composant client
 export default function GuidesPage() {
-  return <GuidesClientPage />;
+  return <GuidesClientPage />; // ✅ Utilise le bon composant
 }

@@ -1,6 +1,7 @@
 // fnac-sav-recours.tsx
 // Guide migré automatiquement - Ne pas modifier la structure
-import type { GuidePage } from '@/types/guides';
+import React from 'react';
+
 import {
   Badge,
   Button,
@@ -13,7 +14,7 @@ import {
   DefaultGrid,
 } from '@/components/ui';
 import type { LegalArticleId } from '@/legal/registry';
-import React from 'react';
+import type { GuidePage } from '@/types/guides';
 
 export const GUIDE_FNAC_SAV_RECOURS: GuidePage = {
   metadata: {
