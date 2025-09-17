@@ -36,11 +36,13 @@ function LegalLayout({
             <div className="space-y-6 mb-12">{children}</div>
 
             {/* CTA vers l'éligibilité - réutilise le design des formulaires */}
-            <div className="bg-blue-50 border border-blue-200 rounded-2xl p-6 text-center">
+            <div className="bg-blue-50 border border-blue-200 rounded-2xl p-6 text-center flex flex-col items-center">
               <h3 className="font-semibold text-blue-900 mb-2">🚀 Besoin d'agir ?</h3>
+
               <p className="text-sm text-blue-700 mb-4">
-                Générez gratuitement votre lettre fondée sur le Code de la consommation
+                Générez gratuitement votre lettre fondée sur le Code de la consommation !
               </p>
+
               <Link
                 href="/eligibilite"
                 className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-xl transition-colors"

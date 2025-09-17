@@ -7,55 +7,20 @@ import type { GuidePage } from '@/types/guides';
  * Calcule le temps de lecture estimé d'un guide
  */
 export function calculateReadingTime(guide: GuidePage): number {
-  let totalWords = 0;
+  // somme des wordsCount calculés à la conversion
+  const words = (guide.sections || []).reduce(
+    (sum, s: any) => sum + (typeof s.wordCount === 'number' ? s.wordCount : 0),
+    0,
+  );
 
-  guide.sections.forEach(section => {
-    // Contenu string
-    if (typeof section.content === 'string') {
-      totalWords += section.content.split(/\s+/).filter(word => word.length > 0).length;
-    }
+  // fallback (très rare) si pas de comptage dispo
+  const safeWords = words > 0 ? words : 0;
 
-    // Steps (procédures)
-    if (section.steps?.length) {
-      totalWords += section.steps.length * 20;
-    }
+  // 190-200 wpm est courant pour du web FR ; on choisit 190 pour être un poil conservateur
+  const minutes = Math.ceil(safeWords / 190);
 
-    // FAQ
-    if (section.faqItems?.length) {
-      totalWords += section.faqItems.length * 30;
-    }
-
-    // Items (grilles)
-    if (section.items?.length) {
-      totalWords += section.items.length * 15;
-    }
-
-    // Tables
-    if (section.tableData?.length) {
-      totalWords += section.tableData.length * 10;
-    }
-  });
-
-  // Minimum 2 minutes, puis calcul basé sur 200 mots/minute
-  return Math.max(Math.ceil(totalWords / 200), 2);
-}
-
-/**
- * Calcule la difficulté d'un guide basé sur sa complexité
- */
-export function calculateDifficulty(guide: GuidePage): 'facile' | 'moyen' | 'difficile' {
-  const articleCount = guide.legal.mainArticles.length;
-  const sectionCount = guide.sections.length;
-  const hasComplexTypes = guide.sections.some(s => s.type === 'table' || s.type === 'timeline');
-
-  // Logique de calcul
-  if (articleCount <= 3 && sectionCount <= 4 && !hasComplexTypes) {
-    return 'facile';
-  }
-  if (articleCount <= 6 && sectionCount <= 6) {
-    return 'moyen';
-  }
-  return 'difficile';
+  // garde-fou mais plus “juste” : 1 min minimum au lieu de 2
+  return Math.max(minutes, 1);
 }
 
 /**

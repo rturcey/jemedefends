@@ -21,6 +21,12 @@ class Settings(BaseSettings):
     POSTAL_API_URL: str = ""
     POSTAL_API_KEY: str = ""
 
+    SCALEWAY_AI_API_URL: str = "https://api.scaleway.com/llm-inference/v1beta1"
+    SCALEWAY_AI_API_KEY: str = ""
+    SCALEWAY_AI_MODEL: str = "mistral-nemo-instruct-2407"  # Modèle FR par défaut
+    SCALEWAY_AI_REGION: str = "fr-par"
+    SCALEWAY_AI_PROJECT_ID: str = ""
+
     # Uploads
     UPLOAD_FOLDER: str = "uploads"
     MAX_FILE_SIZE: int = 10 * 1024 * 1024

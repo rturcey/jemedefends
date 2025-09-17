@@ -1,0 +1,41 @@
+title: 'Séjours packagés : vos droits en cas de problème'
+description: 'Un voyage organisé qui ne correspond pas à la promesse engage la responsabilité de l’agence au titre de la garantie légale et du Code du tourisme.'
+category: 'voyages'
+slug: 'garantie-sejours-packages'
+
+seo:
+  title: 'Séjours packagés non conformes : recours et remboursement'
+  description: 'Hôtel dégradé, excursions annulées, prestations manquantes : vos droits grâce à la garantie légale et au Code du tourisme.'
+  keywords:
+    - 'sejour non conforme recours'
+    - 'voyage organisé remboursement'
+    - 'agence de voyage litige garantie'
+    - 'Code du tourisme L.211-16'
+
+legal:
+  mainArticles: ['L.217-3', 'L.211-16 Code du tourisme']
+  disclaimer: true
+  lastUpdated: '2025-09-22'
+
+sections:
+  - id: 'intro'
+    title: 'Les séjours packagés sont encadrés par la loi'
+    type: 'content'
+    content: |
+      Un **séjour packagé** (vol + hôtel + activités) acheté via une agence est couvert :  
+      - par la **garantie légale de conformité** (C. consommation),  
+      - et par le **Code du tourisme (art. L.211-16)** qui impose à l’agence une responsabilité de plein droit.
+
+  - id: 'defauts'
+    title: 'Exemples de défauts'
+    type: 'grid'
+    items:
+      - title: 'Couvert'
+        description: |
+          - Hôtel de catégorie inférieure à celui promis.  
+          - Excursions ou activités incluses annulées sans compensation.  
+          - Chambres insalubres ou très différentes de la description.
+      - title: 'Non couvert'
+        description: |
+          - Mécontentement subjectif (vue, ambiance).  
+          - Dégradations causées par le voyageur lui-même.

@@ -23,6 +23,8 @@ import React, { useState, useRef, useEffect } from 'react';
 
 import HomepageSchema from '@/components/seo/HomePageSchema';
 import { Modal } from '@/components/ui';
+import { LegalReference } from '@/components';
+import { extractCleanText, extractTextForClipboard } from '@/utils/textExtractor';
 
 // ===============================
 // NEW — Pricing constants & utils
@@ -122,7 +124,7 @@ const useResultsPage = () => {
         const htmlContent = await response.text();
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = htmlContent;
-        const textContent = tempDiv.textContent || tempDiv.innerText || '';
+        const textContent = tempDiv.innerText;
         setLetterData(textContent);
       } catch (err) {
         const message = err instanceof Error ? err.message : 'Erreur de génération';
@@ -202,7 +204,10 @@ const useResultsPage = () => {
 
         const response = await fetch('/api/v1/letters/generate-pdf', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json', Accept: 'application/pdf' },
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/pdf',
+          },
           credentials: 'include',
           body: JSON.stringify({
             letter_id: letterId,
@@ -379,10 +384,10 @@ const FreeModal: React.FC<FreeModalProps> = ({
         });
         if (response.ok) {
           const htmlContent = await response.text();
-          const tempDiv = document.createElement('div');
-          tempDiv.innerHTML = htmlContent;
-          const textContent = tempDiv.textContent || tempDiv.innerText || '';
-          setLetterContent(textContent);
+
+          // ✅ UTILISER LA NOUVELLE FONCTION D'EXTRACTION
+          const cleanText = extractCleanText(htmlContent);
+          setLetterContent(cleanText);
         }
       }
     } catch (error) {
@@ -391,7 +396,29 @@ const FreeModal: React.FC<FreeModalProps> = ({
   };
 
   const handleCopy = async () => {
-    const success = await copyToClipboard(letterContent || 'Erreur lors de la génération');
+    // Récupérer le HTML original pour une extraction optimisée pour le presse-papier
+    const letterId = sessionStorage.getItem('currentLetterId');
+    let textToCopy = letterContent;
+
+    if (letterId) {
+      try {
+        const response = await fetch('/api/v1/letters/preview-basic', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ letter_id: letterId }),
+        });
+        if (response.ok) {
+          const htmlContent = await response.text();
+          // ✅ VERSION SPÉCIALE POUR PRESSE-PAPIER
+          textToCopy = extractTextForClipboard(htmlContent);
+        }
+      } catch (error) {
+        console.warn('Erreur récupération pour copie, utilisation du texte affiché');
+      }
+    }
+
+    const success = await copyToClipboard(textToCopy || 'Erreur lors de la génération');
     if (success) {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
@@ -468,9 +495,8 @@ const FreeModal: React.FC<FreeModalProps> = ({
                 <span className="font-medium text-green-900">Texte généré avec succès</span>
               </div>
               <p className="text-sm text-green-800">
-                Votre mise en demeure est basée sur les articles{' '}
-                <LegalReference code="L217_3" label={LEGAL.L217_3.ref} /> et suivants du Code de la
-                consommation
+                Votre mise en demeure est basée sur les articles <LegalReference code="L217_3" /> et
+                suivants du Code de la consommation
               </p>
             </div>
 
@@ -513,7 +539,6 @@ const FreeModal: React.FC<FreeModalProps> = ({
                 Lettre générée à partir de vos informations • Conforme au Code de la consommation
               </div>
               <div>
-                <strong>Droit de rétractation :</strong> 14 jours •{' '}
                 <a href="/politique-confidentialite" className="underline hover:text-gray-700">
                   Protection des données RGPD
                 </a>
@@ -808,27 +833,60 @@ export default function ResultsPage() {
             <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5" />
             Lettre générée avec succès
           </motion.div>
-
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-xl sm:text-2xl md:text-4xl font-bold text-gray-900 mb-3 sm:mb-4"
-          >
-            Votre lettre est prête
-          </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
             className="text-gray-600 mb-6 sm:mb-8 text-base sm:text-lg"
           >
-            Téléchargez-la gratuitement ou choisissez notre service professionnel
+            Téléchargez votre lettre gratuitement ou choisissez notre service professionnel
           </motion.p>
         </div>
       </div>
 
       {/* Cards principales */}
       <div className="max-w-4xl mx-auto px-4 space-y-4 sm:space-y-6 mb-8 sm:mb-12">
+        {/* Card Gratuite */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="bg-gray-50 rounded-xl border border-gray-200 p-4 sm:p-6"
+        >
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex-1">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-8 h-8 bg-gray-200 rounded-lg flex items-center justify-center">
+                  <FileText className="w-4 h-4 text-gray-500" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-700">Texte de base</h3>
+                  <span className="inline-block bg-gray-200 text-gray-600 text-xs px-2 py-1 rounded-full font-medium">
+                    GRATUIT
+                  </span>
+                </div>
+              </div>
+
+              <p className="text-gray-600 text-sm mb-3">
+                Articles de loi personnalisés, à imprimer et signer vous-même
+              </p>
+
+              <div className="text-xs text-gray-500">
+                ⚠️ Nécessite : impression, signature manuscrite, envoi recommandé (5–8 €), suivi
+                manuel
+              </div>
+            </div>
+
+            <button
+              onClick={() => setFreeModalOpen(true)}
+              className="bg-gray-500 text-white py-2 px-4 rounded-lg hover:bg-gray-600 font-medium flex items-center gap-2 transition-colors"
+            >
+              <Download className="w-4 h-4" />
+              Télécharger
+            </button>
+          </div>
+        </motion.div>
+
         {/* Carte Service pro + Grille 2 colonnes égales (PDF / Postal) */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -934,47 +992,6 @@ export default function ResultsPage() {
                 </button>
               </div>
             </div>
-          </div>
-        </motion.div>
-
-        {/* Card Gratuite */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="bg-gray-50 rounded-xl border border-gray-200 p-4 sm:p-6"
-        >
-          <div className="flex items-center justify-between gap-4">
-            <div className="flex-1">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-8 h-8 bg-gray-200 rounded-lg flex items-center justify-center">
-                  <FileText className="w-4 h-4 text-gray-500" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-700">Texte de base</h3>
-                  <span className="inline-block bg-gray-200 text-gray-600 text-xs px-2 py-1 rounded-full font-medium">
-                    GRATUIT
-                  </span>
-                </div>
-              </div>
-
-              <p className="text-gray-600 text-sm mb-3">
-                Articles de loi personnalisés, à imprimer et signer vous-même
-              </p>
-
-              <div className="text-xs text-gray-500">
-                ⚠️ Nécessite : impression, signature manuscrite, envoi recommandé (5–8 €), suivi
-                manuel
-              </div>
-            </div>
-
-            <button
-              onClick={() => setFreeModalOpen(true)}
-              className="bg-gray-500 text-white py-2 px-4 rounded-lg hover:bg-gray-600 font-medium flex items-center gap-2 transition-colors"
-            >
-              <Download className="w-4 h-4" />
-              Télécharger
-            </button>
           </div>
         </motion.div>
       </div>
@@ -1137,9 +1154,9 @@ export default function ResultsPage() {
               <div className="font-semibold mb-1">Information importante</div>
               <p>
                 Ce service génère des modèles de lettres basés sur le Code de la consommation
-                (articles <LegalReference code="L217_3" label={LEGAL.L217_3.ref} /> et suivants). Il
-                ne constitue pas un conseil juridique personnalisé. Pour des situations complexes,
-                consultez un professionnel du droit.
+                (articles <LegalReference code="L217_3" /> et suivants). Il ne constitue pas un
+                conseil juridique personnalisé. Pour des situations complexes, consultez un
+                professionnel du droit.
               </p>
             </div>
           </div>

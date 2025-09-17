@@ -18,7 +18,11 @@ const PurchaseInfoStep: React.FC<StepProps> = ({
 
   const conditionOptions = [
     { value: 'new', label: 'Neuf', description: 'Produit livré à l’état neuf' },
-    { value: 'used', label: 'Occasion', description: 'Produit d’occasion / reconditionné' },
+    {
+      value: 'used',
+      label: 'Occasion',
+      description: 'Produit d’occasion / reconditionné',
+    },
   ];
 
   // Prix : autoriser chiffres + virgule/point → on stocke avec un point
@@ -127,7 +131,7 @@ const PurchaseInfoStep: React.FC<StepProps> = ({
         <FormField
           name="order_reference"
           label="Référence"
-          value={d.product_name || ''}
+          value={d.order_reference || ''}
           onChange={v => onFieldChange('order_reference', v)}
           onBlur={() => validation?.markInteracted?.('order_reference')}
           minLength={2}
@@ -136,7 +140,7 @@ const PurchaseInfoStep: React.FC<StepProps> = ({
           helpText="Le référence de facture ou de commande."
           validation={gatedValidation(
             'order_reference',
-            d.product_name || '',
+            d.order_reference || '',
             validation?.getFieldRules?.('order_reference', {
               required: true,
               minLength: 2,

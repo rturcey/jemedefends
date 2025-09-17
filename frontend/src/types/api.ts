@@ -153,121 +153,23 @@ export interface Formula {
   popular?: boolean;
 }
 
-// === TYPES ÉLIGIBILITÉ ===
+// === TYPES IA REFORMULATION ===
 
-export interface EligibilityTest {
-  seller_type: 'professional' | 'individual';
-  usage_type: 'personal' | 'professional';
-  product_type: 'physical' | 'digital';
-  purchase_date: string;
-  defect_exists: boolean;
-  within_warranty: boolean;
+export type ReformulationType = 'corrected' | 'reformulated';
+
+export interface ReformulationRequest {
+  text: string;
+  type: ReformulationType;
+  context?: string;
 }
 
-export type EligibilityResult =
-  | 'eligible'
-  | 'ineligible_seller'
-  | 'ineligible_usage'
-  | 'ineligible_time'
-  | 'no_defect';
-
-// === HOOKS ET UTILITAIRES ===
-
-export interface UseFormOptions {
-  autosave?: boolean;
-  autosaveDelay?: number;
-  validation?: boolean;
+export interface ReformulationResponse {
+  original_text: string;
+  reformulated_text: string;
+  type: ReformulationType;
+  success: boolean;
+  error?: string;
 }
-
-export interface FormField {
-  name: string;
-  label: string;
-  type: 'text' | 'email' | 'tel' | 'date' | 'number' | 'textarea' | 'select' | 'checkbox';
-  required?: boolean;
-  placeholder?: string;
-  options?: Array<{ value: string; label: string }>;
-  validation?: {
-    required?: boolean;
-    email?: boolean;
-    minLength?: number;
-    maxLength?: number;
-    pattern?: RegExp;
-  };
-}
-
-// === CONSTANTES ===
-
-export const DEFECT_TYPE_LABELS: Record<DefectType, string> = {
-  malfunction: 'Panne / Dysfonctionnement',
-  missing_feature: 'Fonctionnalité manquante',
-  quality: 'Qualité insuffisante',
-  description: 'Non conforme à la description',
-  delivery_delay: 'Retard de livraison',
-  other: 'Autre défaut de conformité',
-};
-
-export const REQUESTED_ACTION_LABELS: Record<RequestedAction, string> = {
-  repair: 'Réparation gratuite',
-  replacement: 'Remplacement',
-  refund: 'Remboursement',
-};
-
-export const FORMULA_CONFIG: Record<FormulaType, Formula> = {
-  free: {
-    type: 'free',
-    name: 'Gratuite',
-    price: 0,
-    features: [
-      'Lettre de mise en demeure',
-      'Articles de loi pertinents',
-      'Format texte à imprimer',
-      'Signature manuelle',
-    ],
-  },
-  pdf: {
-    type: 'pdf',
-    name: 'PDF Premium',
-    price: 2.99,
-    features: [
-      'Tout de la version gratuite',
-      'PDF professionnel avec logo',
-      'Signature électronique',
-      'Support email illimité',
-    ],
-    popular: true,
-  },
-  complete: {
-    type: 'complete',
-    name: 'Complète',
-    price: 12.99,
-    features: [
-      'Tout de la version PDF',
-      'Envoi en recommandé',
-      'Suivi de livraison',
-      "Preuve juridique d'envoi",
-    ],
-  },
-};
-
-// === ARTICLES JURIDIQUES ===
-
-export const LEGAL_ARTICLES = {
-  conformity_obligation: 'L.217-3',
-  conformity_criteria: 'L.217-5',
-  warranty_duration: 'L.217-7',
-  consumer_remedies: 'L.217-9',
-  free_remedies: 'L.217-14',
-  digital_content: 'L.224-25-12',
-} as const;
-
-// === VALIDATION HELPERS ===
-
-export const VALIDATION_PATTERNS = {
-  email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-  phone: /^(?:(?:\+33|0)[1-9](?:[0-9]{8}))$/,
-  postalCode: /^[0-9]{5}$/,
-  siret: /^[0-9]{14}$/,
-} as const;
 
 // === API ENDPOINTS ===
 
@@ -282,6 +184,8 @@ export const API_ENDPOINTS = {
   previewBasic: '/api/v1/letters/preview-basic',
   generatePDF: '/api/v1/letters/generate-pdf',
   completeService: '/api/v1/letters/complete-service',
+
+  reformulateText: '/api/v1/letters/reformulate-text',
 
   // Health
   health: '/api/v1/health',

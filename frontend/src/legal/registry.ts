@@ -5,8 +5,11 @@
 export type LegalCode = 'CODE_CONSOMMATION' | 'CODE_CIVIL' | 'CODE_PROCEDURE_CIVILE';
 
 export type LegalArticleId =
+  | 'LIMINAIRE'
   // Garantie légale — Code de la consommation L.217-3 à L.217-28
   | `L.217-${3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 | 25 | 26 | 27 | 28}`
+  // Numérique — Code de la consommation
+  | 'L.224-25-12'
   // Médiation — Code de la consommation L.612-1 à L.612-5
   | `L.612-${1 | 2 | 3 | 4 | 5}`
   // Associations — Code de la consommation L.811-1
@@ -58,24 +61,6 @@ export interface LegalRegistry {
 }
 
 /**
- * Mapping des codes vers leurs noms complets
- */
-export const CODE_NAMES: Record<LegalCode, string> = {
-  CODE_CONSOMMATION: 'Code de la consommation',
-  CODE_CIVIL: 'Code civil',
-  CODE_PROCEDURE_CIVILE: 'Code de procédure civile',
-} as const;
-
-/**
- * Mapping vers les LEGITEXT (pour API PISTE)
- */
-export const CODE_TO_LEGITEXT: Record<string, string> = {
-  'Code de la consommation': 'LEGITEXT000006069565',
-  'Code civil': 'LEGITEXT000006070721',
-  'Code de procédure civile': 'LEGITEXT000006070716',
-} as const;
-
-/**
  * Définitions de base des articles (métadonnées uniquement)
  * ⚠️ Le contenu réel est dans registry.generated.json
  */
@@ -94,6 +79,20 @@ export const LEGAL_ARTICLE_DEFINITIONS: Record<
   >
 > = {
   // === GARANTIE LÉGALE DE CONFORMITÉ ===
+  LIMINAIRE: {
+    code: 'CODE_CONSOMMATION',
+    id: 'LIMINAIRE',
+    label: 'Code de la consommation, article liminaire',
+    source: 'LEGIFRANCE',
+    priority: 10, // Priorité élevée - définition fondamentale
+  },
+  'L.224-25-12': {
+    code: 'CODE_CONSOMMATION',
+    id: 'L.224-25-12',
+    label: 'Code de la consommation, art. L.224-25-12',
+    source: 'LEGIFRANCE',
+    priority: 7,
+  },
   'L.217-3': {
     code: 'CODE_CONSOMMATION',
     id: 'L.217-3',

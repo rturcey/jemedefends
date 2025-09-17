@@ -3,6 +3,7 @@ import Script from 'next/script';
 
 import LegalLayout from '@/components/legal/LegalLayout';
 import LegalSection from '@/components/legal/LegalSection';
+import { KeyValue } from '@/components';
 
 const metadata: Metadata = {
   title: 'Mentions légales | Je me défends',
@@ -115,8 +116,8 @@ export default function MentionsLegalesPage() {
               d'auteur. Toute reproduction sans autorisation est interdite.
             </p>
             <p>
-              Les extraits du Code de la consommation appartiennent au domaine public, mais leur
-              sélection et présentation constituent une œuvre originale.
+              Les extraits d'articles de loi appartiennent au domaine public, mais leur sélection et
+              présentation constituent une œuvre originale.
             </p>
           </LegalSection>
 

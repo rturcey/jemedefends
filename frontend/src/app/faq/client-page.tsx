@@ -49,7 +49,6 @@ const ALL_FAQ_ITEMS: FAQItem[] = [
       Le délai court à partir de la <strong>délivrance</strong> (réception du bien).`,
     category: 'legal',
     keywords: ['garantie légale', 'durée 2 ans', 'occasion 12 mois', 'présomption', 'délivrance'],
-    isPopular: true,
     icon: '⏱️',
   },
   {
@@ -59,7 +58,6 @@ const ALL_FAQ_ITEMS: FAQItem[] = [
       Elle s’impose au vendeur, qui ne peut ni la limiter ni vous renvoyer vers le fabricant.`,
     category: 'legal',
     keywords: ['gratuite', 'obligatoire', 'automatique', 'vendeur', 'fabricant'],
-    isPopular: true,
     icon: '💸',
   },
   {
@@ -75,7 +73,6 @@ const ALL_FAQ_ITEMS: FAQItem[] = [
       'livraison',
       'occasion',
     ],
-    isPopular: true,
     icon: '🔍',
   },
   {
@@ -86,7 +83,6 @@ const ALL_FAQ_ITEMS: FAQItem[] = [
       Tous les frais de mise en conformité sont à la charge du <strong>vendeur</strong> (<LegalReference code="L217_11" label={LEGAL.L217_11.ref} />).`,
     category: 'legal',
     keywords: ['réparation', 'remplacement', 'réduction du prix', 'remboursement', 'frais vendeur'],
-    isPopular: true,
     icon: '⚖️',
   },
   {
@@ -212,7 +208,6 @@ const ALL_FAQ_ITEMS: FAQItem[] = [
       Les options payantes ajoutent <strong>PDF pro</strong> et <strong>envoi postal suivi</strong>.`,
     category: 'service',
     keywords: ['service gratuit', 'PDF pro', 'envoi postal', 'prix', 'offre'],
-    isPopular: true,
     icon: '💰',
   },
   {
@@ -222,7 +217,6 @@ const ALL_FAQ_ITEMS: FAQItem[] = [
       et <strong>coordonnées du vendeur</strong>. Notre assistant les intègre à la lettre.`,
     category: 'service',
     keywords: ['documents', 'facture', 'preuves', 'photos', 'vidéos', 'vendeur'],
-    isPopular: true,
     icon: '📄',
   },
   {
@@ -382,13 +376,6 @@ export default function FAQClientPage() {
     if (searchQuery.trim()) {
       const unifiedFilter = createAdvancedUnifiedSearchFilter(searchQuery, FAQ_SEARCH_CONFIG);
       list = unifiedFilter(list);
-    } else {
-      // Tri normal : populaires d'abord
-      list = [...list].sort((a, b) => {
-        const ap = a.isPopular ? 1 : 0;
-        const bp = b.isPopular ? 1 : 0;
-        return bp - ap;
-      });
     }
 
     return list;
@@ -556,12 +543,6 @@ export default function FAQClientPage() {
                                   <span className="capitalize">
                                     {FAQ_CATEGORIES.find(c => c.id === item.category)?.name}
                                   </span>
-                                  {item.isPopular && (
-                                    <span className="inline-flex items-center gap-1 text-yellow-600">
-                                      <Star className="w-3 h-3" />
-                                      Populaire
-                                    </span>
-                                  )}
                                 </div>
                               </div>
 

@@ -20,63 +20,20 @@ import {
 } from 'lucide-react';
 import React from 'react';
 
-import TextWithLegalRefs from '@/components/ui/TextWithLegalRefs';
-import LegalNote from '@/components/ui/LegalNote';
-import TimelineProcess from '@/components/ui/TimelineProcess';
-import FAQ from '@/components/ui/FAQ';
-import DefaultGrid from '@/components/ui/DefaultGrid';
+import ProcedureSteps from '@/components/guides/ProcedureSteps'; // ✅ Import du vrai composant
+import type { ProcedureStep } from '@/components/guides/ProcedureSteps'; // ✅ Import du vrai type
+import TableComparison from '@/components/guides/TableComparison';
 import DefaultAlternatives from '@/components/ui/DefaultAlternatives';
 import DefaultContacts from '@/components/ui/DefaultContacts';
-import TableComparison from '@/components/guides/TableComparison';
-import type { GuideSection } from '@/types/guides';
+import DefaultGrid from '@/components/ui/DefaultGrid';
+import FAQ from '@/components/ui/FAQ';
+import LegalNote from '@/components/ui/LegalNote';
+import TextWithLegalRefs from '@/components/ui/TextWithLegalRefs';
+import type { GuideSection } from '@/types/guides'; // ✅ Vrais types
 
 interface GuideSectionProps {
   section: GuideSection;
   guideSlug?: string;
-}
-
-// ✅ Nouveau composant ProcedureSteps intégré
-interface ProcedureStep {
-  number: number;
-  title: string;
-  description: string;
-  duration?: string;
-}
-
-function ProcedureSteps({ steps }: { steps: ProcedureStep[] }) {
-  return (
-    <div className="space-y-3">
-      {steps.map((step, index) => (
-        <div
-          key={index}
-          className="flex gap-3 p-4 bg-white rounded-lg border border-gray-200 hover:border-blue-200 transition-colors"
-        >
-          {/* Badge numéro élégant avec couleurs du site */}
-          <div className="flex-shrink-0">
-            <div className="w-7 h-7 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-semibold shadow-sm">
-              {step.number}
-            </div>
-          </div>
-
-          {/* Contenu step */}
-          <div className="flex-1 min-w-0">
-            <h4 className="font-medium text-gray-900 text-sm mb-1">{step.title}</h4>
-            <p className="text-gray-600 text-sm leading-relaxed">{step.description}</p>
-
-            {/* Duration badge si présent */}
-            {step.duration && (
-              <div className="mt-2">
-                <span className="inline-flex items-center gap-1 px-2 py-1 bg-blue-50 text-blue-700 rounded-full text-xs font-medium">
-                  <Clock className="w-3 h-3" />
-                  {step.duration}
-                </span>
-              </div>
-            )}
-          </div>
-        </div>
-      ))}
-    </div>
-  );
 }
 
 // Détection automatique du type de section
@@ -139,55 +96,88 @@ function getSectionIcon(sectionId: string, sectionType: string, guideSlug?: stri
   return <IconComponent className="w-6 h-6 text-blue-600 flex-shrink-0" />;
 }
 
-// Obtenir l'icône pour une étape de timeline
-function getStepIcon(stepTitle: string) {
-  const title = stepTitle.toLowerCase();
-
-  if (title.includes('constat') || title.includes('document')) return FileText;
-  if (title.includes('contact') || title.includes('appel')) return Phone;
-  if (title.includes('délai') || title.includes('attendre')) return Clock;
-  if (title.includes('mise en demeure') || title.includes('lrar')) return AlertTriangle;
-  if (title.includes('tribunal') || title.includes('recours')) return Scale;
-
-  return FileText; // Icône par défaut
-}
-
 export default function GuideSection({ section, guideSlug }: GuideSectionProps) {
   const sectionType = detectSectionType(section);
   const sectionIcon = getSectionIcon(section.id, sectionType, guideSlug);
+
+  // ✅ Conversion des steps du type officiel vers le composant ProcedureSteps
+  const convertStepsToProcedureSteps = (steps: GuideSection['steps']): ProcedureStep[] => {
+    if (!steps) return [];
+
+    return steps.map((step, index) => ({
+      number: index + 1,
+      title: step.title,
+      descriptionNode: (
+        <TextWithLegalRefs
+          text={step.description}
+          variant="tooltip"
+          showStatus={true}
+          showExternalLink={true}
+        />
+      ),
+      duration: step.duration,
+      id: step.id,
+    }));
+  };
 
   // ✅ Données par défaut pour la procédure de garantie légale
   const defaultProcedureSteps: ProcedureStep[] = [
     {
       number: 1,
       title: 'Constater et documenter',
-      description: 'Photos, vidéos, examens de défaut. Gardez votre facture.',
+      descriptionNode: (
+        <TextWithLegalRefs
+          text="Photos, vidéos, examens de défaut. Gardez votre facture sauvegardée art. L.217-5."
+          variant="tooltip"
+          showStatus={true}
+          showExternalLink={true}
+        />
+      ),
       duration: 'Immédiat',
     },
     {
       number: 2,
-      title: 'Contacter le vendeur',
-      description: 'Mise en demeure par écrit avec délai précis.',
+      title: 'Demande amiable écrite',
+      descriptionNode: (
+        <TextWithLegalRefs
+          text="Rappelez vos droits (**réparation ou remplacement**) art. L.217-9, exigez un **délai ≤ 30 jours** art. L.217-10 et **zéro frais** art. L.217-11. Laissez **15 jours ouvrés** pour la réponse."
+          variant="tooltip"
+          showStatus={true}
+          showExternalLink={true}
+        />
+      ),
       duration: 'Sous 30 jours',
     },
     {
       number: 3,
-      title: 'Délai vendeur',
-      description: 'Le vendeur a 30 jours pour réparer, échanger ou rembourser.',
+      title: 'Mise en demeure (LRAR)',
+      descriptionNode: (
+        <TextWithLegalRefs
+          text="Citez **art. L.217-9**, **art. L.217-10**, **art. L.217-11**. Exigez mise en conformité sous **30 jours**, à défaut **réduction**/**résolution** art. L.217-14. Envoyez en **LRAR**."
+          variant="tooltip"
+          showStatus={true}
+          showExternalLink={true}
+        />
+      ),
       duration: '30 jours max',
     },
     {
       number: 4,
-      title: 'Escalade si nécessaire',
-      description: 'Médiateur, associations, tribunal en cas de refus.',
+      title: 'Recours',
+      descriptionNode: (
+        <TextWithLegalRefs
+          text="**Médiation de la consommation** (gratuite), puis **tribunal** (proximité/judiciaire) avec l'ensemble des pièces."
+          variant="tooltip"
+          showStatus={true}
+          showExternalLink={true}
+        />
+      ),
       duration: 'Variable',
     },
   ];
 
   return (
     <section id={section.id} className="scroll-mt-24 mb-8">
-      {' '}
-      {/* ✅ Réduit mb-12 à mb-8 */}
       <div className="bg-white rounded-xl border border-gray-200 p-6 sm:p-8 shadow-sm">
         {/* Header avec icône */}
         <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
@@ -195,27 +185,26 @@ export default function GuideSection({ section, guideSlug }: GuideSectionProps) 
           {section.title}
         </h2>
 
-        {/* ✅ CORRECTION : Rendu conditionnel fixé avec syntaxe correcte */}
+        {/* ✅ Contenu principal selon le type - Respecte les vrais types */}
         {sectionType === 'timeline' && section.steps ? (
-          <ProcedureSteps
-            steps={section.steps.map((step, index) => ({
-              number: index + 1,
-              title: step.title,
-              description: step.description || step.content || '',
-              duration: step.duration,
-            }))}
-          />
+          <ProcedureSteps steps={convertStepsToProcedureSteps(section.steps)} accent="blue" />
         ) : sectionType === 'procedure' ? (
           // ✅ Procédure par défaut pour garantie légale
-          <ProcedureSteps steps={defaultProcedureSteps} />
+          <ProcedureSteps steps={defaultProcedureSteps} accent="blue" />
         ) : sectionType === 'table' && section.tableData ? (
           <TableComparison
             data={section.tableData}
             title={section.title}
-            highlightColumn="garantie-legale" // Colonne à mettre en évidence
+            highlightColumn="garantie-legale"
           />
         ) : sectionType === 'faq' && section.faqItems ? (
-          <FAQ items={section.faqItems} className="space-y-4" />
+          <FAQ
+            items={section.faqItems.map(item => ({
+              question: item.q,
+              answer: item.a,
+            }))}
+            className="space-y-4"
+          />
         ) : sectionType === 'grid' && section.items ? (
           <DefaultGrid items={section.items} columns={3} />
         ) : sectionType === 'alternatives' ? (
@@ -223,15 +212,15 @@ export default function GuideSection({ section, guideSlug }: GuideSectionProps) 
         ) : sectionType === 'contacts' ? (
           <DefaultContacts />
         ) : (
-          // ✅ Contenu texte avec références légales automatiques FORCÉES en interactif
-          <div className="prose prose-gray max-w-none prose-headings:text-gray-900 prose-a:text-blue-600 prose-lg">
+          // ✅ Contenu texte avec prose styling correct et références légales
+          <div className="prose prose-gray prose-lg max-w-none prose-headings:text-gray-900 prose-a:text-blue-600 prose-strong:text-gray-900 prose-p:text-gray-700 prose-p:leading-relaxed">
             {typeof section.content === 'string' ? (
               <TextWithLegalRefs
                 text={section.content}
-                variant="tooltip" // ✅ Forcé en tooltip
-                showStatus={true} // ✅ Forcé
-                showExternalLink={true} // ✅ Forcé
-                preloadArticles={true} // ✅ Forcé
+                variant="tooltip"
+                showStatus={true}
+                showExternalLink={true}
+                preloadArticles={true}
               />
             ) : (
               section.content

@@ -207,17 +207,18 @@ body {
 
 @media (max-width: 768px) {
   .section-scroll-target {
-    scroll-margin-top: 0; /* Pas de TopBar sur mobile */
+    scroll-margin-top: 64px;
   }
 }
 
+/* Hero height avec header mobile */
 .hero-mobile-height {
-  min-height: 100vh; /* Mobile : plein écran */
+  min-height: calc(100vh - 64px);
 }
 
 @media (min-width: 768px) {
   .hero-mobile-height {
-    min-height: calc(100vh - 5rem); /* Desktop : plein écran - TopBar */
+    min-height: calc(100vh - 5rem);
   }
 }
 
@@ -571,4 +572,38 @@ html {
   html {
     scroll-behavior: auto;
   }
+}
+
+/* globals.css ou composant parent */
+.guide-section {
+  @apply mb-8 lg:mb-12; /* Plus d'air entre sections */
+}
+
+.guide-section:last-child {
+  @apply mb-0;
+}
+
+.guide-content {
+  /* Amélioration de la lisibilité */
+  @apply leading-relaxed;
+  line-height: 1.7; /* Plus généreux que 1.5 par défaut */
+}
+
+.guide-content h2 {
+  @apply mb-6 mt-8 first:mt-0;
+}
+
+.guide-content h3 {
+  @apply mb-4 mt-6;
+}
+
+/* Mobile first avec breakpoints adaptés au contenu */
+.guide-grid {
+  @apply grid grid-cols-1 gap-4;
+  @apply sm:grid-cols-2 sm:gap-6;
+  @apply lg:grid-cols-3 lg:gap-8;
+}
+
+.guide-table-responsive {
+  @apply block lg:table;
 }

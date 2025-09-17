@@ -1,9 +1,10 @@
+// src/hooks/useEligibilityForm.tsx - VERSION CORRIGÉE
 'use client';
 
 import { useState, useCallback } from 'react';
 
 import { ELIGIBILITY_STEPS } from '@/constants/eligibilitySteps';
-import { calculateEligibilityEngine } from '@/eligibility/engine';
+import { calculateEligibilityEngine, validateEligibilityData } from '@/eligibility/engine';
 import type { EligibilityData } from '@/types/eligibility';
 import type { LegalArticleId } from '@/types/guides';
 
@@ -30,7 +31,8 @@ type UseEligibilityFormOptions = {
 
 export const useEligibilityForm = (opts: UseEligibilityFormOptions = {}) => {
   const [currentStep, setCurrentStep] = useState(0);
-  const [data, setData] = useState<EligibilityData>({} as EligibilityData);
+  // ✅ INITIALISATION CORRIGÉE - données vides au lieu de cast forcé
+  const [data, setData] = useState<EligibilityData>({});
   const [validations, setValidations] = useState<Record<number, ValidationResult>>({});
 
   const attachRef = useCallback(
@@ -60,7 +62,6 @@ export const useEligibilityForm = (opts: UseEligibilityFormOptions = {}) => {
             return attachRef(res, { stepId, stepIndex: step, value, data });
           }
           if (value === 'individual') {
-            // Message générique, la ref éventuelle vient du mapper getLegalRef
             const res = {
               isValid: false,
               error:
@@ -80,6 +81,13 @@ export const useEligibilityForm = (opts: UseEligibilityFormOptions = {}) => {
         case 'usage': {
           if (!value) {
             const res = { isValid: false, error: "Veuillez préciser l'usage." };
+            return attachRef(res, { stepId, stepIndex: step, value, data });
+          }
+          if (value === 'professional') {
+            const res = {
+              isValid: false,
+              error: "La garantie légale s'applique uniquement aux consommateurs.",
+            };
             return attachRef(res, {
               stepId,
               stepIndex: step,
@@ -93,21 +101,29 @@ export const useEligibilityForm = (opts: UseEligibilityFormOptions = {}) => {
 
         case 'product': {
           if (!value) {
-            const res = { isValid: false, error: 'Sélectionnez un type de produit.' };
-            return attachRef(res, {
-              stepId,
-              stepIndex: step,
-              value,
-              data,
-              error: res.error,
-            });
+            const res = {
+              isValid: false,
+              error: 'Veuillez sélectionner le type de produit.',
+            };
+            return attachRef(res, { stepId, stepIndex: step, value, data });
           }
           return { isValid: true };
         }
 
         case 'territory': {
           if (!value) {
-            const res = { isValid: false, error: 'Sélectionnez une option.' };
+            const res = {
+              isValid: false,
+              error: 'Veuillez préciser la localisation du vendeur.',
+            };
+            return attachRef(res, { stepId, stepIndex: step, value, data });
+          }
+          if (value === 'non_eu') {
+            const res = {
+              isValid: false,
+              error:
+                "La garantie s'applique si le vendeur est en UE/EEE ou cible le marché français.",
+            };
             return attachRef(res, {
               stepId,
               stepIndex: step,
@@ -120,31 +136,17 @@ export const useEligibilityForm = (opts: UseEligibilityFormOptions = {}) => {
         }
 
         case 'timing': {
-          if (!value) {
-            const res = { isValid: false, error: "Indiquez la date d'achat." };
-            return attachRef(res, {
-              stepId,
-              stepIndex: step,
-              value,
-              data,
-              error: res.error,
-            });
-          }
-          const d = new Date(String(value));
-          if (Number.isNaN(d.getTime())) {
-            const res = { isValid: false, error: 'Date invalide.' };
-            return attachRef(res, {
-              stepId,
-              stepIndex: step,
-              value,
-              data,
-              error: res.error,
-            });
-          }
-          if (d > new Date()) {
+          if (value === undefined || value === null) {
             const res = {
               isValid: false,
-              error: 'La date ne peut pas être dans le futur.',
+              error: "Veuillez préciser la date d'achat.",
+            };
+            return attachRef(res, { stepId, stepIndex: step, value, data });
+          }
+          if (value === false) {
+            const res = {
+              isValid: false,
+              error: 'Le délai de garantie légale de 2 ans est dépassé.',
             };
             return attachRef(res, {
               stepId,
@@ -159,7 +161,17 @@ export const useEligibilityForm = (opts: UseEligibilityFormOptions = {}) => {
 
         case 'defect': {
           if (value === undefined || value === null) {
-            const res = { isValid: false, error: 'Choisissez une option.' };
+            const res = {
+              isValid: false,
+              error: "Veuillez préciser s'il y a un défaut.",
+            };
+            return attachRef(res, { stepId, stepIndex: step, value, data });
+          }
+          if (value === false) {
+            const res = {
+              isValid: false,
+              error: "La garantie légale ne s'applique qu'en cas de défaut de conformité.",
+            };
             return attachRef(res, {
               stepId,
               stepIndex: step,
@@ -175,37 +187,77 @@ export const useEligibilityForm = (opts: UseEligibilityFormOptions = {}) => {
           return { isValid: true };
       }
     },
-    [attachRef, data],
+    [data, attachRef],
   );
 
-  const updateData = useCallback(
-    (partial: Partial<EligibilityData>) => {
-      const next = { ...data, ...partial };
-      setData(next);
+  // ✅ FONCTION CORRIGÉE POUR CALCULER L'ÉLIGIBILITÉ AVEC VÉRIFICATIONS
+  const calculateEligibility = useCallback((formData: EligibilityData) => {
+    try {
+      // ✅ VÉRIFICATION DES DONNÉES AVANT CALCUL
+      const validation = validateEligibilityData(formData);
 
-      const value = Object.values(partial)[0];
-      const v = validateStep(currentStep, value);
-      setValidations(prev => ({ ...prev, [currentStep]: v }));
-      return v;
-    },
-    [data, currentStep, validateStep],
-  );
+      if (!validation.isValid) {
+        console.warn("Données incomplètes pour le calcul d'éligibilité:", validation.missingFields);
+        // On peut retourner un résultat partiel ou attendre que toutes les données soient remplies
+        return {
+          isEligible: false,
+          reasons: ['no_defect'], // Raison générique en attendant plus de données
+          timing: {},
+        };
+      }
 
-  const nextStep = useCallback(() => setCurrentStep(s => s + 1), []);
-  const prevStep = useCallback(() => setCurrentStep(s => Math.max(0, s - 1)), []);
+      // ✅ APPEL SÉCURISÉ AU MOTEUR D'ÉLIGIBILITÉ
+      return calculateEligibilityEngine(formData);
+    } catch (error) {
+      console.error("Erreur lors du calcul d'éligibilité:", error);
+      // Fallback en cas d'erreur
+      return {
+        isEligible: false,
+        reasons: ['no_defect'],
+        timing: {},
+      };
+    }
+  }, []);
 
-  const calculateEligibility = useCallback((payload: EligibilityData) => {
-    return calculateEligibilityEngine(payload);
+  // ✅ FONCTION POUR METTRE À JOUR LES DONNÉES DE FAÇON SÉCURISÉE
+  const updateData = useCallback((field: keyof EligibilityData, value: any) => {
+    setData(prevData => ({
+      ...prevData,
+      [field]: value,
+    }));
+  }, []);
+
+  // ✅ FONCTION POUR VALIDER ET AVANCER À L'ÉTAPE SUIVANTE
+  const goToNextStep = useCallback(() => {
+    if (currentStep < ELIGIBILITY_STEPS.length - 1) {
+      setCurrentStep(currentStep + 1);
+    }
+  }, [currentStep]);
+
+  const goToPreviousStep = useCallback(() => {
+    if (currentStep > 0) {
+      setCurrentStep(currentStep - 1);
+    }
+  }, [currentStep]);
+
+  const resetForm = useCallback(() => {
+    setCurrentStep(0);
+    setData({});
+    setValidations({});
   }, []);
 
   return {
     currentStep,
     data,
     validations,
-    updateData,
-    nextStep,
-    prevStep,
     validateStep,
     calculateEligibility,
+    updateData,
+    goToNextStep,
+    goToPreviousStep,
+    resetForm,
+    setCurrentStep,
+    setData,
+    setValidations,
   };
 };

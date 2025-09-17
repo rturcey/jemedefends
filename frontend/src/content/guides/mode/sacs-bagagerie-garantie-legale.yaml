@@ -1,0 +1,101 @@
+title: 'Sacs et bagagerie : vos droits en cas de défauts'
+description: 'Fermeture cassée, couture fragile, anse qui lâche, coque fissurée : vos sacs, valises et bagages sont protégés par la garantie légale de conformité pendant 2 ans (articles L.217-3 et suivants).'
+category: 'mode'
+slug: 'garantie-sacs-bagagerie'
+
+seo:
+  title: 'Garantie légale sacs, valises et bagagerie : recours en cas de défaut'
+  description: 'Vos droits si un sac ou une valise présente un défaut (fermeture cassée, couture lâchée, coque fissurée). Garantie légale de conformité 2 ans (articles L.217-3 et suivants).'
+  keywords:
+    - 'garantie légale sac'
+    - 'valise cassée garantie'
+    - 'fermeture éclair sac defectueuse'
+    - 'anse sac qui casse recours'
+    - 'L.217-3 Code consommation bagagerie'
+
+legal:
+  mainArticles: ['L.217-3', 'L.217-4', 'L.217-5', 'L.217-7', 'L.217-9', 'L.217-10', 'L.217-11']
+  disclaimer: true
+  lastUpdated: '2025-09-22'
+
+sections:
+  - id: 'intro'
+    title: 'Vos sacs et bagages sont protégés'
+    type: 'content'
+    content: |
+      Les **sacs, valises et autres articles de bagagerie** achetés chez un professionnel (magasin ou site e-commerce) bénéficient automatiquement de la **garantie légale de conformité de 2 ans** (art. L.217-3 C. consommation).  
+
+      👉 Cela signifie que si votre sac ou votre valise présente un défaut prématuré (fermeture cassée, couture qui lâche, coque fissurée), le vendeur doit les réparer, remplacer ou rembourser **sans frais**.
+
+  - id: 'defauts'
+    title: 'Exemples de défauts fréquents'
+    type: 'grid'
+    items:
+      - title: 'Défauts couverts'
+        description: |
+          - Fermeture éclair qui casse après quelques utilisations seulement.  
+          - Anse ou poignée qui se déchire rapidement.  
+          - Couture qui lâche sans usage intensif.  
+          - Coque de valise qui se fissure après un seul voyage.  
+          - Roulettes de valise qui se bloquent ou cassent prématurément.  
+          - Sac annoncé « imperméable » qui laisse passer l’eau.
+      - title: 'Situations non couvertes'
+        description: |
+          - Usure normale après plusieurs mois ou années d’utilisation.  
+          - Détérioration due à un transport brutal par une compagnie aérienne (recours séparé contre la compagnie).  
+          - Casse accidentelle (ex. valise tombée d’une hauteur importante).  
+          - Mauvais entretien ou surcharge du sac.
+
+  - id: 'procedure'
+    title: 'Comment agir en cas de sac ou valise défectueux'
+    type: 'timeline'
+    steps:
+      - title: '1) Conservez vos preuves'
+        description: |
+          Gardez votre ticket de caisse ou facture, ainsi que des photos montrant le défaut (fermeture cassée, couture ouverte, roulettes bloquées, etc.).
+      - title: '2) Contactez le vendeur'
+        description: |
+          Adressez une réclamation écrite au vendeur en invoquant la **garantie légale de conformité** (art. L.217-3).  
+          ⚠️ Le vendeur est responsable, il ne peut pas vous renvoyer vers le fabricant.
+      - title: '3) Réparation ou remplacement'
+        description: |
+          Le vendeur doit réparer ou remplacer le sac/valise sans frais.  
+          Ce délai ne peut pas excéder **30 jours** (art. L.217-10).
+      - title: '4) Réduction du prix ou remboursement'
+        description: |
+          Si le problème n’est pas corrigé dans les délais, vous pouvez obtenir une réduction du prix ou un remboursement intégral.
+
+  - id: 'faq'
+    title: 'Questions fréquentes'
+    type: 'faq'
+    faqItems:
+      - q: 'Ma valise neuve s’est fissurée dès mon premier voyage, suis-je couvert ?'
+        a: 'Oui, c’est un défaut de conformité. Le vendeur doit réparer, remplacer ou rembourser.'
+      - q: 'La compagnie aérienne a abîmé ma valise, est-ce la garantie légale qui s’applique ?'
+        a: 'Non, dans ce cas c’est la responsabilité de la compagnie aérienne (procédure via la Convention de Montréal).'
+      - q: 'J’ai acheté mon sac en promotion, la garantie s’applique-t-elle ?'
+        a: 'Oui, les soldes et promotions ne réduisent pas vos droits.'
+      - q: 'Dois-je avancer les frais de retour ?'
+        a: 'Non, tous les frais liés à la mise en conformité sont à la charge du vendeur (art. L.217-11).'
+      - q: 'Que faire si le vendeur refuse ma demande ?'
+        a: 'Envoyez une mise en demeure en recommandé. Vous pouvez ensuite saisir le médiateur de la consommation ou le juge.'
+
+  - id: 'cta'
+    title: 'Passez à l’action'
+    type: 'content'
+    content: |
+      ✅ Exigez gratuitement la réparation, le remplacement ou le remboursement de votre sac ou valise défectueux grâce à une réclamation officielle.  
+      Versions payantes : **PDF professionnel** avec logo et signature électronique, ou **LRAR** avec suivi postal.
+    cta:
+      label: 'Rédiger ma réclamation'
+      href: '/outils/mise-en-demeure'
+      variant: 'primary'
+      icon: 'FileText'
+
+  - id: 'disclaimer'
+    title: 'Important'
+    type: 'content'
+    content: |
+      Ce guide fournit une **information juridique générale** (articles L.217-3 et suivants du Code de la consommation).  
+      Il ne remplace pas un **conseil juridique personnalisé**.  
+      Pour une analyse adaptée à votre situation, contactez un **avocat** ou une **association de consommateurs**.

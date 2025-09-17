@@ -1,0 +1,79 @@
+title: 'Billets d’avion : vos droits en cas de vol annulé ou retardé'
+description: 'Retard, annulation, surbooking : vos billets d’avion sont couverts par la garantie légale de conformité et par le règlement européen CE 261/2004.'
+category: 'voyages'
+slug: 'garantie-billets-avion'
+
+seo:
+  title: 'Billets d’avion annulés ou retardés : recours et indemnisation'
+  description: 'Vol annulé, retardé, surbooking : vos droits à remboursement ou indemnisation grâce à la garantie légale et au règlement CE 261/2004.'
+  keywords:
+    - 'vol annulé remboursement'
+    - 'retard avion indemnisation'
+    - 'surbooking droits passagers'
+    - 'garantie légale billets avion'
+    - 'reglement CE 261/2004'
+
+legal:
+  mainArticles: ['L.217-3', 'L.217-4', 'L.217-10', 'Règlement CE 261/2004']
+  disclaimer: true
+  lastUpdated: '2025-09-22'
+
+sections:
+  - id: 'intro'
+    title: 'Vos billets sont protégés'
+    type: 'content'
+    content: |
+      Lorsque vous achetez un billet d’avion auprès d’une compagnie, vous êtes protégé à deux niveaux :  
+      - La **garantie légale de conformité** (C. consommation, art. L.217-3) qui s’applique si le service acheté n’est pas fourni.  
+      - Le **règlement européen CE 261/2004**, qui prévoit des indemnisations en cas d’annulation, de retard ou de surbooking.
+
+  - id: 'defauts'
+    title: 'Situations couvertes et non couvertes'
+    type: 'grid'
+    items:
+      - title: 'Couvertes'
+        description: |
+          - Vol annulé sans solution de réacheminement satisfaisante.  
+          - Retard de plus de 3 heures à l’arrivée.  
+          - Surbooking entraînant un refus d’embarquement.  
+          - Correspondance manquée à cause d’un retard de la compagnie.
+      - title: 'Non couvertes'
+        description: |
+          - Retards dus à des circonstances extraordinaires (météo extrême, grève du contrôle aérien).  
+          - Vols achetés auprès de particuliers (ex. revente illégale de billets).
+
+  - id: 'procedure'
+    title: 'Comment agir'
+    type: 'timeline'
+    steps:
+      - title: '1) Conservez vos justificatifs'
+        description: 'Carte d’embarquement, confirmation de réservation, reçus de frais (repas, hôtel).'
+      - title: '2) Réclamez à la compagnie'
+        description: 'Adressez une demande de remboursement ou d’indemnisation au service client.'
+      - title: '3) Mise en demeure'
+        description: 'En cas de refus ou absence de réponse, envoyez une mise en demeure en invoquant la garantie légale et le règlement CE 261/2004.'
+      - title: '4) Médiation ou justice'
+        description: 'Saisissez le médiateur du tourisme ou le tribunal compétent.'
+
+  - id: 'faq'
+    title: 'Questions fréquentes'
+    type: 'faq'
+    faqItems:
+      - q: 'Mon vol a été annulé 10 jours avant le départ, ai-je droit à une indemnité ?'
+        a: 'Oui, sauf si la compagnie vous propose un réacheminement équivalent.'
+      - q: 'Que faire si la compagnie invoque la météo alors que d’autres vols ont décollé ?'
+        a: 'Contestez en demandant des preuves, les juges apprécient la réalité des circonstances exceptionnelles.'
+      - q: 'Puis-je être remboursé si je décide moi-même d’annuler ?'
+        a: 'Non, sauf si le billet est flexible ou si vous avez souscrit une assurance annulation.'
+
+  - id: 'cta'
+    title: 'Passez à l’action'
+    type: 'content'
+    content: |
+      ✅ Faites valoir vos droits avec une réclamation claire et juridiquement fondée.  
+      Versions payantes : **PDF professionnel** ou **LRAR avec suivi postal**.
+    cta:
+      label: 'Rédiger ma réclamation'
+      href: '/outils/mise-en-demeure'
+      variant: 'primary'
+      icon: 'FileText'

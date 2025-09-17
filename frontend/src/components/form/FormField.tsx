@@ -1,4 +1,5 @@
-// src/components/form/FormField.tsx
+// frontend/src/components/form/FormField.tsx - Fix markInteracted
+
 'use client';
 
 import React, { memo, useCallback, useRef } from 'react';
@@ -23,6 +24,11 @@ interface FormFieldProps {
   options?: Array<{ value: string; label: string }>;
   autoComplete?: string;
   className?: string;
+  validation?: {
+    markInteracted?: (field: string) => void;
+    validateField?: (value: any, rules: any) => { valid: boolean; message: string };
+    isInteracted?: (field: string) => boolean;
+  };
 }
 
 // Validation en temps réel optimisée
@@ -57,7 +63,7 @@ const useRealtimeValidation = (value: string, required: boolean, type: string) =
     [required, type, isSlowConnection],
   );
 
-  return validateField;
+  return validateField; // ✅ Ne retourne que validateField
 };
 
 const FormField = memo<FormFieldProps>(
@@ -78,16 +84,16 @@ const FormField = memo<FormFieldProps>(
     options,
     autoComplete,
     className = '',
+    validation, // ✅ Récupérer validation depuis les props
   }) => {
     const { isMobile } = useMobileOptimization();
     const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>(null);
-    const { validateField, markInteracted } = useRealtimeValidation(
-      value,
-      required,
-      type,
-      undefined,
-      name,
-    );
+
+    // ✅ CORRECTION : Récupérer validateField depuis useRealtimeValidation
+    const validateField = useRealtimeValidation(value, required, type);
+
+    // ✅ CORRECTION : Récupérer markInteracted depuis les props de validation
+    const markInteracted = validation?.markInteracted;
 
     // Handler optimisé pour les changements
     const handleChange = useCallback(
@@ -95,140 +101,98 @@ const FormField = memo<FormFieldProps>(
         const newValue = e.target.value;
         onChange(newValue);
 
-        // Marquer comme interagi
-        markInteracted();
+        // Marquer comme interagi si la fonction existe
+        if (markInteracted) {
+          markInteracted(name);
+        }
 
         // Validation en temps réel
         if (newValue.trim()) {
           validateField(newValue);
         }
       },
-      [onChange, validateField, markInteracted],
+      [onChange, validateField, markInteracted, name],
     );
 
     // Handler optimisé pour le blur
     const handleBlur = useCallback(() => {
-      markInteracted();
+      // ✅ CORRECTION : Vérifier que markInteracted existe
+      if (markInteracted) {
+        markInteracted(name);
+      }
+
       validateField(value);
       onBlur?.();
-    }, [value, validateField, onBlur, markInteracted]);
+    }, [value, validateField, onBlur, markInteracted, name]);
 
-    // Props communes optimisées pour mobile
-    const commonProps = {
+    // Optimisation pour mobile
+    const inputProps = {
+      ref: inputRef,
       id: name,
       name,
       value,
       onChange: handleChange,
       onBlur: handleBlur,
+      placeholder,
       disabled,
-      required,
       maxLength,
       autoComplete,
-      'aria-invalid': !!error,
-      'aria-describedby': error ? `${name}-error` : helpText ? `${name}-help` : undefined,
-      className: `
-      w-full px-4 py-3 border rounded-lg transition-all duration-200
-      bg-white border-gray-300 
-      focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none
-      disabled:bg-gray-100 disabled:cursor-not-allowed
-      ${error ? 'border-red-500 bg-red-50' : ''}
-      ${isMobile ? 'text-base' : 'text-sm'}
-      min-h-[44px] touch-manipulation
-    `,
+      ...(isMobile && { autoCapitalize: 'none', autoCorrect: 'off' }),
     };
 
-    // Rendu conditionnel selon le type
+    // Rendu du champ selon le type
     const renderInput = () => {
-      switch (type) {
-        case 'textarea':
-          return (
-            <textarea
-              {...commonProps}
-              ref={inputRef as React.RefObject<HTMLTextAreaElement>}
-              placeholder={placeholder}
-              rows={4}
-              style={{ resize: 'vertical', minHeight: isMobile ? '120px' : '100px' }}
-            />
-          );
-
-        case 'select':
-          return (
-            <select {...commonProps} ref={inputRef as React.RefObject<HTMLSelectElement>}>
-              <option value="" disabled>
-                {placeholder || 'Sélectionnez une option'}
-              </option>
-              {options?.map(option => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          );
-
-        default:
-          return (
-            <input
-              {...commonProps}
-              ref={inputRef as React.RefObject<HTMLInputElement>}
-              type={type}
-              placeholder={placeholder}
-              minLength={minLength}
-              // Optimisations iOS pour éviter le zoom
-              style={isMobile && type === 'text' ? { fontSize: '16px' } : undefined}
-            />
-          );
+      if (type === 'textarea') {
+        return (
+          <textarea
+            {...inputProps}
+            rows={4}
+            className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none ${className}`}
+          />
+        );
       }
+
+      if (type === 'select' && options) {
+        return (
+          <select
+            {...inputProps}
+            className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${className}`}
+          >
+            <option value="">Sélectionnez...</option>
+            {options.map(option => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        );
+      }
+
+      return (
+        <input
+          {...inputProps}
+          type={type}
+          className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${className}`}
+        />
+      );
     };
 
     return (
-      <div className={`form-field space-y-2 ${className}`}>
-        {/* Label */}
-        <label
-          htmlFor={name}
-          className={`
-          block font-semibold text-gray-700
-          ${isMobile ? 'text-base' : 'text-sm'}
-        `}
-        >
+      <div className="space-y-2">
+        <label htmlFor={name} className="block text-sm font-medium text-gray-700">
           {label}
-          {required && (
-            <span className="text-red-500 ml-1" aria-label="obligatoire">
-              *
-            </span>
-          )}
+          {required && <span className="text-red-500 ml-1">*</span>}
         </label>
 
-        {/* Input/Textarea/Select */}
         {renderInput()}
 
-        {/* Texte d'aide */}
-        {helpText && !error && (
-          <p id={`${name}-help`} className={`text-gray-600 ${isMobile ? 'text-sm' : 'text-xs'}`}>
-            {helpText}
+        {error && (
+          <p className="text-sm text-red-600" role="alert">
+            {error}
           </p>
         )}
 
-        {/* Message d'erreur */}
-        {error && (
-          <div
-            id={`${name}-error`}
-            className={`
-            text-red-600 font-medium flex items-start gap-2
-            ${isMobile ? 'text-sm' : 'text-xs'}
-          `}
-            role="alert"
-            aria-live="polite"
-          >
-            <svg className="w-4 h-4 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-              <path
-                fillRule="evenodd"
-                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                clipRule="evenodd"
-              />
-            </svg>
-            <span>{error}</span>
-          </div>
-        )}
+        {helpText && !error && <p className="text-sm text-gray-500">{helpText}</p>}
       </div>
     );
   },

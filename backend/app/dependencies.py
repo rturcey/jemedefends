@@ -13,6 +13,7 @@ from app.core.letter_repository import SqlcLetterRepository
 from app.core.letter_service import LetterService
 from app.core.pdf_service import PDFService, create_pdf_service
 from app.db.connection import get_db_connection
+from core.ai_service import ScalewayAIService
 
 logger = logging.getLogger(__name__)
 
@@ -70,3 +71,8 @@ def get_form_draft_service(
 ) -> FormDraftService:
     logger.debug("Creating form draft service")
     return FormDraftService(repository)
+
+
+def get_ai_service() -> ScalewayAIService:
+    logger.debug("Creating Scaleway AI service")
+    return ScalewayAIService()

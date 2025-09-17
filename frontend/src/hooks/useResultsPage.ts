@@ -108,7 +108,7 @@ export function useResultsPage(): UseResultsPageReturn {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Accept: 'text/html',
+          Accept: 'text/html', // Garder HTML pour l'extraction
         },
         credentials: 'include',
         body: JSON.stringify({ letter_id: letterId }),
@@ -121,17 +121,21 @@ export function useResultsPage(): UseResultsPageReturn {
 
       const htmlContent = await response.text();
 
-      // 🔧 GARDER LE HTML COMPLET AU LIEU DE LE CONVERTIR EN TEXTE
       if (!htmlContent.trim()) {
         throw new Error('Contenu vide reçu du serveur');
       }
 
-      console.log('✅ Version gratuite générée (HTML formaté), longueur:', htmlContent.length);
+      console.log('✅ Version gratuite générée (HTML reçu), longueur:', htmlContent.length);
 
-      // Stocker le HTML complet
-      setLetterData(prev => (prev ? { ...prev, content: htmlContent } : null));
+      // ✅ EXTRACTION PROPRE DU TEXTE
+      const cleanText = extractTextForDisplay(htmlContent);
 
-      return htmlContent; // Retourner le HTML complet
+      console.log('✅ Texte extrait proprement, longueur:', cleanText.length);
+
+      // Stocker le texte propre (pas le HTML)
+      setLetterData(prev => (prev ? { ...prev, content: cleanText } : null));
+
+      return cleanText; // Retourner le texte propre
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Erreur de génération';
       setError(message);

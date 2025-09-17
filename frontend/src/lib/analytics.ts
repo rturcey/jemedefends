@@ -57,7 +57,7 @@ export const trackEligibilityEvents = {
       label: `${field}_${errorType}`,
     }),
 
-  testCompleted: (result: 'eligible' | 'not_eligible', totalTime?: number) =>
+  testCompleted: (result: string, totalTime?: number) =>
     trackEvent({
       action: 'test_completed',
       category: 'conversion',

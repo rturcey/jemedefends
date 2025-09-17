@@ -1,15 +1,17 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
+import type { ReformulationType } from '@/types/api';
+import AIService from '@/services/aiService';
 
 type Props = {
   open: boolean;
   onClose: () => void;
   initialText: string;
   onApply: (text: string, type: 'corrected' | 'reformulated') => void;
-  onGenerate: (finalText?: string) => Promise<void>; // Nouveau : génération directe
+  onGenerate: (finalText?: string) => Promise<void>;
   maxChars?: number;
-  isSubmitting?: boolean; // État de génération
+  isSubmitting?: boolean;
 };
 
 const ReformatDescriptionModal: React.FC<Props> = ({
@@ -24,6 +26,7 @@ const ReformatDescriptionModal: React.FC<Props> = ({
   const [workingText, setWorkingText] = useState(initialText || '');
   const [isBusy, setIsBusy] = useState(false);
   const [hasImprovedText, setHasImprovedText] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
 
@@ -31,6 +34,7 @@ const ReformatDescriptionModal: React.FC<Props> = ({
     if (open) {
       setWorkingText(initialText || '');
       setHasImprovedText(false);
+      setError(null);
       setTimeout(() => textareaRef.current?.focus(), 50);
     }
   }, [open, initialText]);
@@ -46,9 +50,9 @@ const ReformatDescriptionModal: React.FC<Props> = ({
 
   useEffect(() => {
     if (!open) return;
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && !isSubmitting && onClose();
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && !isSubmitting && !isBusy && onClose();
     const onClick = (e: MouseEvent) => {
-      if (e.target === overlayRef.current && !isSubmitting) onClose();
+      if (e.target === overlayRef.current && !isSubmitting && !isBusy) onClose();
     };
     document.addEventListener('keydown', onKey);
     document.addEventListener('mousedown', onClick);
@@ -56,34 +60,60 @@ const ReformatDescriptionModal: React.FC<Props> = ({
       document.removeEventListener('keydown', onKey);
       document.removeEventListener('mousedown', onClick);
     };
-  }, [open, onClose, isSubmitting]);
+  }, [open, onClose, isSubmitting, isBusy]);
 
   const over = workingText.length > maxChars;
   const canGenerate = workingText.trim().length >= 20 && !over;
 
-  // Amélioration du texte via IA
-  const improveText = async (kind: 'corrected' | 'reformulated') => {
+  // ✨ NOUVEAUTÉ : Véritable amélioration via IA Scaleway
+  const improveText = async (type: ReformulationType) => {
     if (isBusy || isSubmitting) return;
-    setIsBusy(true);
-    try {
-      // TODO: Appeler votre service IA ici
-      // Pour l'instant, on simule une amélioration basique
-      let improvedText = workingText;
 
-      if (kind === 'corrected') {
-        // Simulation de correction (orthographe, ponctuation)
-        improvedText = workingText
-          .replace(/\s+/g, ' ')
-          .replace(/\.{2,}/g, '.')
-          .trim();
-      } else if (kind === 'reformulated') {
-        // Simulation de reformulation plus professionnelle
-        improvedText = `Suite à l'achat de ce produit, j'ai constaté ${workingText.toLowerCase()}`;
+    // Validation préliminaire
+    const validation = AIService.validateTextForReformulation(workingText);
+    if (!validation.valid) {
+      setError(validation.error || 'Texte invalide');
+      return;
+    }
+
+    setIsBusy(true);
+    setError(null);
+
+    try {
+      console.log(`🤖 Reformulation IA démarrée - Type: ${type}`);
+
+      // Appel au service IA réel
+      const response = await AIService.reformulateText({
+        text: workingText,
+        type,
+        context: 'litige consommation garantie légale',
+      });
+
+      if (!response.success) {
+        throw new Error(response.error || 'Erreur lors de la reformulation');
       }
+
+      const improvedText = response.reformulated_text;
+
+      // Vérifications de sécurité
+      if (!improvedText || improvedText.trim().length < 10) {
+        throw new Error('Texte reformulé trop court ou vide');
+      }
+
+      if (improvedText.length > maxChars * 1.5) {
+        throw new Error('Texte reformulé trop long');
+      }
+
+      console.log(
+        `✅ Reformulation réussie - ${response.original_text.length} → ${improvedText.length} chars`,
+      );
 
       setWorkingText(improvedText);
       setHasImprovedText(true);
-      onApply(improvedText, kind);
+      onApply(improvedText, type);
+    } catch (err) {
+      console.error('❌ Erreur reformulation:', err);
+      setError(err instanceof Error ? err.message : 'Erreur technique lors de la reformulation');
     } finally {
       setIsBusy(false);
     }
@@ -102,10 +132,19 @@ const ReformatDescriptionModal: React.FC<Props> = ({
     await onGenerate(workingText);
   };
 
-  // Continuer sans améliorer
-  const handleSkipAndGenerate = async () => {
-    if (!canGenerate || isSubmitting) return;
-    await onGenerate(workingText);
+  const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const newText = e.target.value;
+    setWorkingText(newText);
+
+    // Reset du statut d'amélioration si l'utilisateur modifie le texte amélioré
+    if (hasImprovedText && newText !== workingText) {
+      setHasImprovedText(false);
+    }
+
+    // Clear error si l'utilisateur tape
+    if (error) {
+      setError(null);
+    }
   };
 
   if (!open) return null;
@@ -130,7 +169,7 @@ const ReformatDescriptionModal: React.FC<Props> = ({
                 <svg className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
                   <path d="M10 2a8 8 0 100 16 8 8 0 000-16Zm1 12H9v-2h2v2Zm0-4H9V6h2v4Z" />
                 </svg>
-                IA • offert
+                IA Scaleway • Mistral-Nemo
               </span>
               <span className="text-[11px] text-gray-500">
                 Optionnel : corrige et reformule pour plus de clarté
@@ -138,7 +177,7 @@ const ReformatDescriptionModal: React.FC<Props> = ({
             </div>
           </div>
 
-          {!isSubmitting && (
+          {!isSubmitting && !isBusy && (
             <button
               type="button"
               aria-label="Fermer la modale"
@@ -170,26 +209,75 @@ const ReformatDescriptionModal: React.FC<Props> = ({
               <path d="M2 10a8 8 0 1116 0A8 8 0 012 10zm8-3a1 1 0 100 2 1 1 0 000-2zm-1 4a1 1 0 012 0v3a1 1 0 11-2 0v-3z" />
             </svg>
             <p className="leading-relaxed">
-              Votre texte sera ajusté pour être plus précis, clair et professionnel. Vous pouvez
-              aussi générer directement votre lettre avec le texte actuel.
+              L'IA va ajuster votre texte pour être plus précis, clair et professionnel tout en
+              respectant les faits.
             </p>
           </div>
 
-          <div className="relative">
-            <textarea
-              ref={textareaRef}
-              value={workingText}
-              onChange={e => setWorkingText(e.target.value)}
-              rows={8}
-              maxLength={20000}
-              disabled={isBusy || isSubmitting}
-              className="block w-full rounded-2xl border-2 px-4 py-3 text-base md:text-sm bg-gray-50/60 focus:outline-none focus:ring-2 border-gray-300 focus:border-blue-600 focus:ring-blue-600/20 disabled:opacity-50 disabled:cursor-not-allowed"
-              placeholder="Décrivez précisément le problème : faits, dates, échanges…"
-            />
-            <div className="mt-2 flex items-center justify-between">
+          {/* Affichage d'erreur */}
+          {error && (
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl">
+              <div className="flex items-center gap-2 text-red-700">
+                <svg className="w-4 h-4 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                  <path
+                    fillRule="evenodd"
+                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                <span className="text-sm font-medium">{error}</span>
+              </div>
+            </div>
+          )}
+
+          {/* Textarea */}
+          <div className="space-y-2">
+            <div className="relative">
+              <textarea
+                ref={textareaRef}
+                value={workingText}
+                onChange={handleTextChange}
+                disabled={isBusy || isSubmitting}
+                rows={8}
+                className={`w-full p-3 border rounded-xl resize-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:opacity-50 disabled:cursor-not-allowed ${
+                  over
+                    ? 'border-orange-300 focus:ring-orange-500 focus:border-orange-500'
+                    : hasImprovedText
+                      ? 'border-green-300 bg-green-50 focus:ring-green-500 focus:border-green-500'
+                      : 'border-gray-300'
+                }`}
+                placeholder="Décrivez précisément le problème..."
+              />
+
+              {isBusy && (
+                <div className="absolute inset-0 bg-white/50 flex items-center justify-center rounded-xl">
+                  <div className="flex items-center gap-2 text-blue-600">
+                    <svg className="w-5 h-5 animate-spin" viewBox="0 0 24 24">
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                        fill="none"
+                      />
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      />
+                    </svg>
+                    <span className="font-medium">Reformulation en cours...</span>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="flex justify-between items-center">
               <p className="text-xs text-gray-500">
                 {hasImprovedText
-                  ? '✨ Texte amélioré par IA'
+                  ? '✨ Texte amélioré par IA Scaleway'
                   : 'Conseil : restez concis et factuel'}
               </p>
               <p className={`text-xs ${over ? 'text-orange-600 font-medium' : 'text-gray-400'}`}>
@@ -237,18 +325,62 @@ const ReformatDescriptionModal: React.FC<Props> = ({
                 <button
                   type="button"
                   onClick={() => improveText('corrected')}
-                  disabled={isBusy || over || !workingText.trim()}
-                  className="flex-1 md:flex-none inline-flex items-center justify-center py-2.5 px-4 rounded-xl font-medium text-blue-700 bg-blue-50 border border-blue-200 hover:bg-blue-100 hover:border-blue-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={isBusy || over || !workingText.trim() || workingText.trim().length < 10}
+                  className="flex-1 md:flex-none inline-flex items-center justify-center py-2.5 px-4 rounded-xl font-medium text-blue-700 bg-blue-50 border border-blue-200 hover:bg-blue-100 hover:border-blue-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
-                  {isBusy ? 'Correction...' : '✨ Corriger'}
+                  {isBusy ? (
+                    <div className="flex items-center gap-2">
+                      <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24">
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                          fill="none"
+                        />
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        />
+                      </svg>
+                      Correction...
+                    </div>
+                  ) : (
+                    '✨ Corriger'
+                  )}
                 </button>
                 <button
                   type="button"
                   onClick={() => improveText('reformulated')}
-                  disabled={isBusy || over || !workingText.trim()}
-                  className="flex-1 md:flex-none inline-flex items-center justify-center py-2.5 px-4 rounded-xl font-medium text-indigo-700 bg-indigo-50 border border-indigo-200 hover:bg-indigo-100 hover:border-indigo-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={isBusy || over || !workingText.trim() || workingText.trim().length < 10}
+                  className="flex-1 md:flex-none inline-flex items-center justify-center py-2.5 px-4 rounded-xl font-medium text-indigo-700 bg-indigo-50 border border-indigo-200 hover:bg-indigo-100 hover:border-indigo-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
-                  {isBusy ? 'Reformulation...' : '🔄 Reformuler'}
+                  {isBusy ? (
+                    <div className="flex items-center gap-2">
+                      <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24">
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                          fill="none"
+                        />
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        />
+                      </svg>
+                      Reformulation...
+                    </div>
+                  ) : (
+                    '🔄 Reformuler'
+                  )}
                 </button>
               </div>
 
@@ -267,7 +399,7 @@ const ReformatDescriptionModal: React.FC<Props> = ({
                 <button
                   type="button"
                   onClick={handleGenerate}
-                  disabled={!canGenerate}
+                  disabled={!canGenerate || isBusy}
                   className="flex-1 inline-flex items-center justify-center py-3 px-6 rounded-xl font-bold text-white bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 hover:shadow-lg hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none transition-all focus:outline-none focus:ring-2 focus:ring-green-500"
                 >
                   <svg className="w-5 h-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
@@ -279,7 +411,8 @@ const ReformatDescriptionModal: React.FC<Props> = ({
                 <button
                   type="button"
                   onClick={onClose}
-                  className="md:w-auto inline-flex items-center justify-center py-3 px-4 rounded-xl font-semibold border border-gray-300 hover:bg-gray-50 text-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400"
+                  disabled={isBusy}
+                  className="md:w-auto inline-flex items-center justify-center py-3 px-4 rounded-xl font-semibold border border-gray-300 hover:bg-gray-50 text-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Annuler
                 </button>

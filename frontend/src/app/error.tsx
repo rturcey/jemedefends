@@ -46,16 +46,16 @@ export default function Error({
               <Button
                 onClick={reset}
                 className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-xl"
+                icon={<RefreshCw className="w-5 h-5" />}
               >
-                <RefreshCw className="w-5 h-5" />
                 Réessayer
               </Button>
 
               <a
                 href="/contact"
                 className="flex items-center justify-center gap-2 border border-gray-300 hover:bg-gray-50 text-gray-700 py-3 px-6 rounded-xl transition-colors"
+                icon={<MessageCircle className="w-5 h-5" />}
               >
-                <MessageCircle className="w-5 h-5" />
                 Signaler le problème
               </a>
             </div>

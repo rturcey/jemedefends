@@ -7,6 +7,7 @@ import Link from 'next/link';
 import React from 'react';
 
 import { Container, Button } from '@/components/ui';
+import { getAllGuides } from '@/lib/guide-registry';
 
 // --- NavLink Component ---
 function NavLink({ href, children }: { href: string; children: React.ReactNode }) {
@@ -23,40 +24,57 @@ function NavLink({ href, children }: { href: string; children: React.ReactNode }
   );
 }
 
-// --- Correction GUIDES DROPDOWN avec gestion d'erreur ---
+// --- GUIDES DROPDOWN adapté au nouveau guide-registry ---
 function GuidesDropdown() {
   const [isOpen, setIsOpen] = React.useState(false);
   const timeoutRef = React.useRef<NodeJS.Timeout>();
 
-  // CORRECTION: Gestion sécurisée des imports avec fallback
-  const { ALL_GUIDES, isLoading } = React.useMemo(() => {
+  // 🔧 ADAPTÉ: Utilisation du nouveau guide-registry
+  const { allGuides, guidesCount, isLoading } = React.useMemo(() => {
     try {
-      const guidesModule = require('@/content/guides');
-      const pages = guidesModule?.ALL_GUIDES || guidesModule?.default?.ALL_GUIDES || {};
+      const guides = getAllGuides();
+
       return {
-        ALL_GUIDES: pages,
+        allGuides: guides || {},
+        guidesCount: Object.keys(guides || {}).length,
         isLoading: false,
       };
     } catch (error) {
-      console.warn('Could not load guides:', error);
+      console.warn('Could not load guides from registry:', error);
       return {
-        ALL_GUIDES: {},
+        allGuides: {},
+        guidesCount: 0,
         isLoading: false,
       };
     }
   }, []);
 
-  // CORRECTION: Vérification de sécurité avant Object.keys
-  const guidesCount = React.useMemo(() => {
-    if (!ALL_GUIDES || typeof ALL_GUIDES !== 'object') {
-      return 0;
-    }
-    try {
-      return Object.keys(ALL_GUIDES).length;
-    } catch {
-      return 0;
-    }
-  }, [ALL_GUIDES]);
+  // 🎯 Guides populaires - adaptés aux slugs disponibles
+  const popularGuides = React.useMemo(() => {
+    const popularSlugs = [
+      'garantie-legale-conformite-guide-complet',
+      'smartphone-ecran-batterie-defaut-garantie-legale',
+      'voiture-electrique-defaut-garantie-legale',
+      'lave-linge-panne-garantie-legale',
+      'action-groupe',
+      'mediation-consommation',
+    ];
+
+    return popularSlugs
+      .map(slug => {
+        const guide = allGuides[slug];
+        if (guide) {
+          return {
+            slug,
+            title: guide.metadata.title,
+            emoji: getCategoryEmoji(guide.category?.id),
+          };
+        }
+        return null;
+      })
+      .filter(Boolean)
+      .slice(0, 4); // Limiter à 4 guides max
+  }, [allGuides]);
 
   const handleMouseEnter = () => {
     if (timeoutRef.current) {
@@ -90,30 +108,47 @@ function GuidesDropdown() {
           <div className="mb-4">
             <h3 className="font-semibold text-gray-900 mb-2">Guides les plus consultés</h3>
             <div className="space-y-2">
-              <Link
-                href="/guides/garantie-legale-conformite-guide-complet"
-                className="block text-sm text-gray-600 hover:text-blue-600 transition-colors"
-              >
-                📋 Guide général de la garantie légale
-              </Link>
-              <Link
-                href="/guides/faire-jouer-garantie"
-                className="block text-sm text-gray-600 hover:text-blue-600 transition-colors"
-              >
-                ⚖️ Comment faire jouer la garantie
-              </Link>
-              <Link
-                href="/guides/smartphones-telephone-en-panne"
-                className="block text-sm text-gray-600 hover:text-blue-600 transition-colors"
-              >
-                📱 Smartphones et High-Tech
-              </Link>
-              <Link
-                href="/guides/voiture-defauts"
-                className="block text-sm text-gray-600 hover:text-blue-600 transition-colors"
-              >
-                🚗 Voitures et défauts
-              </Link>
+              {/* 🔧 ADAPTÉ: Guides dynamiques depuis le registry */}
+              {popularGuides.length > 0 ? (
+                popularGuides.map((guide, index) => (
+                  <Link
+                    key={guide.slug}
+                    href={`/guides/${guide.slug}`}
+                    className="block text-sm text-gray-600 hover:text-blue-600 transition-colors"
+                  >
+                    <span className="mr-2">{guide.emoji}</span>
+                    {truncateTitle(guide.title, 45)}
+                  </Link>
+                ))
+              ) : (
+                // Fallback statique si pas de guides dynamiques
+                <>
+                  <Link
+                    href="/guides/garantie-legale-conformite-guide-complet"
+                    className="block text-sm text-gray-600 hover:text-blue-600 transition-colors"
+                  >
+                    📋 Guide général de la garantie légale
+                  </Link>
+                  <Link
+                    href="/guides/smartphone-ecran-batterie-defaut-garantie-legale"
+                    className="block text-sm text-gray-600 hover:text-blue-600 transition-colors"
+                  >
+                    📱 Smartphones et High-Tech
+                  </Link>
+                  <Link
+                    href="/guides/voiture-electrique-defaut-garantie-legale"
+                    className="block text-sm text-gray-600 hover:text-blue-600 transition-colors"
+                  >
+                    🚗 Voitures et défauts
+                  </Link>
+                  <Link
+                    href="/guides/lave-linge-panne-garantie-legale"
+                    className="block text-sm text-gray-600 hover:text-blue-600 transition-colors"
+                  >
+                    🏠 Électroménager
+                  </Link>
+                </>
+              )}
             </div>
           </div>
 
@@ -134,12 +169,45 @@ function GuidesDropdown() {
   );
 }
 
+// --- Utilitaires ---
+
+/**
+ * Associe une emoji à chaque catégorie
+ */
+function getCategoryEmoji(categoryId?: string): string {
+  const emojiMap: Record<string, string> = {
+    tech: '📱',
+    auto: '🚗',
+    home: '🏠',
+    general: '📋',
+  };
+
+  return emojiMap[categoryId || 'general'] || '📋';
+}
+
+/**
+ * Tronque un titre s'il est trop long
+ */
+function truncateTitle(title: string, maxLength: number): string {
+  if (title.length <= maxLength) return title;
+
+  // Coupe au dernier espace avant la limite
+  const truncated = title.substring(0, maxLength);
+  const lastSpace = truncated.lastIndexOf(' ');
+
+  if (lastSpace > maxLength * 0.7) {
+    return truncated.substring(0, lastSpace) + '...';
+  }
+
+  return truncated + '...';
+}
+
 // --- TopBar complet ---
 function TopBar({ ctaHref = '/eligibilite#start' }: { ctaHref?: string }) {
   return (
     <nav
       id="topbar"
-      className="site-header hidden md:block fixed top-0 w-full bg-white/80 backdrop-blur border-b border-gray-200 z-50 h-20"
+      className="site-header hidden md:block fixed top-0 w-full bg-white backdrop-blur border-b border-gray-200 z-50 h-20"
       aria-label="Navigation principale"
     >
       <Container className="h-full flex justify-between items-center">
@@ -160,8 +228,7 @@ function TopBar({ ctaHref = '/eligibilite#start' }: { ctaHref?: string }) {
           <NavLink href="/#fiabilite">Confiance</NavLink>
           <NavLink href="/faq">FAQ</NavLink>
           <GuidesDropdown />
-          <Button href={ctaHref}>
-            <FileText className="w-4 h-4" aria-hidden="true" />
+          <Button href={ctaHref} icon={<FileText className="w-4 h-4" aria-hidden="true" />}>
             Commencer
           </Button>
         </div>

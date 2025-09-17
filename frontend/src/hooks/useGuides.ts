@@ -1,3 +1,5 @@
+'use client';
+
 import { getAllGuides, getFullGuide } from '@/lib/guide-registry';
 
 export function useGuides() {

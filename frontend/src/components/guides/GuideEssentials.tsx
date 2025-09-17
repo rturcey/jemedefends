@@ -6,11 +6,11 @@
 import { Zap, CheckCircle, AlertTriangle, ArrowRight, MessageSquare, Scale } from 'lucide-react';
 import React from 'react';
 
-import Button from '@/components/ui/Button';
 import Badge from '@/components/ui/Badge';
+import Button from '@/components/ui/Button';
 import LegalReference from '@/components/ui/LegalReference';
-import type { GuidePage } from '@/types/guides';
 import type { LegalArticleId } from '@/legal/registry';
+import type { GuidePage } from '@/types/guides';
 
 interface GuideEssentialsProps {
   guide: GuidePage & { slug: string };

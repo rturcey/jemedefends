@@ -1,3 +1,4 @@
+// src/components/ui/DefaultGrid.tsx
 import React from 'react';
 
 interface DefaultGridProps {
@@ -16,8 +17,11 @@ export default function DefaultGrid({ items, columns = 2, className = '' }: Defa
   return (
     <div className={`grid ${gridCols[columns]} gap-4 ${className}`}>
       {items.map((item, index) => (
-        <div key={index} className="p-3 bg-gray-50 border border-gray-200 rounded-lg text-sm">
-          {item}
+        <div
+          key={index}
+          className="h-full flex flex-col p-4 bg-gray-50 border border-gray-200 rounded-lg text-sm hover:bg-gray-100/70 transition-colors"
+        >
+          <div className="flex-1">{item}</div>
         </div>
       ))}
     </div>

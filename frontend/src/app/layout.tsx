@@ -2,6 +2,7 @@
 import './globals.css';
 import type { Metadata } from 'next';
 
+import RenderWatchdog from '@/app/_watchdog/RenderWatchdog';
 import { SiteLayout } from '@/components/layout';
 
 const siteUrl = 'https://jemedefends.fr';
@@ -45,7 +46,7 @@ export const metadata: Metadata = {
         url: '/og-image-homepage.jpg',
         width: 1200,
         height: 630,
-        alt: 'Je me défends — Produit défaillant ? Récupérez votre argent',
+        alt: 'Je me défends — Produit défaillant ? Obtenez réparation',
       },
     ],
   },
@@ -54,7 +55,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     creator: '@jemedefends',
-    title: 'Récupérez votre argent en 3 minutes, légalement',
+    title: 'Obtenez réparation en 3 minutes, légalement',
     description:
       'Garantie légale de conformité — lettre gratuite conforme au Code de la consommation.',
     images: ['/twitter-card.jpg'],

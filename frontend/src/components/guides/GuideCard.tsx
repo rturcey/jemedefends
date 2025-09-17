@@ -1,4 +1,6 @@
 // src/components/guides/GuideCard.tsx
+// MODIFIÉ - Utilise icon-utils au lieu des emojis
+
 'use client';
 
 import { Clock, TrendingUp, Star, ArrowRight, BookOpen } from 'lucide-react';
@@ -7,11 +9,13 @@ import Link from 'next/link';
 import React from 'react';
 
 import { useMobileOptimization } from '@/hooks/useMobileOptimization';
+import { formatDate } from '@/lib/guide-utils';
+import { getIconForCategory } from '@/lib/icon-utils';
 
 interface Category {
   name: string;
   color: string;
-  emoji: string;
+  icon: string; // Garde pour compatibilité mais utilise getIconForCategory
 }
 
 interface GuideCardProps {
@@ -20,14 +24,26 @@ interface GuideCardProps {
   description: string;
   category: Category;
   readingTime: number;
-  difficulty: 'facile' | 'moyen' | 'expert';
   lastUpdated: Date;
   image?: string;
-  isPopular?: boolean;
-  rating?: number;
   viewCount?: number;
   className?: string;
+  // ❌ PLUS DE DIFFICULTY - supprimé comme demandé
 }
+
+const getCategoryColors = (color: string) => {
+  const colors = {
+    blue: 'bg-blue-100 text-blue-700 border-blue-200',
+    purple: 'bg-purple-100 text-purple-700 border-purple-200',
+    green: 'bg-green-100 text-green-700 border-green-200',
+    indigo: 'bg-indigo-100 text-indigo-700 border-indigo-200',
+    orange: 'bg-orange-100 text-orange-700 border-orange-200',
+    pink: 'bg-pink-100 text-pink-700 border-pink-200',
+    yellow: 'bg-yellow-100 text-yellow-700 border-yellow-200',
+    gray: 'bg-gray-100 text-gray-700 border-gray-200',
+  };
+  return colors[color as keyof typeof colors] || colors.gray;
+};
 
 const GuideCard: React.FC<GuideCardProps> = ({
   slug,
@@ -35,52 +51,12 @@ const GuideCard: React.FC<GuideCardProps> = ({
   description,
   category,
   readingTime,
-  difficulty,
   lastUpdated,
   image,
-  isPopular = false,
-  rating = 4.5,
   viewCount,
   className = '',
 }) => {
   const { isMobile, shouldUseSimpleAnimations } = useMobileOptimization();
-
-  // Couleurs de catégorie
-  const getCategoryColors = (color: string) => {
-    const colors = {
-      blue: 'bg-blue-100 text-blue-700 border-blue-200',
-      purple: 'bg-purple-100 text-purple-700 border-purple-200',
-      green: 'bg-green-100 text-green-700 border-green-200',
-      indigo: 'bg-indigo-100 text-indigo-700 border-indigo-200',
-      orange: 'bg-orange-100 text-orange-700 border-orange-200',
-      pink: 'bg-pink-100 text-pink-700 border-pink-200',
-      yellow: 'bg-yellow-100 text-yellow-700 border-yellow-200',
-      gray: 'bg-gray-100 text-gray-700 border-gray-200',
-    };
-    return colors[color as keyof typeof colors] || colors.gray;
-  };
-
-  // Couleurs de difficulté
-  const getDifficultyColors = (diff: string) => {
-    const colors = {
-      facile: 'bg-green-50 text-green-600 border-green-200',
-      moyen: 'bg-yellow-50 text-yellow-600 border-yellow-200',
-      expert: 'bg-red-50 text-red-600 border-red-200',
-    };
-    return colors[diff as keyof typeof colors] || colors.facile;
-  };
-
-  // Formatage de la date
-  const formatDate = (date: Date) => {
-    const now = new Date();
-    const diffDays = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24));
-
-    if (diffDays === 0) return "Aujourd'hui";
-    if (diffDays === 1) return 'Hier';
-    if (diffDays < 7) return `Il y a ${diffDays} jours`;
-    if (diffDays < 30) return `Il y a ${Math.floor(diffDays / 7)} semaines`;
-    return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
-  };
 
   return (
     <Link
@@ -106,40 +82,19 @@ const GuideCard: React.FC<GuideCardProps> = ({
             className="object-cover group-hover:scale-105 transition-transform duration-300"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
-
-          {/* Badges overlay */}
-          <div className="absolute top-3 left-3 flex flex-wrap gap-2">
-            {isPopular && (
-              <div className="flex items-center gap-1 px-2 py-1 bg-yellow-500 text-white rounded-full text-xs font-medium">
-                <TrendingUp className="w-3 h-3" />
-                Populaire
-              </div>
-            )}
-          </div>
         </div>
       )}
 
       {/* Contenu principal */}
       <div className="p-4 sm:p-5 space-y-3">
-        {/* Header avec catégorie et difficulté */}
+        {/* Header avec catégorie seulement (plus de difficulté) */}
         <div className="flex items-center justify-between gap-2">
           <div
-            className={`
-            flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-xs font-medium
-            ${getCategoryColors(category.color)}
-          `}
+            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-xs font-medium ${getCategoryColors(category.color)}`}
           >
-            <span className="text-sm">{category.emoji}</span>
+            {/* ✅ UTILISE LA NOUVELLE FONCTION CENTRALISÉE */}
+            {getIconForCategory(category.name, 'sm')}
             <span className="truncate max-w-24 sm:max-w-none">{category.name}</span>
-          </div>
-
-          <div
-            className={`
-            px-2 py-1 rounded-full border text-xs font-medium
-            ${getDifficultyColors(difficulty)}
-          `}
-          >
-            {difficulty.charAt(0).toUpperCase() + difficulty.slice(1)}
           </div>
         </div>
 
@@ -160,28 +115,24 @@ const GuideCard: React.FC<GuideCardProps> = ({
             <span>{readingTime} min</span>
           </div>
 
-          {rating && (
-            <div className="flex items-center gap-1">
-              <Star className="w-4 h-4 text-yellow-500 fill-current" />
-              <span>{rating.toFixed(1)}</span>
-            </div>
-          )}
-
           {viewCount && (
             <div className="flex items-center gap-1">
               <BookOpen className="w-4 h-4" />
-              <span>{viewCount > 1000 ? `${Math.floor(viewCount / 1000)}k` : viewCount} vues</span>
+              <span>
+                {viewCount > 1000 ? `${(viewCount / 1000).toFixed(1)}k` : viewCount} lectures
+              </span>
             </div>
           )}
         </div>
 
         {/* Footer avec date et CTA */}
         <div className="flex items-center justify-between pt-2 border-t border-gray-100">
-          <span className="text-xs text-gray-500">Mis à jour {formatDate(lastUpdated)}</span>
+          {/* ✅ UTILISE formatDate EXISTANT */}
+          <span className="text-xs text-gray-500">{formatDate(lastUpdated)}</span>
 
-          <div className="flex items-center gap-1 text-blue-600 font-medium text-sm group-hover:gap-2 transition-all">
+          <div className="flex items-center gap-1 text-blue-600 group-hover:text-blue-700 font-medium text-xs sm:text-sm">
             <span className="hidden sm:inline">Lire</span>
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
           </div>
         </div>
       </div>
@@ -192,7 +143,9 @@ const GuideCard: React.FC<GuideCardProps> = ({
 export default GuideCard;
 
 // Composant Skeleton pour GuideCard
-export const GuideCardSkeleton: React.FC<{ className?: string }> = ({ className = '' }) => (
+export const GuideCardSkeleton: React.FC<{
+  className?: string;
+}> = ({ className = '' }) => (
   <div className={`bg-white border border-gray-200 rounded-xl overflow-hidden ${className}`}>
     {/* Image skeleton */}
     <div className="h-32 sm:h-40 bg-gray-200 animate-pulse" />

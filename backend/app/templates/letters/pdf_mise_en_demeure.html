@@ -1,448 +1,385 @@
 <!doctype html>
 <html lang="fr">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Mise en demeure - Je me défends</title>
     <style>
-      /* ====== FONTS LOCALES ====== */
-      @font-face {
-        font-family: "Inter";
-        src: url("/static/fonts/inter-regular.woff2") format("woff2");
-        font-weight: 400;
-        font-style: normal;
-        font-display: swap;
-      }
-      @font-face {
-        font-family: "Inter";
-        src: url("/static/fonts/inter-bold.woff2") format("woff2");
-        font-weight: 700;
-        font-style: normal;
-        font-display: swap;
-      }
+        /* =========================
+           FONT & DESIGN TOKENS
+        ==========================*/
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
-      /* ====== VARIABLES CSS ====== */
-      :root {
-        --brand-blue: #3b82f6;
-        --brand-dark: #1e40af;
-        --text-primary: #111827;
-        --text-secondary: #4b5563;
-        --text-muted: #374151;
-        --border-light: #e5e7eb;
-        --bg-light: #f8fafc;
-        --bg-blue-light: #eff6ff;
-      }
+        :root{
+            /* Marque JMD */
+            --brand-600:#1E66FF; /* proche de ton logo */
+            --brand-700:#0056D2;
+            --ink:#0f172a;
+            --muted:#475569;
 
-      /* ====== BASE ====== */
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-      @page {
-        size: A4;
-        margin: 0;
-      }
-      body {
-        font-family:
-          "Inter",
-          -apple-system,
-          BlinkMacSystemFont,
-          sans-serif;
-        font-size: 9pt;
-        line-height: 1.3;
-        color: var(--text-primary);
-        background: #fff;
-        width: 210mm;
-        height: 297mm;
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
-      }
+            /* Gris d’édition */
+            --g-25:#fcfcfd;
+            --g-50:#f8fafc;
+            --g-100:#eef2f7;
+            --g-200:#e4e9f1;
+            --g-300:#cbd5e1;
 
-      /* ====== LAYOUT PRINCIPAL ====== */
-      .pdf-page {
-        width: 210mm;
-        height: 297mm;
-        max-height: 297mm;
-        padding: 15mm 20mm 20mm 20mm;
-        display: flex;
-        flex-direction: column;
-        position: relative;
-        overflow: hidden;
-      }
-
-      /* ====== HEADER AVEC LOGO ====== */
-      .header {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-end;
-        margin-bottom: 10mm;
-        padding-bottom: 5mm;
-        border-bottom: 1.5px solid var(--brand-blue);
-      }
-      .brand-logo img {
-        height: 48px;
-        width: auto;
-        display: block;
-      }
-      .doc-date {
-        font-weight: 600;
-        font-size: 9pt;
-        color: var(--text-muted);
-        text-align: right;
-        margin-bottom: 8px;
-      }
-
-      /* ====== ADRESSES ====== */
-      .addresses {
-        display: flex;
-        justify-content: space-between;
-        gap: 8mm;
-        margin-bottom: 6mm;
-        overflow-wrap: break-word;
-      }
-      .address-block .label {
-        font-weight: 700;
-        font-size: 8pt;
-        text-transform: uppercase;
-        letter-spacing: 0.06em;
-        color: var(--brand-blue);
-        flex: 1;
-      }
-      .address-block.to {
-        justify-self: end;
-        text-align: left;
-      }
-      .address-content {
-        font-size: 9pt;
-        line-height: 1.3;
-        color: var(--text-primary);
-      }
-      .address-content strong {
-        font-weight: 700;
-      }
-
-      /* ====== OBJET ====== */
-      .subject {
-        background: linear-gradient(
-          135deg,
-          var(--brand-blue),
-          var(--brand-dark)
-        );
-        color: #fff;
-        padding: 8px 16px;
-        box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
-        text-align: center;
-      }
-      .subject-title {
-        font-weight: 700;
-        font-size: 11pt;
-        margin-bottom: 2px;
-      }
-      .subject-ref {
-        font-size: 9pt;
-        opacity: 0.9;
-        font-weight: 400;
-      }
-
-      /* ====== CONTENU ====== */
-      .content {
-        flex: 1;
-        min-height: 0;
-        overflow: hidden;
-        max-height: calc(297mm - 120mm);
-      }
-      .overflow-protection {
-        max-height: calc(297mm - 100mm);
-        overflow: hidden;
-      }
-      .greeting {
-        font-size: 10pt;
-        margin: 6mm 0;
-        font-weight: 500;
-      }
-      .paragraph {
-        margin-bottom: 5mm;
-        text-align: justify;
-        line-height: 1.3;
-        font-size: 10pt;
-        overflow-wrap: break-word;
-      }
-      .paragraph.description {
-        max-height: 25mm;
-        overflow: hidden;
-        position: relative;
-        word-break: break-all;
-        hyphens: auto;
-      }
-      .highlight {
-        font-weight: 700;
-        color: var(--brand-dark);
-      }
-      .product_price,
-      .date-ref {
-        font-variant-numeric: tabular-nums;
-        font-feature-settings: "tnum";
-        font-weight: 600;
-      }
-
-      /* ====== ENCADRÉS ====== */
-      .legal-box {
-        background: linear-gradient(135deg, var(--bg-blue-light), #e0f2fe);
-        border: 1px solid rgba(59, 130, 246, 0.2);
-        border-left: 4px solid var(--brand-blue);
-        padding: 10pt 12pt;
-        margin: 8mm 0;
-        line-height: 1.3;
-      }
-      .legal-box strong {
-        font-weight: 700;
-        color: var(--brand-dark);
-      }
-
-      .warning {
-        background: linear-gradient(135deg, #fef3c7, #fed7aa);
-        border-left: 4px solid #f59e0b;
-        padding: 10pt 12pt;
-        margin: 8mm 0;
-        line-height: 1.3;
-      }
-      .warning strong {
-        color: #92400e;
-        font-weight: 700;
-      }
-
-      /* ====== NEW: encadré “charge de la preuve” compact ====== */
-      .legal-note {
-        background: #f8fafc;
-        border: 1px solid var(--border-light);
-        border-left: 4px solid var(--brand-blue);
-        padding: 8pt 10pt;
-        margin: 6mm 0;
-        line-height: 1.3;
-        font-size: 9.5pt;
-      }
-      .legal-note em {
-        font-style: normal;
-        color: var(--text-secondary);
-      }
-
-      /* ====== SIGNATURE ====== */
-      .signature-section {
-        margin-top: auto;
-        padding-top: 5mm;
-        display: flex;
-        justify-content: flex-end;
-        page-break-inside: avoid;
-      }
-      .signature-block {
-        text-align: center;
-        max-width: 70mm;
-      }
-      .signature-name {
-        font-weight: 700;
-        font-size: 11pt;
-        color: var(--text-primary);
-        margin-bottom: 4mm;
-      }
-      .signature-box {
-        padding: 8px;
-        background: #fff;
-        min-height: 25mm;
-        display: flex;
-        align-items: right;
-        justify-content: right;
-      }
-      .signature-box img {
-        max-width: 100%;
-        max-height: 100%;
-        object-fit: contain;
-      }
-      .signature-placeholder {
-        color: var(--text-muted);
-        font-style: italic;
-        font-size: 9pt;
-      }
-
-      /* ====== PRINT OPTIMIZATIONS ====== */
-      @media print {
-        .signature-section {
-          margin-top: 10mm;
+            /* Accents sémantiques (faible saturation pour PDF) */
+            --info-50:#f2f6ff;
+            --info-200:#dbe6ff;
+            --ok-50:#f3fcf6;
+            --ok-200:#d8f3e3;
+            --warn-50:#fff6ed;
+            --warn-200:#ffe3c7;
         }
-        .signature-box img {
-          max-height: 20mm;
+
+        /* =========================
+           RESET & PAGE
+        ==========================*/
+        *{margin:0;padding:0;box-sizing:border-box}
+        @page{size:A4;margin:0}
+        html,body{width:210mm;height:297mm}
+        body{
+            font-family:'Inter',system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+            color:var(--ink);
+            -webkit-font-smoothing:antialiased;
+            text-rendering:optimizeLegibility;
+            background:#fff;
+            overflow:hidden;
+            font-size:11pt; line-height:1.6;
         }
-      }
+
+        .document{
+            width:210mm;height:297mm;display:flex;flex-direction:column;
+        }
+
+        /* =========================
+           HEADER (sobre & net)
+        ==========================*/
+        .header{
+            padding:16mm 22mm 10mm;
+            border-bottom:1px solid var(--g-200);
+            background:
+                    radial-gradient(120% 120% at 100% -20%, rgba(0,86,210,0.08) 0%, transparent 55%),
+                    radial-gradient(140% 140% at -10% -30%, rgba(30,102,255,0.08) 0%, transparent 60%),
+                    linear-gradient(180deg, #fff 0%, #fff 100%);
+        }
+        .header-row{
+            display:flex;justify-content:space-between;align-items:center;gap:16px;
+        }
+        .brand{
+            display:flex;align-items:center;gap:14px;
+        }
+        .logo{
+            width:44px;height:44px;border-radius:12px;background:#fff;
+            border:1px solid var(--g-200);
+            display:grid;place-items:center;
+        }
+        .logo img{max-width:38px;max-height:38px;display:block}
+        .brand-text h1{
+            font-weight:800;letter-spacing:-0.02em;color:var(--brand-700);
+            font-size:18pt;line-height:1;
+        }
+        .brand-text p{
+            color:var(--muted); font-weight:600; letter-spacing:.02em; font-size:9.5pt; margin-top:4px;
+        }
+        .doc-meta{
+            text-align:right;
+        }
+        .doc-badge{
+            display:inline-block;
+            padding:8px 12px;border-radius:10px;font-weight:700;letter-spacing:.02em;
+            background:linear-gradient(135deg,var(--brand-600),var(--brand-700));
+            color:#fff; font-size:11pt;
+        }
+        .doc-date{
+            margin-top:6px;color:var(--muted);font-weight:600;font-size:10pt;
+        }
+
+        /* =========================
+           CONTENT WRAPPER
+        ==========================*/
+        .content{
+            flex:1;display:flex;flex-direction:column;gap:12px;
+            padding:12mm 22mm 16mm;
+        }
+
+        /* =========================
+           ADDRESSES (grille premium)
+        ==========================*/
+        .addresses{
+            display:grid;grid-template-columns:1fr 1fr;gap:12mm;margin-top:2mm;
+        }
+        .address{
+            border:1px solid var(--g-200);border-radius:14px;background:var(--g-50);
+            padding:14px 16px;position:relative;
+        }
+        .address::after{
+            content:"";position:absolute;inset:0 0 auto 0;height:3px;border-radius:14px 14px 0 0;
+            background:linear-gradient(90deg,var(--brand-600),var(--brand-700));
+        }
+        .address-label{
+            font-size:8.5pt;text-transform:uppercase;letter-spacing:.12em;color:var(--brand-700);
+            font-weight:800;margin:8px 0 10px;
+        }
+        .address-name{font-size:12.5pt;font-weight:800;margin-bottom:4px;color:#0b1220}
+        .address-line{color:var(--muted);}
+
+        /* =========================
+           SUBJECT (professionnel)
+        ==========================*/
+        .subject{
+            display:flex;align-items:center;justify-content:center;text-align:center;
+            padding:10px 16px;margin:8px 0 4px;
+            background:var(--info-50);border:1px solid var(--info-200);border-radius:12px;
+        }
+        .subject-title{font-weight:800;letter-spacing:.01em;color:var(--brand-700);font-size:13pt}
+        .subject-sub{margin-left:10px;color:var(--muted);font-weight:600}
+
+        /* =========================
+           BODY
+        ==========================*/
+        .letter-body{margin-top:4px}
+        .letter-body p{margin:10px 0;text-align:justify}
+        .letter-body strong{color:#0b1220}
+
+        /* Encadré défaut constaté */
+        .defect{
+            display:flex;gap:10px;align-items:flex-start;
+            background:var(--warn-50);border:1px solid var(--warn-200);
+            border-radius:12px;padding:12px 14px;margin:10px 0;
+        }
+        .defect-icon{
+            width:14px;height:14px;border-radius:50%;
+            background:linear-gradient(135deg,#ff9b3d,#ff7b1a);
+            box-shadow:0 0 0 1px rgba(255,140,64,.25) inset;
+            margin-top:3px;
+        }
+        .defect-text{font-weight:600;color:#8a4700}
+
+        /* Titres de sections */
+        .h3{
+            margin:14px 0 8px;padding-bottom:6px;
+            font-weight:800;font-size:12.5pt;color:var(--brand-700);
+            border-bottom:2px solid var(--g-200); position:relative;
+        }
+        .h3::after{content:"";position:absolute;left:0;bottom:-2px;width:42px;height:2px;background:var(--brand-600)}
+
+        /* Encadré légal */
+        .legal{
+            background:var(--info-50);border:1px solid var(--info-200);border-radius:12px;
+            padding:12px 14px;margin:8px 0;
+        }
+        .legal-title{font-weight:800;color:var(--brand-700);margin-bottom:6px}
+        .legal-article{font-size:10pt;line-height:1.55;margin:6px 0}
+        .legal-article strong{color:var(--brand-700)}
+
+        /* Demandes (pastilles) */
+        .demands{
+            background:var(--ok-50);border:1px solid var(--ok-200);border-radius:12px;
+            padding:12px 14px;margin:8px 0;
+        }
+        .demand{display:flex;gap:8px;align-items:flex-start;margin:6px 0}
+        .bullet{
+            width:8px;height:8px;border-radius:50%;
+            background:linear-gradient(135deg,#24c172,#16a34a);
+            margin-top:6px;flex:0 0 8px;
+        }
+        .demand b{font-weight:800}
+
+        /* =========================
+           SIGNATURE
+        ==========================*/
+        .sign-wrap{
+            margin-top:auto;display:flex;justify-content:flex-end;
+        }
+        .sign-box{
+            min-width:180px;background:var(--g-50);border:1px solid var(--g-200);
+            border-radius:12px;padding:14px;text-align:center;
+        }
+        .sign-label{
+            font-size:8.5pt;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);font-weight:800;
+        }
+        .sign-name{margin:6px 0 10px;font-weight:800;color:#0b1220}
+        .sign-area{
+            min-height:58px;border:1.5px dashed var(--g-300);border-radius:10px;display:grid;place-items:center;background:#fff;
+        }
+        .signature-img{max-width:100%;max-height:56px;object-fit:contain}
+        .signature-placeholder{color:var(--muted);font-style:italic;font-size:9.5pt}
+
+        /* =========================
+           FOOTER
+        ==========================*/
+        .foot{
+            position:absolute;bottom:12mm;left:22mm;right:22mm;
+            display:flex;justify-content:space-between;align-items:center;
+            color:var(--muted);font-size:8.5pt;
+        }
+        .foot .brand-note{font-weight:600}
+        .foot .legal-note{opacity:.9}
+
+        /* =========================
+           WATERMARK (optionnel)
+        ==========================*/
+        {% if add_watermark %}
+            .watermark{
+                position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-22deg);
+                font-size:38pt;font-weight:900;color:rgba(0,86,210,0.05);letter-spacing:.18em;white-space:nowrap;pointer-events:none;z-index:1
+            }
+        {% endif %}
+
+        /* =========================
+           PRINT
+        ==========================*/
+        @media print{
+            body{-webkit-print-color-adjust:exact}
+            .document{page-break-after:avoid}
+        }
     </style>
+</head>
+<body>
+{% if add_watermark %}<div class="watermark">APERÇU</div>{% endif %}
 
-    {% if add_watermark %}
-      <style>
-        .watermark-overlay {
-          position: fixed;
-          inset: 0;
-          width: 100%;
-          height: 100%;
-          pointer-events: none;
-          z-index: 1000;
-        }
-        .watermark-overlay::after {
-          content: "";
-          position: absolute;
-          top: -50%;
-          left: -50%;
-          width: 200%;
-          height: 200%;
-          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='100' viewBox='0 0 200 100'%3E%3Ctext x='100' y='50' font-family='Arial' font-size='16' font-weight='400' letter-spacing='0.3em' fill='%23ef4444' fill-opacity='0.12' text-anchor='middle' dominant-baseline='middle' transform='rotate(-15 100 50)'%3EAPER%C3%87U%3C/text%3E%3C/svg%3E");
-          background-repeat: repeat;
-          background-size: 200px 100px;
-          transform: rotate(-15deg);
-        }
-        @media print {
-          .watermark-overlay::before {
-            font-size: 35px;
-            color: rgba(239, 68, 68, 0.5);
-          }
-        }
-      </style>
-    {% endif %}
-  </head>
-  <body>
-    <div class="pdf-page">
-      {% if add_watermark %}
-        <div class="watermark-overlay"></div>
-      {% endif %}
-
-      <!-- HEADER -->
-      <header class="header">
-        <div class="brand-logo">
-          <img
-            src="{{ logo_src }}"
-            alt="Je me défends - Mes droits, tout simplement"
-          />
-        </div>
-        <div class="doc-date">Le {{ current_date }}</div>
-      </header>
-
-      <!-- ADRESSES -->
-      <section class="addresses">
-        <div class="address-block">
-          <div class="label">Expéditeur</div>
-          <div class="address-content">
-            <strong>{{ letter.buyer_name }}</strong><br />
-            {{ letter.buyer_address | replace('\n','<br />') | safe }}
-          </div>
-        </div>
-        <div class="address-block to">
-          <div class="label">Destinataire</div>
-          <div class="address-content">
-            À l'attention de <strong>{{ letter.seller_name }}</strong><br />
-            {{ letter.seller_address | replace('\n','<br />') | safe }}
-          </div>
-        </div>
-      </section>
-
-      <!-- OBJET -->
-      <div class="subject">
-        <div class="subject-title">
-          Mise en demeure de mise en conformité d’un bien non conforme
-        </div>
-        <div class="subject-ref">
-          Réf. légales : Articles L.217-3 et <u>L.217-7</u> du Code de la
-          consommation
-        </div>
-      </div>
-
-      <!-- CONTENU -->
-      <main class="content overflow-protection">
-        <div class="greeting">Madame, Monsieur,</div>
-
-        <div class="paragraph">
-          Le <span class="date-ref">{{ purchase_date_formatted }}</span>, j'ai
-          acheté auprès de votre société le produit suivant :
-          <span class="highlight">{{ letter.product_name }}</span>
-          {% if letter.order_reference %}
-            <em
-              >(commande n°<span class="product_price"
-                >{{ letter.order_reference }}</span
-              >)</em
-            >
-          {% endif %},
-          pour un montant de
-          <span class="highlight product_price"
-            >{{ product_price_formatted }}</span
-          >.
-        </div>
-
-        <div class="paragraph description">
-          Or, ce bien présente aujourd'hui un défaut de conformité caractérisé
-          par :
-          <span class="highlight">{{ letter.defect_description }}</span>.
-        </div>
-
-        <div class="legal-box">
-          <strong>Base légale :</strong> Conformément aux articles L.217-3 et
-          suivants du Code de la consommation, je vous mets en demeure de
-          procéder, <strong>sans frais</strong>, à la réparation ou au
-          remplacement de ce bien dans un délai de
-          <strong>14 jours calendaires</strong> à compter de la réception de ce
-          courrier.
-        </div>
-
-        <!-- NEW: Charge de la preuve (art. L.217-7) -->
-        {%
-          set _limit = presumption_limit_months | default( (12 if letter.used
-          else 24) )
-        %}
-        {% if presumption_active is defined %}
-          {%
-            set _presumption
-            = presumption_active
-          %}
-        {% else %}
-          {% set _presumption = true %}
-        {% endif %}
-        {% if _presumption %}
-          <div class="legal-note">
-            <strong>Charge de la preuve - art. L.217-7 :</strong>
-            le défaut étant apparu dans le délai de
-            <strong>{{ _limit }} mois</strong> à compter de la délivrance, il
-            est <em>présumé exister</em> au jour de celle-ci. En conséquence,
-            <strong>il vous appartient d’apporter la preuve contraire</strong>.
-          </div>
-        {% endif %}
-
-        <div class="warning">
-          <strong>⚠️ Conséquences en cas de non-réponse :</strong><br />
-          Faute de réponse satisfaisante dans ce délai, je me réserve le droit
-          d'engager toute action utile, notamment auprès de la DGCCRF,
-          d'associations de consommateurs ou par voie judiciaire.
-        </div>
-
-        <div class="paragraph">
-          Dans l'attente de votre retour rapide, je vous prie d'agréer, Madame,
-          Monsieur, l'expression de mes salutations distinguées.
-        </div>
-
-        <!-- SIGNATURE -->
-        <div class="signature-section">
-          <div class="signature-block">
-            <div class="signature-name">{{ letter.buyer_name }}</div>
-            <div class="signature-box">
-              {% if signature_data_url %}
-                <img
-                  src="{{ signature_data_url }}"
-                  alt="Signature de {{ letter.buyer_name }}"
-                />
-              {% else %}
-                <div class="signature-placeholder">
-                  {% if is_preview %}Signature requise{% endif %}
+<div class="document">
+    <!-- HEADER -->
+    <header class="header">
+        <div class="header-row">
+            <div class="brand">
+                <div class="logo">
+                    {% if logo_src %}
+                        <img src="{{ logo_src }}" alt="Logo Je me défends">
+                    {% else %}
+                        <img src="frontend/public/images/logo_jemedefends.png" alt="Logo Je me défends">
+                    {% endif %}
                 </div>
-              {% endif %}
+                <div class="brand-text">
+                    <h1>Je me défends</h1>
+                    <p>La loi au service des consommateurs</p>
+                </div>
             </div>
-          </div>
+            <div class="doc-meta">
+                <span class="doc-badge">Mise en demeure</span>
+                <div class="doc-date">{{ current_date }}</div>
+            </div>
         </div>
-      </main>
-    </div>
-  </body>
+    </header>
+
+    <!-- CONTENT -->
+    <main class="content">
+        <!-- Addresses -->
+        <section class="addresses">
+            <div class="address">
+                <div class="address-label">Expéditeur</div>
+                <div class="address-name">{{ letter.buyer_name }}</div>
+                <div class="address-line">{{ letter.buyer_address.line1 }}</div>
+                {% if letter.buyer_address.line2 %}<div class="address-line">{{ letter.buyer_address.line2 }}</div>{% endif %}
+                <div class="address-line">{{ letter.buyer_address.postal_code }} {{ letter.buyer_address.city }}</div>
+                <div class="address-line">{{ letter.buyer_address.country }}</div>
+            </div>
+
+            <div class="address">
+                <div class="address-label">Destinataire</div>
+                <div class="address-name">{{ letter.seller_name }}</div>
+                <div class="address-line">{{ letter.seller_address.line1 }}</div>
+                {% if letter.seller_address.line2 %}<div class="address-line">{{ letter.seller_address.line2 }}</div>{% endif %}
+                <div class="address-line">{{ letter.seller_address.postal_code }} {{ letter.seller_address.city }}</div>
+                <div class="address-line">{{ letter.seller_address.country }}</div>
+            </div>
+        </section>
+
+        <!-- Subject -->
+        <section class="subject">
+            <div class="subject-title">Mise en demeure</div>
+            <div class="subject-sub">Application de la garantie légale de conformité</div>
+        </section>
+
+        <!-- Body -->
+        <section class="letter-body">
+            <p><strong>Madame, Monsieur,</strong></p>
+
+            <p>
+                J'ai fait l'acquisition le <strong>{{ purchase_date_formatted }}</strong> d'un
+                <strong>{{ letter.product_name }}</strong> au prix de <strong>{{ product_price_formatted }}</strong>
+                {% if letter.order_reference %}, référence <strong>{{ letter.order_reference }}</strong>{% endif %}.
+            </p>
+
+            <div class="defect">
+                <div class="defect-icon" aria-hidden="true"></div>
+                <div class="defect-text"><strong>Défaut constaté :</strong> {{ letter.defect_description }}</div>
+            </div>
+
+            <h3 class="h3">Fondements juridiques</h3>
+            <p>
+                En application des <strong>articles L. 217-3 à L. 217-14 du Code de la consommation</strong>,
+                vous êtes tenu de livrer un bien conforme au contrat et répondez des défauts de conformité
+                existant lors de la délivrance.
+            </p>
+
+            <div class="legal">
+                <div class="legal-title">Articles de référence</div>
+                <div class="legal-article">
+                    <strong>Article L. 217-7 :</strong>
+                    Le défaut de conformité constaté dans un délai de
+                    {% if letter.used %}douze mois{% else %}vingt-quatre mois{% endif %}
+                    à partir de la délivrance du bien est présumé exister au moment de la délivrance.
+                </div>
+                <div class="legal-article">
+                    <strong>Article L. 217-9 :</strong>
+                    Le consommateur peut choisir entre la réparation et le remplacement du bien.
+                </div>
+                <div class="legal-article">
+                    <strong>Article L. 217-10 :</strong>
+                    La mise en conformité doit intervenir dans un délai raisonnable après la demande,
+                    qui ne peut être supérieur à trente jours.
+                </div>
+                <div class="legal-article">
+                    <strong>Article L. 217-11 :</strong>
+                    La mise en conformité a lieu sans aucun coût pour le consommateur.
+                </div>
+            </div>
+
+            <h3 class="h3">Mes demandes</h3>
+            <p>Par conséquent, je vous demande de procéder à la <strong>mise en conformité gratuite</strong> de mon produit :</p>
+            <div class="demands">
+                <div class="demand"><span class="bullet"></span><span><b>Réparation</b> ou <b>remplacement</b> du produit défaillant.</span></div>
+                <div class="demand"><span class="bullet"></span><span>Dans un délai maximum de <b>30 jours</b>.</span></div>
+                <div class="demand"><span class="bullet"></span><span><b>Sans aucun frais</b> à ma charge (transport, main-d'œuvre, pièces).</span></div>
+            </div>
+
+            <h3 class="h3">Délai et conséquences</h3>
+            <p>
+                À défaut de réponse satisfaisante sous <strong>quinze (15) jours</strong> à compter de la réception de ce courrier,
+                je me verrai contraint d'exercer les autres recours prévus par la loi, notamment la
+                <strong>réduction du prix</strong> ou la <strong>résolution de la vente</strong> (article L. 217-14).
+            </p>
+
+            <p>
+                Dans l'attente de votre réponse rapide et d'une solution conforme à mes droits légaux,
+                je vous prie d'agréer, Madame, Monsieur, l'expression de mes salutations distinguées.
+            </p>
+        </section>
+
+        <!-- Signature -->
+        <section class="sign-wrap">
+            <div class="sign-box">
+                <div class="sign-label">Signature</div>
+                <div class="sign-name">{{ letter.buyer_name }}</div>
+                <div class="sign-area">
+                    {% if signature_data_url %}
+                        <img src="{{ signature_data_url }}" alt="Signature" class="signature-img">
+                    {% else %}
+                        <div class="signature-placeholder">Signature manuscrite</div>
+                    {% endif %}
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="foot">
+        <div class="brand-note">Généré par <strong>Je me défends</strong></div>
+        <div class="legal-note">Document automatisé — ceci n’est pas un conseil juridique individualisé.</div>
+    </footer>
+</div>
+</body>
 </html>
