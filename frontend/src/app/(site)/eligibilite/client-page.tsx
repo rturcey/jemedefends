@@ -15,6 +15,7 @@ import { useExitIntent } from '@/hooks/useExitIntent';
 import { trackEligibilityEvents } from '@/lib/analytics';
 import type { EligibilityData } from '@/types/eligibility';
 import type { EligibilityResult } from '@/eligibility/engine';
+import { MobileHeader } from '@/components';
 
 // Lazy loading pour les composants non critiques
 const ExitIntentModal = dynamic(() => import('@/components/eligibility/ExitIntentModal'), {
@@ -186,6 +187,7 @@ export default function EligibilityClientPage() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
             >
+              <MobileHeader />
               <HeroSection onStartTest={startTest} />
             </motion.div>
           )}

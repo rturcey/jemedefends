@@ -1,4 +1,3 @@
-
 'use client';
 
 import { Menu, X, Home, FileText, HelpCircle, BookOpen, Shield } from 'lucide-react';
@@ -6,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 
-export default function MobileHeaderIndex() {
+export default function MobileHeader() {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -37,8 +36,16 @@ export default function MobileHeaderIndex() {
   }, [isOpen]);
 
   const menuItems = [
-    { href: '/#problemes', label: 'Problèmes courants', icon: <Shield className="w-5 h-5" /> },
-    { href: '/#process', label: 'Comment ça marche', icon: <FileText className="w-5 h-5" /> },
+    {
+      href: '/#problemes',
+      label: 'Problèmes courants',
+      icon: <Shield className="w-5 h-5" />,
+    },
+    {
+      href: '/#process',
+      label: 'Comment ça marche',
+      icon: <FileText className="w-5 h-5" />,
+    },
     { href: '/#fiabilite', label: 'Confiance', icon: <Shield className="w-5 h-5" /> },
     { href: '/guides', label: 'Guides', icon: <BookOpen className="w-5 h-5" /> },
     { href: '/faq', label: 'FAQ', icon: <HelpCircle className="w-5 h-5" /> },
@@ -100,7 +107,7 @@ export default function MobileHeaderIndex() {
           >
             <div className="px-4 py-6 space-y-2">
               {/* Liens de navigation */}
-              {menuItems.map((item) => (
+              {menuItems.map(item => (
                 <Link
                   key={item.href}
                   href={item.href}
@@ -139,8 +146,7 @@ export default function MobileHeaderIndex() {
                     100% gratuit
                   </span>
                   <span className="flex items-center gap-1">
-                    <div className="w-2 h-2 bg-blue-500 rounded-full" />
-                    2 minutes
+                    <div className="w-2 h-2 bg-blue-500 rounded-full" />2 minutes
                   </span>
                   <span className="flex items-center gap-1">
                     <div className="w-2 h-2 bg-purple-500 rounded-full" />
