@@ -202,12 +202,25 @@ body {
 
 /* CLASSES DE SCROLL CORRIGÉES AVEC TOPBAR */
 .section-scroll-target {
-  scroll-margin-top: 5rem; /* Exactement la hauteur de la TopBar (80px) */
+  scroll-margin-top: var(--header-height-mobile);
 }
 
-@media (max-width: 768px) {
+@media (min-width: 769px) {
   .section-scroll-target {
-    scroll-margin-top: 64px;
+    scroll-margin-top: var(--header-height-desktop);
+  }
+}
+
+#process,
+#fiabilite {
+  min-height: 100vh;
+}
+
+@media (min-width: 769px) {
+  #process,
+  #fiabilite {
+    height: calc(100vh - var(--header-height-desktop));
+    min-height: auto;
   }
 }
 
@@ -548,7 +561,7 @@ li {
 }
 
 :root {
-  --header-height-mobile: 48px;
+  --header-height-mobile: 64px;
   --header-height-desktop: 80px;
 }
 
