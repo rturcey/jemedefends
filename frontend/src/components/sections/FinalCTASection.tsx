@@ -1,78 +1,157 @@
 'use client';
 
-import { ArrowRight, CheckCircle, Clock, Shield } from 'lucide-react';
+import {ArrowRight, CheckCircle, Clock, Shield, Scale, Sparkles} from 'lucide-react';
 import * as React from 'react';
 
-import { Container, Reveal, Button } from '@/components/ui';
+import {Container, Reveal, Button} from '@/components/ui';
+import {useMobileOptimization} from '@/hooks/useMobileOptimization';
 
 export default function FinalCTASection() {
-  return (
-    <div className="relative overflow-hidden">
-      {/* Fond avec gradients */}
-      <div className="relative bg-gradient-to-br from-surface-soft to-white">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 opacity-40" />
-        <div className="absolute inset-0 opacity-20">
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-100/30 to-purple-100/30" />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(99,102,241,0.1),transparent_50%)]" />
+    const {isMobile} = useMobileOptimization();
+
+    return (
+        <div className="relative overflow-hidden">
+            {/* ✅ Fond simplifié avec gradient subtil */}
+            <div
+                className="relative bg-gradient-to-br from-blue-50 via-white to-purple-50">
+                <div className="absolute inset-0 opacity-30">
+                    <div
+                        className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(99,102,241,0.08),transparent_50%)]"/>
+                </div>
+
+                <Container className="relative py-8 md:py-12 lg:py-20">
+                    <div className="max-w-4xl mx-auto text-center">
+                        {/* ✅ AJOUT : Illustration symbolique forte */}
+                        <Reveal>
+                            <div className="mb-4 md:mb-6">
+                                <div
+                                    className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 mx-auto bg-gradient-to-br from-blue-100 to-indigo-100 rounded-2xl md:rounded-3xl flex items-center justify-center shadow-lg">
+                                    <Scale
+                                        className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 text-blue-600"
+                                        strokeWidth={1.5}
+                                    />
+                                </div>
+                            </div>
+                        </Reveal>
+
+                        {/* ✅ Titre réduit sur mobile */}
+                        <Reveal>
+                            <div className="mb-6 md:mb-8">
+                                <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-gray-900 mb-3 md:mb-4 lg:mb-6 leading-tight">
+                                    Prêt à faire valoir vos droits ?
+                                </h2>
+                                <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-600 leading-relaxed max-w-2xl mx-auto">
+                                    Générez votre lettre juridique en 2 minutes et
+                                    obtenez{' '}
+                                    <strong>réparation, remplacement ou
+                                        remboursement</strong>.
+                                </p>
+                            </div>
+                        </Reveal>
+
+                        {/* ✅ AJOUT : Liste de bénéfices avec icônes (2 cols mobile, 4 cols desktop) */}
+                        <Reveal delay={0.1}>
+                            <div
+                                className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-6 md:mb-8 max-w-3xl mx-auto">
+                                <div
+                                    className="flex flex-col sm:flex-row items-center gap-2 p-3 bg-white/60 backdrop-blur-sm rounded-xl border border-gray-200/50 shadow-sm">
+                                    <CheckCircle
+                                        className="w-5 h-5 text-green-600 flex-shrink-0"
+                                        strokeWidth={2}/>
+                                    <span
+                                        className="text-xs sm:text-sm font-medium text-gray-900 text-center sm:text-left">
+                    100% Gratuit
+                  </span>
+                                </div>
+
+                                <div
+                                    className="flex flex-col sm:flex-row items-center gap-2 p-3 bg-white/60 backdrop-blur-sm rounded-xl border border-gray-200/50 shadow-sm">
+                                    <Clock
+                                        className="w-5 h-5 text-blue-600 flex-shrink-0"
+                                        strokeWidth={2}/>
+                                    <span
+                                        className="text-xs sm:text-sm font-medium text-gray-900 text-center sm:text-left">
+                    3 minutes
+                  </span>
+                                </div>
+
+                                <div
+                                    className="flex flex-col sm:flex-row items-center gap-2 p-3 bg-white/60 backdrop-blur-sm rounded-xl border border-gray-200/50 shadow-sm">
+                                    <Shield
+                                        className="w-5 h-5 text-purple-600 flex-shrink-0"
+                                        strokeWidth={2}/>
+                                    <span
+                                        className="text-xs sm:text-sm font-medium text-gray-900 text-center sm:text-left">
+                    Bases juridiques
+                  </span>
+                                </div>
+
+                                <div
+                                    className="flex flex-col sm:flex-row items-center gap-2 p-3 bg-white/60 backdrop-blur-sm rounded-xl border border-gray-200/50 shadow-sm">
+                                    <Sparkles
+                                        className="w-5 h-5 text-yellow-600 flex-shrink-0"
+                                        strokeWidth={2}/>
+                                    <span
+                                        className="text-xs sm:text-sm font-medium text-gray-900 text-center sm:text-left">
+                    Sans effort
+                  </span>
+                                </div>
+                            </div>
+                        </Reveal>
+
+                        {/* ✅ CTA principal optimisé mobile (56px min-height pour touch target) */}
+                        <Reveal delay={0.15}>
+                            <div
+                                className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
+                                <Button
+                                    href="/eligibilite#start"
+                                    size="lg"
+                                    icon={<ArrowRight className="w-5 h-5"
+                                                      strokeWidth={2}/>}
+                                    className="w-full sm:w-auto min-h-[56px] text-base font-semibold shadow-xl hover:shadow-2xl"
+                                >
+                                    Générer ma lettre gratuitement
+                                </Button>
+
+                                {/* ✅ CTA secondaire en ghost (moins visible) */}
+                                <Button
+                                    href="/guides"
+                                    variant="ghost"
+                                    size="lg"
+                                    className="w-full sm:w-auto min-h-[56px] text-sm"
+                                >
+                                    Voir les guides
+                                </Button>
+                            </div>
+                        </Reveal>
+
+                        {/* ✅ Réassurance finale */}
+                        <Reveal delay={0.2}>
+                            <div className="mt-4 md:mt-6">
+                                <div
+                                    className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs sm:text-sm text-gray-500">
+                                    <div className="flex items-center gap-1.5">
+                                        <div
+                                            className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
+                                        <span>Aucune carte bancaire requise</span>
+                                    </div>
+                                    <div className="flex items-center gap-1.5">
+                                        <div
+                                            className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
+                                        <span>Articles de loi inclus</span>
+                                    </div>
+                                    <div
+                                        className="hidden sm:flex items-center gap-1.5">
+                                        <div
+                                            className="w-1.5 h-1.5 bg-purple-500 rounded-full"></div>
+                                        <span>Références juridiques vérifiées</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </Reveal>
+                    </div>
+                </Container>
+            </div>
         </div>
-
-        <Container className="relative py-12 md:py-16 lg:py-24">
-          <div className="max-w-4xl mx-auto text-center">
-            {/* Titre principal */}
-            <Reveal>
-              <div className="mb-8 md:mb-10">
-                <h2 className="text-2xl md:text-3xl lg:text-5xl font-bold text-gray-900 mb-4 md:mb-6 leading-tight">
-                  Prêt à faire valoir vos droits ?
-                </h2>
-                <p className="text-base md:text-lg lg:text-xl text-gray-600 leading-relaxed">
-                  Générez votre lettre juridique en 2 minutes et obtenez{' '}
-                  <strong>réparation, remplacement ou remboursement</strong>.
-                </p>
-              </div>
-            </Reveal>
-
-            {/* Avantages en chips */}
-            <Reveal delay={0.1}>
-              <div className="flex flex-wrap items-center justify-center gap-2 md:gap-3 mb-8 md:mb-10">
-                <div className="flex items-center gap-1.5 md:gap-2 px-3 md:px-4 py-1.5 md:py-2 bg-white/80 backdrop-blur-sm border border-gray-200 rounded-full text-xs md:text-sm font-medium text-gray-700">
-                  <CheckCircle className="w-3 h-3 md:w-4 md:h-4 text-green-600" />
-                  100% gratuit
-                </div>
-                <div className="flex items-center gap-1.5 md:gap-2 px-3 md:px-4 py-1.5 md:py-2 bg-white/80 backdrop-blur-sm border border-gray-200 rounded-full text-xs md:text-sm font-medium text-gray-700">
-                  <Clock className="w-3 h-3 md:w-4 md:h-4 text-blue-600" />2 minutes chrono
-                </div>
-                <div className="flex items-center gap-1.5 md:gap-2 px-3 md:px-4 py-1.5 md:py-2 bg-white/80 backdrop-blur-sm border border-gray-200 rounded-full text-xs md:text-sm font-medium text-gray-700">
-                  <Shield className="w-3 h-3 md:w-4 md:h-4 text-purple-600" />
-                  Articles de loi inclus
-                </div>
-              </div>
-            </Reveal>
-
-            {/* CTA Principal */}
-            <Reveal delay={0.2}>
-              <div className="text-center mb-8 md:mb-12">
-                <div className="inline-block">
-                  <Button
-                    href="/eligibilite#start"
-                    size="xl"
-                    className="group bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold shadow-xl hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 px-6 md:px-8 py-3 md:py-4 text-base md:text-lg"
-                    icon={
-                      <ArrowRight className="w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-1 transition-transform" />
-                    }
-                  >
-                    Vérifier mes droits maintenant
-                  </Button>
-                </div>
-
-                <p className="mt-4 md:mt-6 text-xs md:text-sm text-gray-500 flex flex-wrap items-center justify-center gap-1 md:gap-2 text-center">
-                  <CheckCircle className="w-3 h-3 md:w-4 md:h-4 text-green-500 flex-shrink-0" />
-                  <span>Résultat immédiat • Sans inscription • Références légales incluses</span>
-                </p>
-              </div>
-            </Reveal>
-          </div>
-        </Container>
-      </div>
-    </div>
-  );
+    );
 }

@@ -64,7 +64,7 @@ export default function Hero({ title, right, id = 'hero', className = '' }: Hero
             </Skeleton>
           </div>
           {right && (
-            <div className="lg:w-[22rem] lg:flex-shrink-0">
+            <div className="hidden lg:block lg:w-[22rem] lg:flex-shrink-0">
               <Skeleton loading={!isLoaded} className="h-80 w-full lg:w-[22rem]">
                 {right}
               </Skeleton>

@@ -207,18 +207,17 @@ body {
 
 @media (max-width: 768px) {
   .section-scroll-target {
-    scroll-margin-top: 64px;
+    scroll-margin-top: 0; /* Pas de TopBar sur mobile */
   }
 }
 
-/* Hero height avec header mobile */
 .hero-mobile-height {
-  min-height: calc(100vh - 64px);
+  min-height: 100vh; /* Mobile : plein écran */
 }
 
 @media (min-width: 768px) {
   .hero-mobile-height {
-    min-height: calc(100vh - 5rem);
+    min-height: calc(100vh - 5rem); /* Desktop : plein écran - TopBar */
   }
 }
 
@@ -548,8 +547,114 @@ li {
 }
 
 :root {
-  --header-height-mobile: 48px;
-  --header-height-desktop: 80px;
+  --header-height-mobile: 64px;  /* MobileHeader h-16 */
+  --header-height-desktop: 80px; /* TopBar h-20 */
+}
+
+/* ✅ SECTIONS AVEC CENTRAGE VERTICAL PARFAIT SUR MOBILE */
+.section-mobile-centered {
+  /* Mobile : hauteur écran complète MOINS le header */
+  min-height: calc(100vh - var(--header-height-mobile));
+
+  /* Flexbox pour centrage vertical */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* Padding égal haut/bas pour marges identiques */
+  padding-top: 1.5rem;   /* 24px */
+  padding-bottom: 1.5rem; /* 24px */
+}
+
+/* Desktop : hauteur écran MOINS le TopBar fixe */
+@media (min-width: 768px) {
+  .section-mobile-centered {
+    min-height: calc(100vh - var(--header-height-desktop));
+    padding-top: 3rem;   /* 48px */
+    padding-bottom: 3rem; /* 48px */
+  }
+}
+
+/* ✅ SCROLL OFFSET POUR NAVIGATION ANCRE */
+.section-scroll-target {
+  scroll-margin-top: var(--header-height-mobile);
+}
+
+@media (min-width: 768px) {
+  .section-scroll-target {
+    scroll-margin-top: var(--header-height-desktop);
+  }
+}
+
+/* ✅ VARIANTE : CENTRAGE STRICT (pour sections courtes) */
+.section-mobile-centered-strict {
+  /* Height fixe au lieu de min-height */
+  height: calc(100vh - var(--header-height-mobile));
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* Pas de padding sur cette variante - 100% centrage */
+  padding: 0;
+  overflow-y: auto; /* Scroll interne si contenu déborde */
+}
+
+@media (min-width: 768px) {
+  .section-mobile-centered-strict {
+    height: calc(100vh - var(--header-height-desktop));
+  }
+}
+
+/* ✅ HERO AVEC CENTRAGE SPÉCIAL (prend tout l'écran) */
+.hero-mobile-centered {
+  /* Mobile : 100vh MOINS le header */
+  min-height: calc(100vh - var(--header-height-mobile));
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (min-width: 768px) {
+  .hero-mobile-centered {
+    min-height: calc(100vh - var(--header-height-desktop));
+  }
+}
+
+/* ✅ CONTAINER CENTRÉ POUR CONTENU DE SECTION */
+.section-content-centered {
+  width: 100%;
+  max-width: 80rem; /* max-w-7xl */
+  margin: 0 auto;
+  padding-left: 1rem;  /* px-4 */
+  padding-right: 1rem;
+}
+
+@media (min-width: 768px) {
+  .section-content-centered {
+    padding-left: 1.5rem;  /* px-6 */
+    padding-right: 1.5rem;
+  }
+}
+
+/* ✅ SMOOTH SCROLL OPTIMISÉ */
+@supports (scroll-behavior: smooth) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Désactiver si préférence utilisateur */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .section-mobile-centered,
+  .hero-mobile-centered {
+    transition: none;
+  }
 }
 
 /* Scroll offset pour les ancres */
