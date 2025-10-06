@@ -2,6 +2,7 @@
 
 import { BookOpen, ChevronDown } from 'lucide-react';
 import React from 'react';
+
 import { useTocStable } from '@/hooks/useTocStable'; // version stable qu’on a posée
 // Si tu n’as pas encore mis le paramètre 'main article' côté hook,
 // garde-le ici pour être sûr de ne scanner que le contenu central.

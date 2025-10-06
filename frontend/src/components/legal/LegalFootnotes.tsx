@@ -1,9 +1,10 @@
 'use client';
 
+import clsx from 'clsx';
 import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
-import clsx from 'clsx';
-import LegalReference from '@/components/ui/LegalReference';
+
+import LegalReference from '@/components/legal/LegalReference';
 
 /**
  * Par section :

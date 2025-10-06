@@ -1,8 +1,9 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import type { ReformulationType } from '@/types/api';
+
 import AIService from '@/services/aiService';
+import type { ReformulationType } from '@/types/api';
 
 type Props = {
   open: boolean;

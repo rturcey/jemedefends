@@ -2,7 +2,8 @@
 'use client';
 
 import React from 'react';
-import TextWithLegalRefs from '@/components/ui/TextWithLegalRefs';
+
+import TextWithLegalRefs from '@/components/legal/TextWithLegalRefs';
 
 interface TableOption {
   option: string;

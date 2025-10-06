@@ -1,6 +1,6 @@
-import React from 'react';
 import clsx from 'clsx';
 import { Clock } from 'lucide-react';
+import React from 'react';
 
 export interface ProcedureStep {
   number: number;

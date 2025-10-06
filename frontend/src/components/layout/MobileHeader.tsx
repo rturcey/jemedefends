@@ -1,6 +1,6 @@
 'use client';
 
-import { Menu, X, Home, FileText, HelpCircle, BookOpen, Shield } from 'lucide-react';
+import { Menu, X, FileText, HelpCircle, BookOpen, Shield } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';

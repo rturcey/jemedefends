@@ -2,40 +2,6 @@
 'use client';
 
 // Lazy loading des composants lourds
-import { lazy } from 'react';
-
-export const LazyEligibilityForm = lazy(() =>
-  import('@/components/eligibility/EligibilityForm').then(module => ({
-    default: module.default,
-  })),
-);
-
-export const LazyResultsDisplay = lazy(() =>
-  import('@/components/eligibility/ResultsDisplay').then(module => ({
-    default: module.default,
-  })),
-);
-
-export const LazyExitIntentModal = lazy(() =>
-  import('@/components/eligibility/ExitIntentModal').then(module => ({
-    default: module.default,
-  })),
-);
-
-// Preload des composants critiques
-export const preloadComponents = () => {
-  if (typeof window !== 'undefined') {
-    // Preload form après 2 secondes
-    setTimeout(() => {
-      import('@/components/eligibility/EligibilityForm');
-    }, 2000);
-
-    // Preload results après 5 secondes
-    setTimeout(() => {
-      import('@/components/eligibility/ResultsDisplay');
-    }, 5000);
-  }
-};
 
 // Debounce pour les events fréquents
 export const debounce = <T extends (...args: any[]) => any>(func: T, wait: number): T => {
@@ -58,22 +24,6 @@ export const throttle = <T extends (...args: any[]) => any>(func: T, limit: numb
       setTimeout(() => (inThrottle = false), limit);
     }
   }) as T;
-};
-
-// Intersection Observer pour le lazy loading
-export const createIntersectionObserver = (
-  callback: (entries: IntersectionObserverEntry[]) => void,
-  options: IntersectionObserverInit = {},
-): IntersectionObserver | null => {
-  if (typeof window === 'undefined' || !window.IntersectionObserver) {
-    return null;
-  }
-
-  return new IntersectionObserver(callback, {
-    threshold: 0.1,
-    rootMargin: '50px',
-    ...options,
-  });
 };
 
 // Métriques de performance

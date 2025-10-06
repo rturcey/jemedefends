@@ -1,13 +1,13 @@
 'use client';
 import * as React from 'react';
 
-export interface FaqItem {
+interface FaqItem {
   q: string;
   a: React.ReactNode;
   id?: string;
 }
 
-export interface FAQProps {
+interface FAQProps {
   items: FaqItem[];
   /** JSON-LD FAQPage (inséré côté page si besoin) */
   asJsonLd?: boolean;

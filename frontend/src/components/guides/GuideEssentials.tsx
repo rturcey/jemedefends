@@ -6,9 +6,9 @@
 import { Zap, CheckCircle, AlertTriangle, ArrowRight, MessageSquare, Scale } from 'lucide-react';
 import React from 'react';
 
+import LegalReference from '@/components/legal/LegalReference';
 import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
-import LegalReference from '@/components/ui/LegalReference';
 import type { LegalArticleId } from '@/legal/registry';
 import type { GuidePage } from '@/types/guides';
 
@@ -26,7 +26,10 @@ function extractKeyPoints(guide: GuidePage): Array<{
   // Points spécifiques selon le type de guide
   if (slug.includes('garantie') || slug.includes('conformite')) {
     return [
-      { title: '2 ans de garantie', description: 'automatique sur tous vos achats' },
+      {
+        title: '2 ans de garantie',
+        description: 'automatique sur tous vos achats',
+      },
       {
         title: 'Réparation gratuite',
         description: 'le vendeur doit prendre en charge',

@@ -3,14 +3,13 @@
 // Conversion YAML -> GuidePage (server-safe) avec corrections des erreurs React
 // ============================================================================
 
-import React from 'react';
 import yaml from 'js-yaml';
+import React from 'react';
 
 // UI existants (util only / server-safe)
-import { getSectionIcon } from '@/lib/icon-utils';
-
-import type { GuidePage, GuideMetadata, GuideSection, GuideLegal } from '@/types/guides';
 import { isValidLegalArticleId, type LegalArticleId } from '@/legal/registry';
+import { getSectionIcon } from '@/lib/icon-utils';
+import type { GuidePage, GuideMetadata, GuideSection, GuideLegal } from '@/types/guides';
 
 // ============================================================================
 // Types YAML d'entrée
@@ -138,7 +137,7 @@ function normalizeLegalId(raw: string): LegalArticleId | null {
   );
   if (!m) return null;
   const id = `${m[1].toUpperCase()}.${m[2]}-${m[3]}`;
-  return isValidLegalArticleId(id) ? (id as LegalArticleId) : null;
+  return isValidLegalArticleId(id) ? id : null;
 }
 
 /** ✅ CORRIGÉ : Tokenise un texte en segments {text|legal} pour insertion de spans server-safe */
@@ -182,7 +181,10 @@ function renderInlineWithLegal(text: string): React.ReactNode[] {
     if (i % 2 === 1)
       return React.createElement(
         'code',
-        { key: `code-${globalKeyCounter++}`, className: 'bg-gray-100 px-1 rounded' },
+        {
+          key: `code-${globalKeyCounter++}`,
+          className: 'bg-gray-100 px-1 rounded',
+        },
         chunk,
       );
     return { type: 'text', value: chunk, originalIndex: i };
@@ -833,23 +835,4 @@ export function validateGuideYAML(yamlContent: string): {
     errors.push(`Erreur parsing YAML: ${e instanceof Error ? e.message : 'inconnue'}`);
   }
   return { valid: errors.length === 0, errors };
-}
-
-// ============================================================================
-// Extraction méta rapide
-// ============================================================================
-export function extractYAMLMetadata(yamlContent: string): Partial<YAMLGuideConfig> | null {
-  try {
-    const data = yaml.load(yamlContent) as YAMLGuideConfig;
-    return {
-      title: data.title,
-      description: data.description,
-      category: data.category,
-      slug: data.slug,
-      seo: data.seo,
-    };
-  } catch (error) {
-    console.error('Erreur extraction métadonnées YAML:', error);
-    return null;
-  }
 }

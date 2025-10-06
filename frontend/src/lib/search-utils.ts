@@ -6,6 +6,7 @@
 export interface SearchableItem {
   id: string;
   isPopular?: boolean;
+
   [key: string]: any; // Autres propriétés spécifiques
 }
 
@@ -105,45 +106,6 @@ export function createUnifiedSearchFilter<T extends SearchableItem>(
 }
 
 /**
- * Génère des suggestions basées sur les champs de recherche
- */
-export function generateUnifiedSuggestions<T extends SearchableItem>(
-  items: T[],
-  query: string,
-  searchFields: SearchField[],
-): string[] {
-  if (query.length < 2) return [];
-
-  const normalized = normalizeText(query);
-  const suggestions = new Set<string>();
-
-  items.forEach(item => {
-    searchFields.forEach(({ key, isArray }) => {
-      const value = item[key];
-      if (!value) return;
-
-      const texts = isArray ? value : [value];
-
-      texts.forEach((text: string) => {
-        const words = text.split(' ');
-        words.forEach(word => {
-          const normalizedWord = normalizeText(word);
-          if (
-            normalizedWord.length > 2 &&
-            normalizedWord.startsWith(normalized) &&
-            normalizedWord !== normalized
-          ) {
-            suggestions.add(word);
-          }
-        });
-      });
-    });
-  });
-
-  return Array.from(suggestions).slice(0, 8);
-}
-
-/**
  * Configuration pour les guides
  */
 export const GUIDE_SEARCH_CONFIG: SearchField[] = [
@@ -161,20 +123,6 @@ export const FAQ_SEARCH_CONFIG: SearchField[] = [
   { key: 'answer', weight: 8 },
   { key: 'keywords', weight: 10, isArray: true },
 ];
-
-/**
- * Fonction spécialisée pour les guides (garde la compatibilité)
- */
-export function createGuideSearchFilter(searchQuery: string) {
-  return createUnifiedSearchFilter(searchQuery, GUIDE_SEARCH_CONFIG);
-}
-
-/**
- * Fonction spécialisée pour les FAQ (garde la compatibilité)
- */
-export function createFAQSearchFilter(searchQuery: string) {
-  return createUnifiedSearchFilter(searchQuery, FAQ_SEARCH_CONFIG);
-}
 
 /**
  * Utilitaire pour accéder aux propriétés imbriquées

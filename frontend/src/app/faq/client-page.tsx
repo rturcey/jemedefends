@@ -11,7 +11,6 @@ import {
   Settings,
   User,
   X,
-  Star,
 } from 'lucide-react';
 import Link from 'next/link';
 import React, { useState, useEffect, useMemo, useCallback } from 'react';

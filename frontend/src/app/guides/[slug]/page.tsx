@@ -4,15 +4,15 @@ import React from 'react';
 // Composants guides
 import { FinalCTASection } from '@/components';
 import { RelatedGuides } from '@/components/guides';
+import GuideHero from '@/components/guides/GuideHero';
 import GuideProgress from '@/components/guides/GuideProgress';
 import GuideRightSidebar from '@/components/guides/GuideRightSidebar';
 import GuideTOCDesktop from '@/components/guides/GuideTOCDesktop';
 import GuideTOCMobile from '@/components/guides/GuideTOCMobile';
-import GuideHero from '@/components/guides/GuideHero';
 
 // Données YAML
-import { getFullGuide } from '@/lib/guide-registry';
 import LegalFootnotes from '@/components/legal/LegalFootnotes';
+import { getFullGuide } from '@/lib/guide-registry';
 
 interface GuidePageProps {
   params: Promise<{ slug: string }>;

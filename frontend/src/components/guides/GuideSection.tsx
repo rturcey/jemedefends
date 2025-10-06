@@ -23,12 +23,12 @@ import React from 'react';
 import ProcedureSteps from '@/components/guides/ProcedureSteps'; // ✅ Import du vrai composant
 import type { ProcedureStep } from '@/components/guides/ProcedureSteps'; // ✅ Import du vrai type
 import TableComparison from '@/components/guides/TableComparison';
+import LegalNote from '@/components/legal/LegalNote';
+import TextWithLegalRefs from '@/components/legal/TextWithLegalRefs';
 import DefaultAlternatives from '@/components/ui/DefaultAlternatives';
 import DefaultContacts from '@/components/ui/DefaultContacts';
 import DefaultGrid from '@/components/ui/DefaultGrid';
 import FAQ from '@/components/ui/FAQ';
-import LegalNote from '@/components/ui/LegalNote';
-import TextWithLegalRefs from '@/components/ui/TextWithLegalRefs';
 import type { GuideSection } from '@/types/guides'; // ✅ Vrais types
 
 interface GuideSectionProps {

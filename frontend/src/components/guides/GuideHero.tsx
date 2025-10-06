@@ -10,8 +10,8 @@ import Badge from '@/components/ui/Badge';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import Button from '@/components/ui/Button';
 import Container from '@/components/ui/Container';
-import type { GuidePage } from '@/types/guides';
 import { getCategoryWithIcon } from '@/lib/icon-utils';
+import type { GuidePage } from '@/types/guides';
 
 interface GuideHeroProps {
   guide: GuidePage & { slug: string; readingTime: number };

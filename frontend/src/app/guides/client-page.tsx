@@ -1,16 +1,16 @@
 // src/app/guides/client-page.tsx - UTILISANT LES COMPOSANTS EXISTANTS
 'use client';
 
-import { Search, Filter, X, BookOpen } from 'lucide-react';
+import { Filter, X, BookOpen } from 'lucide-react';
 import React, { useState, useMemo, useEffect } from 'react';
 
 // Import des composants EXISTANTS
+import { Reveal } from '@/components';
 import { GuideCard } from '@/components/guides';
 import SearchBar from '@/components/guides/SearchBar';
-import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import { Button } from '@/components/ui';
+import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import Container from '@/components/ui/Container';
-import { Reveal } from '@/components';
 
 // Import du système qui fonctionne
 import { getAllGuides } from '@/lib/guide-registry';

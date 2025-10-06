@@ -3,7 +3,7 @@
 
 'use client';
 
-import { Clock, TrendingUp, Star, ArrowRight, BookOpen } from 'lucide-react';
+import { Clock, ArrowRight, BookOpen } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
@@ -141,48 +141,3 @@ const GuideCard: React.FC<GuideCardProps> = ({
 };
 
 export default GuideCard;
-
-// Composant Skeleton pour GuideCard
-export const GuideCardSkeleton: React.FC<{
-  className?: string;
-}> = ({ className = '' }) => (
-  <div className={`bg-white border border-gray-200 rounded-xl overflow-hidden ${className}`}>
-    {/* Image skeleton */}
-    <div className="h-32 sm:h-40 bg-gray-200 animate-pulse" />
-
-    {/* Content skeleton */}
-    <div className="p-4 sm:p-5 space-y-3">
-      {/* Badges */}
-      <div className="flex items-center justify-between">
-        <div className="h-6 bg-gray-200 rounded-full w-24 animate-pulse" />
-        <div className="h-6 bg-gray-200 rounded-full w-16 animate-pulse" />
-      </div>
-
-      {/* Titre */}
-      <div className="space-y-2">
-        <div className="h-6 bg-gray-200 rounded w-4/5 animate-pulse" />
-        <div className="h-6 bg-gray-200 rounded w-3/5 animate-pulse" />
-      </div>
-
-      {/* Description */}
-      <div className="space-y-1">
-        <div className="h-4 bg-gray-200 rounded w-full animate-pulse" />
-        <div className="h-4 bg-gray-200 rounded w-5/6 animate-pulse" />
-        <div className="h-4 bg-gray-200 rounded w-3/4 animate-pulse" />
-      </div>
-
-      {/* Métadonnées */}
-      <div className="flex gap-3">
-        <div className="h-4 bg-gray-200 rounded w-16 animate-pulse" />
-        <div className="h-4 bg-gray-200 rounded w-12 animate-pulse" />
-        <div className="h-4 bg-gray-200 rounded w-20 animate-pulse" />
-      </div>
-
-      {/* Footer */}
-      <div className="flex justify-between pt-2 border-t border-gray-100">
-        <div className="h-4 bg-gray-200 rounded w-24 animate-pulse" />
-        <div className="h-4 bg-gray-200 rounded w-16 animate-pulse" />
-      </div>
-    </div>
-  </div>
-);

@@ -110,7 +110,7 @@ function GuidesDropdown() {
             <div className="space-y-2">
               {/* 🔧 ADAPTÉ: Guides dynamiques depuis le registry */}
               {popularGuides.length > 0 ? (
-                popularGuides.map((guide, index) => (
+                popularGuides.map(guide => (
                   <Link
                     key={guide.slug}
                     href={`/guides/${guide.slug}`}

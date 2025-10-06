@@ -21,7 +21,6 @@ import {
 import React from 'react';
 
 import Container from '@/components/ui/Container';
-import Badge from '@/components/ui/Badge';
 import type { EligibilityResult } from '@/eligibility/engine';
 import type { EligibilityData } from '@/types/eligibility';
 

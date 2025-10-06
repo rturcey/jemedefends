@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import { AlertTriangle, CheckCircle, Info, XCircle, X } from 'lucide-react';
 import * as React from 'react';
 
-export type AlertType = 'error' | 'warning' | 'success' | 'info';
+type AlertType = 'error' | 'warning' | 'success' | 'info';
 
 export interface ErrorAlertProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Type d'alerte */

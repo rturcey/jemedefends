@@ -2,13 +2,10 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { FileText, Shield, CheckCircle, ArrowLeft } from 'lucide-react';
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import React from 'react';
 
 import FormGenerator from '@/components/form/FormGenerator';
-import Container from '@/components/ui/Container';
 
 const metadata: Metadata = {
   title: 'Créer ma lettre de mise en demeure – Je me défends',

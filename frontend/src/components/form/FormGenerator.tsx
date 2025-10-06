@@ -1,10 +1,7 @@
-// src/components/form/FormGenerator.tsx - Version corrigée
 'use client';
 
 import {motion} from 'framer-motion';
-import {User, Building, ShoppingCart, Bug} from 'lucide-react';
-import type {ReactNode} from 'react';
-import React, {createContext, useContext, useMemo} from 'react';
+import React, {useMemo} from 'react';
 
 import useFormManager from '@/hooks/form';
 import {STEPS} from '@/types/form';
@@ -15,30 +12,14 @@ import ProblemInfoStep from './steps/ProblemInfoStep';
 import PurchaseInfoStep from './steps/PurchaseInfoStep';
 import SellerInfoStep from './steps/SellerInfoStep';
 
+
 interface FormGeneratorProps {
     formSlug: string;
 }
 
-interface FormContextValue {
-}
-
-const FormContext = createContext<FormContextValue>({});
-const useFormContext = () => useContext(FormContext);
-const FormProvider: React.FC<{ children: ReactNode }> = ({children}) => (
-    <FormContext.Provider value={{}}>{children}</FormContext.Provider>
-);
-
 const PROBLEM_INFO_STEP_INDEX = 3;
 
-// Icônes pour les étapes
-const STEP_ICONS = {
-    0: <User className="w-5 h-5"/>,
-    1: <Building className="w-5 h-5"/>,
-    2: <ShoppingCart className="w-5 h-5"/>,
-    3: <Bug className="w-5 h-5"/>,
-};
-
-const FormGenerator: React.FC<FormGeneratorProps> = ({formSlug}) => {
+const FormGenerator: React.FC<FormGeneratorProps> = () => {
     const {
         currentStepIndex,
         formData,
@@ -47,7 +28,6 @@ const FormGenerator: React.FC<FormGeneratorProps> = ({formSlug}) => {
         globalError,
         saveStatus,
         goToStep,
-        nextStep,
         prevStep,
         updateField,
         submitForm,
@@ -55,7 +35,6 @@ const FormGenerator: React.FC<FormGeneratorProps> = ({formSlug}) => {
         fillTestData,
     } = useFormManager();
 
-    // Ref vers la fonction "ouvrir la modale" fournie par le step
     const openImproveModalRef = React.useRef<(() => void) | null>(null);
     const registerOpenModalHandler = React.useCallback((fn: () => void) => {
         openImproveModalRef.current = fn;
@@ -63,11 +42,15 @@ const FormGenerator: React.FC<FormGeneratorProps> = ({formSlug}) => {
 
     const currentStep = useMemo(() => STEPS[currentStepIndex], [currentStepIndex]);
 
-    const canGoNext = React.useMemo(() => {
-        if (!currentStep || !formData) return false;
-        return currentStep.fields.every(f => {
-            const v = (formData as any)[f];
-            if (typeof v === 'string') return v.trim().length > 0;
+    const canGoNext = useMemo(() => {
+        if (!currentStep || !formData) {
+            return false;
+        }
+        return currentStep.fields.every((f) => {
+            const v = (formData as Record<string, unknown>)[f];
+            if (typeof v === 'string') {
+                return v.trim().length > 0;
+            }
             return v !== null && v !== undefined && v !== '';
         });
     }, [currentStep, formData]);
@@ -78,42 +61,11 @@ const FormGenerator: React.FC<FormGeneratorProps> = ({formSlug}) => {
             validation,
             onFieldChange: updateField,
             onNext: () => goToStep(Math.min(currentStepIndex + 1, STEPS.length - 1)),
-            onPrev: () => goToStep(Math.max(currentStepIndex - 1, 0), true),
+            onPrev: () => goToStep(Math.max(currentStepIndex - 1, 0)),
             isSubmitting,
         }),
         [formData, validation, updateField, currentStepIndex, goToStep, isSubmitting],
     );
-
-    // DÉPLACÉ AVANT utilisation - Descriptions contextuelles par étape
-    const getStepDescription = () => {
-        switch (currentStepIndex) {
-            case 0:
-                return 'Ces informations apparaîtront sur votre lettre';
-            case 1:
-                return "Informations sur l'entreprise ou le professionnel concerné";
-            case 2:
-                return 'Détails de la transaction et du produit concerné';
-            case 3:
-                return 'Décrivez précisément le défaut constaté pour appuyer votre demande';
-            default:
-                return '';
-        }
-    };
-
-    const getContextualHelp = () => {
-        switch (currentStepIndex) {
-            case 0:
-                return 'Ces informations seront utilisées pour personnaliser votre lettre.';
-            case 1:
-                return 'Nous avons besoin de ces informations pour adresser correctement votre courrier.';
-            case 2:
-                return 'Plus vous êtes précis, plus votre lettre sera efficace.';
-            case 3:
-                return 'Décrivez le problème avec précision pour appuyer votre demande juridiquement.';
-            default:
-                return 'Remplissez les champs requis pour continuer.';
-        }
-    };
 
     const renderStepContent = useMemo(() => {
         const stepContent = (() => {
@@ -137,10 +89,8 @@ const FormGenerator: React.FC<FormGeneratorProps> = ({formSlug}) => {
             }
         })();
 
-        // Wrapper avec en-tête harmonisé
         return (
             <div className="space-y-6">
-                {/* Contenu de l'étape dans une card harmonisée */}
                 <motion.div
                     key={`step-${currentStepIndex}`}
                     initial={{opacity: 0}}
@@ -152,7 +102,6 @@ const FormGenerator: React.FC<FormGeneratorProps> = ({formSlug}) => {
                     {stepContent}
                 </motion.div>
 
-                {/* Trust indicators pour la dernière étape */}
                 {currentStepIndex === PROBLEM_INFO_STEP_INDEX && (
                     <motion.div
                         initial={{opacity: 0}}
@@ -167,17 +116,17 @@ const FormGenerator: React.FC<FormGeneratorProps> = ({formSlug}) => {
                                 className="flex items-center justify-center gap-6 text-sm text-green-700">
                                 <div className="flex items-center gap-2">
                                     <div
-                                        className="w-2 h-2 bg-green-600 rounded-full"></div>
+                                        className="w-2 h-2 rounded-full bg-green-600"></div>
                                     <span>Hébergement français</span>
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <div
-                                        className="w-2 h-2 bg-green-600 rounded-full"></div>
+                                        className="w-2 h-2 rounded-full bg-green-600"></div>
                                     <span>RGPD compliant</span>
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <div
-                                        className="w-2 h-2 bg-green-600 rounded-full"></div>
+                                        className="w-2 h-2 rounded-full bg-green-600"></div>
                                     <span>Articles juridiques vérifiés</span>
                                 </div>
                             </div>
@@ -186,44 +135,34 @@ const FormGenerator: React.FC<FormGeneratorProps> = ({formSlug}) => {
                 )}
             </div>
         );
-    }, [
-        currentStepIndex,
-        commonStepProps,
-        submitForm,
-        registerOpenModalHandler,
-        currentStep,
-        getStepDescription,
-        getContextualHelp,
-    ]);
+    }, [currentStepIndex, commonStepProps, submitForm, registerOpenModalHandler]);
 
     return (
-        <FormProvider>
-            <FormLayout
-                currentStep={currentStepIndex}
-                totalSteps={STEPS.length}
-                canGoNext={canGoNext}
-                canGoPrev={currentStepIndex > 0}
-                onNext={() => goToStep(Math.min(currentStepIndex + 1, STEPS.length - 1))}
-                onPrev={prevStep}
-                onSubmit={
-                    currentStepIndex === PROBLEM_INFO_STEP_INDEX
-                        ? () => (openImproveModalRef.current ? openImproveModalRef.current() : submitForm())
-                        : submitForm
-                }
-                isLastStep={currentStepIndex === STEPS.length - 1}
-                isSubmitting={isSubmitting}
-                saveStatus={saveStatus}
-                globalError={globalError}
-                onClearGlobalError={clearGlobalError}
-                showTestData={true}
-                onTestData={fillTestData}
-                formData={formData}
-                onFieldChange={updateField}
-                variant="default"
-            >
-                {renderStepContent}
-            </FormLayout>
-        </FormProvider>
+        <FormLayout
+            currentStep={currentStepIndex}
+            totalSteps={STEPS.length}
+            canGoNext={canGoNext}
+            canGoPrev={currentStepIndex > 0}
+            onNext={() => goToStep(Math.min(currentStepIndex + 1, STEPS.length - 1))}
+            onPrev={prevStep}
+            onSubmit={
+                currentStepIndex === PROBLEM_INFO_STEP_INDEX
+                    ? () => (openImproveModalRef.current ? openImproveModalRef.current() : submitForm())
+                    : submitForm
+            }
+            isLastStep={currentStepIndex === STEPS.length - 1}
+            isSubmitting={isSubmitting}
+            saveStatus={saveStatus}
+            globalError={globalError}
+            onClearGlobalError={clearGlobalError}
+            showTestData={true}
+            onTestData={fillTestData}
+            formData={formData}
+            onFieldChange={updateField}
+            variant="default"
+        >
+            {renderStepContent}
+        </FormLayout>
     );
 };
 

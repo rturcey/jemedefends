@@ -274,27 +274,3 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
 };
 
 export default CategoryFilter;
-
-// Composant Skeleton pour CategoryFilter
-export const CategoryFilterSkeleton: React.FC<{ className?: string }> = ({ className = '' }) => (
-  <div className={`px-4 py-6 ${className}`}>
-    {/* Header skeleton */}
-    <div className="flex items-center justify-between mb-4">
-      <div className="flex items-center gap-2">
-        <div className="w-5 h-5 bg-gray-200 rounded animate-pulse" />
-        <div className="h-6 bg-gray-200 rounded w-24 animate-pulse" />
-      </div>
-    </div>
-
-    {/* Catégories skeleton */}
-    <div className="flex gap-3 overflow-hidden">
-      {[1, 2, 3, 4, 5].map(i => (
-        <div
-          key={i}
-          className="flex-shrink-0 h-10 bg-gray-200 rounded-xl animate-pulse"
-          style={{ width: `${80 + i * 20}px` }}
-        />
-      ))}
-    </div>
-  </div>
-);

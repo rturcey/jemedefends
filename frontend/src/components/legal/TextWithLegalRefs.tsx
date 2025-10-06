@@ -11,7 +11,7 @@ import { type LegalArticleId, isValidLegalArticleId } from '@/legal/registry';
 
 import LegalReference from './LegalReference';
 
-export interface TextWithLegalRefsProps extends React.HTMLAttributes<HTMLSpanElement> {
+interface TextWithLegalRefsProps extends React.HTMLAttributes<HTMLSpanElement> {
   /** Texte à parser */
   text: string;
 
@@ -249,79 +249,4 @@ export default function TextWithLegalRefs({
       {content}
     </span>
   );
-}
-
-/**
- * Composants de convenance pour usage spécifique
- */
-
-/**
- * Version inline simple (pas de tooltip/interaction)
- */
-export function InlineLegalRefs({ text, ...props }: Omit<TextWithLegalRefsProps, 'variant'>) {
-  return <TextWithLegalRefs text={text} variant="inline" {...props} />;
-}
-
-/**
- * Version avec badges colorés
- */
-export function BadgeLegalRefs({ text, ...props }: Omit<TextWithLegalRefsProps, 'variant'>) {
-  return <TextWithLegalRefs text={text} variant="badge" {...props} />;
-}
-
-/**
- * Version avec tooltips (défaut amélioré)
- */
-export function TooltipLegalRefs({ text, ...props }: Omit<TextWithLegalRefsProps, 'variant'>) {
-  return (
-    <TextWithLegalRefs
-      text={text}
-      variant="tooltip"
-      showStatus={true}
-      showExternalLink={true}
-      preloadArticles={true}
-      {...props}
-    />
-  );
-}
-
-/**
- * Version expandable pour documentation
- */
-export function ExpandableLegalRefs({ text, ...props }: Omit<TextWithLegalRefsProps, 'variant'>) {
-  return (
-    <TextWithLegalRefs
-      text={text}
-      variant="expandable"
-      showStatus={true}
-      showExternalLink={true}
-      {...props}
-    />
-  );
-}
-
-/**
- * Hook utilitaire pour extraire les articles d'un texte (sans UI)
- */
-export function useExtractLegalArticles(text: string): LegalArticleId[] {
-  return useLegalTextParsing(text).foundArticles;
-}
-
-/**
- * Fonction utilitaire pour préprocessing côté serveur
- */
-export function extractLegalReferencesFromText(text: string): {
-  originalText: string;
-  foundArticles: LegalArticleId[];
-  segments: number;
-} {
-  const { segments, foundArticles } = LegalTextParser.findLegalReferences(text);
-  const deduplicatedMatches = LegalTextParser.deduplicateMatches(segments);
-  const splitSegments = LegalTextParser.splitTextWithReferences(text, deduplicatedMatches);
-
-  return {
-    originalText: text,
-    foundArticles: [...new Set(foundArticles.map(m => m.articleId))],
-    segments: splitSegments.length,
-  };
 }

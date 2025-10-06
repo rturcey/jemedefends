@@ -1,0 +1,16 @@
+{
+  "ignorePatterns": [
+    "node_modules/",
+    ".next/",
+    "dist/",
+    "build/",
+    "out/",
+    "coverage/",
+    ".turbo/",
+    ".cache/",
+    ".yarn/",
+    ".pnpm-store/",
+    "public/",
+    "**/*.d.ts"
+  ]
+}

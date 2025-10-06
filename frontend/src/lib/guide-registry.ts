@@ -1,9 +1,10 @@
 import yaml from 'js-yaml';
 
-import { yamlToGuidePage } from '@/lib/yaml-guide-converter';
 import { buildRelatedGuidesSmart } from '@/lib/guide-relations';
+import { yamlToGuidePage } from '@/lib/yaml-guide-converter';
 import type { EnrichedGuide } from '@/types/guides';
-import { GENERATED_GUIDES_REGISTRY, GENERATION_META, ALL_GUIDE_SLUGS } from './generated-guides';
+
+import { GENERATED_GUIDES_REGISTRY, GENERATION_META } from './generated-guides';
 
 // ============================================================================
 // TYPES & CATEGORIES
@@ -255,51 +256,6 @@ export function getAllGuides(): Record<string, EnrichedGuide> {
   return out;
 }
 
-export function getOriginalYAMLForSlug(slug: string): string | null {
-  return GENERATED_GUIDES_REGISTRY[slug] || null;
-}
-
-export function getAllGuideSlugs(): string[] {
-  return ALL_GUIDE_SLUGS;
-}
-
-export function addGuideYAML(slug: string, yamlContent: string): void {
-  if (process.env.NODE_ENV === 'development') {
-    (GENERATED_GUIDES_REGISTRY as any)[slug] = yamlContent;
-    GUIDE_CACHE.delete(slug);
-    READING_TIME_CACHE.delete(slug);
-  }
-}
-
-export function getGuideStats() {
-  const slugs = Object.keys(GENERATED_GUIDES_REGISTRY);
-  const byCategory: Record<string, number> = {};
-  slugs.forEach(slug => {
-    const c = getCategoryFromSlug(slug);
-    byCategory[c.id] = (byCategory[c.id] || 0) + 1;
-  });
-  return {
-    total: slugs.length,
-    byCategory,
-    slugs,
-    cacheSize: GUIDE_CACHE.size,
-    generatedAt: GENERATION_META.timestamp,
-    buildScript: GENERATION_META.buildScript,
-  };
-}
-
 export function getGenerationInfo() {
   return GENERATION_META;
 }
-
-export const GUIDE_YAML_REGISTRY = GENERATED_GUIDES_REGISTRY;
-
-export default {
-  getFullGuide,
-  getAllGuides,
-  getOriginalYAMLForSlug,
-  getAllGuideSlugs,
-  addGuideYAML,
-  getGuideStats,
-  getGenerationInfo,
-};

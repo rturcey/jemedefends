@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import LegalReference from '@/components/ui/LegalReference';
+import LegalReference from '@/components/legal/LegalReference';
 import { isValidLegalArticleId } from '@/legal/registry';
 
 /**

@@ -4,8 +4,8 @@
 
 import React, { useState } from 'react';
 
-import RadioGroup from '@/components/form/RadioGroup';
 import MagicImprovement from '@/components/form/MagicImprovement';
+import RadioGroup from '@/components/form/RadioGroup';
 import TextAreaField from '@/components/form/TextAreaField';
 import { gatedValidation } from '@/lib/validation';
 import type { StepProps } from '@/types/form';

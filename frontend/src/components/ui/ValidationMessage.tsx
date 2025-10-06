@@ -2,8 +2,8 @@
 'use client';
 
 import clsx from 'clsx';
-import { CheckCircle, XCircle, AlertTriangle, Info, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { CheckCircle, XCircle, AlertTriangle, Info, X } from 'lucide-react';
 import React, { useState } from 'react';
 
 interface ValidationMessageProps {

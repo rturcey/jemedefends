@@ -2,8 +2,9 @@
 
 'use client';
 
-import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+
 import AIService from '@/services/aiService';
 
 interface MagicImprovementProps {

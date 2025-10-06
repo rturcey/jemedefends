@@ -2,9 +2,9 @@
 import { ArrowRight, HelpCircle, ChevronDown, CheckCircle, Shield } from 'lucide-react';
 import * as React from 'react';
 
+import LegalReference from '@/components/legal/LegalReference';
 import MobileFAQItem from '@/components/marketing/MobileFAQItem';
 import Button from '@/components/ui/Button';
-import LegalReference from '@/components/ui/LegalReference';
 import Skeleton from '@/components/ui/Skeleton';
 import { useMobileOptimization } from '@/hooks/useMobileOptimization';
 

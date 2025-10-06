@@ -21,9 +21,9 @@ import {
 } from 'lucide-react';
 import React, { useState, useRef, useEffect } from 'react';
 
+import { LegalReference } from '@/components';
 import HomepageSchema from '@/components/seo/HomePageSchema';
 import { Modal } from '@/components/ui';
-import { LegalReference } from '@/components';
 import { extractCleanText, extractTextForClipboard } from '@/utils/textExtractor';
 
 // ===============================

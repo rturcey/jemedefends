@@ -3,7 +3,7 @@
 
 'use client';
 
-import { BookOpen, Clock, ArrowRight, ExternalLink } from 'lucide-react';
+import { BookOpen, Clock, ExternalLink } from 'lucide-react';
 import React from 'react';
 
 import GuideCard from '@/components/guides/GuideCard';

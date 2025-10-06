@@ -3,8 +3,8 @@
 'use client';
 
 import clsx from 'clsx';
-import { ArrowLeft, ArrowRight, FileText, Loader2, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { ArrowLeft, ArrowRight, FileText, Loader2, Sparkles } from 'lucide-react';
 import * as React from 'react';
 
 interface MobileNavigationProps {

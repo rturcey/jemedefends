@@ -1,7 +1,7 @@
-// src/components/form/FormLayout.tsx - Navigation toujours accessible
+// src/components/form/FormLayout.tsx
+/* global process */
 'use client';
 
-import clsx from 'clsx';
 import {motion} from 'framer-motion';
 import * as React from 'react';
 
@@ -30,16 +30,13 @@ interface FormLayoutProps {
     globalError?: string | null;
     onClearGlobalError?: () => void;
 
-    // Sidebar (optionnel)
-    sidebar?: React.ReactNode;
-
     // Debug (optionnel)
     showTestData?: boolean;
     onTestData?: () => void;
 
     // Props pour MobileNavigation
-    formData?: any;
-    onFieldChange?: (field: string, value: any) => void;
+    formData?: Record<string, unknown>;
+    onFieldChange?: () => void;
 
     // Variant pour adapter le style
     variant?: 'default' | 'eligibility';
@@ -51,7 +48,9 @@ interface GlobalErrorProps {
 }
 
 const GlobalError: React.FC<GlobalErrorProps> = ({error, onClose}) => {
-    if (!error) return null;
+    if (!error) {
+      return null;
+    }
 
     return (
         <motion.div
@@ -111,7 +110,6 @@ const FormLayout: React.FC<FormLayoutProps> = ({
                                                    saveStatus = 'saved',
                                                    globalError,
                                                    onClearGlobalError,
-                                                   sidebar,
                                                    showTestData = false,
                                                    onTestData,
                                                    formData,
@@ -128,7 +126,7 @@ const FormLayout: React.FC<FormLayoutProps> = ({
 
     return (
         <div
-            className={`min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50`}>
+            className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
             {/* ✅ CONTAINER OPTIMISÉ POUR FORMULAIRES */}
             <Container variant="form" className="py-8 md:py-12">
                 {/* ✅ INDICATEUR DE PROGRESSION MODERNE */}
@@ -140,20 +138,18 @@ const FormLayout: React.FC<FormLayoutProps> = ({
             </span>
                         <span>{Math.round((currentStep / totalSteps) * 100)}%</span>
                     </div>
-                    <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                    <div className="h-2 bg-gray-2 00 rounded-full overflow-hidden">
                         <motion.div
                             className="h-full bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full"
                             initial={{width: 0}}
-                            animate={{
-                                width: `${(currentStep / totalSteps) * 100}%`,
-                            }}
+                            animate={{width: `${(currentStep / totalSteps) * 100}%`}}
                             transition={{duration: 0.5, ease: 'easeIn'}}
                         />
                     </div>
                 </div>
 
                 {/* Bouton test data en dev - Position ajustée */}
-                {showTestData && process.env.NODE_ENV === 'development' && onTestData && (
+                {showTestData && typeof process !== 'undefined' && process.env?.NODE_ENV === 'development' && onTestData && (
                     <button
                         type="button"
                         onClick={onTestData}

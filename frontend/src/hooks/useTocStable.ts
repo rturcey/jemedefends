@@ -41,7 +41,7 @@ function collectHeadings(container: HTMLElement | null): TocItem[] {
     // assure un id : si manquant, on le crée et on s'assure de l'unicité
     let id = h.getAttribute('id') || '';
     if (!id) {
-      let base = slugify(title) || (level === 2 ? 'section' : 'subsection');
+      const base = slugify(title) || (level === 2 ? 'section' : 'subsection');
       let candidate = base;
       let i = 2;
       while (used.has(candidate) || document.getElementById(candidate)) {

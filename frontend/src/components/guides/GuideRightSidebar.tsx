@@ -1,14 +1,13 @@
 'use client';
 
+import { Clock, CheckCircle, Scale } from 'lucide-react';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Clock, CheckCircle, Scale, X } from 'lucide-react';
 
-import { Button } from '@/components/ui';
-import RelatedGuides from '@/components/guides/RelatedGuides';
-import LegalReference from '@/components/ui/LegalReference';
-import type { EnrichedGuide } from '@/types/guides';
-import { isValidLegalArticleId, type LegalArticleId } from '@/legal/registry';
 import GuideDisclaimer from '@/components/guides/GuideDisclaimer';
+import RelatedGuides from '@/components/guides/RelatedGuides';
+import LegalReference from '@/components/legal/LegalReference';
+import { isValidLegalArticleId, type LegalArticleId } from '@/legal/registry';
+import type { EnrichedGuide } from '@/types/guides';
 
 /* --------------------- utils refs légales --------------------- */
 function collectLegalRefs(guide: any): LegalArticleId[] {

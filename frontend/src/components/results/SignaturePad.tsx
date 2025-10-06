@@ -2,7 +2,7 @@
 'use client';
 
 import { Trash2 } from 'lucide-react';
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 interface SignaturePadProps {
   onSignatureChange: (signature: string) => void;

@@ -2,7 +2,7 @@
 'use client';
 
 import clsx from 'clsx';
-import { ExternalLink, Info, AlertTriangle, CheckCircle, XCircle, Loader2 } from 'lucide-react';
+import { ExternalLink, Info, AlertTriangle, CheckCircle, XCircle } from 'lucide-react';
 import * as React from 'react';
 import { useState, useMemo, useRef } from 'react';
 
@@ -316,17 +316,4 @@ export default function LegalReference({
       {trigger}
     </LegalTooltip>
   );
-}
-
-// Helpers
-export function LegalReferenceBadge(props: Omit<LegalReferenceProps, 'variant'>) {
-  return <LegalReference {...props} variant="badge" size={props.size ?? 'sm'} />;
-}
-
-export function LegalReferenceTooltip(props: Omit<LegalReferenceProps, 'variant'>) {
-  return <LegalReference {...props} variant="tooltip" />;
-}
-
-export function LegalReferenceInline(props: Omit<LegalReferenceProps, 'variant'>) {
-  return <LegalReference {...props} variant="inline" />;
 }

@@ -55,7 +55,15 @@ const Breadcrumbs: React.FC<BreadcrumbsProps> = ({
       return allItems;
     }
 
-    return [first, { label: '...', isEllipsis: true }, ...(secondLast ? [secondLast] : []), last];
+    return [
+      first,
+      {
+        label: '...',
+        isEllipsis: true,
+      },
+      ...(secondLast ? [secondLast] : []),
+      last,
+    ];
   };
 
   const displayItems = getDisplayItems();
@@ -189,40 +197,3 @@ export const generateBreadcrumbs = (pathname: string): BreadcrumbItem[] => {
 
   return breadcrumbs;
 };
-
-// Hook pour breadcrumbs automatiques basés sur l'URL
-export const useBreadcrumbs = (customItems?: BreadcrumbItem[]) => {
-  const [breadcrumbs, setBreadcrumbs] = React.useState<BreadcrumbItem[]>([]);
-
-  React.useEffect(() => {
-    if (customItems) {
-      setBreadcrumbs(customItems);
-    } else {
-      // Générer automatiquement depuis l'URL
-      const pathname = window.location.pathname;
-      setBreadcrumbs(generateBreadcrumbs(pathname));
-    }
-  }, [customItems]);
-
-  return breadcrumbs;
-};
-
-// Composant Skeleton pour Breadcrumbs
-export const BreadcrumbsSkeleton: React.FC<{
-  className?: string;
-  itemCount?: number;
-}> = ({ className = '', itemCount = 3 }) => (
-  <nav className={`${className}`} aria-label="Chargement du fil d'ariane">
-    <div className="flex items-center gap-2">
-      {Array.from({ length: itemCount }).map((_, index) => (
-        <React.Fragment key={index}>
-          {index > 0 && <div className="w-4 h-4 bg-gray-200 rounded animate-pulse" />}
-          <div
-            className="h-6 bg-gray-200 rounded animate-pulse"
-            style={{ width: `${60 + index * 20}px` }}
-          />
-        </React.Fragment>
-      ))}
-    </div>
-  </nav>
-);
