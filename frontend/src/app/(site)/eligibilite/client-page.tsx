@@ -248,8 +248,8 @@ const HeroSection: React.FC<{ onStartTest: () => void }> = ({ onStartTest }) => 
 
           {/* ✅ DESCRIPTION - RÉDUITE MOBILE */}
           <p className="text-base md:text-lg lg:text-xl text-gray-600 mb-4 md:mb-6 max-w-3xl mx-auto leading-relaxed px-4">
-            Vérifiez en 2 minutes si votre situation relève de la{' '}
-            <strong>garantie légale de conformité</strong>.
+            Vérifiez en 2 minutes et <strong className="text-blue-800">sans inscription</strong> si
+            votre situation relève de la garantie légale de conformité.
           </p>
 
           {/* ✅ TRUST INDICATORS - COMPACT MOBILE */}
@@ -303,7 +303,8 @@ const HeroSection: React.FC<{ onStartTest: () => void }> = ({ onStartTest }) => 
                 Rapide et simple
               </h3>
               <p className="text-xs lg:text-sm text-gray-600">
-                Diagnostic en 2 minutes chrono, sans inscription
+                Diagnostic en 2 minutes chrono, <strong>sans inscription</strong>, bases légales
+                claires
               </p>
             </div>
           </div>

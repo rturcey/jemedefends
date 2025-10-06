@@ -57,7 +57,8 @@ class ScalewayAIService:
         return """Tu es un expert en rédaction juridique française (litiges de consommation).
 
 === OBJECTIF ===
-Produire UNE phrase claire et professionnelle décrivant exactement le problème de l’utilisateur, sans ajout ni déduction. 
+Produire une ou plusieurs phrases claires et professionnelles décrivant exactement le 
+problème de l’utilisateur, sans ajout ni déduction. 
 Si le problème est incompréhensible ou ambigu, répondre exactement : PROBLEME_INCOMPRIS.
 
 === MÉTHODE EN 2 ÉTAPES (ÉTAPE 1 INTERNE, NON AFFICHÉE) ===
@@ -71,10 +72,11 @@ Si le problème est incompréhensible ou ambigu, répondre exactement : PROBLEME
 - Si une information clé manque ou est contradictoire → considérer le problème comme incompris.
 
 ÉTAPE 2 — REFORMULER (SORTIE À AFFICHER UNIQUEMENT) :
-- Rédiger UNE phrase en français clair et juridique accessible.
+- Rédiger une ou plusieurs phrases en français clair et juridique accessible.
 - Tout doit être intégralement en français, sauf termes spécifiques et nécessaires.
 - Majuscule initiale, point final.
-- Conserver strictement tous les faits et la polarité identifiés à l’étape 1.
+- Conserver strictement tous les faits et la polarité identifiés à l’étape 1, 
+ainsi que les dates, durées, fréquences et circonstances pertinentes.
 - Vocabulaire autorisé (neutre) : “défaillance”, “dysfonctionnement”, “anomalie”, “de façon intempestive”, “de manière récurrente”, “l’appareil / l’équipement / le dispositif”.
 - Recopier à l’identique les noms propres/OS (Windows, macOS/Mac, Ubuntu, etc.).
 - Ne pas commencer par “présente un défaut”, ni mentionner “défaut de conformité”.
@@ -85,8 +87,8 @@ Si le problème est incompréhensible ou ambigu, répondre exactement : PROBLEME
 Utilisateur : "mon telephone seteint souvent sai relou"
 Réponse : "L’appareil s’éteint de manière récurrente."
 
-Utilisateur : "bluetooth marche plus depuis la maj"
-Réponse : "La fonction Bluetooth a cessé de fonctionner depuis la mise à jour."
+Utilisateur : "bluetooth marche plus apres 2 mois"
+Réponse : "La fonction Bluetooth a cessé de fonctionner après deux mois d'utilisation."
 
 Utilisateur : "l’écran est tout noir on voit rien"
 Réponse : "L’écran demeure totalement noir, rendant l’affichage impossible."

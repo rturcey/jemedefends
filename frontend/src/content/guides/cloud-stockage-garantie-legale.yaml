@@ -1,0 +1,122 @@
+title: 'Cloud et stockage en ligne : vos recours en cas de perte de données ou service inaccessible'
+description: 'Google Drive, iCloud, Dropbox, OneDrive : vos droits en cas de suppression de fichiers, d’espace réduit ou de service inaccessible. La garantie légale de conformité numérique (L.224-25-12 et suivants) vous protège.'
+category: 'digital'
+slug: 'cloud-stockage-garantie-numerique'
+
+seo:
+  title: 'Google Drive, iCloud, Dropbox : garantie légale numérique et perte de données'
+  description: 'Perte de fichiers, espace réduit, accès impossible : vos recours légaux contre un service de cloud défaillant (articles L.224-25-12 et suivants du Code de la consommation).'
+  keywords:
+    - 'garantie légale cloud'
+    - 'google drive perte données recours'
+    - 'icloud inaccessible remboursement'
+    - 'dropbox bug garantie légale'
+    - 'onedrive suppression fichiers'
+    - 'L.224-25-12 service numérique'
+
+legal:
+  mainArticles:
+    - 'L.224-25-12'
+    - 'L.224-25-13'
+    - 'L.224-25-14'
+    - 'L.224-25-19'
+    - 'L.224-25-20'
+    - 'L.224-25-25'
+  disclaimer: true
+  lastUpdated: '2025-09-22'
+
+sections:
+  - id: 'intro'
+    title: 'Un service essentiel, encadré par la loi'
+    type: 'content'
+    content: |
+      Le **cloud** est devenu indispensable : sauvegarde de photos, partage de documents, stockage professionnel… Mais que faire si vos fichiers disparaissent ou si l’accès est bloqué ?  
+
+      Depuis 2022, la **garantie légale de conformité numérique** (art. L.224-25-12 et suivants) protège vos abonnements à des services comme **Google Drive, iCloud, Dropbox ou OneDrive**.  
+      Le fournisseur doit délivrer un service **conforme au contrat** : espace de stockage annoncé, accès permanent, intégrité des données, mises à jour nécessaires.  
+
+      En cas de défaut, vous pouvez exiger la **mise en conformité gratuite**, puis à défaut une **réduction du prix** ou la **résolution du contrat avec remboursement** (art. L.224-25-20).
+
+  - id: 'defauts'
+    title: 'Défauts couverts et situations exclues'
+    type: 'grid'
+    items:
+      - title: 'Défauts couverts'
+        description: |
+          - **Perte de fichiers** due à un défaut du service (suppression automatique ou corruption interne).  
+          - **Espace de stockage inférieur** à ce qui était prévu dans l’offre.  
+          - **Impossibilité persistante d’accès** au service malgré un abonnement actif.  
+          - **Mises à jour manquantes** empêchant le service de fonctionner correctement sur les appareils récents.  
+          - Bugs rendant impossible la **sauvegarde ou le partage** de documents.
+      - title: 'Situations non couvertes'
+        description: |
+          - Suppression volontaire par l’utilisateur.  
+          - Saturation de l’espace gratuit par vos propres fichiers.  
+          - Piratage lié à un **mot de passe faible** ou non protégé.  
+          - Résiliation ou suspension légitime pour violation des CGU (ex. stockage de contenus illicites).  
+          - Problème lié à une **connexion internet défaillante**.
+
+  - id: 'procedure'
+    title: 'Comment agir en cas de défaut'
+    type: 'timeline'
+    steps:
+      - title: '1) Vérifiez et conservez des preuves'
+        description: |
+          Avant toute réclamation, assurez-vous que le problème ne vient pas de votre appareil ou de votre connexion.  
+          Conservez des **captures d’écran** montrant la perte de fichiers, l’espace réduit ou l’impossibilité d’accès.
+      - title: '2) Réclamez auprès du fournisseur'
+        description: |
+          Contactez le support du service (Google, Apple, Microsoft, Dropbox).  
+          Citez vos droits : *« Conformément aux articles L.224-25-12 et suivants du Code de la consommation, je demande la mise en conformité de mon service »*.  
+          Exigez la restauration des fichiers ou le rétablissement de l’accès.
+      - title: '3) Mise en conformité sous 30 jours maximum'
+        description: |
+          Le fournisseur doit corriger le défaut **gratuitement** dans un délai raisonnable **qui ne peut excéder 30 jours** (art. L.224-25-19).  
+          La correction doit intervenir sans perte de données ni frais supplémentaires.
+      - title: '4) Si rien n’est fait'
+        description: |
+          En cas d’absence de solution, vous pouvez demander :  
+          - une **réduction du prix** (par ex. remboursement partiel de l’abonnement),  
+          - ou la **résolution du contrat** avec remboursement intégral (art. L.224-25-20).  
+          Pour cela, il est recommandé d’envoyer une **mise en demeure en recommandé**.
+
+  - id: 'faq'
+    title: 'Questions fréquentes'
+    type: 'faq'
+    faqItems:
+      - q: 'J’ai perdu des fichiers sur Google Drive, est-ce couvert ?'
+        a: 'Oui, si la perte est due au service. Mais si vous avez supprimé vous-même les fichiers ou si votre compte a été piraté faute de mot de passe sécurisé, ce n’est pas couvert.'
+      - q: 'iCloud me donne moins d’espace que prévu, ai-je un recours ?'
+        a: 'Oui, un espace inférieur à l’offre souscrite est un défaut de conformité (art. L.224-25-12).'
+      - q: 'Dropbox est inaccessible depuis plusieurs jours, puis-je demander un remboursement ?'
+        a: 'Oui, si l’inaccessibilité provient du fournisseur et dépasse un délai raisonnable (30 jours max pour correction).'
+      - q: 'Et si mes fichiers ont été piratés ?'
+        a: 'Si le piratage résulte d’une faille de sécurité du service, c’est couvert. Mais si c’est lié à un mot de passe faible ou réutilisé, la garantie ne joue pas.'
+
+  - id: 'cta-lettre'
+    title: 'Passez à l’action'
+    type: 'content'
+    content: |
+      ✅ **Rédigez gratuitement** votre réclamation officielle au fournisseur (Google, Apple, Microsoft, Dropbox).  
+      En cas de silence ou de refus, générez une **mise en demeure** juridiquement solide.  
+      Versions **payantes** : **PDF professionnel** (logo + signature en ligne) et **LRAR** avec suivi.
+    cta:
+      label: 'Rédiger ma réclamation'
+      href: '/outils/mise-en-demeure'
+      variant: 'primary'
+      icon: 'FileText'
+
+  - id: 'alternatives'
+    title: 'Si la garantie légale ne s’applique pas'
+    type: 'alternatives'
+
+  - id: 'contacts'
+    title: 'Contacts utiles'
+    type: 'contacts'
+
+  - id: 'disclaimer'
+    title: 'Important'
+    type: 'content'
+    content: |
+      Ce guide fournit une **information juridique générale** (articles L.224-25-12 et suivants du Code de la consommation).  
+      Il ne remplace pas un **conseil juridique individualisé**. Pour une analyse adaptée, rapprochez-vous d’un **avocat** ou d’une **association de consommateurs**.

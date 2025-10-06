@@ -1,0 +1,116 @@
+title: 'Menuiseries, fenêtres et portes : défauts fréquents et recours'
+description: 'Fenêtre qui ferme mal, porte qui se déforme, infiltration d’eau : vos menuiseries sont protégées par la garantie légale de conformité pendant 2 ans (articles L.217-3 et suivants).'
+category: 'home'
+slug: 'garantie-menuiseries-fenetres-portes'
+
+seo:
+  title: 'Garantie légale menuiseries : fenêtres et portes défectueuses'
+  description: 'Fenêtres mal posées, portes déformées, infiltrations d’eau : vos droits avec la garantie légale de conformité (articles L.217-3 et suivants du Code de la consommation).'
+  keywords:
+    - 'garantie fenêtre mal posée'
+    - 'porte déformée recours'
+    - 'litige menuiserie défaut'
+    - 'garantie légale fenêtre porte'
+    - 'infiltration eau fenêtre garantie'
+    - 'L.217-3 Code consommation menuiserie'
+
+legal:
+  mainArticles:
+    - 'L.217-3'
+    - 'L.217-4'
+    - 'L.217-5'
+    - 'L.217-7'
+    - 'L.217-9'
+    - 'L.217-10'
+    - 'L.217-11'
+    - '1792'
+    - '1792-3'
+  disclaimer: true
+  lastUpdated: '2025-09-22'
+
+sections:
+  - id: 'intro'
+    title: 'Des produits protégés par la loi'
+    type: 'content'
+    content: |
+      L’achat et la pose de **fenêtres, portes, volets et autres menuiseries** auprès d’un professionnel sont couverts par la **garantie légale de conformité de 2 ans** (art. L.217-3 et suivants du Code de la consommation).  
+
+      👉 En cas de défaut, le vendeur doit corriger à ses frais.  
+      De plus, certaines situations peuvent relever des **garanties légales du bâtiment** (biennale, décennale).
+
+  - id: 'defauts'
+    title: 'Exemples de défauts fréquents'
+    type: 'grid'
+    items:
+      - title: 'Défauts couverts'
+        description: |
+          - Fenêtre qui ferme mal ou laisse passer l’air.  
+          - Porte qui se déforme après quelques mois.  
+          - Volets roulants qui tombent en panne rapidement.  
+          - Infiltrations d’eau après la pose.  
+          - Isolation thermique ou phonique non conforme aux engagements.
+      - title: 'Situations non couvertes'
+        description: |
+          - Usure normale (serrures, joints avec le temps).  
+          - Entretien non effectué (graissage, nettoyage).  
+          - Détérioration due à un choc ou une mauvaise utilisation.  
+          - Défauts liés à une pose faite par un tiers non professionnel.
+
+  - id: 'procedure'
+    title: 'Que faire en cas de problème sur vos menuiseries'
+    type: 'timeline'
+    steps:
+      - title: '1) Constater et prouver'
+        description: |
+          Prenez des photos, gardez le devis, la facture et, si possible, demandez un rapport technique.
+      - title: '2) Contacter le vendeur'
+        description: |
+          Adressez une réclamation en invoquant la garantie légale (art. L.217-3).  
+          Le vendeur est responsable, même si le défaut vient du fabricant.
+      - title: '3) Réparation ou remplacement'
+        description: |
+          Le vendeur doit corriger le problème gratuitement (art. L.217-9).  
+          Le délai maximum est de 30 jours (art. L.217-10).
+      - title: '4) Réduction ou remboursement'
+        description: |
+          Si le problème n’est pas réglé dans les délais, vous pouvez exiger une réduction du prix ou un remboursement intégral (art. L.217-10).
+
+  - id: 'faq'
+    title: 'Questions fréquentes'
+    type: 'faq'
+    faqItems:
+      - q: 'Ma fenêtre laisse passer l’air après 6 mois, suis-je couvert ?'
+        a: 'Oui, c’est un défaut de conformité couvert par la garantie légale.'
+      - q: 'Et si le problème est dû à la pose ?'
+        a: 'Le vendeur reste responsable : la garantie s’applique aussi aux défauts d’installation.'
+      - q: 'Le professionnel me dit que c’est l’usure normale, est-ce exact ?'
+        a: 'Non, un défaut qui apparaît rapidement n’est pas de l’usure normale.'
+      - q: 'Puis-je invoquer la garantie décennale ?'
+        a: 'Oui, si le défaut rend l’ouvrage impropre à son usage (ex. infiltrations graves, structure compromise).'
+
+  - id: 'cta-lettre'
+    title: 'Passez à l’action'
+    type: 'content'
+    content: |
+      ✅ Exigez gratuitement la réparation ou le remplacement de vos menuiseries défectueuses grâce à une réclamation officielle.  
+      Versions payantes : **PDF professionnel** avec logo et signature électronique, ou **LRAR** avec suivi.
+    cta:
+      label: 'Rédiger ma réclamation'
+      href: '/outils/mise-en-demeure'
+      variant: 'primary'
+      icon: 'FileText'
+
+  - id: 'alternatives'
+    title: 'Si la garantie légale ne s’applique pas'
+    type: 'alternatives'
+
+  - id: 'contacts'
+    title: 'Contacts utiles'
+    type: 'contacts'
+
+  - id: 'disclaimer'
+    title: 'Important'
+    type: 'content'
+    content: |
+      Ce guide fournit une **information juridique générale** (articles L.217-3 du Code de la consommation et 1792 C. civ.).  
+      Il ne remplace pas un **conseil juridique personnalisé**. Pour une analyse adaptée, contactez un **avocat en droit de la construction** ou une **association de consommateurs**.

@@ -217,10 +217,13 @@ async def submit(
             country=draft.data.get("seller_country", "France"),
         )
 
+        buyer_email = draft.data.get("buyer_email", None)
+        if buyer_email == "":
+            buyer_email = None
         letter_request = LetterRequest(
             buyer_name=draft.data.get("buyer_name", ""),
             buyer_address=buyer_address,
-            buyer_email=draft.data.get("buyer_email", None),
+            buyer_email=buyer_email,
             order_reference=draft.data.get("order_reference", None),
             seller_name=draft.data.get("seller_name", ""),
             seller_address=seller_address,

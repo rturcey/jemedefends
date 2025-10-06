@@ -1,0 +1,54 @@
+title: 'Hôtels : vos droits en cas de non-conformité'
+description: 'Chambre sale, équipements absents, prestations non fournies : un hôtel non conforme engage la responsabilité du professionnel au titre de la garantie légale de conformité.'
+category: 'voyages'
+slug: 'garantie-hotels'
+
+seo:
+  title: 'Hôtels non conformes : recours, remboursement et indemnisation'
+  description: 'Chambre insalubre, absence de prestations promises : vos droits grâce à la garantie légale de conformité et au Code de la consommation.'
+  keywords:
+    - 'hotel non conforme remboursement'
+    - 'recours hotel sale'
+    - 'indemnisation hotel prestations manquantes'
+    - 'garantie légale hotels'
+
+legal:
+  mainArticles: ['L.217-3', 'L.217-4', 'L.217-10']
+  disclaimer: true
+  lastUpdated: '2025-09-22'
+
+sections:
+  - id: 'intro'
+    title: 'Vos nuits d’hôtel sont protégées'
+    type: 'content'
+    content: |
+      Louer une chambre d’hôtel engage la responsabilité du professionnel.  
+      👉 Si la chambre est insalubre, si les équipements promis manquent (ex. climatisation, piscine), ou si la prestation ne correspond pas à la description, vous pouvez invoquer la **garantie légale de conformité (art. L.217-3 C. consommation)**.
+
+  - id: 'defauts'
+    title: 'Situations couvertes et non couvertes'
+    type: 'grid'
+    items:
+      - title: 'Couvertes'
+        description: |
+          - Chambre infestée de nuisibles.  
+          - Salle de bains insalubre ou dangereuse.  
+          - Prestations annoncées absentes (spa, piscine, Wi-Fi).  
+          - Catégorie inférieure à celle réservée.
+      - title: 'Non couvertes'
+        description: |
+          - Mécontentement purement subjectif (vue, décoration).  
+          - Dégradations causées par le client.
+
+  - id: 'procedure'
+    title: 'Comment agir'
+    type: 'timeline'
+    steps:
+      - title: '1) Conservez les preuves'
+        description: 'Photos, vidéos, témoignages.'
+      - title: '2) Réclamez sur place'
+        description: 'Adressez-vous immédiatement à la réception pour obtenir un changement de chambre.'
+      - title: '3) Réclamation écrite'
+        description: 'Envoyez un courrier recommandé au siège de l’hôtel ou à l’agence intermédiaire.'
+      - title: '4) Mise en demeure'
+        description: 'En cas de refus, invoquez la garantie légale et demandez remboursement/indemnisation.'

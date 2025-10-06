@@ -75,7 +75,7 @@ class LetterRequest(BaseModel):
     order_reference: str | None = Field(None, max_length=50)
     product_price: Decimal = Field(..., gt=0)
     defect_type: DefectType = Field(...)
-    defect_description: str = Field(..., min_length=10, max_length=250)
+    defect_description: str = Field(..., min_length=10, max_length=500)
     used: bool = Field(False)
     digital: bool = Field(False)
 

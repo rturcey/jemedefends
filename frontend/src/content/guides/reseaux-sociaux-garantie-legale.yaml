@@ -1,0 +1,120 @@
+title: 'Réseaux sociaux et plateformes : vos droits en cas de blocage ou de service défectueux'
+description: 'Facebook, Instagram, TikTok, X/Twitter… Si des fonctions essentielles ne marchent pas ou si votre compte est bloqué sans raison, la garantie légale de conformité numérique (L.224-25-12 et suivants) peut s’appliquer.'
+category: 'digital'
+slug: 'reseaux-sociaux-garantie-numerique'
+
+seo:
+  title: 'Facebook, Instagram, TikTok, X : garantie légale numérique et blocages abusifs'
+  description: 'Blocage abusif, fonctions manquantes, bugs répétés : vos droits grâce à la garantie légale de conformité des services numériques (L.224-25-12 et suivants).'
+  keywords:
+    - 'garantie légale réseaux sociaux'
+    - 'facebook compte bloqué recours'
+    - 'instagram bug garantie'
+    - 'tiktok panne recours'
+    - 'twitter fonctionnalité absente'
+    - 'L.224-25-12 services numériques'
+
+legal:
+  mainArticles:
+    - 'L.224-25-12'
+    - 'L.224-25-13'
+    - 'L.224-25-14'
+    - 'L.224-25-19'
+    - 'L.224-25-20'
+    - 'L.224-25-25'
+  disclaimer: true
+  lastUpdated: '2025-09-22'
+
+sections:
+  - id: 'intro'
+    title: 'Les réseaux sociaux aussi soumis à la garantie'
+    type: 'content'
+    content: |
+      Les réseaux sociaux et plateformes en ligne (Facebook, Instagram, TikTok, X/Twitter, LinkedIn, Snapchat, etc.) sont devenus des outils incontournables.  
+      Mais ils restent des **services numériques**, soumis à la **garantie légale de conformité** (art. L.224-25-12 et suivants).  
+
+      Le fournisseur doit assurer un accès conforme, fournir les fonctionnalités essentielles annoncées (messagerie, partage de contenu, filtres, options de confidentialité…), et maintenir le service via des mises à jour.  
+      Si le service ne fonctionne pas comme prévu, vous pouvez demander une **mise en conformité gratuite**, puis une **réduction de prix** ou la **résolution du contrat** (art. L.224-25-20).
+
+  - id: 'defauts'
+    title: 'Défauts fréquents et cas exclus'
+    type: 'grid'
+    items:
+      - title: 'Défauts couverts'
+        description: |
+          - **Blocage injustifié** d’une fonctionnalité (ex. messagerie, publication) sans raison valable.  
+          - **Fonctionnalité essentielle manquante** par rapport aux promesses (ex. outil de partage vidéo, option de confidentialité supprimée).  
+          - **Bugs persistants** empêchant d’utiliser normalement le service malgré un appareil compatible.  
+          - **Absence de mises à jour nécessaires** pour maintenir la compatibilité.  
+          - Service **inaccessible plusieurs jours** sans explication.
+      - title: 'Situations non couvertes'
+        description: |
+          - Suspension ou suppression de compte justifiée par une **violation réelle des CGU** (harcèlement, propos haineux, fraude, partage abusif de compte).  
+          - Problème lié à un **appareil trop ancien** ou un navigateur obsolète non pris en charge.  
+          - Mauvaise connexion internet ou problème lié à l’opérateur de l’utilisateur.  
+          - Refus d’installer une **mise à jour proposée**.
+
+  - id: 'procedure'
+    title: 'Que faire en cas de problème'
+    type: 'timeline'
+    steps:
+      - title: '1) Vérifiez la cause'
+        description: |
+          Assurez-vous que le problème ne vient pas d’un appareil obsolète, d’un navigateur non compatible ou d’une connexion instable.  
+          Si tout est conforme de votre côté, le défaut peut relever de la garantie.
+      - title: '2) Contactez le support'
+        description: |
+          Les plateformes disposent de formulaires ou d’assistances en ligne.  
+          Faites une réclamation claire : *« Conformément aux articles L.224-25-12 et suivants du Code de la consommation, je demande la mise en conformité de mon compte/service »*.  
+          Décrivez précisément le bug, le blocage ou la fonction manquante.
+      - title: '3) Correction sous 30 jours'
+        description: |
+          Le fournisseur doit rétablir un service conforme gratuitement, dans un délai raisonnable **qui ne peut excéder 30 jours** (art. L.224-25-19).  
+          La correction doit être effective et sans inconvénient majeur.
+      - title: '4) Recours ultérieurs'
+        description: |
+          En cas de refus ou d’inaction, vous pouvez demander :  
+          - une **réduction de prix**,  
+          - ou la **résolution du contrat** avec remboursement (si service payant, ex. abonnement premium).  
+          Envoyez alors une **mise en demeure en recommandé**.
+
+  - id: 'faq'
+    title: 'Questions fréquentes'
+    type: 'faq'
+    faqItems:
+      - q: 'Mon compte Facebook a été bloqué sans raison, puis-je agir ?'
+        a: 'Oui, si la suspension est injustifiée. Vous pouvez demander la mise en conformité du service. Si elle est refusée, vous pouvez envisager des actions plus larges (DGCCRF, CNIL).'
+      - q: 'Instagram plante à chaque ouverture, est-ce couvert ?'
+        a: 'Oui, si le problème vient de l’application et non de votre appareil. Le fournisseur doit corriger gratuitement.'
+      - q: 'TikTok supprime une fonction annoncée, est-ce légal ?'
+        a: 'Non, la suppression d’une fonction essentielle promise peut être un défaut de conformité.'
+      - q: 'X/Twitter bloque mon compte pour non-respect des règles, est-ce un défaut ?'
+        a: 'Non, si le blocage est fondé sur une violation réelle des CGU.'
+
+  - id: 'cta-lettre'
+    title: 'Passez à l’action'
+    type: 'content'
+    content: |
+      ✅ **Rédigez gratuitement** une réclamation claire au support de la plateforme.  
+      Si aucune réponse satisfaisante n’est donnée, générez une **mise en demeure** juridiquement solide.  
+      Versions **payantes** : **PDF professionnel** (logo + signature en ligne) et **LRAR** avec suivi.
+    cta:
+      label: 'Rédiger ma réclamation'
+      href: '/outils/mise-en-demeure'
+      variant: 'primary'
+      icon: 'FileText'
+
+  - id: 'alternatives'
+    title: 'Si la garantie légale ne s’applique pas'
+    type: 'alternatives'
+
+  - id: 'contacts'
+    title: 'Contacts utiles'
+    type: 'contacts'
+
+  - id: 'disclaimer'
+    title: 'Important'
+    type: 'content'
+    content: |
+      Ce guide fournit une **information juridique générale** (articles L.224-25-12 et suivants du Code de la consommation).  
+      Il ne constitue pas un **conseil juridique individualisé**. Pour un accompagnement spécifique, contactez un **avocat** ou une **association de consommateurs**.

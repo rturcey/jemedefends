@@ -130,11 +130,19 @@ function detectSectionType(section: YAMLSection): YAMLSection['type'] {
   return 'content';
 }
 
+function normalizeTypo(s: string): string {
+  return s
+    .replace(/[\u00A0\u202F\u2009]/g, ' ') // NBSP, NNBSP, thin space -> espace
+    .replace(/[\u2011\u2013\u2014]/g, '-') // non-breaking hyphen, en/em dashes -> '-'
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 /** Normalise "art. L 217-3" / "L.217-3" / "l 217-3" -> "L.217-3" si supporté */
 function normalizeLegalId(raw: string): LegalArticleId | null {
-  const t = raw.replace(/\u00A0/g, ' ').trim();
+  const t = normalizeTypo(raw);
   const m = t.match(
-    /(?:^|[\s,;(\[]) *(?:art\.?\s*)?([LRD])\s*\.?\s*(\d{1,4})\s*-\s*(\d{1,3}) *(?=$|[\s,;)\]])/i,
+    /(?:^|[\s,;:.\(\[])\s*(?:art\.?\s*)?([LRD])\s*\.?\s*(\d{1,4})\s*-\s*(\d{1,3})(?=$|[\s,;:.\)\]])/i,
   );
   if (!m) return null;
   const id = `${m[1].toUpperCase()}.${m[2]}-${m[3]}`;
@@ -150,7 +158,8 @@ function tokenizeLegalInline(text: string): Array<
       raw: string;
     }
 > {
-  const re = /(?:art\.?\s*)?[LRD]\s*\.?\s*\d{1,4}\s*-\s*\d{1,3}/gi;
+  const t = normalizeTypo(text);
+  const re = /(?:art\.?\s*)?[LRD]\s*\.?\s*\d{1,4}\s*[-]\s*\d{1,3}/gi;
   const out: Array<
     | { type: 'text'; value: string }
     | {
@@ -161,15 +170,15 @@ function tokenizeLegalInline(text: string): Array<
   > = [];
   let last = 0;
   let m: RegExpExecArray | null;
-  while ((m = re.exec(text)) !== null) {
+  while ((m = re.exec(t)) !== null) {
     const raw = m[0];
     const norm = normalizeLegalId(raw);
-    if (m.index > last) out.push({ type: 'text', value: text.slice(last, m.index) });
+    if (m.index > last) out.push({ type: 'text', value: t.slice(last, m.index) });
     if (norm) out.push({ type: 'legal', id: norm, raw });
     else out.push({ type: 'text', value: raw });
     last = m.index + raw.length;
   }
-  if (last < text.length) out.push({ type: 'text', value: text.slice(last) });
+  if (last < t.length) out.push({ type: 'text', value: t.slice(last) });
   return out;
 }
 
@@ -182,7 +191,10 @@ function renderInlineWithLegal(text: string): React.ReactNode[] {
     if (i % 2 === 1)
       return React.createElement(
         'code',
-        { key: `code-${globalKeyCounter++}`, className: 'bg-gray-100 px-1 rounded' },
+        {
+          key: `code-${globalKeyCounter++}`,
+          className: 'bg-gray-100 px-1 rounded',
+        },
         chunk,
       );
     return { type: 'text', value: chunk, originalIndex: i };

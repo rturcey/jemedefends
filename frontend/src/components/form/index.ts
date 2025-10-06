@@ -4,7 +4,5 @@ export { default as SaveStatus } from './SaveStatus';
 export { default as TextAreaField } from './TextAreaField';
 export { default as RadioGroup } from './RadioGroup';
 export { default as AddressInput } from './AddressInput';
-export { default as ReformatDescriptionModal } from './ReformatDescriptionModal';
-export { default as FormSubmissionButton } from './FormSubmissionButton';
 export { default as BackOnlyNavigation } from './BackOnlyNavigation';
 export { default as TestDataButton } from './TestDataButton';

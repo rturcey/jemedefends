@@ -28,7 +28,7 @@ const MagicImprovement: React.FC<MagicImprovementProps> = ({
   const [magicState, setMagicState] = useState<MagicState>('idle');
   const [improvedText, setImprovedText] = useState('');
 
-  const canImprove = userText.trim().length >= 15;
+  const canImprove = userText.trim().length >= 20;
   const needsChoice = magicState === 'ready';
   const hasValidated = magicState === 'user-chosen' || magicState === 'ai-chosen';
 

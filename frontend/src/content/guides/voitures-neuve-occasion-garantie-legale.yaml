@@ -1,0 +1,125 @@
+title: 'Garantie légale de conformité : voitures neuves et d’occasion'
+description: 'Achat d’une voiture neuve ou d’occasion auprès d’un professionnel : la garantie légale de conformité de 2 ans (L.217-3 et suivants) protège contre les pannes et défauts non conformes.'
+category: 'auto'
+slug: 'garantie-legale-voitures'
+
+seo:
+  title: 'Garantie légale voiture neuve et d’occasion : 2 ans de protection'
+  description: 'Voitures neuves et d’occasion : pannes moteur, boîte de vitesses, défauts de conformité. Vos droits avec la garantie légale de 2 ans (articles L.217-3 et suivants du Code de la consommation).'
+  keywords:
+    - 'garantie légale voiture neuve'
+    - 'garantie légale voiture occasion'
+    - 'panne moteur garantie légale'
+    - 'boîte de vitesses garantie conformité'
+    - 'garantie légale 2 ans auto'
+    - 'L.217-3 Code consommation automobile'
+
+legal:
+  mainArticles:
+    - 'L.217-3'
+    - 'L.217-4'
+    - 'L.217-5'
+    - 'L.217-7'
+    - 'L.217-8'
+    - 'L.217-9'
+    - 'L.217-10'
+    - 'L.217-11'
+    - 'L.217-12'
+    - 'L.217-13'
+    - 'L.217-14'
+  disclaimer: true
+  lastUpdated: '2025-09-22'
+
+sections:
+  - id: 'intro'
+    title: 'Une garantie obligatoire pour tous les achats automobiles'
+    type: 'content'
+    content: |
+      Toute voiture achetée auprès d’un **professionnel** (garage, concession, mandataire) est couverte par la **garantie légale de conformité** prévue par les articles L.217-3 et suivants du Code de la consommation.  
+
+      👉 Elle s’applique aussi bien aux **voitures neuves** qu’aux **voitures d’occasion** vendues par un professionnel.  
+
+      - Pour une **voiture neuve**, la garantie légale dure **2 ans** à compter de la livraison.  
+      - Pour une **voiture d’occasion**, la durée de présomption des défauts est d’**au moins 12 mois**, et la garantie s’étend également à **2 ans** (art. L.217-7).  
+
+      Cette garantie est **gratuite, automatique et obligatoire**, indépendamment de toute garantie commerciale ou extension payante.
+
+  - id: 'defauts'
+    title: 'Défauts couverts et non couverts'
+    type: 'grid'
+    items:
+      - title: 'Défauts couverts'
+        description: |
+          - **Pannes mécaniques** : moteur qui casse, boîte de vitesses défectueuse.  
+          - **Problèmes électroniques** : tableau de bord qui s’éteint, systèmes d’aide à la conduite non fonctionnels.  
+          - **Fuites ou infiltrations** anormales (huile, liquide de refroidissement, eau dans l’habitacle).  
+          - **Freinage ou direction** défectueux rendant le véhicule dangereux.  
+          - **Consommation anormalement élevée** par rapport aux caractéristiques annoncées.  
+          - Défauts empêchant le véhicule d’être **conforme à l’usage habituel** ou à la description faite par le vendeur.
+      - title: 'Situations non couvertes'
+        description: |
+          - **Usure normale** des pièces : pneus, plaquettes, disques de frein, ampoules, essuie-glaces.  
+          - **Mauvais entretien** ou absence de révisions prévues au carnet d’entretien.  
+          - **Accident** ou choc postérieur à l’achat.  
+          - Modifications volontaires du véhicule (tuning, reprogrammation moteur).  
+          - Pannes liées à un **usage abusif** (surcharges, conduite extrême).
+
+  - id: 'procedure'
+    title: 'Comment faire valoir vos droits'
+    type: 'timeline'
+    steps:
+      - title: '1) Identifier le défaut'
+        description: |
+          Notez précisément les symptômes (panne, voyant allumé, bruits).  
+          Faites établir un **diagnostic écrit** par un professionnel indépendant si possible.
+      - title: '2) Réclamer auprès du vendeur'
+        description: |
+          Adressez une réclamation au **vendeur professionnel** (garage, concession).  
+          Mentionnez explicitement la **garantie légale de conformité** (art. L.217-3).
+      - title: '3) Réparation ou remplacement'
+        description: |
+          Le vendeur doit procéder gratuitement à la **réparation** ou au **remplacement** du véhicule (art. L.217-9).  
+          Le délai ne peut excéder **30 jours** (art. L.217-10).
+      - title: '4) Réduction ou remboursement'
+        description: |
+          Si la réparation ou le remplacement est impossible ou trop tardif, vous pouvez demander une **réduction du prix** ou la **résolution du contrat** avec remboursement intégral (art. L.217-10).
+
+  - id: 'faq'
+    title: 'Questions fréquentes'
+    type: 'faq'
+    faqItems:
+      - q: 'J’ai acheté une voiture d’occasion et le moteur casse au bout de 8 mois, que faire ?'
+        a: 'Vous êtes couvert par la garantie légale de conformité. Le vendeur doit réparer ou remplacer sans frais.'
+      - q: 'Puis-je invoquer la garantie légale si je n’ai pas fait les révisions ?'
+        a: 'Le vendeur peut refuser si le défaut est lié à un manque d’entretien. Mais si la panne est indépendante, la garantie s’applique.'
+      - q: 'Et si le vendeur m’envoie vers le constructeur ?'
+        a: 'C’est illégal : c’est toujours le vendeur qui est responsable de la garantie légale (art. L.217-3).'
+      - q: 'Une usure rapide des pneus est-elle couverte ?'
+        a: 'Non. Les pièces d’usure normale (pneus, freins, ampoules) ne relèvent pas de la garantie légale.'
+
+  - id: 'cta-lettre'
+    title: 'Passez à l’action'
+    type: 'content'
+    content: |
+      ✅ Exigez gratuitement la réparation ou le remplacement de votre voiture en rédigeant une réclamation claire au vendeur.  
+      Versions payantes : **PDF professionnel** avec logo et signature électronique, ou **LRAR** avec suivi.
+    cta:
+      label: 'Rédiger ma réclamation'
+      href: '/outils/mise-en-demeure'
+      variant: 'primary'
+      icon: 'FileText'
+
+  - id: 'alternatives'
+    title: 'Si la garantie légale ne s’applique pas'
+    type: 'alternatives'
+
+  - id: 'contacts'
+    title: 'Contacts utiles'
+    type: 'contacts'
+
+  - id: 'disclaimer'
+    title: 'Important'
+    type: 'content'
+    content: |
+      Ce guide fournit une **information juridique générale** (articles L.217-3 et suivants du Code de la consommation).  
+      Il ne remplace pas un **conseil juridique personnalisé**. Pour une analyse adaptée, contactez un **avocat** ou une **association de consommateurs**.

@@ -11,7 +11,6 @@ export { default as Skeleton } from './Skeleton';
 export { default as Breadcrumbs } from './Breadcrumbs';
 export { default as ValidationMessage } from './ValidationMessage';
 export { default as StepIndicator } from './StepIndicator';
-export { default as SkeletonFactory } from './SkeletonFactory';
 export { default as LegalReference } from './LegalReference';
 export { default as ProcedureStep } from './ProcedureStep';
 export { default as DefaultGrid } from './DefaultGrid';

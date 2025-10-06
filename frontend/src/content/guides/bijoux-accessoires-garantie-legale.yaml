@@ -1,0 +1,101 @@
+title: 'Bijoux fantaisie et accessoires : vos droits en cas de défauts'
+description: 'Bracelet qui casse, collier qui noircit, fermoir défectueux : vos bijoux fantaisie et accessoires sont protégés 2 ans par la garantie légale de conformité (articles L.217-3 et suivants).'
+category: 'mode'
+slug: 'garantie-bijoux-accessoires'
+
+seo:
+  title: 'Garantie légale bijoux fantaisie et accessoires'
+  description: 'Vos droits si un bijou fantaisie ou un accessoire casse ou se décolore prématurément. Garantie légale de conformité 2 ans (articles L.217-3 et suivants).'
+  keywords:
+    - 'garantie légale bijoux'
+    - 'bijou fantaisie casse recours'
+    - 'collier noircit garantie'
+    - 'bracelet defectueux loi'
+    - 'accessoire mode garantie légale'
+
+legal:
+  mainArticles: ['L.217-3', 'L.217-4', 'L.217-5', 'L.217-7', 'L.217-9', 'L.217-10', 'L.217-11']
+  disclaimer: true
+  lastUpdated: '2025-09-22'
+
+sections:
+  - id: 'intro'
+    title: 'Vos bijoux et accessoires sont protégés 2 ans'
+    type: 'content'
+    content: |
+      Lorsque vous achetez des **bijoux fantaisie** ou des accessoires de mode (bracelets, colliers, boucles d’oreilles, montres fantaisie, ceintures, etc.) auprès d’un professionnel, ils sont couverts par la **garantie légale de conformité de 2 ans** (art. L.217-3 C. consommation).  
+
+      👉 Si un bijou casse trop vite, se décolore rapidement ou présente un défaut de fermoir, le vendeur doit le réparer, le remplacer ou le rembourser **sans frais**.
+
+  - id: 'defauts'
+    title: 'Exemples de défauts fréquents'
+    type: 'grid'
+    items:
+      - title: 'Défauts couverts'
+        description: |
+          - Bracelet qui casse après quelques utilisations normales.  
+          - Collier dont le fermoir se détache systématiquement.  
+          - Boucles d’oreilles dont le fermoir casse prématurément.  
+          - Accessoire annoncé comme « inoxydable » qui noircit rapidement.  
+          - Montre fantaisie qui s’arrête définitivement après quelques semaines.
+      - title: 'Situations non couvertes'
+        description: |
+          - Usure normale (perte d’éclat progressive avec les années).  
+          - Oxydation due à un mauvais entretien (contact avec l’eau, parfum, produits chimiques).  
+          - Casse accidentelle (bijou arraché, chute brutale).  
+          - Produits achetés auprès d’un particulier (hors professionnel).
+
+  - id: 'procedure'
+    title: 'Comment agir en cas de bijou ou accessoire défectueux'
+    type: 'timeline'
+    steps:
+      - title: '1) Rassemblez vos preuves'
+        description: |
+          Conservez la facture, le ticket de caisse ou la confirmation de commande en ligne.  
+          Prenez des photos montrant le défaut (fermoir cassé, bijou décoloré, etc.).
+      - title: '2) Contactez le vendeur'
+        description: |
+          Faites une réclamation en invoquant la **garantie légale de conformité** (art. L.217-3).  
+          ⚠️ C’est toujours le vendeur qui est responsable, pas le fabricant.
+      - title: '3) Réparation ou remplacement'
+        description: |
+          Le vendeur doit corriger le défaut gratuitement.  
+          Le délai maximum est de **30 jours** (art. L.217-10).
+      - title: '4) Réduction ou remboursement'
+        description: |
+          Si le problème n’est pas résolu à temps, vous pouvez obtenir une réduction du prix ou un remboursement intégral.
+
+  - id: 'faq'
+    title: 'Questions fréquentes'
+    type: 'faq'
+    faqItems:
+      - q: 'Mon collier a noirci en 2 semaines, est-ce couvert ?'
+        a: 'Oui, surtout si le produit était présenté comme inoxydable ou durable. C’est un défaut de conformité.'
+      - q: 'Le fermoir de mes boucles d’oreilles s’est cassé, le vendeur dit que c’est ma faute, que faire ?'
+        a: 'S’il s’agit d’une casse prématurée sans mauvaise utilisation, le vendeur doit appliquer la garantie légale.'
+      - q: 'Dois-je payer pour l’expédition ou la réparation ?'
+        a: 'Non, tous les frais liés à la mise en conformité sont à la charge du vendeur (art. L.217-11).'
+      - q: 'Et si j’ai acheté le bijou en promotion ?'
+        a: 'La garantie légale s’applique aussi aux articles soldés ou en promotion.'
+      - q: 'Que faire si le vendeur refuse ?'
+        a: 'Envoyez une mise en demeure par recommandé. Vous pouvez saisir le médiateur de la consommation ou le juge.'
+
+  - id: 'cta'
+    title: 'Passez à l’action'
+    type: 'content'
+    content: |
+      ✅ Vous pouvez exiger la réparation, le remplacement ou le remboursement de votre bijou ou accessoire défectueux grâce à une réclamation officielle.  
+      Versions payantes : **PDF professionnel** avec logo et signature électronique, ou **LRAR** avec suivi.
+    cta:
+      label: 'Rédiger ma réclamation'
+      href: '/outils/mise-en-demeure'
+      variant: 'primary'
+      icon: 'FileText'
+
+  - id: 'disclaimer'
+    title: 'Important'
+    type: 'content'
+    content: |
+      Ce guide fournit une **information juridique générale** (articles L.217-3 et suivants du Code de la consommation).  
+      Il ne remplace pas un **conseil juridique personnalisé**.  
+      Pour une analyse adaptée, contactez un **avocat** ou une **association de consommateurs**.

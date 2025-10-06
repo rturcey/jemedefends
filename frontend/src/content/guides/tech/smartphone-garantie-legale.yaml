@@ -1,20 +1,20 @@
-title: 'Smartphone en panne ou défectueux : activer la garantie légale de conformité (guide 2025)'
-description: 'Écran, batterie, micro, capteurs, performances… Vos droits sont clairs : mise en conformité gratuite (réparation ou remplacement), à défaut réduction du prix ou résolution. Procédure pas-à-pas + modèles.'
+title: 'Téléphone en panne : vos droits et recours (Guide 2025)'
+description: 'Même sans garantie constructeur, la loi vous protège : réparation, remplacement ou remboursement gratuit selon la garantie légale de conformité (articles L.217-3 et suivants). Procédure claire pas-à-pas + modèles.'
 category: 'tech'
-slug: 'smartphone-garantie-legale'
+slug: 'telephonie-garantie-legale'
 
 seo:
-  title: 'Smartphone défaillant : garantie légale, délais (≤ 30 jours), modèles (Guide 2025)'
-  description: 'Tout comprendre en 7 minutes : présomption 24/12 mois, choix de la réparation/remplacement, délai maximal de 30 jours pour la mise en conformité, gratuité pour le consommateur, puis réduction du prix ou remboursement si échec. Modèles et LRAR en 1 clic.'
+  title: 'Téléphone en panne : garantie légale, délai ≤ 30 jours, modèles (Guide 2025)'
+  description: 'Votre téléphone ne fonctionne plus ? Même sans garantie constructeur, vous pouvez exiger réparation, remplacement ou remboursement gratuit selon la garantie légale de conformité L.217-3 à L.217-14. Nous vous accompagnons.'
   keywords:
-    - 'smartphone panne garantie légale'
-    - 'téléphone défectueux droits consommateur'
-    - 'batterie smartphone se décharge garantie'
-    - 'écran smartphone défaut garantie'
-    - 'L.217-3 L.217-4 L.217-5 L.217-10'
-    - 'présomption défaut 24 mois'
+    - 'téléphone panne garantie légale'
+    - 'smartphone défectueux droits consommateur'
+    - 'batterie smartphone garantie'
+    - 'écran tactile micro haut-parleur défaut'
+    - 'L.217-3 L.217-5 L.217-10 délai 30 jours'
     - 'réparation remplacement réduction résolution'
-    - 'vendeur constructeur refus garantie'
+    - 'vendeur opérateur constructeur refus garantie'
+    - 'smartphone reconditionné garantie légale'
 
 legal:
   mainArticles:
@@ -32,109 +32,124 @@ legal:
     - 'L.217-16'
     - 'L.217-19'
   disclaimer: true
-  lastUpdated: '2025-09-22'
+  lastUpdated: '2025-10-10'
 
 sections:
   - id: 'intro'
     title: 'L’essentiel en 30 secondes'
     type: 'content'
     content: |
-      Votre **vendeur** doit livrer un smartphone **conforme** et répond des défauts de conformité qui apparaissent dans les **deux ans** suivant la délivrance (L.217-3, L.217-4, L.217-5).  
-      Si un défaut survient, vous avez le **choix** entre **réparation** ou **remplacement**, **sans frais** (L.217-8, L.217-11). Si la mise en conformité échoue, est refusée ou dépasse le délai légal, vous pouvez demander une **réduction du prix** ou la **résolution** (L.217-13, L.217-14).  
-      Un défaut apparu dans les **24 mois** est **présumé** exister à la délivrance (12 mois pour l’occasion) : c’est au vendeur de prouver l’inverse (L.217-7).
+      Votre vendeur doit vous livrer un téléphone conforme, c’est-à-dire qui fonctionne comme prévu L.217-3 L.217-4 L.217-5.
+      
+      Si une panne ou un défaut apparaît dans les 2 ans, vous pouvez exiger réparation ou remplacement gratuit L.217-8 L.217-11.
+      
+      En cas d’échec, de refus ou de dépassement du délai maximal de 30 jours, vous pouvez obtenir une réduction du prix ou un remboursement intégral L.217-10 L.217-13 L.217-14.
+      
+      Le défaut est présumé exister dès la livraison s’il apparaît dans les 24 mois (12 mois pour un produit d’occasion) L.217-7.
+      
+      Ces droits sont garantis par la loi et aucune preuve technique ne vous est demandée.
 
   - id: 'eligibilite'
     title: 'Êtes-vous éligible ?'
     type: 'grid'
+    itemsIntro: 'Pour savoir si votre panne entre dans le champ de la garantie légale, vérifiez les quatre points suivants :'
     items:
-      - title: 'Défaut de conformité'
-        description: 'Exemples : batterie qui se vide anormalement, écran avec pixels morts, micro/haut-parleur défaillant, capteurs (proximité, photo) qui fonctionnent mal, redémarrages intempestifs, performances très en-deçà des promesses. Voir L.217-4 et L.217-5.'
-      - title: 'Dans les 2 ans'
-        description: 'Le défaut apparaît dans les **24 mois** suivant l’achat (12 mois si **occasion**) → vous bénéficiez de la **présomption** (L.217-7). Au-delà, vous pouvez encore agir, mais la preuve vous incombe.'
-      - title: 'Usage normal'
-        description: 'Pas de mauvaise utilisation ou choc avéré. La **casse accidentelle** (ex. écran brisé) n’est en général **pas** couverte par la conformité, sauf vice antérieur ou promesse de résistance spécifique non tenue (L.217-5).'
-      - title: 'Vendeur responsable'
-        description: 'Vos démarches s’adressent **au vendeur** (magasin/site), pas au constructeur (L.217-3). Il ne peut pas vous imposer de gérer avec la marque.'
+      - title: 'Le téléphone présente un défaut'
+        description: 'Batterie qui se vide vite, écran défaillant, micro ou haut-parleur inopérant, capteurs ou appareil photo défectueux, redémarrages répétés, performances très en-deçà des promesses. Voir L.217-4 L.217-5.'
+      - title: 'Le défaut est apparu dans les 2 ans'
+        description: '24 mois à compter de la délivrance (12 mois si occasion) : vous bénéficiez de la présomption légale L.217-7. Au-delà, vos droits demeurent mais la preuve vous incombe.'
+      - title: 'Vous n’avez pas cassé ou mal utilisé l’appareil'
+        description: 'Pas de mauvaise utilisation ni choc. La casse accidentelle est en principe exclue, sauf vice antérieur ou promesse de résistance non tenue L.217-5.'
+      - title: 'C’est le vendeur, pas la marque, qui vous doit réparation'
+        description: 'Vos démarches s’adressent au vendeur (magasin, site ou opérateur) L.217-3. Il ne peut pas vous imposer de traiter uniquement avec le constructeur.'
 
   - id: 'procedure'
     title: 'Procédure pas-à-pas'
     type: 'timeline'
+    intro: |
+      Voici les étapes à suivre pour faire valoir vos droits simplement et gratuitement.  
+      Aucun avocat, aucune expertise technique : un courrier clair suffit à enclencher la procédure légale.
     steps:
-      - title: '1) Rassembler les preuves'
+      - title: '1) Rassembler les éléments utiles'
         description: |
-          Conservez **facture**, numéro IMEI, photos/vidéos du défaut, rapports SAV, échanges, descriptif commercial (promesses), mises à jour reçues. Tout élément factuel compte (L.217-4, L.217-5, L.217-19).
+          Conservez facture, IMEI, photos ou vidéos du défaut, échanges écrits, descriptif commercial (promesses), éventuels rapports SAV, et références des mises à jour reçues L.217-4 L.217-5 L.217-19.
         duration: '15–30 min'
       - title: '2) Réclamation écrite au vendeur'
         description: |
-          Faites une réclamation **claire et datée**, en visant la **mise en conformité** (votre **choix** : réparation **ou** remplacement) **sans frais** (L.217-8, L.217-11).  
-          Mentionnez la **présomption** si le défaut apparaît dans les 24/12 mois (L.217-7). Exigez un **accusé écrit** avec un **délai d’exécution** conforme à la loi.
+          Faites une réclamation courte et précise demandant la mise en conformité gratuite selon votre choix : réparation ou remplacement L.217-8 L.217-11.  
+          Mentionnez que le défaut est présumé antérieur s’il est apparu dans les 24 ou 12 mois L.217-7.  
+          Demandez un accusé écrit avec un délai d’exécution raisonnable conforme à la loi.
         duration: '10 min'
-      - title: '3) Mise en conformité (≤ 30 jours)'
+      - title: '3) Mise en conformité ≤ 30 jours'
         description: |
-          Le vendeur doit procéder **sans frais** et **sans inconvénient majeur** pour vous (L.217-11).  
-          **Délai légal :** la mise en conformité doit intervenir **dans un délai raisonnable qui ne peut excéder 30 jours** à compter de **votre demande** (L.217-10).  
-          L’**immobilisation** du smartphone **suspend** la garantie pour la période d’indisponibilité (L.217-16).
+          Le vendeur doit agir sans frais et sans inconvénient majeur L.217-11.  
+          Délai maximal : la mise en conformité doit intervenir dans un délai raisonnable ne pouvant excéder 30 jours à compter de votre demande L.217-10.  
+          L’immobilisation de l’appareil suspend la garantie pendant cette période L.217-16.
         duration: 'variable (souvent < 30 jours)'
       - title: '4) Si échec, refus ou dépassement du délai'
         description: |
-          Si le vendeur **refuse**, tarde trop, si la réparation/le remplacement est **impossible** ou **disproportionné** (L.217-9), **ou si la mise en conformité dépasse 30 jours**, vous pouvez demander une **réduction du prix** ou la **résolution** (remboursement contre restitution) (L.217-13, L.217-14).  
-          Confirmez par **mise en demeure** (LRAR) en rappelant les articles applicables.
+          Si le vendeur refuse, ne répond pas, ou dépasse les 30 jours, réclamez une réduction du prix ou la résolution du contrat (remboursement) L.217-9 L.217-10 L.217-13 L.217-14.  
+          Mentionnez les articles applicables dans votre courrier pour renforcer votre demande.
         duration: '10 min'
 
   - id: 'table-remedies'
     title: 'Vos options selon la situation'
     type: 'table'
+    intro: 'Selon la gravité du défaut et la réponse du vendeur, la loi prévoit quatre solutions possibles :'
     tableData:
       - 'Option': 'Réparation'
         'Quand ?': 'Défaut réparable, pièces disponibles'
-        'Coût pour vous': '0 € (L.217-11)'
-        'Délai': '**≤ 30 jours** à compter de votre demande (L.217-10)'
-        'Précisions': 'Suspend la garantie pendant immobilisation (L.217-16)'
+        'Coût pour vous': '0 € L.217-11'
+        'Délai': '≤ 30 jours à compter de votre demande L.217-10'
+        'Précisions': 'Suspension de la garantie pendant immobilisation L.217-16'
       - 'Option': 'Remplacement'
         'Quand ?': 'Défaut majeur ou réparation impossible/disproportionnée'
-        'Coût pour vous': '0 € (L.217-11)'
-        'Délai': '**≤ 30 jours** à compter de votre demande (L.217-10)'
-        'Précisions': 'Doit être sans inconvénient majeur (L.217-11)'
+        'Coût pour vous': '0 € L.217-11'
+        'Délai': '≤ 30 jours à compter de votre demande L.217-10'
+        'Précisions': 'Sans inconvénient majeur L.217-11'
       - 'Option': 'Réduction du prix'
-        'Quand ?': 'Si mise en conformité échoue, est refusée, **ou dépasse 30 jours**'
+        'Quand ?': 'Si mise en conformité impossible, échoue, est refusée ou dépasse 30 jours'
         'Coût pour vous': '—'
         'Délai': 'Exécution rapide après accord'
-        'Précisions': 'Proportionnelle à l’écart de conformité (L.217-13)'
+        'Précisions': 'Proportionnelle à l’écart de conformité L.217-13'
       - 'Option': 'Résolution (remboursement)'
-        'Quand ?': 'Défaut grave/absence de solution, refus, **ou dépassement du délai de 30 jours**'
+        'Quand ?': 'Défaut grave, refus ou dépassement du délai de 30 jours'
         'Coût pour vous': '—'
-        'Délai': 'Après restitution du téléphone'
-        'Précisions': 'Remboursement total sauf usage significatif (L.217-14)'
-
-  - id: 'preuves'
-    title: 'Ce qui fait foi'
-    type: 'content'
-    content: |
-      - **Présomption 24/12 mois** (L.217-7) : c’est au **vendeur** de prouver que le défaut est dû à un **mauvais usage** ou à un accident **postérieur**.  
-      - **Promesses commerciales** (L.217-4, L.217-5) : si le descriptif vantait une autonomie “2 jours” et que la batterie tient 6 h en usage normal, cela peut caractériser un défaut.  
-      - **Mises à jour** (L.217-19) : le vendeur doit assurer les **mises à jour nécessaires au maintien de la conformité** (notamment sécurité) pendant une durée adaptée à la nature du bien et aux usages.
+        'Délai': 'Après restitution de l’appareil'
+        'Précisions': 'Remboursement total (ou partiel si usage notable) L.217-14'
 
   - id: 'exceptions'
     title: 'Cas fréquents contestés'
     type: 'faq'
+    intro: 'Voici les situations les plus souvent discutées par les vendeurs, et ce que dit la loi.'
     faqItems:
-      - q: 'Écran fissuré : couvert par la garantie ?'
-        a: 'En principe **non** (accident). Sauf vice antérieur (ex. verre annoncé résistant à des chocs usuels qui casse sans choc notable), auquel cas la **non-conformité** peut être invoquée (L.217-5).'
+      - q: 'Écran fissuré : couvert par la garantie légale ?'
+        a: 'En principe non (accident). Sauf vice antérieur ou promesse de résistance spécifique non tenue L.217-5.'
       - q: 'Le vendeur me renvoie vers le constructeur'
-        a: 'Refusez : la garantie légale engage **le vendeur** (L.217-3). Vous pouvez accepter un SAV constructeur, mais **sans renoncer** à vos droits contre le vendeur.'
-      - q: 'Batterie qui se décharge vite'
-        a: 'Si l’autonomie est **nettement** en-deçà d’un usage normal ou des promesses, c’est un **défaut de conformité** (L.217-4, L.217-5).'
-      - q: 'Smartphone d’occasion'
-        a: 'Présomption **12 mois** (L.217-7). Droits identiques ensuite : mise en conformité gratuite, puis réduction ou résolution.'
+        a: 'La garantie légale engage le vendeur L.217-3. Un SAV constructeur peut être proposé sans vous faire renoncer à vos droits.'
+      - q: 'Batterie qui se décharge très vite'
+        a: 'Si l’autonomie est nettement en-deçà d’un usage normal ou des promesses, cela caractérise un défaut de conformité L.217-4 L.217-5.'
+      - q: 'Appareil d’occasion'
+        a: 'Présomption 12 mois L.217-7. Droits identiques : mise en conformité gratuite, puis réduction ou résolution en cas d’échec.'
       - q: 'Pièces indisponibles'
-        a: 'Si la réparation est **impossible**, vous pouvez demander le **remplacement**, puis à défaut **réduction** ou **résolution** (L.217-9, L.217-13, L.217-14).'
+        a: 'Si la réparation est impossible, exigez le remplacement, puis à défaut réduction ou résolution L.217-9 L.217-13 L.217-14.'
+
+  - id: 'exemples'
+    title: 'Exemples concrets'
+    type: 'content'
+    content: |
+      - Achat chez un opérateur (SFR, Orange, Bouygues, Free) : c’est l’opérateur vendeur qui doit réparer ou remplacer le produit. Il ne peut pas vous imposer de contacter la marque L.217-3.  
+      - Marketplace (Amazon, Cdiscount, Fnac Marketplace) : la garantie légale s’exerce contre le vendeur tiers. Si celui-ci ne répond pas, la plateforme peut rester impliquée selon son rôle effectif dans la vente.  
+      - Reconditionné : mêmes droits que le neuf (présomption 12 mois), y compris mise en conformité gratuite L.217-7 L.217-8 à L.217-11.  
+      - Refus de prise en charge injustifié : si le vendeur invoque une mauvaise utilisation sans preuve, il est en tort. Il lui revient de prouver l’origine du défaut L.217-7.
 
   - id: 'cta-lettre'
     title: 'Passez à l’action'
     type: 'content'
     content: |
-      ✅ **Générez gratuitement** votre **réclamation** puis, si besoin, une **mise en demeure** solide, avec les **articles de loi insérés automatiquement**.  
-      Versions **payantes** : **PDF** propre (logo + signature en ligne) et **LRAR** avec suivi. Support mail illimité inclus (**hors conseil personnalisé**).
+      En 3 minutes, générez gratuitement votre lettre de réclamation prête à envoyer au vendeur.  
+      Le texte cite automatiquement les articles du Code de la consommation et s’adapte à votre situation.  
+      Version PDF professionnelle avec signature en ligne ou envoi recommandé avec suivi disponibles.
     cta:
       label: 'Générer gratuitement ma lettre'
       href: '/outils/mise-en-demeure'
@@ -144,6 +159,7 @@ sections:
   - id: 'alternatives'
     title: 'Si la garantie légale ne s’applique pas'
     type: 'alternatives'
+    intro: 'Si votre appareil n’entre pas dans le champ de la garantie (ex. choc, mauvais usage, achat entre particuliers), vous avez d’autres recours amiables possibles.'
 
   - id: 'contacts'
     title: 'Contacts utiles'
@@ -153,5 +169,6 @@ sections:
     title: 'Important'
     type: 'content'
     content: |
-      Ce guide fournit une **information juridique générale** (Code de la consommation) et des **modèles**. Il **ne constitue pas** un conseil juridique individualisé.  
-      En cas de doute sur votre situation, rapprochez-vous d’un **professionnel du droit** ou d’une **association de consommateurs**.
+      Ce guide fournit une information juridique générale issue du Code de la consommation.  
+      Il ne constitue pas un conseil juridique individualisé.  
+      En cas de doute, contactez un professionnel du droit ou une association de consommateurs.
