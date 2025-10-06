@@ -152,26 +152,26 @@ export default function GuideRightSidebar({
         </div>
       </div>
 
-      {/* Références légales — compact + scroll interne + modale “tout voir” */}
-      {showLegal && (
-        <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
-          <div className="flex items-center justify-between mb-3">
-            <h4 className="font-semibold text-gray-900 flex items-center gap-2">
-              <Scale className="w-4 h-4 text-blue-600" />
-              Références légales
-            </h4>
-          </div>
+      {/*/!* Références légales — compact + scroll interne + modale “tout voir” *!/*/}
+      {/*{showLegal && (*/}
+      {/*  <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">*/}
+      {/*    <div className="flex items-center justify-between mb-3">*/}
+      {/*      <h4 className="font-semibold text-gray-900 flex items-center gap-2">*/}
+      {/*        <Scale className="w-4 h-4 text-blue-600" />*/}
+      {/*        Références légales*/}
+      {/*      </h4>*/}
+      {/*    </div>*/}
 
-          {/* Zone compacte et scrollable dans la sidebar */}
-          <div className="max-h-40 overflow-y-auto pr-1">
-            <div className="flex flex-wrap gap-2">
-              {legalArticleIds.map(code => (
-                <LegalReference key={code} code={code} variant="badge" size="sm" />
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
+      {/*    /!* Zone compacte et scrollable dans la sidebar *!/*/}
+      {/*    <div className="max-h-40 overflow-y-auto pr-1">*/}
+      {/*      <div className="flex flex-wrap gap-2">*/}
+      {/*        {legalArticleIds.map(code => (*/}
+      {/*          <LegalReference key={code} code={code} variant="badge" size="sm" />*/}
+      {/*        ))}*/}
+      {/*      </div>*/}
+      {/*    </div>*/}
+      {/*  </div>*/}
+      {/*)}*/}
 
       {/* Guides connexes */}
       {guide.relatedGuides && guide.relatedGuides.length > 0 && (

@@ -1,0 +1,322 @@
+title: 'E-commerce : litiges, non-livraison et recours spécialisés vente à distance'
+description: 'Guide expert litiges e-commerce : non-livraison, produit non-conforme, retour refusé. Droit rétractation + garantie légale, recours Amazon/Cdiscount/autres.'
+
+seo:
+  title: 'Litiges e-commerce : vos droits et recours vente en ligne (2025)'
+  description: 'Problème achat en ligne ? Non-livraison, produit défaillant, retour impossible : guide complet droits e-commerce. Rétractation 14 jours + garantie légale 2 ans.'
+  keywords:
+    - 'litige e-commerce recours'
+    - 'non livraison achat en ligne'
+    - 'produit non conforme internet'
+    - 'retour refusé e-commerce'
+    - 'droit rétractation 14 jours'
+    - 'garantie légale vente distance'
+    - 'Amazon Cdiscount litige'
+    - 'marketplace responsabilité vendeur'
+
+legal:
+  mainArticles:
+    ['L.121-21', 'L.121-21-8', 'L.217-3', 'L.217-5', 'L.217-7', 'L.217-9', 'L.221-18', 'L.221-28']
+  disclaimer: true
+  lastUpdated: '2025-01-15'
+
+sections:
+  - id: 'introduction-ecommerce'
+    title: 'E-commerce : spécificités juridiques et défis consommateurs'
+    type: 'content'
+    content: |
+      **L'e-commerce représente 15% du commerce de détail en France et génère des litiges spécifiques.** Distance géographique, dématérialisation des échanges et multiplicité des intermédiaires (marketplaces, transporteurs, payment) créent un environnement juridique complexe.
+
+      **Particularités de la vente à distance :**
+      - **Droit de rétractation 14 jours** sans motif art. L.221-18
+      - **Information précontractuelle renforcée** art. L.221-5
+      - **Livraison = transfert de propriété** art. L.221-15
+      - **Responsabilité élargie vendeur** (transport, conformité, SAV)
+
+      **Défis spécifiques consommateurs :** Identifier le vrai vendeur (marketplace), prouver les défauts à distance, gérer les retours internationaux, coordonner multiples garanties (rétractation + légale + commerciale).
+
+      **Protection renforcée :** Le droit français de l'e-commerce offre **plus de protections** qu'en magasin physique, mais nécessite une approche méthodique pour les faire valoir efficacement.
+
+      🎯 **Objectif :** Maîtriser parfaitement vos droits spécifiques e-commerce, optimiser votre stratégie selon le type de litige, et naviguer efficacement dans l'écosystème complexe des plateformes.
+
+  - id: 'droits-specifiques-ecommerce'
+    title: 'Droits spécifiques e-commerce : au-delà de la garantie légale classique'
+    type: 'content'
+    content: |
+      ### Droit de rétractation : 14 jours sans justification
+
+      **Principe fondamental :** Retour **sans motif** dans les 14 jours art. L.221-18
+      **Point de départ :** Réception du produit (pas commande)
+      **Modalités :** Formulaire ou déclaration écrite claire
+      **Frais retour :** À votre charge sauf clause contraire
+      **Remboursement :** 14 jours max après réception retour
+
+      **Exclusions importantes :**
+      - Produits personnalisés/sur-mesure
+      - Biens périssables, scellés pour hygiène
+      - Logiciels descellés, contenu numérique téléchargé
+
+      ### Information précontractuelle obligatoire
+
+      **Mentions obligatoires avant achat :**
+      - Prix total TTC + frais de livraison
+      - Délais et modalités de livraison
+      - Existence/absence droit de rétractation
+      - Durée garanties légales/commerciales
+      - Coordonnées complètes vendeur + médiateur
+
+      **Sanction défaut info :** Extension délai rétractation (12 mois max), nullité clauses abusives.
+
+      ### Livraison : obligations et responsabilités
+
+      **Délai :** 30 jours maximum sauf accord contraire art. L.221-15
+      **Lieu :** Adresse indiquée par consommateur
+      **Risques :** Transfert à la réception effective (pas expédition)
+      **Non-livraison :** Résolution automatique, remboursement 14 jours
+
+      ### Cumul des protections : rétractation + garantie légale
+
+      **Période 0-14 jours :** Rétractation prioritaire (plus simple)
+      **Période 14 jours-2 ans :** Garantie légale de conformité
+      **Défaut immédiat :** Choix entre rétractation et garantie selon avantage
+      **Défaut après 14 jours :** Garantie légale exclusivement
+
+  - id: 'procedure-ecommerce-optimisee'
+    title: 'Procédure e-commerce : traçabilité et preuves dématérialisées'
+    type: 'timeline'
+    content: |
+      L'e-commerce nécessite constitution de preuves dématérialisées et traçabilité renforcée.
+
+    steps:
+      - title: 'Documentation immédiate et sauvegarde'
+        description: '**Captures écran :** Page produit complète (description, prix, délais, vendeur), conditions générales, politique retour. **Emails :** Confirmation commande, expédition, livraison, première réclamation. **Photos produit :** État réception, défauts constatés, emballage, étiquettes. **Données techniques :** Références exactes, numéros série si applicable.'
+        duration: 'Immédiat'
+
+      - title: 'Première réclamation structurée'
+        description: '**Canal privilégié :** Email/formulaire vendeur (traçabilité), copie service client plateforme si marketplace. **Informations clés :** Numéro commande, référence produit, nature exacte problème, solution souhaitée (rétractation/réparation/remplacement). **Références légales :** Art. L.221-18 (rétractation) ou L.217-9 (garantie légale) selon timing.'
+        duration: '24-48h'
+
+      - title: 'Escalade plateforme si marketplace'
+        description: '**Amazon/Cdiscount/Fnac :** Service client plateforme, garantie client, protection acheteur. **Vendeur tiers défaillant :** Demande intervention plateforme, médiation interne. **Documentation :** Historique échanges vendeur, preuves non-résolution, politique plateforme applicable. **Délai :** Variable selon plateforme (7-30 jours).'
+        duration: '1-2 semaines'
+
+      - title: 'Recours externes et contentieux'
+        description: '**Si vendeur français :** Médiation consommation, puis tribunal proximité. **Si vendeur UE :** Plateforme RLL (résolution litiges en ligne), médiation européenne. **Si vendeur hors UE :** Chargeback banque, signalement DGCCRF. **Preuves constituées :** Dossier complet chronologique, captures, emails, photos.'
+        duration: '1-3 mois'
+
+  - id: 'strategies-selon-plateforme'
+    title: 'Stratégies selon plateforme : Amazon, Cdiscount, marketplaces spécialisées'
+    type: 'content'
+    content: |
+      ### Amazon : protection acheteur et escalade interne
+
+      **Atouts :**
+      - Politique "satisfaction client" généreuse
+      - Service client accessible 24/7
+      - Remboursement rapide si défaut reconnu
+      - "Garantie A-Z" pour vendeurs tiers
+
+      **Procédure optimisée :**
+      1. Retour/échange direct si éligible (automatisé)
+      2. Contact vendeur marketplace si tiers
+      3. Réclamation Amazon si vendeur non-réactif
+      4. Garantie A-Z en dernier recours
+
+      **Arguments efficaces :** Mise en avant historique client, Prime, achats réguliers.
+
+      ### Cdiscount : SAV structuré, escalade commerciale
+
+      **Spécificités :**
+      - Marketplace française, droit français applicable
+      - SAV téléphonique + chat + email
+      - Politique retour 30 jours (au-delà légal)
+
+      **Tactique :**
+      - Insistez sur garantie "satisfait ou remboursé"
+      - Demandez gesture commercial si désagrément
+      - Escaladez vers management si blocage standard
+
+      ### FNAC : expertise produit, relation client premium
+
+      **Points forts :**
+      - Expertise technique reconnue
+      - Réseau magasins (retour possible)
+      - SAV intégré constructeurs
+
+      **Approche :**
+      - Utilisez expertise FNAC pour diagnostic
+      - Privilégiez retour magasin si possible
+      - Mettez en avant relation client fidèle
+
+      ### Sites spécialisés : sectoriels, B2B, imports
+
+      **Vigilance renforcée :**
+      - Vérifiez coordonnées vendeur françaises
+      - Confirmez existence médiateur
+      - Attention garanties/SAV imports
+
+      **Stratégie défensive :**
+      - Paiement sécurisé (CB, PayPal)
+      - Documentation renforcée pré-achat
+      - Coordination assurance/banque si problème
+
+  - id: 'litiges-frequents-ecommerce'
+    title: 'Litiges fréquents e-commerce et résolutions types'
+    type: 'faq'
+
+    faqItems:
+      - q: "Produit commandé jamais reçu, le vendeur dit 'contactez le transporteur'"
+        a: "Faux. Art. L.221-15 : risque de transport supporté par le vendeur jusqu'à livraison effective. C'est au vendeur de régler avec transporteur et vous livrer ou rembourser. Délai maximum 30 jours, puis résolution automatique."
+
+      - q: 'Je veux retourner sous 14 jours, on me demande de payer les frais de retour de 25€'
+        a: 'Légal sauf clause contraire. Art. L.221-23 : frais retour à charge consommateur par défaut. Vérifiez conditions générales : certains vendeurs offrent retour gratuit. Si défaut produit, frais retour à charge vendeur.'
+
+      - q: "Produit défaillant après 15 jours, le vendeur dit 'plus de rétractation possible'"
+        a: 'Exact mais garantie légale prend le relais. Art. L.217-9 : mise en conformité gratuite pendant 2 ans. Défaut < 24 mois = présomption défaut origine. Demandez réparation, remplacement ou remboursement selon cas.'
+
+      - q: 'Marketplace : vendeur chinois ne répond plus, que faire ?'
+        a: "Sollicitez protection plateforme (Amazon A-Z, Cdiscount Marketplace). Si échec, chargeback banque possible sous 120 jours. Pour l'avenir : privilégiez vendeurs UE avec garantie légale applicable."
+
+      - q: "Article 'en stock' commandé, puis 'rupture' annoncée après paiement"
+        a: 'Information trompeuse art. L.121-1. Demandez livraison délai raisonnable ou résolution immédiate avec remboursement. Si attente excessive, dommages-intérêts pour préjudice (urgence achat, prix manqué ailleurs).'
+
+      - q: 'Remboursement promis sous 14 jours, toujours rien après 30 jours'
+        a: "Défaut d'exécution. Mise en demeure avec délai 8 jours, puis : intérêts de retard (3x taux légal), résolution définitive, dommages-intérêts. Signalement DGCCRF si récidive vendeur."
+
+  - id: 'preuves-ecommerce'
+    title: 'Constitution de preuves en e-commerce : méthodologie technique'
+    type: 'content'
+    content: |
+      ### Captures d'écran juridiquement valables
+
+      **Techniques optimales :**
+      - **URL visible** dans barre navigation
+      - **Date/heure système** visible (coin écran)
+      - **Page entière** avec scroll si nécessaire
+      - **Source HTML** sauvegardée si litige technique
+
+      **Outils recommandés :** Wayback Machine, Archive.today pour historisation, logiciels capture avec horodatage.
+
+      ### Emails et correspondances : valeur probante
+
+      **Règles de forme :**
+      - Headers complets conservés (expéditeur, date, IP)
+      - Accusés réception/lecture si disponibles
+      - Copies multiples (boîte envoi, réception, archives)
+      - Chronologie claire et complète
+
+      ### Photos produits défaillants : standards qualité
+
+      **Exigences techniques :**
+      - **Résolution élevée** (minimum 1920x1080)
+      - **Éclairage homogène** (défauts bien visibles)
+      - **Angles multiples** (vue ensemble + détails)
+      - **Références visibles** (étiquettes, série, emballage)
+      - **EXIF préservées** (date, géolocalisation si pertinent)
+
+      ### Horodatage et traçabilité
+
+      **Méthodes fiables :**
+      - Emails auto avec timestamp serveur
+      - SMS avec accusé réception
+      - Recommandés électroniques qualifiés
+      - Blockchain horodatage (solutions spécialisées)
+
+      ### Coordination multi-canaux
+
+      **Documentation parallèle :**
+      - Réclamation email + courrier LRAR
+      - Appels téléphoniques + confirmation écrite
+      - Réseaux sociaux + contact officiel
+      - Capture + sauvegarde source HTML
+
+  - id: 'vendeurs-etrangers-recours'
+    title: 'Vendeurs étrangers : juridictions et recours transfrontaliers'
+    type: 'content'
+    content: |
+      ### Vendeurs Union Européenne : droits harmonisés
+
+      **Avantages :**
+      - Directive européenne garantie (minimum 2 ans)
+      - Plateforme RLL (résolution litiges en ligne)
+      - Reconnaissance mutuelle décisions
+      - Protection renforcée e-commerce
+
+      **Procédure :**
+      1. Réclamation directe vendeur (droit local)
+      2. Médiation RLL (gratuite, 90 jours max)
+      3. Tribunal consommateur (pays vendeur ou acheteur)
+      4. Exécution décision (règlement UE)
+
+      ### Vendeurs hors UE : protection limitée
+
+      **Défis :**
+      - Droit local souvent moins protecteur
+      - Recours judiciaires complexes/coûteux
+      - Exécution décisions incertaine
+
+      **Solutions :**
+      - **Chargeback banque** (jusqu'à 120 jours achat)
+      - **PayPal protection** acheteur
+      - **Assurance carte bancaire** (selon contrat)
+      - **Signalement douanes** si contrefaçon
+
+      ### Plateformes responsabilité : intermédiaires vs vendeurs
+
+      **Marketplace pure :** Facilitation mise en relation, responsabilité limitée
+      **Vendeur intégré :** Plateforme = vendeur, responsabilité pleine
+      **Hybride :** Analyse cas par cas (logistique, paiement, SAV)
+
+      **Identifiation vendeur réel :** Mentions légales, facturation, CGV, support client.
+
+  - id: 'prevention-ecommerce'
+    title: 'Prévention e-commerce : acheter malin pour éviter les litiges'
+    type: 'content'
+    content: |
+      ### Check-list pré-achat sécurisé
+
+      **Vendeur :**
+      ✅ Coordonnées complètes (SIRET, adresse physique française)
+      ✅ Avis clients vérifiés (diversité, récence, détails)
+      ✅ Politique retour claire (délais, frais, modalités)
+      ✅ SAV accessible (téléphone, email, horaires)
+      ✅ Médiateur consommation identifié
+
+      **Produit :**
+      ✅ Description détaillée (spécifications, dimensions, compatibilité)
+      ✅ Photos multiples haute résolution
+      ✅ Prix total TTC (produit + livraison + options)
+      ✅ Délai livraison réaliste
+      ✅ Stock réel vérifié
+
+      ### Moyens de paiement : sécurité et recours
+
+      **Recommandés :**
+      - **Carte bancaire** (protection chargeback, assurance)
+      - **PayPal** (protection acheteur renforcée)
+      - **Paiement différé** (Klarna, PayPal 4x après livraison)
+
+      **À éviter :**
+      - Virement bancaire (irrévocable)
+      - Espèces/mandat (sans trace)
+      - Cryptomonnaies (irréversibles)
+      - Cartes prépayées (protection limitée)
+
+      ### Documentation automatique
+
+      **Extensions navigateur :** Capture auto pages, sauvegarde conditions
+      **Gestionnaires mots de passe :** Historique connexions, données formulaires
+      **Cloud personnel :** Sauvegarde systématique confirmations, factures
+      **Calendrier :** Rappels délais légaux (14j rétractation, 2 ans garantie)
+
+  - id: 'procedure-ecommerce'
+    title: 'Procédure type pour litiges e-commerce'
+    type: 'procedure'
+
+  - id: 'alternatives-ecommerce'
+    title: 'Si les recours e-commerce classiques échouent'
+    type: 'alternatives'
+
+  - id: 'contacts-ecommerce'
+    title: 'Contacts spécialisés e-commerce et vente à distance'
+    type: 'contacts'

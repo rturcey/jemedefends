@@ -1,0 +1,117 @@
+title: 'Mises à jour logicielles et sécurité : vos droits face aux éditeurs et plateformes'
+description: 'Applications, logiciels, services en ligne : les éditeurs doivent fournir les mises à jour nécessaires (L.224-25-25). En cas d’absence, vous pouvez exiger la mise en conformité ou un remboursement.'
+category: 'digital'
+slug: 'mises-a-jour-garantie-numerique'
+
+seo:
+  title: 'Mises à jour obligatoires et sécurité : vos droits légaux (services numériques)'
+  description: 'Absence de mises à jour, patchs de sécurité non fournis, service rendu inutilisable : vos recours avec la garantie légale de conformité numérique (articles L.224-25-25 et suivants).'
+  keywords:
+    - 'garantie légale mise à jour'
+    - 'patch sécurité logiciel obligatoire'
+    - 'mise à jour application bug'
+    - 'L.224-25-25 services numériques'
+    - 'absence mise à jour recours'
+    - 'garantie légale sécurité numérique'
+
+legal:
+  mainArticles:
+    - 'L.224-25-12'
+    - 'L.224-25-13'
+    - 'L.224-25-19'
+    - 'L.224-25-20'
+    - 'L.224-25-25'
+  disclaimer: true
+  lastUpdated: '2025-09-22'
+
+sections:
+  - id: 'intro'
+    title: 'Les mises à jour font partie de vos droits'
+    type: 'content'
+    content: |
+      Que ce soit pour une **application mobile**, un **logiciel professionnel**, une **plateforme de streaming** ou un **service cloud**, les mises à jour logicielles sont indispensables.  
+
+      La loi impose désormais aux éditeurs et fournisseurs de services numériques de fournir les **mises à jour nécessaires au maintien de la conformité** et les **patchs de sécurité** (art. L.224-25-25 du Code de la consommation).  
+
+      Cela signifie que si une mise à jour est indispensable pour continuer à utiliser un service ou protéger vos données, le fournisseur doit la fournir gratuitement et dans un délai raisonnable.  
+      En cas de manquement, vous pouvez exiger une **mise en conformité**, puis une **réduction du prix** ou la **résolution du contrat** (art. L.224-25-20).
+
+  - id: 'defauts'
+    title: 'Quand l’absence de mise à jour est un défaut'
+    type: 'grid'
+    items:
+      - title: 'Situations couvertes'
+        description: |
+          - Absence de **patch de sécurité** exposant vos données personnelles à un risque.  
+          - Application ou logiciel rendu **inutilisable** faute de mise à jour de compatibilité.  
+          - Service numérique qui ne fournit pas la mise à jour annoncée pour corriger un bug majeur.  
+          - Retard injustifié dans la livraison d’une mise à jour essentielle.
+      - title: 'Situations non couvertes'
+        description: |
+          - Refus volontaire de l’utilisateur d’installer une mise à jour proposée et compatible.  
+          - Utilisation d’un appareil ou système d’exploitation **obsolète et non pris en charge**.  
+          - Problème lié à une connexion internet instable lors du téléchargement de la mise à jour.  
+          - Mises à jour optionnelles ou évolutives (nouvelles fonctionnalités non prévues au contrat).
+
+  - id: 'procedure'
+    title: 'Que faire si une mise à jour manque'
+    type: 'timeline'
+    steps:
+      - title: '1) Vérifiez la compatibilité'
+        description: |
+          Assurez-vous que votre appareil ou système est bien compatible avec la mise à jour prévue.  
+          Conservez des preuves (captures, messages d’erreur) montrant l’absence de mise à jour.
+      - title: '2) Réclamez auprès du fournisseur'
+        description: |
+          Contactez l’éditeur ou la plateforme. Citez vos droits :  
+          *« Conformément à l’article L.224-25-25 du Code de la consommation, je demande la mise à jour nécessaire au maintien de la conformité de mon service »*.  
+          Précisez le bug ou le risque encouru.
+      - title: '3) Délai raisonnable (≤ 30 jours)'
+        description: |
+          La mise à jour doit être fournie gratuitement dans un délai raisonnable, **qui ne peut dépasser 30 jours** (art. L.224-25-19).  
+          Si le correctif est urgent (faille de sécurité), le délai doit être plus court.
+      - title: '4) Réduction ou remboursement'
+        description: |
+          Si la mise à jour n’est pas fournie, vous pouvez demander une **réduction de prix** ou la **résolution du contrat** (art. L.224-25-20).  
+          Une mise en demeure en recommandé est fortement conseillée.
+
+  - id: 'faq'
+    title: 'Questions fréquentes'
+    type: 'faq'
+    faqItems:
+      - q: 'Mon application n’a plus de mises à jour et ne fonctionne plus, est-ce couvert ?'
+        a: 'Oui, si l’absence de mise à jour empêche l’usage normal et que votre appareil est encore compatible.'
+      - q: 'Et si je refuse volontairement une mise à jour proposée ?'
+        a: 'Dans ce cas, vous perdez le bénéfice de la garantie (art. L.224-25-25).'
+      - q: 'Un patch de sécurité n’est pas fourni et mes données sont exposées : que faire ?'
+        a: 'Vous pouvez exiger une mise en conformité immédiate. En cas de refus, demandez réduction ou remboursement.'
+      - q: 'Les mises à jour évolutives (nouvelles options) sont-elles incluses ?'
+        a: 'Non. La garantie couvre les mises à jour nécessaires au maintien de la conformité, pas l’ajout de nouvelles fonctions.'
+
+  - id: 'cta-lettre'
+    title: 'Passez à l’action'
+    type: 'content'
+    content: |
+      ✅ **Rédigez gratuitement** une réclamation claire à l’éditeur ou à la plateforme pour exiger la mise à jour nécessaire.  
+      En cas d’absence de réponse, générez une **mise en demeure** avec les références légales insérées automatiquement.  
+      Versions **payantes** : **PDF professionnel** (logo + signature en ligne) et **LRAR** avec suivi.
+    cta:
+      label: 'Rédiger ma réclamation'
+      href: '/outils/mise-en-demeure'
+      variant: 'primary'
+      icon: 'FileText'
+
+  - id: 'alternatives'
+    title: 'Si la garantie légale ne s’applique pas'
+    type: 'alternatives'
+
+  - id: 'contacts'
+    title: 'Contacts utiles'
+    type: 'contacts'
+
+  - id: 'disclaimer'
+    title: 'Important'
+    type: 'content'
+    content: |
+      Ce guide fournit une **information juridique générale** (articles L.224-25-12 à L.224-25-25 du Code de la consommation).  
+      Il ne remplace pas un **conseil juridique individualisé**. Pour une analyse personnalisée, contactez un **avocat** ou une **association de consommateurs**.
