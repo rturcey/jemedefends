@@ -1,10 +1,16 @@
+// frontend/src/components/form/steps/PurchaseInfoStep.tsx
 'use client';
 
 import React from 'react';
 
 import FormField from '@/components/form/FormField';
 import RadioGroup from '@/components/form/RadioGroup';
-import {gatedValidation} from '@/lib/validation';
+import {
+    gatedValidation,
+    validatePrice,
+    validateDate,
+    normalizePrice
+} from '@/lib/validation';
 import type {StepProps} from '@/types/form';
 
 const PurchaseInfoStep: React.FC<StepProps> = ({
@@ -17,25 +23,60 @@ const PurchaseInfoStep: React.FC<StepProps> = ({
     const d = (data ?? {}) as Record<string, any>;
 
     const conditionOptions = [
-        {value: 'new', label: 'Neuf', description: 'Produit livré à l’état neuf'},
+        {value: 'new', label: 'Neuf', description: 'Produit livré à l\'état neuf'},
         {
             value: 'used',
             label: 'Occasion / reconditionné',
-            description: 'Produit d’occasion / reconditionné',
+            description: 'Produit d\'occasion / reconditionné',
         },
     ];
 
-    // Prix : autoriser chiffres + virgule/point → on stocke avec un point
+    // ✅ Normalisation du prix : remplace virgule par point
     const onPriceChange = (v: string) => {
-        const normalized = v.replace(',', '.');
-        onFieldChange('product_price', normalized);
+        // Autoriser uniquement chiffres, point et virgule pendant la saisie
+        const cleaned = v.replace(/[^\d.,]/g, '');
+        onFieldChange('product_price', cleaned);
         validation?.markInteracted?.('product_price');
     };
 
-    const canContinue =
-        (validation?.validateStep?.('purchase_info', d) ??
-            Boolean(d.product_name && d.purchase_date && d.product_price && d.product_condition)) ===
-        true;
+    // ✅ Validation stricte des champs avant de continuer
+    const canContinue = React.useMemo(() => {
+        // Vérifier que tous les champs requis sont remplis
+        if (!d.product_name?.trim()) return false;
+        if (!d.purchase_date?.trim()) return false;
+        if (!d.product_price?.trim()) return false;
+        if (!d.product_condition?.trim()) return false;
+        if (!d.order_reference?.trim()) return false;
+
+        // ✅ Validation stricte du prix
+        const priceValidation = validatePrice(d.product_price || '');
+        if (!priceValidation.valid) return false;
+
+        // ✅ Validation stricte de la date
+        const dateValidation = validateDate(d.purchase_date || '');
+        if (!dateValidation.valid) return false;
+
+        // ✅ Validation de la longueur des champs texte
+        if ((d.product_name?.trim().length || 0) < 2) return false;
+        if ((d.order_reference?.trim().length || 0) < 2) return false;
+
+        return true;
+    }, [d]);
+
+    // Handler pour le bouton continuer
+    const handleNext = () => {
+        // Marquer tous les champs comme interactés pour afficher les erreurs
+        validation?.markInteracted?.('product_name');
+        validation?.markInteracted?.('purchase_date');
+        validation?.markInteracted?.('product_price');
+        validation?.markInteracted?.('order_reference');
+        validation?.markInteracted?.('product_condition');
+
+        // Ne continuer que si tout est valide
+        if (canContinue) {
+            onNext();
+        }
+    };
 
     return (
         <section className="step-section p-0" role="tabpanel"
@@ -56,10 +97,10 @@ const PurchaseInfoStep: React.FC<StepProps> = ({
                 <div>
                     <h2 id="purchase-title"
                         className="text-lg md:text-xl font-bold text-gray-900">
-                        Informations d’achat
+                        Informations d'achat
                     </h2>
                     <p className="text-sm text-gray-600">Précisez le produit et la date
-                        d’achat.</p>
+                        d'achat.</p>
                 </div>
             </div>
 
@@ -75,7 +116,7 @@ const PurchaseInfoStep: React.FC<StepProps> = ({
                     minLength={2}
                     maxLength={120}
                     placeholder="Ex : Smartphone XYZ Pro 256 Go"
-                    helpText="Votre produit tel qu’il apparaît sur la facture"
+                    helpText="Votre produit tel qu'il apparaît sur la facture"
                     validation={gatedValidation(
                         'product_name',
                         d.product_name || '',
@@ -89,12 +130,12 @@ const PurchaseInfoStep: React.FC<StepProps> = ({
                     )}
                 />
 
-                {/* Date d’achat + Prix (sur la même ligne uniquement sur mobile) */}
-                <div className="flex flex-row flex-col gap-4">
+                {/* Date d'achat + Prix (côte à côte sur desktop, empilés sur mobile) */}
+                <div className="flex flex-col sm:flex-row gap-4">
                     <div className="flex-1">
                         <FormField
                             name="purchase_date"
-                            label="Date d’achat"
+                            label="Date d'achat"
                             type="date"
                             value={d.purchase_date || ''}
                             onChange={v => onFieldChange('purchase_date', v)}
@@ -148,7 +189,7 @@ const PurchaseInfoStep: React.FC<StepProps> = ({
                     minLength={2}
                     maxLength={120}
                     placeholder="Ex : 2025-45678-XX"
-                    helpText="Le référence de facture ou de commande."
+                    helpText="La référence de facture ou de commande."
                     validation={gatedValidation(
                         'order_reference',
                         d.order_reference || '',
@@ -188,15 +229,15 @@ const PurchaseInfoStep: React.FC<StepProps> = ({
                 <button
                     type="button"
                     onClick={onPrev}
-                    className="bg-gray-100 text-gray-700 font-semibold py-3 px-6 rounded-2xl hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    className="bg-gray-100 text-gray-700 font-semibold py-3 px-6 rounded-2xl hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 transition-colors"
                 >
                     ← Retour
                 </button>
                 <button
                     type="button"
-                    onClick={onNext}
+                    onClick={handleNext}
                     disabled={!canContinue}
-                    className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold py-3 px-6 rounded-2xl hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                    className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold py-3 px-6 rounded-2xl hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 >
                     Continuer vers le problème →
                 </button>

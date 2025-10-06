@@ -1,203 +1,213 @@
-// frontend/src/components/form/FormField.tsx - Fix markInteracted
-
+// frontend/src/components/form/FormField.tsx
 'use client';
 
-import React, { memo, useCallback, useRef } from 'react';
+import React, {useId, useMemo, useState} from 'react';
 
-import { useMobileOptimization } from '@/hooks/useMobileOptimization';
-import { debounce } from '@/lib/performance';
+import type {ValidationResult} from '@/types/form';
 
 interface FormFieldProps {
-  name: string;
-  label: string;
-  value: string;
-  onChange: (value: string) => void;
-  onBlur?: () => void;
-  type?: 'text' | 'email' | 'tel' | 'date' | 'number' | 'textarea' | 'select';
-  required?: boolean;
-  placeholder?: string;
-  helpText?: string;
-  error?: string;
-  disabled?: boolean;
-  maxLength?: number;
-  minLength?: number;
-  options?: Array<{ value: string; label: string }>;
-  autoComplete?: string;
-  className?: string;
-  validation?: {
-    markInteracted?: (field: string) => void;
-    validateField?: (value: any, rules: any) => { valid: boolean; message: string };
-    isInteracted?: (field: string) => boolean;
-  };
+    name: string;
+    label: string;
+    value: string;
+    onChange: (value: string) => void;
+    onBlur?: () => void;
+    type?: 'text' | 'email' | 'tel' | 'date' | 'number';
+    required?: boolean;
+    placeholder?: string;
+    helpText?: string;
+    disabled?: boolean;
+    maxLength?: number;
+    minLength?: number;
+    pattern?: string;
+    inputMode?: 'text' | 'decimal' | 'numeric' | 'tel' | 'email' | 'url';
+    autoComplete?: string;
+    className?: string;
+    validation?: ValidationResult;
+    endAdornment?: React.ReactNode;
+    openPickerOnClick?: boolean;
 }
 
-// Validation en temps réel optimisée
-const useRealtimeValidation = (value: string, required: boolean, type: string) => {
-  const { isSlowConnection } = useMobileOptimization();
+const FormField: React.FC<FormFieldProps> = ({
+                                                 name,
+                                                 label,
+                                                 value,
+                                                 onChange,
+                                                 onBlur,
+                                                 type = 'text',
+                                                 required = false,
+                                                 placeholder,
+                                                 helpText,
+                                                 disabled = false,
+                                                 maxLength,
+                                                 minLength,
+                                                 pattern,
+                                                 inputMode,
+                                                 autoComplete,
+                                                 className = '',
+                                                 validation,
+                                                 endAdornment,
+                                                 openPickerOnClick = false,
+                                             }) => {
+    const reactId = useId();
+    const inputId = `${name}-${reactId}`;
+    const helpId = `${name}-help-${reactId}`;
+    const errorId = `${name}-error-${reactId}`;
 
-  const validateField = useCallback(
-    debounce(
-      (val: string): string | null => {
-        if (required && !val.trim()) {
-          return 'Ce champ est requis';
+    // État d'interaction local
+    const [interacted, setInteracted] = useState(false);
+
+    // Calcul de la validation (utilisé la prop validation ou validation locale)
+    const computedValidation: ValidationResult | undefined = useMemo(() => {
+        // Si une validation externe est fournie, l'utiliser en priorité
+        if (validation) return validation;
+
+        // Sinon, validation locale de base
+        if (required && !value?.trim()) {
+            return {valid: false, message: 'Ce champ est requis'};
         }
 
-        if (type === 'email' && val.trim()) {
-          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-          if (!emailRegex.test(val)) {
-            return 'Format email invalide';
-          }
+        if (minLength && value && value.length < minLength) {
+            return {valid: false, message: `Minimum ${minLength} caractères`};
         }
 
-        if (type === 'tel' && val.trim()) {
-          const phoneRegex = /^(?:(?:\+33|0)[1-9](?:[0-9]{8}))$/;
-          if (!phoneRegex.test(val.replace(/\s/g, ''))) {
-            return 'Format téléphone invalide';
-          }
+        if (maxLength && value && value.length > maxLength) {
+            return {valid: false, message: `Maximum ${maxLength} caractères`};
         }
 
-        return null;
-      },
-      isSlowConnection ? 800 : 400,
-    ),
-    [required, type, isSlowConnection],
-  );
-
-  return validateField; // ✅ Ne retourne que validateField
-};
-
-const FormField = memo<FormFieldProps>(
-  ({
-    name,
-    label,
-    value,
-    onChange,
-    onBlur,
-    type = 'text',
-    required = false,
-    placeholder,
-    helpText,
-    error,
-    disabled = false,
-    maxLength,
-    minLength,
-    options,
-    autoComplete,
-    className = '',
-    validation, // ✅ Récupérer validation depuis les props
-  }) => {
-    const { isMobile } = useMobileOptimization();
-    const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>(null);
-
-    // ✅ CORRECTION : Récupérer validateField depuis useRealtimeValidation
-    const validateField = useRealtimeValidation(value, required, type);
-
-    // ✅ CORRECTION : Récupérer markInteracted depuis les props de validation
-    const markInteracted = validation?.markInteracted;
-
-    // Handler optimisé pour les changements
-    const handleChange = useCallback(
-      (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-        const newValue = e.target.value;
-        onChange(newValue);
-
-        // Marquer comme interagi si la fonction existe
-        if (markInteracted) {
-          markInteracted(name);
+        // Validation du pattern si fourni
+        if (pattern && value) {
+            const regex = new RegExp(pattern);
+            if (!regex.test(value)) {
+                // Messages d'erreur spécifiques selon le type de champ
+                if (type === 'email') {
+                    return {valid: false, message: 'Format email invalide'};
+                }
+                if (name.includes('price') || name.includes('prix')) {
+                    return {valid: false, message: 'Format prix invalide (ex: 899.99)'};
+                }
+                if (name.includes('postal') || name.includes('code')) {
+                    return {valid: false, message: 'Code postal invalide'};
+                }
+                return {valid: false, message: 'Format invalide'};
+            }
         }
 
-        // Validation en temps réel
-        if (newValue.trim()) {
-          validateField(newValue);
+        // Validation email native
+        if (type === 'email' && value) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(value)) {
+                return {valid: false, message: 'Format email invalide'};
+            }
         }
-      },
-      [onChange, validateField, markInteracted, name],
-    );
 
-    // Handler optimisé pour le blur
-    const handleBlur = useCallback(() => {
-      // ✅ CORRECTION : Vérifier que markInteracted existe
-      if (markInteracted) {
-        markInteracted(name);
-      }
+        return {valid: true, message: ''};
+    }, [validation, required, value, minLength, maxLength, pattern, type, name]);
 
-      validateField(value);
-      onBlur?.();
-    }, [value, validateField, onBlur, markInteracted, name]);
+    const isValid = computedValidation?.valid ?? true;
 
-    // Optimisation pour mobile
-    const inputProps = {
-      ref: inputRef,
-      id: name,
-      name,
-      value,
-      onChange: handleChange,
-      onBlur: handleBlur,
-      placeholder,
-      disabled,
-      maxLength,
-      autoComplete,
-      ...(isMobile && { autoCapitalize: 'none', autoCorrect: 'off' }),
+    // N'afficher l'erreur que si l'utilisateur a interagi avec le champ
+    const showError = interacted && !isValid;
+
+    // Classe de statut pour la bordure
+    const statusClass = showError
+        ? 'border-orange-500 focus:border-orange-500 focus:ring-orange-500/30 bg-orange-50/30'
+        : value && isValid
+            ? 'border-green-500 focus:border-green-500 focus:ring-green-500/30'
+            : 'border-gray-300 focus:border-blue-600 focus:ring-blue-600/20';
+
+    // Gérer le changement
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        onChange(e.target.value);
     };
 
-    // Rendu du champ selon le type
-    const renderInput = () => {
-      if (type === 'textarea') {
-        return (
-          <textarea
-            {...inputProps}
-            rows={4}
-            className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none ${className}`}
-          />
-        );
-      }
+    // Gérer le blur
+    const handleBlur = () => {
+        setInteracted(true);
+        onBlur?.();
+    };
 
-      if (type === 'select' && options) {
-        return (
-          <select
-            {...inputProps}
-            className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${className}`}
-          >
-            <option value="">Sélectionnez...</option>
-            {options.map(option => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        );
-      }
+    // Gérer le focus (pour marquer comme interacté)
+    const handleFocus = () => {
+        setInteracted(true);
+    };
 
-      return (
-        <input
-          {...inputProps}
-          type={type}
-          className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${className}`}
-        />
-      );
+    // Pour les champs date, ouvrir le picker au clic
+    const handleClick = () => {
+        if (openPickerOnClick && type === 'date') {
+            const input = document.getElementById(inputId) as HTMLInputElement;
+            input?.showPicker?.();
+        }
     };
 
     return (
-      <div className="space-y-2">
-        <label htmlFor={name} className="block text-sm font-medium text-gray-700">
-          {label}
-          {required && <span className="text-red-500 ml-1">*</span>}
-        </label>
+        <div className={`form-group ${className}`}>
+            {/* Label */}
+            <label
+                htmlFor={inputId}
+                className="block text-sm font-semibold text-gray-900 mb-1"
+            >
+                {label}
+                {required && <span className="text-red-500 ml-1">*</span>}
+            </label>
 
-        {renderInput()}
+            {/* Wrapper pour input + endAdornment */}
+            <div className="relative">
+                <input
+                    id={inputId}
+                    name={name}
+                    type={type}
+                    value={value}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    onFocus={handleFocus}
+                    onClick={handleClick}
+                    placeholder={placeholder}
+                    disabled={disabled}
+                    maxLength={maxLength}
+                    minLength={minLength}
+                    pattern={pattern}
+                    inputMode={inputMode}
+                    autoComplete={autoComplete}
+                    aria-invalid={showError ? true : undefined}
+                    aria-describedby={[
+                        helpText ? helpId : null,
+                        showError ? errorId : null,
+                    ]
+                        .filter(Boolean)
+                        .join(' ')}
+                    className={[
+                        'block w-full rounded-lg border-2 px-3 py-2 text-sm font-medium transition-all',
+                        'focus:outline-none focus:ring-2',
+                        'disabled:bg-gray-50 disabled:text-gray-500 disabled:cursor-not-allowed',
+                        endAdornment ? 'pr-12' : '',
+                        statusClass,
+                    ].join(' ')}
+                />
 
-        {error && (
-          <p className="text-sm text-red-600" role="alert">
-            {error}
-          </p>
-        )}
+                {/* Adornement de fin (ex: icône €) */}
+                {endAdornment && (
+                    <div
+                        className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                        {endAdornment}
+                    </div>
+                )}
+            </div>
 
-        {helpText && !error && <p className="text-sm text-gray-500">{helpText}</p>}
-      </div>
+            {/* Texte d'aide ou message d'erreur */}
+            <div className="mt-1">
+                {showError ? (
+                    <p id={errorId} role="alert"
+                       className="text-sm font-medium text-orange-600">
+                        {computedValidation?.message}
+                    </p>
+                ) : helpText ? (
+                    <p id={helpId} className="text-xs text-gray-500">
+                        {helpText}
+                    </p>
+                ) : null}
+            </div>
+        </div>
     );
-  },
-);
-
-FormField.displayName = 'FormField';
+};
 
 export default FormField;
