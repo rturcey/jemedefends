@@ -10,7 +10,7 @@ from app.core.form_draft_service import FormDraftService
 from app.core.letter_service import LetterService
 from app.dependencies import get_form_draft_service, get_letter_service
 from app.models.form_draft import DraftEventType, DraftStatus
-from app.models.letters import Address, DefectType, LetterRequest
+from app.models.letters import Address, RemedyPreference, LetterRequest
 
 router = APIRouter(prefix="/form-drafts", tags=["form-drafts"])
 
@@ -193,14 +193,16 @@ async def submit(
         logger.info("Starting letter creation from draft %s", draft.id)
 
         try:
-            defect_type = DefectType(draft.data.get("defect_type", "non_conformity"))
+            remedy_preference = RemedyPreference(
+                draft.data.get("remedy_preference", "repairs")
+            )
         except ValueError:
             logger.warning(
-                "Invalid defect_type in draft %s: %s",
+                "Invalid remedy_preference in draft %s: %s",
                 draft.id,
-                draft.data.get("defect_type"),
+                draft.data.get("remedy_preference"),
             )
-            defect_type = DefectType.NON_CONFORMITY
+            remedy_preference = RemedyPreference.REPAIRS
         buyer_address = Address(
             line1=draft.data.get("buyer_address_line_1", ""),
             line2=draft.data.get("buyer_address_line_2", None),
@@ -218,19 +220,21 @@ async def submit(
         )
 
         buyer_email = draft.data.get("buyer_email", None)
+        buyer_phone = draft.data.get("buyer_phone", None)
         if buyer_email == "":
             buyer_email = None
         letter_request = LetterRequest(
             buyer_name=draft.data.get("buyer_name", ""),
             buyer_address=buyer_address,
             buyer_email=buyer_email,
+            buyer_phone=buyer_phone,
             order_reference=draft.data.get("order_reference", None),
             seller_name=draft.data.get("seller_name", ""),
             seller_address=seller_address,
             purchase_date=draft.data.get("purchase_date", ""),
             product_name=draft.data.get("product_name", ""),
             product_price=draft.data.get("product_price", ""),
-            defect_type=defect_type,
+            remedy_preference=remedy_preference,
             defect_description=draft.data.get("defect_description", ""),
             used=draft.data.get("used", False),
             digital=draft.data.get("digital", False),
@@ -250,9 +254,6 @@ async def submit(
             request=request,
             response=response,
         )
-        response.delete_cookie("jmd_draft")
-        logger.info("Draft marked submitted & cookie cleared: %s", draft.id)
-
         logger.info("Letter %s created successfully from draft %s", letter.id, draft.id)
 
         return {

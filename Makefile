@@ -40,6 +40,8 @@ db-down:
 db-migrate:
 	@echo "🔄 Running database migrations..."
 	cd backend && ./scripts/migrate.sh 2>/dev/null || echo "⚠️ Migration script not found, DB should be accessible"
+	@echo "🔄 Running SQLC generation..."
+	cd backend/app/db && uv run sqlc generate
 	@echo "✅ Migrations completed"
 
 db-reset:

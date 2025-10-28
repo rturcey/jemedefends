@@ -185,7 +185,9 @@ export const API_ENDPOINTS = {
   generatePDF: '/api/v1/letters/generate-pdf',
   completeService: '/api/v1/letters/complete-service',
 
+  // IA
   reformulateText: '/api/v1/letters/reformulate-text',
+  normalizeProductName: '/api/v1/letters/normalize-product-name', // ✅ NOUVEAU
 
   // Health
   health: '/api/v1/health',

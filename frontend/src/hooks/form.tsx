@@ -401,7 +401,7 @@ const useFormManager = (formSlug: string = 'mise_en_demeure_v1'): UseFormManager
       purchase_date: '2024-06-15',
       product_price: '899',
       product_condition: 'used',
-      defect_type: 'fonctionnement',
+      digital: false,
       defect_description:
         "L'écran présente des lignes verticales noires permanentes qui rendent l'appareil inutilisable. Le problème est apparu spontanément après seulement 2 mois d'utilisation normale.",
     };
