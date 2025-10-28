@@ -1,0 +1,126 @@
+title: 'Voyage, concert, spectacle ou box cadeau annulé : vos droits (Guide 2025)'
+description: 'Annulation, report, prestation non conforme, refus de remboursement : vos droits sont garantis par le Code de la consommation. Ce guide vous explique la marche à suivre, selon le type de service ou de billet acheté.'
+category: 'numerique'
+slug: 'voyage-et-loisirs-garantie-legale'
+
+seo:
+  title: 'Annulation de voyage, concert ou box cadeau : remboursement ou avoir ? (Guide 2025)'
+  description: 'Vol annulé, séjour modifié, spectacle reporté ou box cadeau inutilisable ? Découvrez vos droits à l’annulation, au remboursement ou à la compensation, selon les articles L.221-18, L.224-25-14 et L.211-16 du Code de la consommation.'
+  keywords:
+    - 'voyage annulé remboursement'
+    - 'concert annulé remboursement légal'
+    - 'box cadeau inutilisable droits consommateur'
+    - 'L221-18 droit rétractation'
+    - 'L224-25-14 non-conformité service'
+    - 'voyage forfait agence annulation'
+    - 'retard vol indemnisation'
+    - 'spectacle report avoir obligatoire'
+
+legal:
+  mainArticles:
+    - 'L.221-18'
+    - 'L.221-23'
+    - 'L.221-28'
+    - 'L.224-25-12'
+    - 'L.224-25-13'
+    - 'L.224-25-14'
+    - 'L.224-25-16'
+    - 'L.211-14'
+    - 'L.211-16'
+    - 'R.211-10'
+  disclaimer: true
+  lastUpdated: '2025-10-31'
+
+sections:
+  - id: 'intro'
+    title: 'L’essentiel en 30 secondes'
+    type: 'content'
+    content: |
+      Vol annulé, concert reporté, hôtel fermé, box cadeau inutilisable : vos droits dépendent du type de service acheté.  
+      Pour tout **achat à distance**, vous disposez d’un **délai de 14 jours pour vous rétracter** L.221-18, sauf exceptions prévues L.221-28.  
+      Si le service est **non conforme**, partiellement exécuté ou annulé sans motif légitime, vous pouvez exiger un **remboursement ou une exécution conforme** L.224-25-14 L.224-25-16.  
+      Les **voyages à forfait** bénéficient d’une protection renforcée : l’organisateur doit **rembourser intégralement** en cas d’annulation L.211-14 L.211-16.
+
+  - id: 'types'
+    title: 'Vos droits selon le type de service'
+    type: 'grid'
+    items:
+      - title: 'Voyage à forfait (vol + hôtel)'
+        description: 'Annulé ou modifié ? Vous pouvez demander un **remboursement intégral sans frais** L.211-14. Si le séjour est interrompu, l’organisateur doit **rapatrier** et **assister** les voyageurs L.211-16.'
+      - title: 'Billet de concert ou spectacle'
+        description: 'En cas d’annulation, l’organisateur doit **rembourser le prix du billet**, sauf report accepté. Les **avoirs imposés** ne sont plus légaux depuis 2023 L.224-25-14.'
+      - title: 'Box cadeau ou bon non utilisable'
+        description: 'Si le prestataire a fermé ou refuse d’honorer la box, l’émetteur doit **rembourser** ou **prolonger sa validité** L.224-25-14 L.224-25-16.'
+      - title: 'Vol ou transport annulé'
+        description: 'Les droits à indemnisation sont encadrés par les règlements européens (CE 261/2004). Vous pouvez exiger **remboursement ou réacheminement** sous 7 jours.'
+      - title: 'Activité de loisir datée'
+        description: 'Les réservations de loisirs à date fixe (ex. concert, musée, escape game) **ne sont pas rétractables** L.221-28. En revanche, en cas d’annulation par l’organisateur, un **remboursement intégral** est dû L.224-25-14.'
+
+  - id: 'procedure'
+    title: 'Procédure pas-à-pas'
+    type: 'timeline'
+    steps:
+      - title: 'Identifiez le type de contrat'
+        description: |
+          Vérifiez si votre achat concerne un **service en ligne**, un **voyage à forfait**, une **prestation unique** ou une **activité datée**.  
+          Les droits diffèrent selon les régimes applicables L.221-18 à L.221-28 et L.224-25-14.
+      - title: 'Réclamation auprès du vendeur ou organisateur'
+        description: |
+          Envoyez un **courrier ou mail daté**, demandant le **remboursement intégral ou l’exécution conforme** selon L.224-25-14 L.224-25-16.  
+          Précisez que la non-conformité résulte d’une **annulation, d’un défaut d’exécution ou d’une modification unilatérale**.
+      - title: 'Délai de remboursement'
+        description: |
+          Le professionnel doit **rembourser sous 14 jours** maximum à compter de votre demande L.221-23.  
+          Passé ce délai, des **intérêts de retard** peuvent être dus.
+      - title: 'En cas de refus'
+        description: |
+          Envoyez une **mise en demeure** avec rappel des articles applicables L.224-25-14 et L.211-14, puis saisissez le **médiateur** ou la **DGCCRF**.  
+          Vous pouvez également contester auprès du **centre européen des consommateurs (CEC France)** pour un achat transfrontalier.
+
+  - id: 'cas-frequents'
+    title: 'Cas fréquents'
+    type: 'faq'
+    faqItems:
+      - q: 'L’agence me propose un avoir au lieu d’un remboursement'
+        a: 'Refusez : les avoirs imposés ne sont plus autorisés depuis 2023. Vous avez droit à un **remboursement intégral** L.224-25-14.'
+      - q: 'Le concert a été reporté et je ne peux pas y assister'
+        a: 'Vous pouvez demander le **remboursement du billet**, même si la date de report est connue L.224-25-14.'
+      - q: 'Ma box cadeau est expirée pendant la crise sanitaire'
+        a: 'L’émetteur doit proposer une **prolongation de validité** ou un **remboursement** L.224-25-16.'
+      - q: 'L’hôtel réservé en ligne n’existait pas ou n’était pas conforme'
+        a: 'Vous pouvez réclamer le **remboursement intégral** pour **non-conformité du service** L.224-25-14, voire des dommages et intérêts en cas de préjudice.'
+
+  - id: 'conseils'
+    title: 'Bon à savoir'
+    type: 'content'
+    content: |
+      - En cas de litige avec un professionnel basé dans l’UE, vous pouvez saisir gratuitement le **Centre européen des consommateurs France (CEC)**.  
+      - Pour les **voyages à forfait**, conservez les échanges avec l’agence et les preuves de paiement : la **responsabilité de l’organisateur** est automatique L.211-16.  
+      - Les **activités datées** (concerts, musées, festivals) n’ouvrent pas droit à rétractation L.221-28, mais doivent être **remboursées en cas d’annulation**.  
+      - Si le service a été mal exécuté (ex. hôtel non conforme), vous pouvez exiger une **exécution correcte ou une réduction du prix** L.224-25-14.
+
+  - id: 'cta'
+    title: 'Faites valoir vos droits'
+    type: 'content'
+    content: |
+      Générez votre **réclamation ou mise en demeure** pour tout voyage, concert, activité ou box cadeau annulé ou non conforme.  
+      Votre courrier intégrera automatiquement les **articles de loi** adaptés à votre situation.  
+      Version **PDF professionnelle** et **envoi recommandé** disponibles.
+    cta:
+      label: 'Rédiger ma réclamation'
+      href: '/outils/mise-en-demeure'
+      variant: 'primary'
+      icon: 'FileText'
+
+  - id: 'contacts'
+    title: 'Contacts utiles'
+    type: 'contacts'
+
+  - id: 'disclaimer'
+    title: 'Important'
+    type: 'content'
+    content: |
+      Ce guide présente vos droits pour les **voyages, spectacles, activités et services de loisirs** selon le Code de la consommation.  
+      Il **ne remplace pas** un conseil juridique individualisé.  
+      En cas de litige complexe ou international, contactez un **médiateur**, la **DGCCRF** ou le **Centre européen des consommateurs France**.
+

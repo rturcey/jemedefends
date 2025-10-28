@@ -1,24 +1,21 @@
-// components/signature/SignaturePad.tsx
+// frontend/src/components/results/SignaturePad.tsx
 'use client';
 
-import { Trash2 } from 'lucide-react';
-import { useState, useEffect, useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
+import { X, Pen } from 'lucide-react';
 
 interface SignaturePadProps {
-  onSignatureChange: (signature: string) => void;
-  className?: string;
+  onSignatureChange: (signature: string | null) => void;
   disabled?: boolean;
 }
 
-export default function SignaturePad({
-  onSignatureChange,
-  className = '',
-  disabled = false,
-}: SignaturePadProps) {
+const SignaturePad: React.FC<SignaturePadProps> = ({ onSignatureChange, disabled = false }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [hasSignature, setHasSignature] = useState(false);
+  const [context, setContext] = useState<CanvasRenderingContext2D | null>(null);
 
+  // Initialiser le canvas
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -26,177 +23,153 @@ export default function SignaturePad({
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Configuration du canvas
-    const resizeCanvas = () => {
-      const rect = canvas.getBoundingClientRect();
-      canvas.width = rect.width * window.devicePixelRatio;
-      canvas.height = rect.height * window.devicePixelRatio;
-      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
-      ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
-      ctx.strokeStyle = '#000';
-      ctx.lineWidth = 2;
-    };
+    // Configurer le contexte
+    ctx.strokeStyle = '#000000';
+    ctx.lineWidth = 2;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
 
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
+    setContext(ctx);
 
-    return () => {
-      window.removeEventListener('resize', resizeCanvas);
-    };
+    // Adapter au DPR pour netteté sur écrans haute résolution
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
+    ctx.scale(dpr, dpr);
   }, []);
 
-  const getEventPos = (e: React.MouseEvent | React.TouchEvent) => {
+  // Obtenir les coordonnées (souris ou touch)
+  const getCoordinates = (
+    e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>,
+  ): { x: number; y: number } | null => {
     const canvas = canvasRef.current;
-    if (!canvas) return { x: 0, y: 0 };
+    if (!canvas) return null;
 
     const rect = canvas.getBoundingClientRect();
-    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
-    const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
 
-    return {
-      x: clientX - rect.left,
-      y: clientY - rect.top,
-    };
-  };
-
-  const startDrawing = (e: React.MouseEvent | React.TouchEvent) => {
-    if (disabled) return;
-
-    e.preventDefault();
-    setIsDrawing(true);
-
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    const pos = getEventPos(e);
-    ctx.beginPath();
-    ctx.moveTo(pos.x, pos.y);
-  };
-
-  const draw = (e: React.MouseEvent | React.TouchEvent) => {
-    if (!isDrawing || disabled) return;
-
-    e.preventDefault();
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    const pos = getEventPos(e);
-    ctx.lineTo(pos.x, pos.y);
-    ctx.stroke();
-
-    if (!hasSignature) {
-      setHasSignature(true);
+    if ('touches' in e) {
+      // Touch event
+      if (e.touches.length === 0) return null;
+      return {
+        x: e.touches[0].clientX - rect.left,
+        y: e.touches[0].clientY - rect.top,
+      };
+    } else {
+      // Mouse event
+      return {
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top,
+      };
     }
   };
 
-  const stopDrawing = (e?: React.MouseEvent | React.TouchEvent) => {
+  // Commencer à dessiner
+  const startDrawing = (
+    e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>,
+  ) => {
+    if (disabled || !context) return;
+
+    const coords = getCoordinates(e);
+    if (!coords) return;
+
+    setIsDrawing(true);
+    context.beginPath();
+    context.moveTo(coords.x, coords.y);
+
+    // Empêcher le scroll sur mobile
+    if ('touches' in e) {
+      e.preventDefault();
+    }
+  };
+
+  // Dessiner
+  const draw = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
+    if (!isDrawing || disabled || !context) return;
+
+    const coords = getCoordinates(e);
+    if (!coords) return;
+
+    context.lineTo(coords.x, coords.y);
+    context.stroke();
+
+    if ('touches' in e) {
+      e.preventDefault();
+    }
+  };
+
+  // Arrêter de dessiner
+  const stopDrawing = () => {
     if (!isDrawing) return;
 
-    e?.preventDefault();
     setIsDrawing(false);
+    setHasSignature(true);
 
+    // Convertir en base64 et notifier le parent
     const canvas = canvasRef.current;
-    if (canvas && hasSignature) {
-      onSignatureChange(canvas.toDataURL('image/png'));
+    if (canvas) {
+      const dataUrl = canvas.toDataURL('image/png');
+      onSignatureChange(dataUrl);
     }
   };
 
-  // Événements globaux pour continuer à dessiner même hors du canvas
-  useEffect(() => {
-    const handleGlobalMouseMove = (e: MouseEvent) => {
-      if (!isDrawing || disabled) return;
-
-      const canvas = canvasRef.current;
-      if (!canvas) return;
-
-      const rect = canvas.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-
-      // Si on est dans les limites du canvas
-      if (x >= 0 && x <= rect.width && y >= 0 && y <= rect.height) {
-        const ctx = canvas.getContext('2d');
-        if (!ctx) return;
-
-        ctx.lineTo(x, y);
-        ctx.stroke();
-      }
-    };
-
-    const handleGlobalMouseUp = () => {
-      if (isDrawing) {
-        stopDrawing();
-      }
-    };
-
-    if (isDrawing) {
-      document.addEventListener('mousemove', handleGlobalMouseMove);
-      document.addEventListener('mouseup', handleGlobalMouseUp);
-    }
-
-    return () => {
-      document.removeEventListener('mousemove', handleGlobalMouseMove);
-      document.removeEventListener('mouseup', handleGlobalMouseUp);
-    };
-  }, [isDrawing, disabled]);
-
+  // Effacer la signature
   const clearSignature = () => {
-    if (disabled) return;
-
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!canvas || !context) return;
 
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    context.clearRect(0, 0, canvas.width, canvas.height);
     setHasSignature(false);
-    onSignatureChange('');
+    onSignatureChange(null);
   };
 
   return (
-    <div className={`space-y-3 ${className}`}>
+    <div className="relative">
+      {/* Canvas de signature */}
       <canvas
         ref={canvasRef}
         onMouseDown={startDrawing}
         onMouseMove={draw}
         onMouseUp={stopDrawing}
+        onMouseLeave={stopDrawing}
         onTouchStart={startDrawing}
         onTouchMove={draw}
         onTouchEnd={stopDrawing}
         className={`
-          w-full h-32 border-2 border-dashed rounded-xl bg-white transition-colors
-          ${
-            disabled
-              ? 'border-gray-200 cursor-not-allowed opacity-50'
-              : 'border-gray-300 hover:border-gray-400 cursor-crosshair'
-          }
+          w-full h-40 border-2 border-dashed rounded-xl bg-white cursor-crosshair
+          ${disabled ? 'opacity-50 cursor-not-allowed' : 'border-gray-300 hover:border-blue-400'}
+          ${hasSignature ? 'border-blue-500' : ''}
+          transition-colors
         `}
         style={{ touchAction: 'none' }}
       />
 
+      {/* Placeholder quand pas de signature */}
+      {!hasSignature && (
+        <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none text-gray-400">
+          <Pen className="w-8 h-8 mb-2" />
+          <p className="text-sm font-medium">Signez ici avec votre souris ou votre doigt</p>
+        </div>
+      )}
+
+      {/* Bouton effacer */}
       {hasSignature && !disabled && (
         <button
           onClick={clearSignature}
-          className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-800 transition-colors"
+          className="absolute top-2 right-2 p-2 bg-white rounded-lg shadow-md hover:bg-red-50 transition-colors group"
+          type="button"
+          aria-label="Effacer la signature"
         >
-          <Trash2 className="w-4 h-4" />
-          Effacer la signature
+          <X className="w-5 h-5 text-gray-600 group-hover:text-red-600" />
         </button>
       )}
 
-      {!hasSignature && (
-        <p className={`text-sm text-center ${disabled ? 'text-gray-400' : 'text-gray-500'}`}>
-          {disabled ? 'Signature désactivée' : 'Signez dans la zone ci-dessus'}
-        </p>
-      )}
+      {/* Instructions mobile */}
+      <p className="text-xs text-gray-500 mt-2 text-center">
+        {hasSignature ? '✓ Signature enregistrée' : 'Utilisez votre doigt ou stylet sur mobile'}
+      </p>
     </div>
   );
-}
+};
+
+export default SignaturePad;

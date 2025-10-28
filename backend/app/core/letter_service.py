@@ -1,34 +1,29 @@
-from __future__ import annotations
-
+"""
+Service de gestion des lettres - Mise à jour avec buyer_phone et remedy_preference
+"""
 import logging
-from dataclasses import dataclass
 from datetime import datetime
-from typing import Annotated
+from decimal import Decimal
+from typing import Optional, Annotated
+from uuid import UUID
 
 from jinja2 import Environment
 
-from app.core.letter_generator import LetterGenerator
 from app.core.letter_repository import LetterRepositoryProtocol
-from app.core.pdf_generator import PDFGenerator
-from app.core.pdf_service import PDFService, PDFType
-from app.models.letters import LetterRequest, LetterStatus, PDFOptions
-from app.utils.exceptions import ProcessingError
+from app.models.letters import LetterRequest, Letter, LetterStatus, PDFOptions
+from core.letter_generator import LetterGenerator
+from core.pdf_generator import PDFGenerator
+from core.pdf_service import PDFService, PDFType
+from utils.exceptions import ProcessingError
 
 logger = logging.getLogger(__name__)
+
 
 DefaultPDFOptions = Annotated[PDFOptions, "PDF options with default A4 format"]
 
 
 def default_pdf_options() -> PDFOptions:
     return PDFOptions(format="A4")
-
-
-@dataclass(slots=True, frozen=True)
-class LetterResult:
-    id: str
-    content: str
-    status: LetterStatus
-
 
 class LetterService:
     def __init__(
@@ -44,34 +39,135 @@ class LetterService:
         self._generator = generator or LetterGenerator()
         self._pdf_generator = PDFGenerator()
 
-    async def create_letter(
+    async def create_letter(self, letter_data: LetterRequest) -> Letter:
+        """Créer une nouvelle lettre"""
+        logger.info("Création d'une nouvelle lettre")
+
+        letter = await self._repository.create_letter(letter_data)
+        logger.info(f"Lettre créée avec ID: {letter.id}")
+        return Letter.model_validate(letter)
+
+    async def get_letter(self, letter_id: str) -> Optional[Letter]:
+        """Récupérer une lettre par son ID"""
+        logger.info(f"Récupération lettre ID: {letter_id}")
+
+        letter = await self._repository.get_letter_by_id(letter_id)
+        return Letter.model_validate(letter) if letter else None
+
+    def _format_date(self, date_obj) -> str:
+        """Formater une date pour affichage français"""
+        if isinstance(date_obj, str):
+            date_obj = datetime.fromisoformat(date_obj).date()
+
+        months_fr = [
+            "janvier", "février", "mars", "avril", "mai", "juin",
+            "juillet", "août", "septembre", "octobre", "novembre", "décembre"
+        ]
+
+        return f"{date_obj.day} {months_fr[date_obj.month - 1]} {date_obj.year}"
+
+    def _format_price(self, price: Decimal) -> str:
+        """Formater un prix en euros"""
+        return f"{price:.2f} €".replace(".", ",")
+
+    async def generate_basic_html(self, letter_id: str) -> str:
+        """
+        Générer le HTML de base pour aperçu iframe
+        Inclut buyer_phone et remedy_preference
+        """
+        logger.info(f"Génération HTML basique pour lettre {letter_id}")
+
+        letter = await self.get_letter(letter_id)
+        if not letter:
+            raise ValueError(f"Lettre {letter_id} non trouvée")
+
+        # Préparer les données pour le template
+        template_data = {
+            "letter": {
+                "buyer_name": letter.buyer_name,
+                "buyer_email": letter.buyer_email,
+                "buyer_phone": letter.buyer_phone,
+                "buyer_address_line_1": letter.buyer_address.line1,
+                "buyer_address_line_2": letter.buyer_address.line2,
+                "buyer_postal_code": letter.buyer_address.postal_code,
+                "buyer_city": letter.buyer_address.city,
+                "buyer_country": letter.buyer_address.country,
+                "seller_name": letter.seller_name,
+                "seller_address.line_1": letter.seller_address.line1,
+                "seller_address.line_2": letter.seller_address.line2,
+                "seller_postal_code": letter.seller_address.postal_code,
+                "seller_city": letter.seller_address.city,
+                "seller_country": letter.seller_address.country,
+                "product_name": letter.product_name,
+                "order_reference": letter.order_reference,
+                "defect_description": letter.defect_description,
+                "used": letter.used,
+                "digital": letter.digital,
+                "remedy_preference": letter.remedy_preference.value,
+            },
+            "purchase_date_formatted": self._format_date(letter.purchase_date),
+            "product_price_formatted": self._format_price(letter.product_price),
+            "current_date": datetime.now().strftime("%d/%m/%Y"),
+        }
+
+        # Charger et rendre le template
+        template = self._template_env.get_template("basic_mise_en_demeure.html")
+        html_content = template.render(**template_data)
+
+        logger.info(f"HTML généré avec succès pour lettre {letter_id}")
+        return html_content
+
+    async def generate_pdf_html(
         self,
-        letter_data: LetterRequest,
-    ) -> LetterResult:
-        try:
-            logger.info(f"Creating letter {letter_data}")
+        letter_id: str,
+        signature_data_url: Optional[str] = None,
+    ) -> str:
+        """
+        Générer le HTML pour conversion PDF
+        Inclut buyer_phone et remedy_preference
+        """
+        logger.info(f"Génération HTML PDF pour lettre {letter_id}")
 
-            letter = await self._repository.create_letter(letter_data)
-            html_content = self._generator.generate_pdf_mise_en_demeure(letter)
+        letter = await self.get_letter(letter_id)
+        if not letter:
+            raise ValueError(f"Lettre {letter_id} non trouvée")
 
-            await self._repository.update_content(
-                letter_id=letter.id,
-                content=html_content,
-                status=LetterStatus.GENERATED,
-            )
+        # Préparer les données pour le template PDF
+        template_data = {
+            "letter": {
+                "buyer_name": letter.buyer_name,
+                "buyer_email": letter.buyer_email,
+                "buyer_phone": letter.buyer_phone,
+                "buyer_address_line_1": letter.buyer_address.line1,
+                "buyer_address_line_2": letter.buyer_address.line2,
+                "buyer_postal_code": letter.buyer_address.postal_code,
+                "buyer_city": letter.buyer_address.city,
+                "buyer_country": letter.buyer_address.country,
+                "seller_name": letter.seller_name,
+                "seller_address.line_1": letter.seller_address.line1,
+                "seller_address.line_2": letter.seller_address.line2,
+                "seller_postal_code": letter.seller_address.postal_code,
+                "seller_city": letter.seller_address.city,
+                "seller_country": letter.seller_address.country,
+                "product_name": letter.product_name,
+                "order_reference": letter.order_reference,
+                "defect_description": letter.defect_description,
+                "used": letter.used,
+                "digital": letter.digital,
+                "remedy_preference": letter.remedy_preference.value,  # NOUVEAU
+            },
+            "purchase_date_formatted": self._format_date(letter.purchase_date),
+            "product_price_formatted": self._format_price(letter.product_price),
+            "current_date": datetime.now().strftime("%d/%m/%Y"),
+            "signature_data_url": signature_data_url,  # Peut être None
+        }
 
-            return LetterResult(
-                id=letter.id,
-                content=str(html_content),
-                status=LetterStatus.GENERATED,
-            )
+        # Charger et rendre le template PDF
+        template = self._template_env.get_template("pdf_mise_en_demeure.html")
+        html_content = template.render(**template_data)
 
-        except Exception as e:
-            logger.error(f"Letter creation failed: {e}")
-            raise ProcessingError(
-                f"Letter creation failed: {e}",
-                error_code="LETTER_CREATION_ERROR",
-            ) from e
+        logger.info(f"HTML PDF généré avec succès pour lettre {letter_id}")
+        return html_content
 
     async def generate_pdf(
         self,
@@ -129,35 +225,4 @@ class LetterService:
             raise ProcessingError(
                 f"PDF generation failed: {e}",
                 error_code="PDF_GENERATION_ERROR",
-            ) from e
-
-    async def generate_basic_html(self, letter_id: str) -> str:
-        try:
-            logger.info("Generating basic HTML for letter %s", letter_id)
-
-            letter = await self._repository.get_letter_by_id(letter_id)
-            if not letter:
-                raise ProcessingError(
-                    f"Letter not found: {letter_id}",
-                    error_code="LETTER_NOT_FOUND",
-                )
-
-            context = {
-                "letter": letter,
-                "current_date": datetime.now().strftime("%d/%m/%Y"),
-                "purchase_date_formatted": letter.purchase_date.strftime("%d/%m/%Y"),
-                "product_price_formatted": f"{letter.product_price:.2f} €".replace(
-                    ".", ","
-                ),
-            }
-
-            template = self._template_env.get_template("basic_mise_en_demeure.html")
-            return template.render(context)
-        except ProcessingError:
-            raise
-        except Exception as e:
-            logger.error("Basic HTML generation failed: %s", e, exc_info=True)
-            raise ProcessingError(
-                f"Basic HTML generation failed: {e}",
-                error_code="HTML_GENERATION_ERROR",
             ) from e

@@ -48,7 +48,7 @@ import {
   Search,
   Settings,
   Shield,
-  Shirt,
+  Shirt, ShoppingCart,
   Signal,
   Smartphone,
   Star,
@@ -60,9 +60,6 @@ import {
   Wrench,
   Zap,
 } from 'lucide-react';
-
-// ✅ IMPORT DE LA SOURCE DE VÉRITÉ EXISTANTE
-import { getCategoryFromSlug } from './guide-utils';
 
 /**
  * Type pour les tailles d'icônes
@@ -84,7 +81,7 @@ function getIconClasses(size: IconSize = 'md'): string {
 }
 
 /**
- * ✅ REGISTRE COMPLET DES ICÔNES LUCIDE REACT
+ * REGISTRE COMPLET DES ICÔNES LUCIDE REACT
  * Mapping nom string → composant React (pour YAML)
  *
  * Lucide exporte des composants React qui acceptent des props SVG.
@@ -167,7 +164,7 @@ const LUCIDE_ICON_REGISTRY: Record<string, IconComponent> = {
 };
 
 /**
- * ✅ RÉSOUT UNE ICÔNE DEPUIS UN NOM STRING (pour YAML)
+ * RÉSOUT UNE ICÔNE DEPUIS UN NOM STRING (pour YAML)
  * Utilisé par les sections avec `icon: "Shield"`
  */
 export function getIconFromName(
@@ -186,9 +183,9 @@ export function getIconFromName(
 }
 
 /**
- * ✅ OBTIENT UNE ICÔNE SELON LE NOM DE CATÉGORIE
+ * OBTIENT UNE ICÔNE SELON LE NOM DE CATÉGORIE
  */
-export function getIconForCategory(
+export function getIconFromCategoryId(
   categoryName: string,
   size: IconSize = 'md',
   className?: string,
@@ -196,50 +193,20 @@ export function getIconForCategory(
   const classes = className || getIconClasses(size);
 
   const iconMap: Record<string, React.ReactNode> = {
-    'High-Tech': React.createElement(Smartphone, { className: classes }),
-    Automobile: React.createElement(Car, { className: classes }),
-    Maison: React.createElement(Home, { className: classes }),
-    Électroménager: React.createElement(Home, { className: classes }),
-    Général: React.createElement(Scale, { className: classes }),
-    Juridique: React.createElement(Scale, { className: classes }),
-    Textile: React.createElement(Shirt, { className: classes }),
-    'Audio/Vidéo': React.createElement(Headphones, { className: classes }),
-    Informatique: React.createElement(Computer, { className: classes }),
+    tech: React.createElement(Smartphone, { className: classes }),
+    automobile: React.createElement(Car, { className: classes }),
+    maison: React.createElement(Home, { className: classes }),
+    general: React.createElement(Scale, { className: classes }),
+    mode: React.createElement(Shirt, { className: classes }),
+    numerique: React.createElement(Globe, { className: classes }),
+    commerce: React.createElement(ShoppingCart, { className: classes }),
   };
 
   return iconMap[categoryName] ?? React.createElement(BookOpen, { className: classes });
 }
 
 /**
- * ✅ OBTIENT UNE ICÔNE À PARTIR D'UN SLUG (utilise la source de vérité)
- */
-export function getIconForSlug(
-  slug: string,
-  size: IconSize = 'md',
-  className?: string,
-): React.ReactNode {
-  const category = getCategoryFromSlug(slug);
-  return getIconForCategory(category.name, size, className);
-}
-
-/**
- * ✅ OBTIENT UNE CATÉGORIE AVEC SON ICÔNE (combine source de vérité + icône)
- */
-export function getCategoryWithIcon(
-  slug: string,
-  size: IconSize = 'md',
-): {
-  name: string;
-  color: string;
-  emoji: string;
-  icon: React.ReactNode;
-} {
-  const category = getCategoryFromSlug(slug);
-  return { ...category, icon: getIconForCategory(category.name, size) };
-}
-
-/**
- * ✅ ICÔNES POUR CONTEXTES SPÉCIFIQUES (FAQ, etc.)
+ * ICÔNES POUR CONTEXTES SPÉCIFIQUES (FAQ, etc.)
  */
 export function getContextualIcon(
   context: string,
@@ -269,53 +236,6 @@ export function getContextualIcon(
   return contextMap[context] ?? React.createElement(BookOpen, { className: classes });
 }
 
-/**
- * Icônes pour les niveaux de sévérité
- */
-export function getSeverityIcon(
-  severity: 'high' | 'medium' | 'low',
-  size: IconSize = 'sm',
-  className?: string,
-): React.ReactNode {
-  const classes = className || getIconClasses(size);
-
-  const iconMap: Record<'high' | 'medium' | 'low', React.ReactNode> = {
-    high: React.createElement(AlertTriangle, { className: `${classes} text-red-600` }),
-    medium: React.createElement(AlertCircle, { className: `${classes} text-yellow-600` }),
-    low: React.createElement(Info, { className: `${classes} text-green-600` }),
-  };
-
-  return iconMap[severity];
-}
-
-/**
- * ✅ OBTIENT TOUTES LES ICÔNES DISPONIBLES (pour documentation/debug)
- */
-export function getAllAvailableIcons(): string[] {
-  return Object.keys(LUCIDE_ICON_REGISTRY).sort();
-}
-
-/**
- * ✅ OBTIENT TOUTES LES CATÉGORIES AVEC ICÔNES
- */
-export function getAllCategoriesWithIcons(size: IconSize = 'md') {
-  const representativeSlugs = [
-    'smartphone-defaut',
-    'voiture-defaut',
-    'lave-linge-panne',
-    'guide-general',
-  ];
-
-  const categories = representativeSlugs.map(slug => {
-    const category = getCategoryFromSlug(slug);
-    return { ...category, icon: getIconForCategory(category.name, size) };
-  });
-
-  // Déduplication par nom
-  return categories.filter(
-    (category, index, self) => index === self.findIndex(c => c.name === category.name),
-  );
-}
 
 /**
  * Vérifie si une icône est supportée
@@ -325,24 +245,7 @@ export function isSupportedIcon(iconName: string): boolean {
 }
 
 /**
- * Vérifie si une catégorie est supportée
- */
-export function isSupportedCategory(categoryName: string): boolean {
-  const supportedCategories = [
-    'High-Tech',
-    'Automobile',
-    'Maison',
-    'Électroménager',
-    'Général',
-    'Juridique',
-    'Textile',
-    'Audio/Vidéo',
-  ];
-  return supportedCategories.includes(categoryName);
-}
-
-/**
- * ✅ UTILITAIRE POUR GUIDE SECTIONS (intégration avec GuideSection.tsx)
+ * UTILITAIRE POUR GUIDE SECTIONS (intégration avec GuideSection.tsx)
  */
 export function getSectionIcon(
   iconName?: string,

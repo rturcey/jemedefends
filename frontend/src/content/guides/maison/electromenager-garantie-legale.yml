@@ -1,0 +1,134 @@
+title: 'Électroménager en panne : réparation, remplacement ou remboursement gratuit (Guide 2025)'
+description: 'Lave-linge, frigo, aspirateur, robot, four, sèche-linge, lave-vaisselle… Tous vos appareils sont couverts par la garantie légale de conformité pendant 2 ans. Découvrez vos droits, la procédure et les recours possibles.'
+category: 'maison'
+slug: 'electromenager-garantie-legale'
+
+seo:
+  title: 'Panne d’électroménager : vos droits à la réparation ou au remboursement (Guide 2025)'
+  description: 'Appareil en panne avant 2 ans ? Vous bénéficiez de la garantie légale de conformité. Réparation, remplacement ou remboursement gratuit selon les articles L.217-3 à L.217-14. Guide complet + modèles de lettres.'
+  keywords:
+    - 'électroménager panne garantie légale'
+    - 'lave-linge frigo four réparation gratuite'
+    - 'remboursement appareil défectueux'
+    - 'garantie légale 2 ans électroménager'
+    - 'indice réparabilité L111-4 L217-5'
+    - 'vendeur refuse réparation conformité'
+    - 'réduction du prix résolution contrat'
+
+legal:
+  mainArticles:
+    - 'L.217-3'
+    - 'L.217-4'
+    - 'L.217-5'
+    - 'L.217-7'
+    - 'L.217-8'
+    - 'L.217-9'
+    - 'L.217-10'
+    - 'L.217-11'
+    - 'L.217-13'
+    - 'L.217-14'
+    - 'L.217-16'
+    - 'L.217-19'
+    - 'L.111-4'
+  disclaimer: true
+  lastUpdated: '2025-10-29'
+
+sections:
+  - id: 'intro'
+    title: 'L’essentiel en 30 secondes'
+    type: 'content'
+    content: |
+      Votre lave-linge, réfrigérateur, aspirateur ou robot tombe en panne ?  
+      La **garantie légale de conformité** vous protège pendant **2 ans** à compter de la livraison L.217-3 L.217-4 L.217-5.  
+      Vous pouvez exiger **réparation, remplacement ou remboursement gratuit**, sans condition et sans frais L.217-8 L.217-10 L.217-11.  
+      Si la panne n’est pas réparée sous **30 jours**, ou si la solution est impossible, vous avez droit à une **réduction du prix** ou à la **résolution du contrat** L.217-13 L.217-14.
+
+  - id: 'eligibilite'
+    title: 'Quand la garantie s’applique'
+    type: 'grid'
+    items:
+      - title: 'Panne ou défaut de fabrication'
+        description: 'L’appareil ne fonctionne pas, fuit, chauffe mal, fait du bruit anormal ou ne correspond pas à la description L.217-4 L.217-5.'
+      - title: 'Dans les 2 ans suivant l’achat'
+        description: 'Le défaut apparaît dans les **24 mois** après la livraison : il est **présumé exister dès l’origine** L.217-7. Aucune expertise ne vous est demandée.'
+      - title: 'Pas de mauvaise utilisation'
+        description: 'Le défaut ne doit pas résulter d’un **mauvais usage** (surcharge, nettoyage incorrect, objet bloqué, etc.).'
+      - title: 'Vendeur responsable'
+        description: 'Vos démarches s’adressent toujours au **vendeur**, pas au fabricant L.217-3. Il ne peut pas vous imposer de passer par la marque.'
+
+  - id: 'procedure'
+    title: 'Procédure pas-à-pas'
+    type: 'timeline'
+    steps:
+      - title: 'Contactez le vendeur'
+        description: |
+          Expliquez la panne, joignez la **facture** et décrivez le défaut.  
+          Précisez que vous agissez au titre de la **garantie légale de conformité** L.217-3 à L.217-14.  
+          Choisissez la **réparation** ou le **remplacement gratuit** L.217-8 L.217-11.
+      - title: 'Délai de mise en conformité'
+        description: |
+          Le vendeur doit agir **sans frais** et **dans les 30 jours maximum** à compter de votre demande L.217-10.  
+          Pendant la réparation, la garantie est **suspendue** L.217-16.
+      - title: 'En cas d’impossibilité ou de retard'
+        description: |
+          Si la réparation est **impossible, disproportionnée ou dépasse 30 jours**, vous pouvez exiger une **réduction du prix** ou un **remboursement intégral** L.217-9 L.217-13 L.217-14.
+      - title: 'Mise en demeure'
+        description: |
+          En cas de refus du vendeur, envoyez une **mise en demeure** avec rappel des articles L.217-8 à L.217-14.  
+          Cela interrompt toute prescription et vous permettra d’agir ensuite en justice si besoin.
+
+  - id: 'pieces-detachees'
+    title: 'Pièces détachées et réparabilité'
+    type: 'content'
+    content: |
+      Le vendeur doit vous informer **avant l’achat** de la disponibilité ou non des **pièces détachées** L.111-4.  
+      Si cette information est absente ou fausse, vous pouvez invoquer un **défaut de conformité** L.217-5.  
+      Les fabricants doivent également publier un **indice de réparabilité** et, depuis 2024, un **indice de durabilité** pour les appareils électroménagers.
+
+  - id: 'cas-frequents'
+    title: 'Cas fréquents'
+    type: 'faq'
+    faqItems:
+      - q: 'Mon lave-linge tombe en panne après 18 mois'
+        a: 'C’est une **non-conformité présumée d’origine** L.217-7. Le vendeur doit le réparer ou le remplacer gratuitement L.217-8 L.217-11.'
+      - q: 'Le réparateur me facture le déplacement'
+        a: 'C’est illégal : la mise en conformité doit être **sans frais** pour le consommateur L.217-11.'
+      - q: 'Mon frigo est irréparable et le vendeur refuse le remplacement'
+        a: 'S’il est impossible de réparer, le vendeur doit **rembourser intégralement** L.217-9 L.217-13 L.217-14.'
+      - q: 'L’appareil réparé retombe en panne 2 mois après'
+        a: 'La **garantie est prolongée** de la durée d’immobilisation du produit L.217-16. Le vendeur doit intervenir à nouveau sans frais.'
+
+  - id: 'conseils'
+    title: 'Bon à savoir'
+    type: 'content'
+    content: |
+      - Un appareil **reconditionné** vendu par un professionnel bénéficie aussi de la garantie légale, avec une **présomption de 12 mois** L.217-7.  
+      - Les **frais de transport, main-d’œuvre et pièces** sont intégralement à la charge du vendeur L.217-11.  
+      - Un appareil en panne **ne peut pas être remplacé par un modèle reconditionné** sans votre accord explicite.  
+      - Vous pouvez réclamer un **geste commercial** en plus du remboursement légal (bon d’achat, extension, etc.).
+
+  - id: 'cta'
+    title: 'Faites valoir vos droits'
+    type: 'content'
+    content: |
+      Générez votre **réclamation ou mise en demeure** en ligne pour tout appareil électroménager défectueux.  
+      Le texte cite automatiquement les **articles du Code de la consommation** adaptés à votre situation.  
+      Version **PDF** et **envoi recommandé avec suivi** disponibles.
+    cta:
+      label: 'Rédiger ma réclamation'
+      href: '/outils/mise-en-demeure'
+      variant: 'primary'
+      icon: 'FileText'
+
+  - id: 'contacts'
+    title: 'Contacts utiles'
+    type: 'contacts'
+
+  - id: 'disclaimer'
+    title: 'Important'
+    type: 'content'
+    content: |
+      Ce guide présente vos droits en matière d’**appareils électroménagers** selon le Code de la consommation.  
+      Il **ne constitue pas un avis juridique individualisé**.  
+      En cas de doute, contactez une **association de consommateurs** ou un **professionnel du droit**.
+

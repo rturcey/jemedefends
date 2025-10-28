@@ -1,0 +1,129 @@
+title: 'Vos recours si la garantie légale ne s’applique pas (Guide 2025)'
+description: 'Garantie expirée, achat entre particuliers ou casse accidentelle ? D’autres recours existent : vices cachés, médiation, associations de consommateurs, DGCCRF, protection juridique ou tribunal. Procédure claire et gratuite.'
+category: 'general'
+slug: 'recours-si-non-eligible'
+
+seo:
+  title: 'Vices cachés, médiation, DGCCRF : vos recours si la garantie légale ne s’applique pas'
+  description: 'Même sans garantie, vous avez des droits : action pour vice caché, médiation gratuite, signalement DGCCRF, protection juridique, aide d’une association ou d’un conciliateur. Toutes les solutions expliquées pas-à-pas.'
+  keywords:
+    - 'vice caché recours consommateur'
+    - 'garantie expirée que faire'
+    - 'DGCCRF signalement vendeur'
+    - 'médiateur de la consommation procédure'
+    - 'conciliation tribunal judiciaire'
+    - 'association de consommateurs aide'
+    - 'protection juridique assurance'
+    - 'litige achat entre particuliers'
+    - 'plainte vendeur refus remboursement'
+
+legal:
+  mainArticles:
+    - 'L.217-3'
+    - '1641'
+    - '1648'
+    - 'L.612-1'
+    - 'L.616-1'
+    - 'L.611-1'
+    - 'R.612-2'
+    - 'R.631-3'
+  disclaimer: true
+  lastUpdated: '2025-10-20'
+
+sections:
+  - id: 'intro'
+    title: 'Quand la garantie légale ne s’applique pas'
+    type: 'content'
+    content: |
+      Si votre produit n’est **plus couvert par la garantie légale de conformité** L.217-3 à L.217-14 (par exemple en cas de casse accidentelle, d’achat entre particuliers ou de défaut hors délai), vous conservez **d’autres droits prévus par la loi**.  
+      Plusieurs solutions amiables et judiciaires existent selon la situation et la gravité du problème.  
+      Ce guide vous présente les **recours possibles**, du plus simple au plus formel.
+
+  - id: 'recours-amiables'
+    title: 'Les recours amiables à privilégier'
+    type: 'timeline'
+    steps:
+      - title: 'Contacter le service client ou le vendeur'
+        description: |
+          Même hors garantie, un vendeur peut proposer un **geste commercial** ou une **réparation partielle**.  
+          Soyez factuel, courtois, et mentionnez que vous cherchez une **solution amiable**.  
+          En cas de refus ou d’absence de réponse, passez à l’étape suivante.
+      - title: 'Saisir le médiateur de la consommation'
+        description: |
+          Tout professionnel doit permettre à ses clients de saisir **gratuitement** un **médiateur de la consommation** L.612-1 L.616-1.  
+          Cette démarche écrite se fait **en ligne**, sur le site du médiateur mentionné dans les conditions générales de vente ou sur le site du vendeur.  
+          Le médiateur rend un avis sous **90 jours**. Cet avis n’est **pas contraignant**, mais il encourage souvent une solution rapide.
+      - title: 'Contacter un conciliateur de justice'
+        description: |
+          Si la médiation échoue ou n’est pas possible, saisissez un **conciliateur de justice** (gratuit) au tribunal judiciaire de votre domicile R.631-3.  
+          Il vous aide à trouver un **accord amiable** avant toute action en justice.  
+          Vous pouvez le contacter en ligne sur [www.justice.fr](https://www.justice.fr).
+
+  - id: 'vice-cache'
+    title: 'Si le produit présente un vice caché'
+    type: 'content'
+    content: |
+      Vous pouvez invoquer la **garantie des vices cachés** prévue par le Code civil 1641.  
+      Un vice caché est un **défaut grave**, **non apparent au moment de l’achat** et **antérieur à la vente**, qui rend le bien **impropre à son usage** ou en **réduit fortement l’utilité**.  
+      Vous pouvez :
+      - **rendre le bien** et obtenir un **remboursement total**, ou  
+      - **le conserver** et obtenir un **remboursement partiel** du prix.  
+      Le recours doit être exercé **dans les deux ans après la découverte du défaut** 1648.  
+      Une **expertise indépendante** (technicien, huissier, expert agréé) peut appuyer votre demande.
+
+  - id: 'signalement'
+    title: 'Signaler un professionnel à la DGCCRF'
+    type: 'content'
+    content: |
+      En cas de **refus abusif**, de **mensonge sur la garantie** ou de **pratiques trompeuses**, vous pouvez faire un **signalement à la DGCCRF** via [SignalConso.gouv.fr](https://signal.conso.gouv.fr).  
+      L’administration contacte le professionnel pour l’inviter à corriger la situation.  
+      Cela ne remplace pas un recours individuel, mais peut **favoriser une résolution rapide** et **prévenir d’autres abus**.
+
+  - id: 'associations'
+    title: 'Être accompagné par une association'
+    type: 'grid'
+    itemsIntro: 'Des associations agréées peuvent vous aider à comprendre vos droits et à rédiger vos démarches :'
+    items:
+      - title: 'UFC-Que Choisir'
+        description: 'Accompagnement à la **rédaction de courriers**, **médiation**, et **actions collectives** possibles.'
+      - title: 'CLCV (Consommation, Logement et Cadre de Vie)'
+        description: 'Conseils juridiques, accompagnement individuel et défense des consommateurs dans les litiges avec les vendeurs.'
+      - title: 'Familles Rurales, ADEIC, AFOC…'
+        description: 'Associations agréées pouvant proposer des **permanences juridiques gratuites** et un appui dans vos démarches.'
+
+  - id: 'protection-juridique'
+    title: 'Faire jouer votre protection juridique'
+    type: 'content'
+    content: |
+      Vérifiez vos **contrats d’assurance** (habitation, automobile, carte bancaire, mutuelle) : beaucoup incluent une **protection juridique**.  
+      Elle peut couvrir :
+      - la **rédaction de courriers juridiques**,  
+      - la **prise en charge d’une expertise**,  
+      - les **frais d’avocat** en cas de litige.  
+      Contactez votre assureur pour savoir si votre litige est **éligible** et quelle couverture s’applique.
+
+  - id: 'recours-judiciaire'
+    title: 'Si aucun accord n’est trouvé'
+    type: 'timeline'
+    steps:
+      - title: 'Dernière mise en demeure'
+        description: |
+          Avant toute action, envoyez une **mise en demeure par lettre recommandée avec accusé de réception**, en rappelant les articles applicables (L.612-1, 1641, 1648) et en fixant un **délai clair** de réponse.
+      - title: 'Saisir le tribunal judiciaire'
+        description: |
+          Si le vendeur ne réagit pas, saisissez le **tribunal judiciaire** de votre domicile R.631-3.  
+          Pour un litige inférieur à 5 000 €, la procédure est **gratuite et sans avocat obligatoire**.  
+          Vous pouvez déposer votre dossier **en ligne** sur [www.justice.fr](https://www.justice.fr) ou au **greffe du tribunal**.
+
+  - id: 'contacts'
+    title: 'Contacts utiles'
+    type: 'contacts'
+
+  - id: 'disclaimer'
+    title: 'Important'
+    type: 'content'
+    content: |
+      Ce guide présente les **recours légaux et amiables** prévus par le Code de la consommation et le Code civil.  
+      Il **ne remplace pas** un conseil juridique personnalisé.  
+      En cas de doute, consultez une **association agréée** ou un **professionnel du droit**.
+

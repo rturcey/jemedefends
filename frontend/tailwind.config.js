@@ -7,7 +7,7 @@ module.exports = {
   ],
   theme: {
     extend: {
-      // ✅ AJOUT : Breakpoint xs pour très petits mobiles
+      // AJOUT : Breakpoint xs pour très petits mobiles
       screens: {
         xs: '480px',
         // sm: '640px', (défaut Tailwind)
@@ -17,7 +17,7 @@ module.exports = {
         // 2xl: '1536px', (défaut Tailwind)
       },
 
-      // ✅ Couleurs cohérentes pour les sections
+      // Couleurs cohérentes pour les sections
       colors: {
         brand: {
           50: '#EFF6FF',
@@ -34,9 +34,18 @@ module.exports = {
         surface: {
           soft: '#F8FAFC', // Fond gris très clair pour alternance
         },
+        animation: {
+          shimmer: 'shimmer 2s linear infinite',
+        },
+        keyframes: {
+          shimmer: {
+            '0%': { transform: 'translateX(-100%)' },
+            '100%': { transform: 'translateX(100%)' },
+          },
+        },
       },
 
-      // ✅ Espacements cohérents mobile-first
+      // Espacements cohérents mobile-first
       spacing: {
         18: '4.5rem', // 72px
         22: '5.5rem', // 88px
@@ -44,7 +53,7 @@ module.exports = {
         30: '7.5rem', // 120px
       },
 
-      // ✅ Touch targets optimaux
+      // Touch targets optimaux
       minHeight: {
         touch: '44px', // Minimum WCAG
         'touch-lg': '56px', // Recommandé
@@ -55,7 +64,7 @@ module.exports = {
         'touch-lg': '56px',
       },
 
-      // ✅ Typography mobile-first
+      // Typography mobile-first
       fontSize: {
         '2xs': ['0.625rem', { lineHeight: '0.875rem' }], // 10px
         xs: ['0.75rem', { lineHeight: '1rem' }], // 12px
@@ -70,7 +79,7 @@ module.exports = {
         '6xl': ['3.75rem', { lineHeight: '1' }], // 60px
       },
 
-      // ✅ Animations optimisées mobile
+      // Animations optimisées mobile
       animation: {
         'fade-in': 'fadeIn 0.3s ease-in-out',
         'slide-in-from-top': 'slideInFromTop 0.3s ease-out',
@@ -93,7 +102,7 @@ module.exports = {
         },
       },
 
-      // ✅ Shadows cohérentes
+      // Shadows cohérentes
       boxShadow: {
         'sm-mobile': '0 1px 2px 0 rgb(0 0 0 / 0.05)',
         mobile: '0 2px 4px 0 rgb(0 0 0 / 0.05)',
@@ -101,7 +110,7 @@ module.exports = {
         'lg-mobile': '0 6px 12px -2px rgb(0 0 0 / 0.1)',
       },
 
-      // ✅ Border radius cohérents
+      // Border radius cohérents
       borderRadius: {
         mobile: '0.75rem', // 12px pour cards mobiles
         'mobile-lg': '1rem', // 16px pour sections mobiles
@@ -109,7 +118,7 @@ module.exports = {
     },
   },
   plugins: [
-    // ✅ Plugin pour les animations conditionnelles selon prefers-reduced-motion
+    // Plugin pour les animations conditionnelles selon prefers-reduced-motion
     function ({ addUtilities }) {
       const newUtilities = {
         '.animate-safe': {
@@ -123,7 +132,7 @@ module.exports = {
       addUtilities(newUtilities);
     },
 
-    // ✅ Plugin pour les touch-targets
+    // Plugin pour les touch-targets
     function ({ addComponents }) {
       const touchTargets = {
         '.touch-target': {

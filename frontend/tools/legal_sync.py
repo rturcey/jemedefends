@@ -49,8 +49,8 @@ class Colors:
     END = '\033[0m'
 
 def log_info(msg: str):    print(f"{Colors.BLUE}ℹ️  {msg}{Colors.END}")
-def log_success(msg: str): print(f"{Colors.GREEN}✅ {msg}{Colors.END}")
-def log_warning(msg: str): print(f"{Colors.YELLOW}⚠️  {msg}{Colors.END}")
+def log_success(msg: str): print(f"{Colors.GREEN}{msg}{Colors.END}")
+def log_warning(msg: str): print(f"{Colors.YELLOW} {msg}{Colors.END}")
 def log_error(msg: str):   print(f"{Colors.RED}❌ {msg}{Colors.END}")
 def log_change(msg: str):  print(f"{Colors.BOLD}{Colors.YELLOW}🔄 {msg}{Colors.END}")
 

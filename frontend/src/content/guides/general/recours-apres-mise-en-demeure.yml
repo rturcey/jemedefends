@@ -1,0 +1,142 @@
+title: 'Recours si la mise en demeure reste sans réponse (Guide 2025)'
+description: 'Le vendeur ignore votre mise en demeure ? Vous pouvez saisir un médiateur, alerter la DGCCRF, faire intervenir votre protection juridique ou engager une action devant le tribunal. Explications pas-à-pas.'
+category: 'general'
+slug: 'recours-apres-mise-en-demeure'
+
+seo:
+  title: 'Vendeur silencieux ou refus de garantie : que faire après une mise en demeure ?'
+  description: 'Votre courrier recommandé reste sans réponse ? Découvrez les recours légaux : médiation gratuite, signalement DGCCRF, protection juridique ou tribunal judiciaire. Guide complet et accessible.'
+  keywords:
+    - 'mise en demeure sans réponse'
+    - 'vendeur refuse garantie que faire'
+    - 'médiation consommation recours'
+    - 'DGCCRF signalement'
+    - 'tribunal judiciaire consommation'
+    - 'protection juridique assurance'
+    - 'litige achat non résolu'
+    - 'plainte vendeur litige'
+
+legal:
+  mainArticles:
+    - 'L.217-3'
+    - 'L.217-10'
+    - 'L.217-13'
+    - 'L.612-1'
+    - 'L.616-1'
+    - 'R.631-3'
+    - '1641'
+    - '1648'
+  disclaimer: true
+  lastUpdated: '2025-10-21'
+
+sections:
+  - id: 'intro'
+    title: 'Quand le vendeur ignore votre mise en demeure'
+    type: 'content'
+    content: |
+      Vous avez envoyé une **mise en demeure** pour faire appliquer la **garantie légale de conformité** L.217-3 à L.217-14, mais le vendeur **ne répond pas**, **refuse** ou **retarde** la réparation ?  
+      La loi prévoit plusieurs **recours progressifs**, pour faire valoir vos droits sans forcément passer immédiatement par un avocat.
+
+  - id: 'recours-amiables'
+    title: 'Les solutions amiables à tenter d’abord'
+    type: 'timeline'
+    steps:
+      - title: 'Relance écrite ou téléphonique'
+        description: |
+          Rappelez brièvement la date de votre mise en demeure, le délai écoulé, et citez vos droits issus de la garantie légale L.217-10 L.217-13.  
+          Un rappel courtois et documenté suffit souvent à faire réagir un service client.
+      - title: 'Saisir le médiateur de la consommation'
+        description: |
+          Tout professionnel doit permettre la **médiation de la consommation**, gratuite pour le client L.612-1 L.616-1.  
+          La demande s’effectue **en ligne**, auprès du médiateur mentionné dans les CGV ou sur le site du vendeur.  
+          Le médiateur rend un avis sous **90 jours**. Ce n’est pas une obligation pour vous, mais le vendeur doit l’examiner.
+      - title: 'Contacter un conciliateur de justice'
+        description: |
+          Si la médiation échoue ou reste sans suite, saisissez un **conciliateur de justice** R.631-3.  
+          C’est un service **gratuit**, assuré par un bénévole assermenté, qui tente de rapprocher les parties avant un procès.  
+          Rendez-vous sur [www.conciliateurs.fr](https://www.conciliateurs.fr) ou auprès du tribunal judiciaire le plus proche.
+
+  - id: 'protection-juridique'
+    title: 'Faire intervenir votre protection juridique'
+    type: 'content'
+    content: |
+      Vérifiez vos **contrats d’assurance habitation, auto ou carte bancaire** : beaucoup incluent une **protection juridique**.  
+      Elle peut financer :
+      
+      - une **expertise indépendante**,  
+      - un **avocat** si une procédure est nécessaire,  
+      - ou la **rédaction de courriers juridiques**.  
+      Contactez votre assureur pour activer cette garantie dès le premier refus du vendeur.
+
+  - id: 'signalement'
+    title: 'Signaler le professionnel à la DGCCRF'
+    type: 'content'
+    content: |
+      En cas de refus abusif ou de **fausse information sur vos droits**, faites un **signalement** à la DGCCRF via [SignalConso.gouv.fr](https://signal.conso.gouv.fr).  
+      L’administration contacte le professionnel pour l’inviter à se mettre en conformité.  
+      Ce n’est pas une plainte individuelle, mais cela peut faire **bouger le vendeur** ou déclencher un **contrôle**.
+
+  - id: 'expertise'
+    title: 'Faire établir une expertise'
+    type: 'content'
+    content: |
+      Si le vendeur conteste le défaut, demandez une **expertise contradictoire** pour prouver l’origine du problème.  
+      Un **expert agréé** (technicien, huissier, expert judiciaire) pourra confirmer que le défaut existait avant la vente.  
+      Ce rapport servira de preuve pour un **vice caché** 1641 1648 ou une action au **tribunal judiciaire** R.631-3.
+
+  - id: 'tribunal'
+    title: 'Saisir le tribunal judiciaire'
+    type: 'timeline'
+    steps:
+      - title: 'Vérifier la tentative amiable'
+        description: |
+          Pour un litige inférieur à 5 000 €, la loi impose d’avoir tenté une **médiation ou conciliation préalable** R.631-3.  
+          Si vous avez envoyé une mise en demeure et saisi un médiateur, cette condition est remplie.
+      - title: 'Saisine du tribunal judiciaire'
+        description: |
+          Le tribunal compétent est celui de **votre domicile** R.631-3.  
+          Vous pouvez saisir le tribunal **en ligne** sur [www.justice.fr](https://www.justice.fr) ou directement au greffe.  
+          Aucun avocat n’est requis pour les montants inférieurs à 5 000 €, mais son aide peut être utile en cas d’expertise.
+      - title: 'Décision et exécution'
+        description: |
+          Le juge peut ordonner la **réparation**, le **remboursement** ou des **dommages et intérêts**.  
+          Si le vendeur ne s’exécute pas, la décision est **exécutoire par un huissier**.  
+          Les jugements fondés sur les articles L.217-3 à L.217-14 du Code de la consommation sont très protecteurs pour les consommateurs.
+
+  - id: 'associations'
+    title: 'Se faire accompagner'
+    type: 'grid'
+    itemsIntro: 'Des organismes peuvent vous aider gratuitement à finaliser vos démarches :'
+    items:
+      - title: 'Associations agréées'
+        description: 'UFC-Que Choisir, CLCV, ADEIC ou Familles Rurales : conseils juridiques, rédaction de courriers, médiation, accompagnement tribunal.'
+      - title: 'Maisons de justice et du droit'
+        description: 'Consultations gratuites de juristes et avocats pour préparer votre dossier.'
+      - title: 'Conciliateurs de justice'
+        description: 'Bénévoles assermentés pouvant intervenir avant tout procès pour tenter un accord amiable.'
+
+  - id: 'cta'
+    title: 'Passez à l’action'
+    type: 'content'
+    content: |
+      📄 Votre mise en demeure est restée sans réponse ?  
+      Générez gratuitement votre **saisine du médiateur** ou votre **demande au tribunal** avec nos modèles juridiques à jour.  
+      Versions **PDF** et **recommandé avec suivi** disponibles, avec **support mail illimité**.
+    cta:
+      label: 'Préparer mon recours'
+      href: '/outils/recours'
+      variant: 'primary'
+      icon: 'FileText'
+
+  - id: 'contacts'
+    title: 'Contacts utiles'
+    type: 'contacts'
+
+  - id: 'disclaimer'
+    title: 'Important'
+    type: 'content'
+    content: |
+      Ce guide présente les **recours légaux** prévus par le Code de la consommation, le Code civil et le Code de procédure civile.  
+      Il **ne constitue pas** un conseil juridique individualisé.  
+      Pour un dossier complexe, contactez une **association agréée** ou un **professionnel du droit**.
+

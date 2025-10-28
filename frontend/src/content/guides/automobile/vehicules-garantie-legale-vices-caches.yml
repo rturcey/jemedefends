@@ -1,0 +1,146 @@
+title: 'Voiture ou scooter défectueux : garantie légale et vices cachés (Guide 2025)'
+description: 'Voiture d’occasion, moto, scooter, trottinette : tout véhicule acheté à un professionnel est couvert par la garantie légale de conformité pendant 2 ans. En cas de vice caché ou de refus de prise en charge, découvrez la procédure complète et vos recours.'
+category: 'automobile'
+slug: 'vehicules-garantie-legale-vices-caches'
+
+seo:
+  title: 'Voiture ou véhicule défectueux : vos droits à la réparation, au remplacement ou au remboursement (Guide 2025)'
+  description: 'Voiture ou scooter en panne après l’achat ? Garantie légale 2 ans pour les pros, garantie contre les vices cachés pour tous les vendeurs. Réparation, remboursement, ou recours judiciaires : suivez notre guide clair et complet.'
+  keywords:
+    - 'garantie légale voiture occasion'
+    - 'vice caché voiture achat pro'
+    - 'garagiste refus réparation'
+    - 'moto trottinette panne garantie'
+    - 'L217-3 L217-4 L217-5 1641 vice caché'
+    - 'refus prise en charge vendeur auto'
+    - 'litige garage automobile'
+
+legal:
+  mainArticles:
+    - 'L.217-3'
+    - 'L.217-4'
+    - 'L.217-5'
+    - 'L.217-7'
+    - 'L.217-8'
+    - 'L.217-9'
+    - 'L.217-10'
+    - 'L.217-11'
+    - 'L.217-13'
+    - 'L.217-14'
+    - 'L.217-16'
+    - 'L.217-19'
+    - '1641'
+    - '1644'
+    - '1648'
+  disclaimer: true
+  lastUpdated: '2025-10-30'
+
+sections:
+  - id: 'intro'
+    title: 'L’essentiel en 30 secondes'
+    type: 'content'
+    content: |
+      Qu’il s’agisse d’une **voiture, moto, scooter ou trottinette**, votre vendeur professionnel doit vous livrer un **véhicule conforme** et en bon état de fonctionnement L.217-3 L.217-4 L.217-5.  
+      Si un **défaut mécanique** apparaît dans les **2 ans suivant la vente**, vous pouvez exiger **réparation, remplacement ou remboursement gratuit** L.217-8 L.217-10 L.217-11.  
+      Si le défaut est **antérieur à la vente** et **rendant le véhicule impropre à l’usage**, il peut aussi relever des **vices cachés** 1641 du Code civil.
+
+  - id: 'types-defauts'
+    title: 'Défauts couverts par la loi'
+    type: 'grid'
+    items:
+      - title: 'Défaut de conformité'
+        description: 'Problème présent dès l’achat (ex. : fuite, vibration, voyant moteur, batterie, freins) — la garantie légale s’applique L.217-3 à L.217-14.'
+      - title: 'Vice caché'
+        description: 'Défaut grave et antérieur à la vente, non apparent et rendant le véhicule inutilisable 1641 à 1648. S’applique même entre particuliers.'
+      - title: 'Garantie commerciale'
+        description: 'Optionnelle, proposée par le vendeur ou le constructeur. Elle **ne remplace pas** la garantie légale L.217-15.'
+      - title: 'Réparation ou prestation non conforme'
+        description: 'Si un garage effectue une réparation défaillante, vous pouvez exiger une nouvelle intervention ou un remboursement sur le fondement du **contrat de service** L.217-3 L.217-5.'
+
+  - id: 'procedure'
+    title: 'Procédure pas-à-pas'
+    type: 'timeline'
+    steps:
+      - title: 'Diagnostic et preuve du défaut'
+        description: |
+          Conservez tous les **diagnostics**, **devis**, **factures** et **rapports d’expertise**.  
+          Si le défaut survient dans les **24 mois** après achat auprès d’un professionnel, il est **présumé exister dès la vente** L.217-7.  
+          Pour un vice caché, une expertise indépendante peut être utile 1641.
+      - title: 'Réclamation au vendeur'
+        description: |
+          Adressez une **réclamation écrite** au vendeur professionnel pour demander la **mise en conformité** du véhicule (réparation ou remplacement gratuit) L.217-8 L.217-11.  
+          Mentionnez le délai légal de **30 jours** maximum pour l’exécution L.217-10.
+      - title: 'Mise en demeure'
+        description: |
+          Si le vendeur **refuse ou tarde**, envoyez une **mise en demeure** avec rappel des articles L.217-8 à L.217-14.  
+          En cas de vice caché, vous pouvez demander la **résolution du contrat** (annulation de la vente) ou une **réduction du prix** 1644.
+      - title: 'Recours amiables ou judiciaires'
+        description: |
+          Si le litige persiste, saisissez le **médiateur de la consommation** ou la **DGCCRF**.  
+          En dernier recours, une **action judiciaire** peut être intentée dans les **2 ans à compter de la découverte du vice** 1648.
+
+  - id: 'vice-cache'
+    title: 'Vice caché : vos recours'
+    type: 'content'
+    content: |
+      Un **vice caché** est un défaut **grave, antérieur à la vente et non visible** au moment de l’achat 1641.  
+      Vous pouvez choisir entre :  
+      - **annuler la vente et rendre le véhicule** (résolution) ;  
+      - ou **le garder et obtenir un remboursement partiel** (réduction du prix) 1644.  
+      Si vous avez acheté à un **professionnel**, il est **présumé connaître les vices** et ne peut pas s’en exonérer.  
+      Le délai pour agir est de **2 ans après la découverte du vice** 1648.
+
+  - id: 'cas-frequents'
+    title: 'Cas fréquents'
+    type: 'faq'
+    faqItems:
+      - q: 'Mon véhicule d’occasion tombe en panne après 3 mois'
+        a: 'La panne est **présumée antérieure** L.217-7. Le vendeur professionnel doit réparer ou remplacer sans frais L.217-8 L.217-11.'
+      - q: 'Le garage refuse de reconnaître le vice caché'
+        a: 'Une **expertise indépendante** peut prouver l’antériorité du défaut 1641. Ensuite, une mise en demeure puis une action judiciaire sont possibles 1648.'
+      - q: 'Le vendeur me renvoie vers la garantie du constructeur'
+        a: 'C’est interdit : la garantie légale de conformité engage le **vendeur** L.217-3. Vous pouvez refuser de passer par la marque.'
+      - q: 'J’ai acheté à un particulier'
+        a: 'La garantie légale ne s’applique pas, mais vous pouvez agir sur le fondement du **vice caché** 1641 à 1648.'
+
+  - id: 'garages'
+    title: 'Litiges avec un garage'
+    type: 'content'
+    content: |
+      Un garage a une **obligation de résultat** pour les réparations qu’il effectue.  
+      Si le véhicule tombe à nouveau en panne ou si la prestation est mal réalisée, vous pouvez exiger une **nouvelle intervention gratuite** ou un **remboursement** L.217-3 L.217-5.  
+      En cas de refus, envoyez une **mise en demeure**, puis saisissez le **conciliateur de justice** ou le **médiateur de l’automobile**.
+
+  - id: 'recommandations'
+    title: 'Bon à savoir'
+    type: 'content'
+    content: |
+      - Les **véhicules d’occasion** vendus par des professionnels sont couverts 2 ans, mais la **présomption** est limitée à **12 mois** L.217-7.  
+      - Les **frais de réparation, main-d’œuvre et pièces** sont à la charge du vendeur L.217-11.  
+      - Une **expertise amiable ou judiciaire** est souvent décisive pour prouver le vice caché 1641.  
+      - La garantie légale est **indépendante** des garanties commerciales ou constructeurs.
+
+  - id: 'cta'
+    title: 'Faites valoir vos droits'
+    type: 'content'
+    content: |
+      Générez gratuitement votre **mise en demeure** ou **réclamation** automobile, avec insertion automatique des **articles de loi** applicables.  
+      Version **PDF professionnelle** et **envoi recommandé** disponibles.
+    cta:
+      label: 'Rédiger ma mise en demeure'
+      href: '/outils/mise-en-demeure'
+      variant: 'primary'
+      icon: 'FileText'
+
+  - id: 'contacts'
+    title: 'Contacts utiles'
+    type: 'contacts'
+
+  - id: 'disclaimer'
+    title: 'Important'
+    type: 'content'
+    content: |
+      Ce guide résume vos droits en matière d’**achats et réparations automobiles** selon le Code de la consommation et le Code civil.  
+      Il **ne constitue pas un conseil juridique individualisé**.  
+      En cas de litige complexe, rapprochez-vous d’un **avocat spécialisé en droit automobile** ou d’une **association de consommateurs**.
+

@@ -22,7 +22,7 @@ for var in "${required_vars[@]}"; do
         exit 1
     fi
 done
-echo "✅ All required environment variables set"
+echo "All required environment variables set"
 
 # Create production environment file
 echo "📝 Creating production environment..."
@@ -53,7 +53,7 @@ sleep 30
 # Run health check
 echo "🏥 Running health checks..."
 if curl -f http://localhost/health > /dev/null 2>&1; then
-    echo "✅ Application is healthy and responding"
+    echo "Application is healthy and responding"
 else
     echo "❌ Health check failed"
     echo "📋 Checking service status..."
@@ -65,7 +65,7 @@ fi
 
 # Show deployment info
 echo ""
-echo "✅ Deployment completed successfully!"
+echo "Deployment completed successfully!"
 echo ""
 echo "🌐 Service URLs:"
 echo "  http://localhost        # Main application"

@@ -545,7 +545,7 @@ input[type='button'] {
   --header-height-desktop: 80px; /* TopBar h-20 */
 }
 
-/* ✅ SECTIONS AVEC CENTRAGE VERTICAL PARFAIT SUR MOBILE */
+/* SECTIONS AVEC CENTRAGE VERTICAL PARFAIT SUR MOBILE */
 .section-mobile-centered {
   /* Mobile : hauteur écran complète MOINS le header */
   min-height: calc(100vh - var(--header-height-mobile));
@@ -569,7 +569,7 @@ input[type='button'] {
   }
 }
 
-/* ✅ SCROLL OFFSET POUR NAVIGATION ANCRE */
+/* SCROLL OFFSET POUR NAVIGATION ANCRE */
 .section-scroll-target {
   scroll-margin-top: var(--header-height-mobile);
 }
@@ -580,7 +580,7 @@ input[type='button'] {
   }
 }
 
-/* ✅ VARIANTE : CENTRAGE STRICT (pour sections courtes) */
+/* VARIANTE : CENTRAGE STRICT (pour sections courtes) */
 .section-mobile-centered-strict {
   /* Height fixe au lieu de min-height */
   height: calc(100vh - var(--header-height-mobile));
@@ -600,7 +600,7 @@ input[type='button'] {
   }
 }
 
-/* ✅ HERO AVEC CENTRAGE SPÉCIAL (prend tout l'écran) */
+/* HERO AVEC CENTRAGE SPÉCIAL (prend tout l'écran) */
 .hero-mobile-centered {
   /* Mobile : 100vh MOINS le header */
   min-height: calc(100vh - var(--header-height-mobile));
@@ -616,7 +616,7 @@ input[type='button'] {
   }
 }
 
-/* ✅ CONTAINER CENTRÉ POUR CONTENU DE SECTION */
+/* CONTAINER CENTRÉ POUR CONTENU DE SECTION */
 .section-content-centered {
   width: 100%;
   max-width: 80rem; /* max-w-7xl */
@@ -632,7 +632,7 @@ input[type='button'] {
   }
 }
 
-/* ✅ SMOOTH SCROLL OPTIMISÉ */
+/* SMOOTH SCROLL OPTIMISÉ */
 @supports (scroll-behavior: smooth) {
   html {
     scroll-behavior: smooth;

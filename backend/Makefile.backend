@@ -130,7 +130,7 @@ setup: install db-up
 	make db-migrate
 	make sqlc
 	make validate
-	@echo "✅ Development environment ready!"
+	@echo "Development environment ready!"
 
 dev: setup run
 

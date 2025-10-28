@@ -1,0 +1,149 @@
+title: 'Services numériques, plateformes, abonnements : vos droits en cas de problème (Guide 2025)'
+description: 'Streaming, jeux vidéo, applications, logiciels, cloud, formations en ligne… Tout service numérique doit être conforme au contrat. Réparation, mise à jour, résiliation ou remboursement : vos droits complets selon le Code de la consommation.'
+category: 'numerique'
+slug: 'services-numeriques-garantie-legale'
+
+seo:
+  title: 'Abonnement ou service numérique non conforme : vos droits (Guide 2025)'
+  description: 'Bug, coupure, contenu inaccessible, promesse non tenue ? Découvrez vos droits légaux pour les services numériques : conformité, mises à jour, résiliation, remboursement. Guide complet avec modèles.'
+  keywords:
+    - 'service numérique non conforme'
+    - 'streaming bug remboursement'
+    - 'jeu vidéo en ligne garantie'
+    - 'application défectueuse droits'
+    - 'abonnement résiliation numérique'
+    - 'mise à jour obligatoire L224-25-13'
+    - 'L224-25-1 L224-25-14 L224-25-20'
+    - 'conformité service numérique'
+
+legal:
+  mainArticles:
+    - 'L.224-25-1'
+    - 'L.224-25-2'
+    - 'L.224-25-4'
+    - 'L.224-25-5'
+    - 'L.224-25-7'
+    - 'L.224-25-10'
+    - 'L.224-25-12'
+    - 'L.224-25-13'
+    - 'L.224-25-14'
+    - 'L.224-25-20'
+    - 'L.224-25-24'
+    - 'L.224-25-27'
+    - 'L.224-25-31'
+  disclaimer: true
+  lastUpdated: '2025-10-23'
+
+sections:
+  - id: 'intro'
+    title: 'L’essentiel en 30 secondes'
+    type: 'content'
+    content: |
+      Depuis 2022, la **garantie légale de conformité** s’applique aussi aux **services numériques** : streaming, jeux, logiciels, applications, cloud, formations en ligne ou abonnements.  
+      Tout contenu ou service doit être **conforme au contrat** et **fonctionnel pendant toute la durée prévue** L.224-25-1 L.224-25-4.  
+      En cas de bug, d’interruption injustifiée ou de promesse non tenue, vous pouvez obtenir **mise en conformité, réduction du prix ou résiliation sans frais** L.224-25-12 à L.224-25-14.
+
+  - id: 'eligibilite'
+    title: 'Quand la garantie s’applique'
+    type: 'grid'
+    items:
+      - title: 'Service fourni contre paiement ou données'
+        description: 'La garantie s’applique dès lors que vous avez payé ou fourni des **données personnelles** en échange du service L.224-25-2.'
+      - title: 'Non-conformité'
+        description: 'Le service ne correspond pas à ce qui était promis (fonctionnalités, compatibilité, qualité, disponibilité, sécurité) L.224-25-4 L.224-25-5.'
+      - title: 'Durée de fourniture'
+        description: 'Le professionnel doit maintenir la conformité **pendant toute la durée du contrat** (ex. abonnement) ou, pour un achat unique, pendant une durée **raisonnable** L.224-25-13.'
+      - title: 'Responsable'
+        description: 'Le **fournisseur du service** est responsable vis-à-vis du consommateur, même s’il dépend de sous-traitants ou plateformes tierces L.224-25-20.'
+
+  - id: 'procedure'
+    title: 'Que faire en cas de bug ou de défaut ?'
+    type: 'timeline'
+    steps:
+      - title: 'Identifier le problème'
+        description: |
+          Notez la **date**, le **type d’anomalie** (ex. bug, indisponibilité, perte de données, promesse non tenue) et conservez des **captures d’écran**.  
+          Cela facilitera la preuve du **défaut de conformité** L.224-25-5.
+      - title: 'Contacter le service client'
+        description: |
+          Écrivez au fournisseur pour demander la **mise en conformité** du service (ex. correction du bug ou accès rétabli) **sans frais et dans un délai raisonnable** L.224-25-12 L.224-25-13.  
+          Indiquez clairement le défaut et votre souhait (réparation ou remboursement).
+      - title: 'Attendre la correction ou résilier'
+        description: |
+          Si le fournisseur ne corrige pas dans un **délai raisonnable**, vous pouvez exiger une **réduction du prix** ou **résilier sans frais** L.224-25-14.  
+          Le remboursement doit intervenir dans un **délai maximum de 14 jours** L.224-25-27.
+      - title: 'Conserver les preuves'
+        description: |
+          Gardez tous les mails, échanges et captures. Ils prouveront vos démarches si vous devez saisir un **médiateur** ou un **tribunal**.
+
+  - id: 'maj'
+    title: 'Mises à jour et compatibilité'
+    type: 'content'
+    content: |
+      Le professionnel doit fournir les **mises à jour nécessaires au maintien de la conformité**, y compris de sécurité, pendant toute la durée du contrat L.224-25-13.  
+      Si une mise à jour rend votre appareil incompatible, le fournisseur doit vous en informer **à l’avance** et proposer une solution L.224-25-14.  
+      Refuser une mise à jour peut limiter vos droits si elle était **nécessaire au bon fonctionnement**.
+
+  - id: 'resiliation'
+    title: 'Résiliation et remboursement'
+    type: 'content'
+    content: |
+      Si la non-conformité persiste, vous pouvez **résilier le contrat sans frais** L.224-25-14.  
+      Le fournisseur doit **rembourser sous 14 jours** les sommes versées L.224-25-27.  
+      Vous n’avez rien à payer pour la période postérieure à la résiliation, même en cas de forfait annuel.  
+      Si le service était fourni partiellement, le remboursement est **proportionnel** à la durée d’inexécution.
+
+  - id: 'exemples'
+    title: 'Cas fréquents'
+    type: 'faq'
+    faqItems:
+      - q: 'Mon application plante après une mise à jour'
+        a: 'Le professionnel doit corriger le bug gratuitement et sans délai L.224-25-12. Si le problème persiste, vous pouvez exiger un remboursement L.224-25-14.'
+      - q: 'La plateforme change ses fonctionnalités principales'
+        a: 'Si la modification dégrade le service ou supprime une fonction essentielle, c’est une **non-conformité**. Vous pouvez demander la résiliation L.224-25-4 L.224-25-14.'
+      - q: 'Je n’ai plus accès à un film ou à un jeu acheté en ligne'
+        a: 'Le professionnel doit maintenir l’accès pendant la durée prévue du contrat. Sinon, vous pouvez exiger le rétablissement ou un remboursement L.224-25-5 L.224-25-14.'
+      - q: 'Le service exige une nouvelle application payante'
+        a: 'Si cela empêche l’accès au service initial, le vendeur manque à son obligation de conformité L.224-25-4 L.224-25-12.'
+
+  - id: 'recours'
+    title: 'Si le fournisseur refuse d’agir'
+    type: 'timeline'
+    steps:
+      - title: 'Envoyer une mise en demeure'
+        description: |
+          Adressez-lui une **mise en demeure** rappelant les articles L.224-25-12 à L.224-25-14 et exigeant la mise en conformité ou le remboursement.  
+          Fixez un **délai de 15 jours** pour obtenir une réponse.
+      - title: 'Saisir un médiateur'
+        description: |
+          Si le fournisseur ne répond pas, vous pouvez saisir un **médiateur de la consommation** gratuitement L.612-1 L.616-1.  
+          Joignez vos captures, échanges et le texte de votre mise en demeure.
+      - title: 'Tribunal judiciaire'
+        description: |
+          En dernier recours, vous pouvez saisir le **tribunal judiciaire** de votre domicile R.631-3.  
+          Pour un montant inférieur à 5 000 €, la procédure est **simple et sans avocat obligatoire**.
+
+  - id: 'cta'
+    title: 'Faites valoir vos droits en ligne'
+    type: 'content'
+    content: |
+      Notre outil vous permet de générer automatiquement une **mise en demeure** adaptée aux services numériques, avec les **articles du Code de la consommation** insérés.  
+      Versions **PDF** et **envoi recommandé** disponibles, avec **suivi et support illimité**.
+    cta:
+      label: 'Générer ma mise en demeure'
+      href: '/outils/mise-en-demeure'
+      variant: 'primary'
+      icon: 'FileText'
+
+  - id: 'contacts'
+    title: 'Contacts utiles'
+    type: 'contacts'
+
+  - id: 'disclaimer'
+    title: 'Important'
+    type: 'content'
+    content: |
+      Ce guide présente les droits des consommateurs en matière de **services numériques et contenus en ligne** selon le Code de la consommation.  
+      Il **ne remplace pas** un conseil juridique individuel.  
+      En cas de doute ou de refus du fournisseur, contactez une **association agréée** ou un **juriste spécialisé**.
+

@@ -1,13 +1,13 @@
-// src/app/guides/page.tsx - CORRIGÉ
+// src/app/guides/page.tsx - CORRIGÉ ET OPTIMISÉ
 import type { Metadata } from 'next';
 
-import GuidesClientPage from './client-page'; // ✅ Import du bon composant
+import GuidesClientPage from './client-page';
 
 // Métadonnées SEO (côté serveur)
 export const metadata: Metadata = {
   title: 'Guides pratiques - Garantie légale de conformité - Je me défends',
   description:
-    "Découvrez tous nos guides pour faire valoir vos droits de consommateur. Garantie légale, réparation, remboursement : tout ce qu'il faut savoir.",
+    'Découvrez tous nos guides pour faire valoir vos droits de consommateur. Garantie légale, réparation, remboursement : tout ce qu\'il faut savoir.',
   keywords: [
     'guides consommateur',
     'garantie légale conformité',
@@ -40,9 +40,13 @@ export const metadata: Metadata = {
     description: 'Tous nos guides pour défendre vos droits de consommateur',
     images: ['https://jemedefends.fr/images/og-guides.jpg'],
   },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 // Composant serveur qui wrap le composant client
 export default function GuidesPage() {
-  return <GuidesClientPage />; // ✅ Utilise le bon composant
+  return <GuidesClientPage />;
 }

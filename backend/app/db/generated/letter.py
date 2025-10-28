@@ -18,6 +18,7 @@ CREATE_LETTER = """-- name: create_letter \\:one
 INSERT INTO letter (
     buyer_name,
     buyer_email,
+    buyer_phone,
     buyer_address_line_1,
     buyer_address_line_2,
     buyer_postal_code,
@@ -33,34 +34,35 @@ INSERT INTO letter (
     product_name,
     order_reference,
     product_price,
-    defect_type,
     defect_description,
+    remedy_preference,
     used,
     digital
 ) VALUES (
-    :p1\\:\\:text,
-    :p2\\:\\:text,
-    :p3\\:\\:text,
-    :p4\\:\\:text,
-    :p5\\:\\:text,
-    :p6\\:\\:text,
-    :p7\\:\\:text,
-    :p8\\:\\:text,
-    :p9\\:\\:text,
-    :p10\\:\\:text,
-    :p11\\:\\:text,
-    :p12\\:\\:text,
-    :p13\\:\\:text,
-    :p14\\:\\:date,
-    :p15\\:\\:text,
-    :p16\\:\\:text,
-    :p17\\:\\:numeric,
-    :p18\\:\\:defect_type_enum,
-    :p19\\:\\:text,
-    :p20\\:\\:boolean,
-    :p21\\:\\:boolean
-)
-RETURNING id, buyer_name, buyer_email, buyer_address_line_1, buyer_address_line_2, buyer_postal_code, buyer_city, buyer_country, seller_name, seller_email, seller_address_line_1, seller_address_line_2, seller_postal_code, seller_city, seller_country, purchase_date, product_name, product_price, order_reference, used, digital, defect_type, defect_description, content, status, created_at, updated_at
+             :p1\\:\\:text,
+             :p2\\:\\:text,
+             :p3\\:\\:text,
+             :p4\\:\\:text,
+             :p5\\:\\:text,
+             :p6\\:\\:text,
+             :p7\\:\\:text,
+             :p8\\:\\:text,
+             :p9\\:\\:text,
+             :p10\\:\\:text,
+             :p11\\:\\:text,
+             :p12\\:\\:text,
+             :p13\\:\\:text,
+             :p14\\:\\:text,
+             :p15\\:\\:date,
+             :p16\\:\\:text,
+             :p17\\:\\:text,
+             :p18\\:\\:numeric,
+             :p19\\:\\:text,
+             :p20\\:\\:remedy_preference_enum,
+             :p21\\:\\:boolean,
+             :p22\\:\\:boolean
+         )
+RETURNING id, buyer_name, buyer_email, buyer_phone, buyer_address_line_1, buyer_address_line_2, buyer_postal_code, buyer_city, buyer_country, seller_name, seller_email, seller_address_line_1, seller_address_line_2, seller_postal_code, seller_city, seller_country, purchase_date, product_name, product_price, order_reference, used, digital, defect_description, remedy_preference, content, status, created_at, updated_at
 """
 
 
@@ -68,6 +70,7 @@ RETURNING id, buyer_name, buyer_email, buyer_address_line_1, buyer_address_line_
 class CreateLetterParams:
     buyer_name: str
     buyer_email: Optional[str]
+    buyer_phone: Optional[str]
     buyer_address_line_1: str
     buyer_address_line_2: Optional[str]
     buyer_postal_code: str
@@ -83,8 +86,8 @@ class CreateLetterParams:
     product_name: str
     order_reference: Optional[str]
     product_price: decimal.Decimal
-    defect_type: models.DefectTypeEnum
     defect_description: str
+    remedy_preference: models.RemedyPreferenceEnum
     used: bool
     digital: bool
 
@@ -96,7 +99,7 @@ WHERE id = :p1\\:\\:uuid
 
 
 GET_LETTER_BY_ID = """-- name: get_letter_by_id \\:one
-SELECT id, buyer_name, buyer_email, buyer_address_line_1, buyer_address_line_2, buyer_postal_code, buyer_city, buyer_country, seller_name, seller_email, seller_address_line_1, seller_address_line_2, seller_postal_code, seller_city, seller_country, purchase_date, product_name, product_price, order_reference, used, digital, defect_type, defect_description, content, status, created_at, updated_at
+SELECT id, buyer_name, buyer_email, buyer_phone, buyer_address_line_1, buyer_address_line_2, buyer_postal_code, buyer_city, buyer_country, seller_name, seller_email, seller_address_line_1, seller_address_line_2, seller_postal_code, seller_city, seller_country, purchase_date, product_name, product_price, order_reference, used, digital, defect_description, remedy_preference, content, status, created_at, updated_at
 FROM letter
 WHERE id = :p1\\:\\:uuid
 LIMIT 1
@@ -104,7 +107,7 @@ LIMIT 1
 
 
 LIST_LETTERS = """-- name: list_letters \\:many
-SELECT id, buyer_name, buyer_email, buyer_address_line_1, buyer_address_line_2, buyer_postal_code, buyer_city, buyer_country, seller_name, seller_email, seller_address_line_1, seller_address_line_2, seller_postal_code, seller_city, seller_country, purchase_date, product_name, product_price, order_reference, used, digital, defect_type, defect_description, content, status, created_at, updated_at
+SELECT id, buyer_name, buyer_email, buyer_phone, buyer_address_line_1, buyer_address_line_2, buyer_postal_code, buyer_city, buyer_country, seller_name, seller_email, seller_address_line_1, seller_address_line_2, seller_postal_code, seller_city, seller_country, purchase_date, product_name, product_price, order_reference, used, digital, defect_description, remedy_preference, content, status, created_at, updated_at
 FROM letter
 ORDER BY created_at DESC
 LIMIT :p2\\:\\:int OFFSET :p1\\:\\:int
@@ -118,7 +121,7 @@ SET
     status = :p2\\:\\:letter_status_enum,
     updated_at = now()
 WHERE id = :p3\\:\\:uuid
-RETURNING id, buyer_name, buyer_email, buyer_address_line_1, buyer_address_line_2, buyer_postal_code, buyer_city, buyer_country, seller_name, seller_email, seller_address_line_1, seller_address_line_2, seller_postal_code, seller_city, seller_country, purchase_date, product_name, product_price, order_reference, used, digital, defect_type, defect_description, content, status, created_at, updated_at
+RETURNING id, buyer_name, buyer_email, buyer_phone, buyer_address_line_1, buyer_address_line_2, buyer_postal_code, buyer_city, buyer_country, seller_name, seller_email, seller_address_line_1, seller_address_line_2, seller_postal_code, seller_city, seller_country, purchase_date, product_name, product_price, order_reference, used, digital, defect_description, remedy_preference, content, status, created_at, updated_at
 """
 
 
@@ -128,7 +131,7 @@ SET
     status = :p1\\:\\:letter_status_enum,
     updated_at = now()
 WHERE id = :p2\\:\\:uuid
-RETURNING id, buyer_name, buyer_email, buyer_address_line_1, buyer_address_line_2, buyer_postal_code, buyer_city, buyer_country, seller_name, seller_email, seller_address_line_1, seller_address_line_2, seller_postal_code, seller_city, seller_country, purchase_date, product_name, product_price, order_reference, used, digital, defect_type, defect_description, content, status, created_at, updated_at
+RETURNING id, buyer_name, buyer_email, buyer_phone, buyer_address_line_1, buyer_address_line_2, buyer_postal_code, buyer_city, buyer_country, seller_name, seller_email, seller_address_line_1, seller_address_line_2, seller_postal_code, seller_city, seller_country, purchase_date, product_name, product_price, order_reference, used, digital, defect_description, remedy_preference, content, status, created_at, updated_at
 """
 
 
@@ -140,25 +143,26 @@ class AsyncQuerier:
         row = (await self._conn.execute(sqlalchemy.text(CREATE_LETTER), {
             "p1": arg.buyer_name,
             "p2": arg.buyer_email,
-            "p3": arg.buyer_address_line_1,
-            "p4": arg.buyer_address_line_2,
-            "p5": arg.buyer_postal_code,
-            "p6": arg.buyer_city,
-            "p7": arg.buyer_country,
-            "p8": arg.seller_name,
-            "p9": arg.seller_address_line_1,
-            "p10": arg.seller_address_line_2,
-            "p11": arg.seller_postal_code,
-            "p12": arg.seller_city,
-            "p13": arg.seller_country,
-            "p14": arg.purchase_date,
-            "p15": arg.product_name,
-            "p16": arg.order_reference,
-            "p17": arg.product_price,
-            "p18": arg.defect_type,
+            "p3": arg.buyer_phone,
+            "p4": arg.buyer_address_line_1,
+            "p5": arg.buyer_address_line_2,
+            "p6": arg.buyer_postal_code,
+            "p7": arg.buyer_city,
+            "p8": arg.buyer_country,
+            "p9": arg.seller_name,
+            "p10": arg.seller_address_line_1,
+            "p11": arg.seller_address_line_2,
+            "p12": arg.seller_postal_code,
+            "p13": arg.seller_city,
+            "p14": arg.seller_country,
+            "p15": arg.purchase_date,
+            "p16": arg.product_name,
+            "p17": arg.order_reference,
+            "p18": arg.product_price,
             "p19": arg.defect_description,
-            "p20": arg.used,
-            "p21": arg.digital,
+            "p20": arg.remedy_preference,
+            "p21": arg.used,
+            "p22": arg.digital,
         })).first()
         if row is None:
             return None
@@ -166,30 +170,31 @@ class AsyncQuerier:
             id=row[0],
             buyer_name=row[1],
             buyer_email=row[2],
-            buyer_address_line_1=row[3],
-            buyer_address_line_2=row[4],
-            buyer_postal_code=row[5],
-            buyer_city=row[6],
-            buyer_country=row[7],
-            seller_name=row[8],
-            seller_email=row[9],
-            seller_address_line_1=row[10],
-            seller_address_line_2=row[11],
-            seller_postal_code=row[12],
-            seller_city=row[13],
-            seller_country=row[14],
-            purchase_date=row[15],
-            product_name=row[16],
-            product_price=row[17],
-            order_reference=row[18],
-            used=row[19],
-            digital=row[20],
-            defect_type=row[21],
+            buyer_phone=row[3],
+            buyer_address_line_1=row[4],
+            buyer_address_line_2=row[5],
+            buyer_postal_code=row[6],
+            buyer_city=row[7],
+            buyer_country=row[8],
+            seller_name=row[9],
+            seller_email=row[10],
+            seller_address_line_1=row[11],
+            seller_address_line_2=row[12],
+            seller_postal_code=row[13],
+            seller_city=row[14],
+            seller_country=row[15],
+            purchase_date=row[16],
+            product_name=row[17],
+            product_price=row[18],
+            order_reference=row[19],
+            used=row[20],
+            digital=row[21],
             defect_description=row[22],
-            content=row[23],
-            status=row[24],
-            created_at=row[25],
-            updated_at=row[26],
+            remedy_preference=row[23],
+            content=row[24],
+            status=row[25],
+            created_at=row[26],
+            updated_at=row[27],
         )
 
     async def delete_letter(self, *, id: uuid.UUID) -> None:
@@ -203,30 +208,31 @@ class AsyncQuerier:
             id=row[0],
             buyer_name=row[1],
             buyer_email=row[2],
-            buyer_address_line_1=row[3],
-            buyer_address_line_2=row[4],
-            buyer_postal_code=row[5],
-            buyer_city=row[6],
-            buyer_country=row[7],
-            seller_name=row[8],
-            seller_email=row[9],
-            seller_address_line_1=row[10],
-            seller_address_line_2=row[11],
-            seller_postal_code=row[12],
-            seller_city=row[13],
-            seller_country=row[14],
-            purchase_date=row[15],
-            product_name=row[16],
-            product_price=row[17],
-            order_reference=row[18],
-            used=row[19],
-            digital=row[20],
-            defect_type=row[21],
+            buyer_phone=row[3],
+            buyer_address_line_1=row[4],
+            buyer_address_line_2=row[5],
+            buyer_postal_code=row[6],
+            buyer_city=row[7],
+            buyer_country=row[8],
+            seller_name=row[9],
+            seller_email=row[10],
+            seller_address_line_1=row[11],
+            seller_address_line_2=row[12],
+            seller_postal_code=row[13],
+            seller_city=row[14],
+            seller_country=row[15],
+            purchase_date=row[16],
+            product_name=row[17],
+            product_price=row[18],
+            order_reference=row[19],
+            used=row[20],
+            digital=row[21],
             defect_description=row[22],
-            content=row[23],
-            status=row[24],
-            created_at=row[25],
-            updated_at=row[26],
+            remedy_preference=row[23],
+            content=row[24],
+            status=row[25],
+            created_at=row[26],
+            updated_at=row[27],
         )
 
     async def list_letters(self, *, page_offset: int, page_size: int) -> AsyncIterator[models.Letter]:
@@ -236,30 +242,31 @@ class AsyncQuerier:
                 id=row[0],
                 buyer_name=row[1],
                 buyer_email=row[2],
-                buyer_address_line_1=row[3],
-                buyer_address_line_2=row[4],
-                buyer_postal_code=row[5],
-                buyer_city=row[6],
-                buyer_country=row[7],
-                seller_name=row[8],
-                seller_email=row[9],
-                seller_address_line_1=row[10],
-                seller_address_line_2=row[11],
-                seller_postal_code=row[12],
-                seller_city=row[13],
-                seller_country=row[14],
-                purchase_date=row[15],
-                product_name=row[16],
-                product_price=row[17],
-                order_reference=row[18],
-                used=row[19],
-                digital=row[20],
-                defect_type=row[21],
+                buyer_phone=row[3],
+                buyer_address_line_1=row[4],
+                buyer_address_line_2=row[5],
+                buyer_postal_code=row[6],
+                buyer_city=row[7],
+                buyer_country=row[8],
+                seller_name=row[9],
+                seller_email=row[10],
+                seller_address_line_1=row[11],
+                seller_address_line_2=row[12],
+                seller_postal_code=row[13],
+                seller_city=row[14],
+                seller_country=row[15],
+                purchase_date=row[16],
+                product_name=row[17],
+                product_price=row[18],
+                order_reference=row[19],
+                used=row[20],
+                digital=row[21],
                 defect_description=row[22],
-                content=row[23],
-                status=row[24],
-                created_at=row[25],
-                updated_at=row[26],
+                remedy_preference=row[23],
+                content=row[24],
+                status=row[25],
+                created_at=row[26],
+                updated_at=row[27],
             )
 
     async def update_content(self, *, content: Optional[str], status: models.LetterStatusEnum, id: uuid.UUID) -> Optional[models.Letter]:
@@ -270,30 +277,31 @@ class AsyncQuerier:
             id=row[0],
             buyer_name=row[1],
             buyer_email=row[2],
-            buyer_address_line_1=row[3],
-            buyer_address_line_2=row[4],
-            buyer_postal_code=row[5],
-            buyer_city=row[6],
-            buyer_country=row[7],
-            seller_name=row[8],
-            seller_email=row[9],
-            seller_address_line_1=row[10],
-            seller_address_line_2=row[11],
-            seller_postal_code=row[12],
-            seller_city=row[13],
-            seller_country=row[14],
-            purchase_date=row[15],
-            product_name=row[16],
-            product_price=row[17],
-            order_reference=row[18],
-            used=row[19],
-            digital=row[20],
-            defect_type=row[21],
+            buyer_phone=row[3],
+            buyer_address_line_1=row[4],
+            buyer_address_line_2=row[5],
+            buyer_postal_code=row[6],
+            buyer_city=row[7],
+            buyer_country=row[8],
+            seller_name=row[9],
+            seller_email=row[10],
+            seller_address_line_1=row[11],
+            seller_address_line_2=row[12],
+            seller_postal_code=row[13],
+            seller_city=row[14],
+            seller_country=row[15],
+            purchase_date=row[16],
+            product_name=row[17],
+            product_price=row[18],
+            order_reference=row[19],
+            used=row[20],
+            digital=row[21],
             defect_description=row[22],
-            content=row[23],
-            status=row[24],
-            created_at=row[25],
-            updated_at=row[26],
+            remedy_preference=row[23],
+            content=row[24],
+            status=row[25],
+            created_at=row[26],
+            updated_at=row[27],
         )
 
     async def update_letter_status(self, *, status: models.LetterStatusEnum, id: uuid.UUID) -> Optional[models.Letter]:
@@ -304,28 +312,29 @@ class AsyncQuerier:
             id=row[0],
             buyer_name=row[1],
             buyer_email=row[2],
-            buyer_address_line_1=row[3],
-            buyer_address_line_2=row[4],
-            buyer_postal_code=row[5],
-            buyer_city=row[6],
-            buyer_country=row[7],
-            seller_name=row[8],
-            seller_email=row[9],
-            seller_address_line_1=row[10],
-            seller_address_line_2=row[11],
-            seller_postal_code=row[12],
-            seller_city=row[13],
-            seller_country=row[14],
-            purchase_date=row[15],
-            product_name=row[16],
-            product_price=row[17],
-            order_reference=row[18],
-            used=row[19],
-            digital=row[20],
-            defect_type=row[21],
+            buyer_phone=row[3],
+            buyer_address_line_1=row[4],
+            buyer_address_line_2=row[5],
+            buyer_postal_code=row[6],
+            buyer_city=row[7],
+            buyer_country=row[8],
+            seller_name=row[9],
+            seller_email=row[10],
+            seller_address_line_1=row[11],
+            seller_address_line_2=row[12],
+            seller_postal_code=row[13],
+            seller_city=row[14],
+            seller_country=row[15],
+            purchase_date=row[16],
+            product_name=row[17],
+            product_price=row[18],
+            order_reference=row[19],
+            used=row[20],
+            digital=row[21],
             defect_description=row[22],
-            content=row[23],
-            status=row[24],
-            created_at=row[25],
-            updated_at=row[26],
+            remedy_preference=row[23],
+            content=row[24],
+            status=row[25],
+            created_at=row[26],
+            updated_at=row[27],
         )

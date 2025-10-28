@@ -1,370 +1,283 @@
-// src/components/eligibility/ResultsDisplay.tsx - VERSION MOBILE-FIRST OPTIMISÉE
+// src/components/eligibility/ResultsDisplay.tsx
 'use client';
 
-import { motion } from 'framer-motion';
-import {
-  CheckCircle,
-  ExternalLink,
-  RefreshCw,
-  ArrowRight,
-  Shield,
-  Clock,
-  Info,
-  User,
-  Briefcase,
-  Globe,
-  MessageSquareWarning,
-  Scale,
-  Handshake,
-  ShieldCheck,
-} from 'lucide-react';
 import React from 'react';
+import {motion} from 'framer-motion';
+import {
+    ArrowRight,
+    CheckCircle,
+    Clock,
+    FileText,
+    Info,
+    Lock,
+    ExternalLink,
+    RefreshCw, Scale,
+} from 'lucide-react';
 
-import Container from '@/components/ui/Container';
-import Badge from '@/components/ui/Badge';
-import type { EligibilityResult } from '@/eligibility/engine';
-import type { EligibilityData } from '@/types/eligibility';
+import type {EligibilityResult} from '@/eligibility/engine';
+import type {EligibilityData} from '@/types/eligibility';
 
 interface ResultsDisplayProps {
-  result: EligibilityResult;
-  data: EligibilityData;
-  onRestart: () => void;
+    result: EligibilityResult;
+    data: EligibilityData;
+    onRestart: () => void;
 }
 
-// ✅ ALTERNATIVES POUR LES CAS D'INÉLIGIBILITÉ
-const ALTERNATIVES = [
-  {
-    id: 'signalconso',
-    title: 'SignalConso',
-    description: 'Signalez le problème à la DGCCRF pour enquête et sanctions potentielles',
-    url: 'https://signal.conso.gouv.fr/',
-    icon: MessageSquareWarning,
-    color: 'text-orange-600',
-    primary: true,
-  },
-  {
-    id: 'mediation',
-    title: 'Médiation de consommation',
-    description: 'Résolution amiable gratuite avec un médiateur agréé',
-    url: 'https://www.economie.gouv.fr/mediation-conso',
-    icon: Scale,
-    color: 'text-blue-600',
-  },
-  {
-    id: 'conciliation',
-    title: 'Conciliateur de justice',
-    description: "Service gratuit pour résoudre les litiges à l'amiable",
-    url: 'https://www.conciliateurs.fr/',
-    icon: Handshake,
-    color: 'text-green-600',
-  },
-  {
-    id: 'assistance',
-    title: 'Permanences juridiques',
-    description: 'Consultations juridiques gratuites dans votre région',
-    url: 'https://www.service-public.fr/particuliers/vosdroits/F20153',
-    icon: ShieldCheck,
-    color: 'text-purple-600',
-  },
+/* ----------------------------- Design tokens ----------------------------- */
+const cardClass =
+    'rounded-3xl border border-gray-100 bg-white/90 shadow-[0_8px_30px_rgba(0,0,0,0.06)] backdrop-blur-sm';
+const h1Class =
+    'text-[1.35rem] md:text-[1.55rem] font-semibold tracking-[-0.01em] text-gray-900';
+const subClass = 'text-[0.95rem] text-gray-600 leading-relaxed';
+const ctaPrimary =
+    'inline-flex items-center justify-center gap-2 h-11 md:h-12 w-full md:w-auto px-5 md:px-6 rounded-xl ' +
+    'bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold ' +
+    'shadow-[0_6px_18px_rgba(37,99,235,0.25)] hover:from-blue-700 hover:to-indigo-700 ' +
+    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300';
+const ctaGhost =
+    'inline-flex items-center justify-center gap-2 h-11 md:h-12 px-4 rounded-xl ' +
+    'border border-gray-200 text-gray-700 bg-white hover:bg-gray-50 hover:border-gray-300 ' +
+    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-300';
+const pill =
+    'inline-flex items-center gap-1 rounded-full border border-gray-200/80 px-2.5 py-1 bg-white/70 text-[11px] text-gray-600';
+
+/* ----------------------- Alternatives constant (kept) --------------------- */
+export const ALTERNATIVES = [
+    // gardé pour usage ailleurs
+    {id: 'signalconso', title: 'SignalConso', url: 'https://signal.conso.gouv.fr/'},
+    {
+        id: 'mediation',
+        title: 'Médiation de la consommation',
+        url: 'https://www.economie.gouv.fr/mediation-conso'
+    },
+    {
+        id: 'conciliation',
+        title: 'Conciliateur de justice',
+        url: 'https://www.conciliateurs.fr/'
+    },
+    {
+        id: 'assistance',
+        title: 'Permanences juridiques',
+        url: 'https://www.service-public.fr/particuliers/vosdroits/F20153'
+    },
 ];
 
-// ✅ MESSAGES D'INÉLIGIBILITÉ PAR RAISON
 const INELIGIBILITY_MESSAGES: Record<
-  string,
-  {
-    title: string;
-    message: string;
-    icon: React.ReactNode;
-  }
+    string,
+    { title: string; message: string }
 > = {
-  seller_not_professional: {
-    title: 'Vente entre particuliers',
-    message:
-      "La garantie légale de conformité ne s'applique qu'aux achats auprès de professionnels.",
-    icon: <User className="w-5 h-5 md:w-6 md:h-6" />,
-  },
-  not_consumer: {
-    title: 'Usage professionnel',
-    message: 'La garantie légale protège uniquement les consommateurs (usage personnel).',
-    icon: <Briefcase className="w-5 h-5 md:w-6 md:h-6" />,
-  },
-  territory_outside: {
-    title: 'Vendeur hors UE',
-    message: "La garantie s'applique si le vendeur est dans l'UE ou cible le marché français.",
-    icon: <Globe className="w-5 h-5 md:w-6 md:h-6" />,
-  },
-  timing_too_old: {
-    title: 'Délai dépassé',
-    message: "Le délai de garantie légale de 2 ans (ou 12 mois pour l'occasion) est écoulé.",
-    icon: <Clock className="w-5 h-5 md:w-6 md:h-6" />,
-  },
-  no_defect: {
-    title: 'Aucun défaut',
-    message: "La garantie légale ne s'applique qu'en cas de défaut de conformité avéré.",
-    icon: <CheckCircle className="w-5 h-5 md:w-6 md:h-6" />,
-  },
+    seller_not_professional: {
+        title: 'Vente entre particuliers',
+        message:
+            "La garantie légale de conformité couvre uniquement les achats auprès de professionnels (B2C).",
+    },
+    not_consumer: {
+        title: 'Usage professionnel',
+        message: 'La protection est réservée aux achats pour un usage personnel.',
+    },
+    territory_outside: {
+        title: 'Vendeur hors UE/EEE',
+        message: "Hors champ, sauf activité dirigée vers la France (indices suffisants).",
+    },
+    timing_too_old: {
+        title: 'Délai dépassé',
+        message: "Le délai de la garantie légale (2 ans) est écoulé.",
+    },
+    no_defect: {
+        title: 'Aucun défaut de conformité établi',
+        message: 'La garantie s’applique uniquement en cas de non-conformité.',
+    },
 };
 
-const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ result, data, onRestart }) => {
-  if (result.isEligible) {
-    return <EligibleResults data={data} onRestart={onRestart} />;
-  }
-
-  return <IneligibleResults result={result} data={data} onRestart={onRestart} />;
-};
-
-// ✅ COMPOSANT POUR LES RÉSULTATS ÉLIGIBLES - MOBILE-FIRST
-const EligibleResults: React.FC<{ data: EligibilityData; onRestart: () => void }> = ({
-  data,
-  onRestart,
-}) => {
-  const handleContinue = () => {
-    window.location.href = '/formulaire';
-  };
-
-  const handleRestart = () => {
-    // Scroll en haut avant de redémarrer
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    setTimeout(() => onRestart(), 100);
-  };
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-green-100"
-    >
-      <Container variant="form" className="py-6 md:py-12">
-        <div className="text-center">
-          {/* ✅ ICÔNE DE SUCCÈS - MOBILE OPTIMISÉ */}
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
-            className="inline-flex items-center justify-center w-16 h-16 md:w-24 md:h-24 bg-green-100 rounded-full mb-4 md:mb-8"
-          >
-            <CheckCircle className="w-8 h-8 md:w-12 md:h-12 text-green-600" />
-          </motion.div>
-
-          {/* ✅ TITRE - MOBILE OPTIMISÉ */}
-          <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-3 md:mb-4 px-4">
-            🎉 Vous êtes éligible !
-          </h1>
-
-          <p className="text-base md:text-lg text-gray-600 mb-6 md:mb-8 max-w-2xl mx-auto leading-relaxed px-4">
-            Votre situation correspond parfaitement aux critères de la{' '}
-            <strong>garantie légale de conformité</strong>. Vous pouvez exiger la réparation, le
-            remplacement ou le remboursement.
-          </p>
-
-          {/* ✅ RÉCAPITULATIF - COMPACT MOBILE */}
-          <div className="bg-white rounded-xl md:rounded-2xl shadow-lg border border-gray-200 p-4 md:p-6 mb-6 md:mb-8 text-left">
-            <h2 className="font-bold text-gray-900 mb-3 md:mb-4 text-base md:text-lg">
-              📋 Récapitulatif de votre situation
-            </h2>
-            <div className="grid gap-2 md:gap-3">
-              <div className="flex items-center gap-2 md:gap-3 p-2 md:p-3 bg-green-50 rounded-lg md:rounded-xl">
-                <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-green-600 flex-shrink-0" />
-                <span className="text-xs md:text-sm font-medium">
-                  Achat auprès d'un professionnel
-                </span>
-              </div>
-              <div className="flex items-center gap-2 md:gap-3 p-2 md:p-3 bg-green-50 rounded-lg md:rounded-xl">
-                <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-green-600 flex-shrink-0" />
-                <span className="text-xs md:text-sm font-medium">
-                  Usage personnel (consommateur)
-                </span>
-              </div>
-              <div className="flex items-center gap-2 md:gap-3 p-2 md:p-3 bg-green-50 rounded-lg md:rounded-xl">
-                <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-green-600 flex-shrink-0" />
-                <span className="text-xs md:text-sm font-medium">
-                  {data.productType === 'physical' ? 'Bien matériel' : 'Contenu numérique'}
-                </span>
-              </div>
-              <div className="flex items-center gap-2 md:gap-3 p-2 md:p-3 bg-green-50 rounded-lg md:rounded-xl">
-                <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-green-600 flex-shrink-0" />
-                <span className="text-xs md:text-sm font-medium">Dans les délais</span>
-              </div>
+const ResultsDisplay: React.FC<ResultsDisplayProps> = ({result, onRestart}) => {
+    return (
+        <div className="relative">
+            <div
+                className="pointer-events-none absolute inset-0 bg-gradient-to-b from-sky-50 via-white to-white"/>
+            <div className="relative max-w-3xl mx-auto p-4 md:p-8">
+                {result.isEligible ? (
+                    <EligibleView onRestart={onRestart}/>
+                ) : (
+                    <IneligibleView result={result} onRestart={onRestart}/>
+                )}
             </div>
-          </div>
-
-          {/* ✅ TRUST INDICATORS - COMPACT MOBILE */}
-          <div className="grid grid-cols-3 gap-2 md:gap-4 mb-6 md:mb-8">
-            <div className="bg-white rounded-lg md:rounded-xl p-3 md:p-4 border border-gray-200 text-center">
-              <Shield className="w-6 h-6 md:w-8 md:h-8 text-blue-600 mx-auto mb-1 md:mb-2" />
-              <div className="font-medium text-gray-900 text-xs md:text-sm">Sources juridiques</div>
-              <div className="text-[10px] md:text-xs text-gray-600 hidden md:block">
-                Code de la consommation
-              </div>
-            </div>
-            <div className="bg-white rounded-lg md:rounded-xl p-3 md:p-4 border border-gray-200 text-center">
-              <CheckCircle className="w-6 h-6 md:w-8 md:h-8 text-green-600 mx-auto mb-1 md:mb-2" />
-              <div className="font-medium text-gray-900 text-xs md:text-sm">RGPD compliant</div>
-              <div className="text-[10px] md:text-xs text-gray-600 hidden md:block">
-                Données non conservées
-              </div>
-            </div>
-            <div className="bg-white rounded-lg md:rounded-xl p-3 md:p-4 border border-gray-200 text-center">
-              <Clock className="w-6 h-6 md:w-8 md:h-8 text-purple-600 mx-auto mb-1 md:mb-2" />
-              <div className="font-medium text-gray-900 text-xs md:text-sm">Rapide</div>
-              <div className="text-[10px] md:text-xs text-gray-600 hidden md:block">
-                Généré en 2 min
-              </div>
-            </div>
-          </div>
-
-          {/* ✅ BOUTONS - MOBILE OPTIMISÉ */}
-          <div className="space-y-3 md:space-y-4">
-            <button
-              onClick={handleContinue}
-              className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold py-3 md:py-4 px-6 md:px-8 rounded-xl md:rounded-2xl transition-all transform hover:scale-105 shadow-lg text-sm md:text-base"
-            >
-              <ArrowRight className="w-4 h-4 md:w-5 md:h-5 mr-2 inline" />
-              Générer ma lettre de mise en demeure
-            </button>
-
-            <button
-              onClick={handleRestart}
-              className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-2.5 md:py-3 px-4 md:px-6 rounded-lg md:rounded-xl transition-colors text-sm md:text-base"
-            >
-              <RefreshCw className="w-3.5 h-3.5 md:w-4 md:h-4 mr-2 inline" />
-              Recommencer pour un autre cas
-            </button>
-          </div>
         </div>
-      </Container>
-    </motion.div>
-  );
+    );
 };
 
-// ✅ COMPOSANT POUR LES RÉSULTATS INÉLIGIBLES - MOBILE-FIRST
-const IneligibleResults: React.FC<{
-  result: EligibilityResult;
-  data: EligibilityData;
-  onRestart: () => void;
-}> = ({ result, data, onRestart }) => {
-  const primaryReason = result.reasons?.[0] || 'no_defect';
-  const reasonInfo = INELIGIBILITY_MESSAGES[primaryReason];
+/* ============================ ELIGIBLE VIEW ============================ */
+const EligibleView: React.FC<{ onRestart: () => void }> = ({onRestart}) => {
+    const onContinue = () => (window.location.href = '/formulaire');
+    const restart = () => {
+        window.scrollTo({top: 0, behavior: 'smooth'});
+        setTimeout(onRestart, 60);
+    };
 
-  const handleRestart = () => {
-    // Scroll en haut avant de redémarrer
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    setTimeout(() => onRestart(), 100);
-  };
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="min-h-screen bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50"
-    >
-      <Container variant="form" className="py-6 md:py-12">
-        <div className="text-center">
-          {/* ✅ ICÔNE - MOBILE OPTIMISÉ */}
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
-            className="inline-flex items-center justify-center w-16 h-16 md:w-24 md:h-24 bg-orange-100 rounded-full mb-4 md:mb-8"
-          >
-            <Info className="w-8 h-8 md:w-12 md:h-12 text-orange-600" />
-          </motion.div>
-
-          {/* ✅ TITRE - MOBILE OPTIMISÉ */}
-          <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-3 md:mb-4 px-4">
-            Situation non éligible
-          </h1>
-
-          <p className="text-base md:text-lg text-gray-600 mb-6 md:mb-8 max-w-2xl mx-auto leading-relaxed px-4">
-            Votre situation ne correspond pas aux critères de la garantie légale de conformité, mais{' '}
-            <strong>d'autres solutions existent</strong> pour vous aider.
-          </p>
-
-          {/* ✅ RAISON - COMPACT MOBILE */}
-          {reasonInfo && (
-            <div className="bg-white rounded-xl md:rounded-2xl shadow-lg border border-orange-200 p-4 md:p-6 mb-6 md:mb-8">
-              <div className="flex items-center gap-3 md:gap-4">
-                <div className="p-2 md:p-3 bg-orange-100 rounded-lg md:rounded-xl text-orange-600 flex-shrink-0">
-                  {reasonInfo.icon}
+    return (
+        <motion.section
+            initial={{opacity: 0, y: 8}}
+            animate={{opacity: 1, y: 0}}
+            transition={{duration: 0.2}}
+            className={`${cardClass} p-5 md:p-7`}
+        >
+            <header className="mb-4 md:mb-5">
+                <div className="flex items-center gap-2.5">
+          <span
+              className="inline-grid place-items-center w-6 h-6 rounded-full bg-green-50 border border-green-200">
+            <CheckCircle className="w-4 h-4 text-emerald-600"/>
+          </span>
+                    <h1 className={h1Class}>Vous êtes éligible</h1>
                 </div>
-                <div className="text-left flex-1 min-w-0">
-                  <h3 className="font-bold text-gray-900 text-sm md:text-lg">{reasonInfo.title}</h3>
-                  <p className="text-gray-600 text-xs md:text-sm mt-0.5 md:mt-1">
-                    {reasonInfo.message}
-                  </p>
+                <p className={`${subClass} mt-1`}>
+                    Modèle conforme au Code de la consommation, prêt à signer et
+                    envoyer.
+                </p>
+            </header>
+
+            <div
+                className="rounded-2xl bg-white border border-gray-100 p-3 md:p-4 shadow-inner">
+                <button onClick={onContinue} className={`${ctaPrimary} w-full`}>
+                    <ArrowRight className="w-4 h-4"/>
+                    Générer ma lettre maintenant
+                </button>
+
+                <div className="mt-3 flex flex-wrap items-center gap-2">
+                    <span className={pill}><Clock
+                        className="w-3.5 h-3.5"/>2&nbsp;min</span>
+                    <span className={pill}><FileText className="w-3.5 h-3.5"/>PDF prêt à l’emploi</span>
+                    <span className={pill}><CheckCircle className="w-3.5 h-3.5"/>Conforme</span>
+                    <span className={pill}><Lock className="w-3.5 h-3.5"/>Sans inscription</span>
                 </div>
-              </div>
             </div>
-          )}
 
-          {/* ✅ ALTERNATIVES - COMPACT MOBILE */}
-          <div className="bg-white rounded-xl md:rounded-2xl shadow-lg border border-gray-200 p-4 md:p-6 mb-6 md:mb-8">
-            <h2 className="font-bold text-gray-900 mb-4 md:mb-6 text-base md:text-lg">
-              🔧 Solutions alternatives recommandées
-            </h2>
-            <div className="grid gap-3 md:gap-4">
-              {ALTERNATIVES.map(alternative => {
-                const Icon = alternative.icon;
-                return (
-                  <a
-                    key={alternative.id}
-                    href={alternative.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-3 md:gap-4 p-3 md:p-4 bg-gray-50 hover:bg-gray-100 rounded-lg md:rounded-xl transition-colors group"
-                  >
-                    <div
-                      className={`p-2 md:p-3 rounded-lg md:rounded-xl bg-white ${alternative.color} flex-shrink-0`}
-                    >
-                      <Icon className="w-4 h-4 md:w-5 md:h-5" />
-                    </div>
-                    <div className="flex-1 text-left min-w-0">
-                      <div className="font-medium text-gray-900 text-xs md:text-base mb-0.5 md:mb-1 group-hover:text-blue-600 transition-colors">
-                        {alternative.title}
-                      </div>
-                      <div className="text-[11px] md:text-sm text-gray-600 leading-relaxed">
-                        {alternative.description}
-                      </div>
-                    </div>
-                    <ExternalLink className="w-3.5 h-3.5 md:w-4 md:h-4 text-gray-400 group-hover:text-blue-600 transition-colors flex-shrink-0" />
-                  </a>
-                );
-              })}
+            <div className="mt-5">
+                <ol className="space-y-2 text-[0.95rem] text-gray-700">
+                    {[
+                        'Saisir vos informations — coordonnées, achat, défaut',
+                        'Générer le PDF — modèle conforme, prêt à envoyer',
+                        'Envoyer au vendeur — LRAR ou e-mail selon le cas',
+                    ].map((t, i) => (
+                        <li key={i} className="flex">
+                            <span
+                                className="w-6 text-gray-400 font-medium">{i + 1}.</span>
+                            <span className="flex-1">{t}</span>
+                        </li>
+                    ))}
+                </ol>
             </div>
-          </div>
 
-          {/* ✅ BOUTONS - MOBILE OPTIMISÉ */}
-          <div className="space-y-3 md:space-y-4">
-            <button
-              onClick={handleRestart}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 md:py-4 px-6 md:px-8 rounded-xl md:rounded-2xl transition-all shadow-lg text-sm md:text-base"
-            >
-              <RefreshCw className="w-4 h-4 md:w-5 md:h-5 mr-2 inline" />
-              Recommencer le test d'éligibilité
-            </button>
+            <div className="mt-5 flex justify-center">
+                <button onClick={onRestart} className={ctaGhost}>
+                    <RefreshCw className="w-4 h-4"/>
+                    Recommencer
+                </button>
+            </div>
 
-            <a
-              href="/guides"
-              className="block w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-2.5 md:py-3 px-4 md:px-6 rounded-lg md:rounded-xl transition-colors text-center text-sm md:text-base"
-            >
-              Consulter tous nos guides
-            </a>
-          </div>
-
-          {/* ✅ DISCLAIMER - COMPACT MOBILE */}
-          <div className="mt-6 md:mt-8 p-3 md:p-4 bg-blue-50 rounded-lg md:rounded-xl border border-blue-200">
-            <p className="text-[11px] md:text-xs text-blue-800 leading-relaxed">
-              ⚖️ <strong>Disclaimer :</strong> Ce diagnostic est basé sur vos réponses et le Code de
-              la consommation. Il ne constitue pas un conseil juridique personnalisé. En cas de
-              doute, consultez un professionnel du droit.
+            <p className="mt-4 p-3 rounded-xl border border-emerald-200/70 bg-emerald-50 text-emerald-800 text-xs leading-relaxed flex items-center gap-2">
+                <Scale className="w-4 h-4"/>
+                Diagnostic fondé sur le Code de la consommation. Ceci n’est pas un
+                conseil juridique personnalisé.
             </p>
-          </div>
-        </div>
-      </Container>
-    </motion.div>
-  );
+        </motion.section>
+    );
+};
+
+/* =========================== INELIGIBLE VIEW =========================== */
+const IneligibleView: React.FC<{
+    result: EligibilityResult;
+    onRestart: () => void
+}> = ({
+          result,
+          onRestart,
+      }) => {
+    const reasonKey = result.reasons?.[0] ?? 'no_defect';
+    const meta = INELIGIBILITY_MESSAGES[reasonKey];
+
+    const restart = () => {
+        window.scrollTo({top: 0, behavior: 'smooth'});
+        setTimeout(onRestart, 60);
+    };
+
+    return (
+        <motion.section
+            initial={{opacity: 0, y: 8}}
+            animate={{opacity: 1, y: 0}}
+            transition={{duration: 0.2}}
+            className={`${cardClass} p-5 md:p-7`}
+        >
+            {/* Titre + sous-titre */}
+            <header className="mb-3">
+                <div className="flex items-center gap-2.5">
+          <span
+              className="inline-grid place-items-center w-6 h-6 rounded-full bg-blue-50 border border-blue-200">
+            <Info className="w-4 h-4 text-blue-600"/>
+          </span>
+                    <h1 className={h1Class}>Votre situation n’entre pas dans la
+                        garantie</h1>
+                </div>
+                <p className={`${subClass} mt-1`}>
+                    Pas d’inquiétude : suivez ce guide clair pour agir efficacement.
+                </p>
+            </header>
+
+            {/* RAISON — amber (charte-compatible, contrastée) */}
+            <div
+                className="mt-2 flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 p-3">
+        <span
+            className="inline-grid place-items-center w-7 h-7 rounded-lg bg-white border border-amber-200">
+          <Info className="w-4 h-4 text-amber-700"/>
+        </span>
+                <div className="text-sm">
+                    <div
+                        className="font-semibold text-gray-900">{meta?.title ?? 'Conditions non remplies'}</div>
+                    <p className="text-gray-700 mt-0.5">{meta?.message ?? 'Les conditions légales ne sont pas réunies.'}</p>
+                </div>
+            </div>
+
+            {/* Bloc guide + actions — layout aligné */}
+            <div
+                className="mt-4 rounded-2xl border border-blue-200 bg-gradient-to-b from-blue-50 to-white p-4">
+                {/* Grid pour alignement parfait à droite sur desktop, stack sur mobile */}
+                <div className="grid gap-3 md:grid-cols-[1fr,auto] md:items-center">
+                    <div className="min-w-0">
+                        <div
+                            className="font-semibold text-gray-900 leading-tight">D’autres
+                            solutions existent
+                        </div>
+                        <p className="text-sm text-gray-700 mt-1">
+                            Garantie expirée, achat entre particuliers ou casse ? Le
+                            guide explique pas-à-pas
+                            les démarches utiles (amiables et judiciaires) avec des
+                            modèles prêts à l’emploi.
+                        </p>
+                    </div>
+                    <div className="flex flex-col sm:flex-row gap-3 md:justify-end">
+                        <a
+                            href="http://localhost:3000/guides/recours-non-eligible.yml"
+                            className={ctaPrimary}
+                        >
+                            <ExternalLink className="w-4 h-4"/>
+                            Ouvrir le guide
+                        </a>
+                        <button onClick={restart} className={ctaGhost}>
+                            <RefreshCw className="w-4 h-4"/>
+                            Recommencer le test
+                        </button>
+                    </div>
+                </div>
+                <p className="mt-2 text-xs text-gray-600">
+                    Lecture 3–4&nbsp;min • Modèles réutilisables • Démarches pas-à-pas
+                </p>
+            </div>
+
+            {/* Disclaimer (Scale) */}
+            <p className="mt-4 p-3 rounded-xl border border-blue-200 bg-blue-50 text-blue-800 text-xs leading-relaxed flex items-center gap-2">
+                <Scale className="w-4 h-4"/>
+                Diagnostic fondé sur le Code de la consommation et le Code civil. Ceci
+                n’est pas un conseil juridique personnalisé.
+            </p>
+        </motion.section>
+    );
 };
 
 export default ResultsDisplay;

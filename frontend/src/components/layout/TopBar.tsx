@@ -8,6 +8,7 @@ import React from 'react';
 
 import { Container, Button } from '@/components/ui';
 import { getAllGuides } from '@/lib/guide-registry';
+import { getIconFromCategoryId } from '@/lib/icon-utils';
 
 // --- NavLink Component ---
 function NavLink({ href, children }: { href: string; children: React.ReactNode }) {
@@ -53,11 +54,9 @@ function GuidesDropdown() {
   const popularGuides = React.useMemo(() => {
     const popularSlugs = [
       'garantie-legale-conformite-guide-complet',
-      'smartphone-ecran-batterie-defaut-garantie-legale',
-      'voiture-electrique-defaut-garantie-legale',
-      'lave-linge-panne-garantie-legale',
-      'action-groupe',
-      'mediation-consommation',
+      'smartphone-garantie-legale',
+      'grandes-enseignes-et-marketplaces',
+      'electromenager-garantie-legale',
     ];
 
     return popularSlugs
@@ -67,7 +66,7 @@ function GuidesDropdown() {
           return {
             slug,
             title: guide.metadata.title,
-            emoji: getCategoryEmoji(guide.category?.id),
+            icon: getIconFromCategoryId(guide.category?.id),
           };
         }
         return null;
@@ -97,58 +96,34 @@ function GuidesDropdown() {
   }, []);
 
   return (
-    <div className="relative" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-      <button className="flex items-center gap-1 px-1 py-1 text-gray-700 hover:text-blue-700 transition-colors">
+    <div className="relative" onMouseEnter={handleMouseEnter}
+         onMouseLeave={handleMouseLeave}>
+      <button
+        className="flex items-center gap-1 px-1 py-1 text-gray-700 hover:text-blue-700 transition-colors">
         Guides
-        <ChevronDown className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+        <ChevronDown
+          className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
       {isOpen && (
-        <div className="absolute top-full left-0 mt-2 w-80 bg-white rounded-2xl shadow-xl border border-gray-200 p-6 z-50">
+        <div
+          className="absolute top-full left-0 mt-2 w-80 bg-white rounded-2xl shadow-xl border border-gray-200 p-6 z-50">
           <div className="mb-4">
-            <h3 className="font-semibold text-gray-900 mb-2">Guides les plus consultés</h3>
+            <h3 className="font-semibold text-gray-900 mb-2">Guides les plus
+              consultés</h3>
             <div className="space-y-2">
-              {/* 🔧 ADAPTÉ: Guides dynamiques depuis le registry */}
-              {popularGuides.length > 0 ? (
-                popularGuides.map((guide, index) => (
-                  <Link
-                    key={guide.slug}
-                    href={`/guides/${guide.slug}`}
-                    className="block text-sm text-gray-600 hover:text-blue-600 transition-colors"
-                  >
-                    <span className="mr-2">{guide.emoji}</span>
-                    {truncateTitle(guide.title, 45)}
-                  </Link>
-                ))
-              ) : (
-                // Fallback statique si pas de guides dynamiques
-                <>
-                  <Link
-                    href="/guides/garantie-legale-conformite-guide-complet"
-                    className="block text-sm text-gray-600 hover:text-blue-600 transition-colors"
-                  >
-                    📋 Guide général de la garantie légale
-                  </Link>
-                  <Link
-                    href="/guides/smartphone-ecran-batterie-defaut-garantie-legale"
-                    className="block text-sm text-gray-600 hover:text-blue-600 transition-colors"
-                  >
-                    📱 Smartphones et High-Tech
-                  </Link>
-                  <Link
-                    href="/guides/voiture-electrique-defaut-garantie-legale"
-                    className="block text-sm text-gray-600 hover:text-blue-600 transition-colors"
-                  >
-                    🚗 Voitures et défauts
-                  </Link>
-                  <Link
-                    href="/guides/lave-linge-panne-garantie-legale"
-                    className="block text-sm text-gray-600 hover:text-blue-600 transition-colors"
-                  >
-                    🏠 Électroménager
-                  </Link>
-                </>
-              )}
+              {popularGuides.map((guide) => (
+                <Link
+                  key={guide.slug}
+                  href={`/guides/${guide.slug}`}
+                  className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                  <div
+                    className="mr-2 text-blue-600">{guide.icon}</div>
+                  <span className="min-w-0 whitespace-normal break-words leading-tight">
+                    {guide.title}
+                  </span>
+                </Link>
+              ))}
             </div>
           </div>
 
@@ -211,7 +186,8 @@ function TopBar({ ctaHref = '/eligibilite#start' }: { ctaHref?: string }) {
       aria-label="Navigation principale"
     >
       <Container className="h-full flex justify-between items-center">
-        <Link href="/" aria-label="Je me défends – Accueil" className="flex items-center gap-3">
+        <Link href="/" aria-label="Je me défends – Accueil"
+              className="flex items-center gap-3">
           <Image
             src="/images/logo_jemedefends.png"
             alt="Je me défends – Mes droits, simplement"
@@ -228,7 +204,8 @@ function TopBar({ ctaHref = '/eligibilite#start' }: { ctaHref?: string }) {
           <NavLink href="/#fiabilite">Confiance</NavLink>
           <NavLink href="/faq">FAQ</NavLink>
           <GuidesDropdown />
-          <Button href={ctaHref} icon={<FileText className="w-4 h-4" aria-hidden="true" />}>
+          <Button href={ctaHref}
+                  icon={<FileText className="w-4 h-4" aria-hidden="true" />}>
             Commencer
           </Button>
         </div>

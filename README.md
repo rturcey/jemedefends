@@ -1,6 +1,6 @@
 # Je me défends - Monorepo
 
-✅ **Migration réussie !** Votre projet FastAPI + Next.js est opérationnel.
+**Migration réussie !** Votre projet FastAPI + Next.js est opérationnel.
 
 ## 🚀 Quick Start
 
@@ -39,10 +39,10 @@ make help        # Aide complète
 
 ## ✨ Ce qui a changé
 
-✅ **Backend**: Votre code FastAPI fonctionne exactement pareil
-✅ **Frontend**: Interface moderne avec Next.js au lieu de templates Jinja2
-✅ **Développement**: Une seule commande `make dev` pour tout lancer
-✅ **Types**: TypeScript pour éviter les erreurs
-✅ **Build**: Frontend optimisé pour la production
+**Backend**: Votre code FastAPI fonctionne exactement pareil
+**Frontend**: Interface moderne avec Next.js au lieu de templates Jinja2
+**Développement**: Une seule commande `make dev` pour tout lancer
+**Types**: TypeScript pour éviter les erreurs
+**Build**: Frontend optimisé pour la production
 
 Votre backup est dans `backup_*/` si besoin !

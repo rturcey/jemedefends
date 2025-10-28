@@ -26,7 +26,7 @@ class PDFGenerator:
         """Trouve le chemin correct du logo."""
         # Tester d'abord le chemin principal
         if self.logo_path.exists():
-            logger.info(f"✅ Logo trouvé: {self.logo_path}")
+            logger.info(f"Logo trouvé: {self.logo_path}")
             return self.logo_path
 
         logger.warning("❌ Logo non trouvé dans le chemin {self.logo_path.absolute()}")
@@ -53,14 +53,14 @@ class PDFGenerator:
                 img_base64 = base64.b64encode(img_data).decode("utf-8")
                 data_url = f"data:{mime_type};base64,{img_base64}"
 
-                logger.info(f"✅ Logo converti en base64: {len(img_base64)} caractères")
+                logger.info(f"Logo converti en base64: {len(img_base64)} caractères")
                 return data_url
 
             except Exception as e:
                 logger.error(f"❌ Erreur lors de la conversion du logo: {e}")
                 return self._create_logo_placeholder()
 
-        logger.warning("⚠️ Logo non trouvé, utilisation d'un placeholder")
+        logger.warning("Logo non trouvé, utilisation d'un placeholder")
         return self._create_logo_placeholder()
 
     def _create_logo_placeholder(self) -> str:
@@ -121,7 +121,7 @@ class PDFGenerator:
                 )
             )
 
-            logger.info(f"✅ PDF généré avec succès: {len(pdf_bytes)} bytes")
+            logger.info(f"PDF généré avec succès: {len(pdf_bytes)} bytes")
             return pdf_bytes
 
         except Exception as e:
@@ -141,7 +141,7 @@ class PDFGenerator:
 
             processed_html = html_content.replace("{{ logo_src }}", logo_base64)
 
-            logger.debug("✅ Logo traité dans le HTML")
+            logger.debug("Logo traité dans le HTML")
             return processed_html
 
         except Exception as e:

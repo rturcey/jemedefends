@@ -19,3 +19,10 @@ export { default as GuideProgress } from './GuideProgress';
 export { default as GuideRightSidebar } from './GuideRightSidebar';
 export { default as EligibilityChecklist } from './EligibilityChecklist';
 export { default as OptionsTable } from './OptionsTable';
+export { default as GuideErrorFallback } from './GuideErrorFallback';
+
+// Exporter les types et utilitaires du composant TableOfContents
+export { useTableOfContents, TableOfContentsSkeleton } from './TableOfContents';
+
+// Exporter le composant de skeleton pour les pages guides
+export { default as GuidePageSkeleton } from './GuidePageSkeleton';

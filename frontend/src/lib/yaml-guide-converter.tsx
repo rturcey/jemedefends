@@ -9,8 +9,14 @@ import yaml from 'js-yaml';
 // UI existants (util only / server-safe)
 import { getSectionIcon } from '@/lib/icon-utils';
 
-import type { GuidePage, GuideMetadata, GuideSection, GuideLegal } from '@/types/guides';
+import type {
+  GuidePage,
+  GuideMetadata,
+  GuideSection,
+  GuideLegal,
+} from '@/types/guides';
 import { isValidLegalArticleId, type LegalArticleId } from '@/legal/registry';
+import { Smartphone } from 'lucide-react';
 
 // ============================================================================
 // Types YAML d'entrée
@@ -18,7 +24,7 @@ import { isValidLegalArticleId, type LegalArticleId } from '@/legal/registry';
 interface YAMLGuideConfig {
   title: string;
   description?: string;
-  category: 'general' | 'tech' | 'home' | 'auto' | string;
+  category: 'general' | 'tech' | 'automobile' | 'commerce' | 'maison' | 'mode' | 'numerique' | string;
   slug: string;
   seo?: {
     title?: string;
@@ -85,6 +91,63 @@ function wordsOf(s?: string) {
   return plain.split(/\s+/).filter(Boolean).length;
 }
 
+// utils: détecter liens markdown & URLs nues et produire des <a>
+function tokenizeLinksInline(input: string): Array<{
+  type: 'text' | 'link',
+  value: string,
+  href?: string
+}> {
+  const out: Array<{ type: 'text' | 'link', value: string, href?: string }> = [];
+  if (!input) return out;
+
+  // 1) protéger d’abord les URLs nues (http/https) pour éviter qu’elles soient cassées
+  const URL_RE = /(https?:\/\/[^\s)]+)(?=[\s)|]|$)/gi;
+
+  // 2) on split sur markdown links en conservant le reste
+  //    [texte](url) – pas gourmand, tolère espaces dans texte
+  const MD_RE = /\[([^\]]+)]\(([^)\s]+)\)/g;
+
+  let cursor = 0;
+  const src = input;
+
+  // d’abord traiter les markdown links
+  let m: RegExpExecArray | null;
+  while ((m = MD_RE.exec(src)) !== null) {
+    if (m.index > cursor) out.push({
+      type: 'text',
+      value: src.slice(cursor, m.index),
+    });
+    out.push({ type: 'link', value: m[1], href: m[2] });
+    cursor = m.index + m[0].length;
+  }
+  if (cursor < src.length) out.push({ type: 'text', value: src.slice(cursor) });
+
+  // puis transformer les URLs nues dans les segments texte
+  const final: Array<{ type: 'text' | 'link', value: string, href?: string }> = [];
+  for (const seg of out) {
+    if (seg.type === 'link') {
+      final.push(seg);
+      continue;
+    }
+    let last = 0;
+    let mm: RegExpExecArray | null;
+    while ((mm = URL_RE.exec(seg.value)) !== null) {
+      if (mm.index > last) final.push({
+        type: 'text',
+        value: seg.value.slice(last, mm.index),
+      });
+      final.push({ type: 'link', value: mm[1], href: mm[1] });
+      last = mm.index + mm[0].length;
+    }
+    if (last < seg.value.length) final.push({
+      type: 'text',
+      value: seg.value.slice(last),
+    });
+  }
+  return final;
+}
+
+
 function estimateSectionWords(section: any): number {
   let n = 0;
 
@@ -131,12 +194,15 @@ function detectSectionType(section: YAMLSection): YAMLSection['type'] {
 }
 
 function normalizeTypo(s: string): string {
+  if (!s) return '';
   return s
-    .replace(/[\u00A0\u202F\u2009]/g, ' ') // NBSP, NNBSP, thin space -> espace
-    .replace(/[\u2011\u2013\u2014]/g, '-') // non-breaking hyphen, en/em dashes -> '-'
-    .replace(/\s+/g, ' ')
-    .trim();
+    .replace(/[\u00A0\u202F\u2009]/g, ' ')     // NBSP → espace normal
+    .replace(/[\u2011\u2013\u2014]/g, '-')     // tirets spéciaux → '-'
+    // ne pas toucher aux \n ; on ne “compacte” que les espaces horizontaux
+    .replace(/[ \t]+/g, ' ');
+  // pas de .trim() ici (on laisse la mise en forme au parseur markdown)
 }
+
 
 /** Normalise "art. L 217-3" / "L.217-3" / "l 217-3" -> "L.217-3" si supporté */
 function normalizeLegalId(raw: string): LegalArticleId | null {
@@ -149,24 +215,24 @@ function normalizeLegalId(raw: string): LegalArticleId | null {
   return isValidLegalArticleId(id) ? (id as LegalArticleId) : null;
 }
 
-/** ✅ CORRIGÉ : Tokenise un texte en segments {text|legal} pour insertion de spans server-safe */
+/** CORRIGÉ : Tokenise un texte en segments {text|legal} pour insertion de spans server-safe */
 function tokenizeLegalInline(text: string): Array<
   | { type: 'text'; value: string }
   | {
-      type: 'legal';
-      id: LegalArticleId;
-      raw: string;
-    }
+  type: 'legal';
+  id: LegalArticleId;
+  raw: string;
+}
 > {
   const t = normalizeTypo(text);
   const re = /(?:art\.?\s*)?[LRD]\s*\.?\s*\d{1,4}\s*[-]\s*\d{1,3}/gi;
   const out: Array<
     | { type: 'text'; value: string }
     | {
-        type: 'legal';
-        id: LegalArticleId;
-        raw: string;
-      }
+    type: 'legal';
+    id: LegalArticleId;
+    raw: string;
+  }
   > = [];
   let last = 0;
   let m: RegExpExecArray | null;
@@ -182,80 +248,120 @@ function tokenizeLegalInline(text: string): Array<
   return out;
 }
 
-/** ✅ CORRIGÉ : Rendu inline avec références légales - CLÉS UNIQUES */
+/** Robust inline renderer: code -> links -> bold -> em -> legal */
 function renderInlineWithLegal(text: string): React.ReactNode[] {
-  let globalKeyCounter = 0; // ✅ Compteur global pour clés uniques
+  let key = 0;
 
-  const codeSplit = text.split(/`([^`]+)`/g);
-  const codeNodes = codeSplit.map((chunk, i) => {
-    if (i % 2 === 1)
-      return React.createElement(
-        'code',
-        {
-          key: `code-${globalKeyCounter++}`,
-          className: 'bg-gray-100 px-1 rounded',
-        },
-        chunk,
-      );
-    return { type: 'text', value: chunk, originalIndex: i };
+  // 1) code spans first to freeze content
+  const codeSplit = String(text).split(/`([^`]+)`/g).map((chunk, i) => {
+    if (i % 2 === 1) {
+      return React.createElement('code', {
+        key: `code-${key++}`,
+        className: 'bg-gray-100 px-1 rounded',
+        children: chunk,
+      });
+    }
+    return chunk;
   });
 
-  const nodes: React.ReactNode[] = [];
+  const out: React.ReactNode[] = [];
 
-  codeNodes.forEach(piece => {
-    if (typeof piece !== 'string' && piece.type !== 'text') {
-      // C'est un élément React (code)
-      nodes.push(piece);
-      return;
+  // helper: push either string or array of nodes
+  const push = (node: React.ReactNode | React.ReactNode[]) => {
+    if (Array.isArray(node)) out.push(...node);
+    else out.push(node);
+  };
+
+  // 2) process each segment that is not a <code>
+  for (const seg of codeSplit) {
+    if (React.isValidElement(seg)) {
+      push(seg);
+      continue;
     }
+    const s = String(seg);
 
-    const textValue = typeof piece === 'string' ? piece : piece.value;
-    const boldSplit = textValue.split(/\*\*(.+?)\*\*/g);
+    // 2.a links: [label](url)
+    // keep them as single nodes so further styling doesn't break URLs
+    const linkParts: (string | React.ReactElement)[] = [];
+    let last = 0;
+    const linkRe = /\[([^\]]+)\]\(([^)\s]+)\)/g;
+    let m: RegExpExecArray | null;
+    while ((m = linkRe.exec(s))) {
+      if (m.index > last) linkParts.push(s.slice(last, m.index));         // text before
+      linkParts.push(
+        React.createElement(
+          'a',
+          {
+            key: `a-${key++}`,
+            href: m[2],
+            target: '_blank',
+            rel: 'noopener noreferrer',
+            className:
+              'underline decoration-dotted underline-offset-2 hover:text-blue-700 focus-visible:text-blue-700',
+          },
+          ...renderInlineWithLegal(m[1]), // allow **bold** inside label
+        ),
+      );
+      last = m.index + m[0].length;
+    }
+    if (last < s.length) linkParts.push(s.slice(last));
 
-    boldSplit.forEach((b, bi) => {
-      if (bi % 2 === 1) {
-        nodes.push(React.createElement('strong', { key: `bold-${globalKeyCounter++}` }, b));
-      } else {
-        const emSplit = b.split(/\*(.+?)\*/g);
-        emSplit.forEach((e, ei) => {
-          if (ei % 2 === 1) {
-            nodes.push(React.createElement('em', { key: `em-${globalKeyCounter++}` }, e));
-          } else {
-            const tokens = tokenizeLegalInline(e);
-            tokens.forEach(t => {
-              if (t.type === 'text') {
-                // ✅ Ajouter seulement si non vide
-                if (t.value.trim()) {
-                  nodes.push(
-                    React.createElement(
-                      React.Fragment,
-                      { key: `text-${globalKeyCounter++}` },
-                      t.value,
-                    ),
+    // 2.b bold & em on *non-link* strings only
+    const applyBoldEm = (frag: string | React.ReactElement): React.ReactNode[] => {
+      if (React.isValidElement(frag)) return [frag]; // link/other element
+      if (!frag) return [];
+
+      // bold (**...**), supports punctuation/accents and multiline
+      const boldSplit = frag.split(/\*\*([\s\S]+?)\*\*/g);
+      const nodesAfterBold: React.ReactNode[] = [];
+      boldSplit.forEach((b, bi) => {
+        if (bi % 2 === 1) {
+          nodesAfterBold.push(
+            React.createElement('strong', { key: `b-${key++}` }, ...renderInlineWithLegal(b)),
+          );
+        } else {
+          // em (*...*)
+          const emSplit = b.split(/\*([\s\S]+?)\*/g);
+          emSplit.forEach((e, ei) => {
+            if (ei % 2 === 1) {
+              nodesAfterBold.push(
+                React.createElement('em', { key: `i-${key++}` }, ...renderInlineWithLegal(e)),
+              );
+            } else {
+              // 2.c finally: legal refs inside the remaining plain text
+              const tokens = tokenizeLegalInline(e);
+              tokens.forEach(t => {
+                if (t.type === 'text') {
+                  if (t.value) nodesAfterBold.push(
+                    React.createElement(React.Fragment, { key: `t-${key++}` }, t.value),
+                  );
+                } else {
+                  nodesAfterBold.push(
+                    React.createElement('span', {
+                      key: `lr-${key++}`,
+                      'data-legal-id': t.id,
+                      className: 'inline-flex items-center',
+                      children: t.raw,
+                    }),
                   );
                 }
-              } else {
-                // ✅ Span pour référence légale
-                nodes.push(
-                  React.createElement('span', {
-                    key: `legal-${globalKeyCounter++}`,
-                    'data-legal-id': t.id,
-                    className: 'inline-flex items-center',
-                    children: t.raw,
-                  }),
-                );
-              }
-            });
-          }
-        });
-      }
-    });
-  });
+              });
+            }
+          });
+        }
+      });
+      return nodesAfterBold;
+    };
 
-  return nodes;
+    // run bold/em/legal on each non-link chunk
+    linkParts.forEach(part => push(applyBoldEm(part)));
+  }
+
+  return out;
 }
 
-/** ✅ CORRIGÉ : Rendu riche avec références légales - SPREAD CHILDREN */
+
+/** CORRIGÉ : Rendu riche avec références légales - SPREAD CHILDREN */
 function renderRichTextWithLegal(content: string): {
   node: React.ReactNode;
   found: LegalArticleId[];
@@ -274,7 +380,7 @@ function renderRichTextWithLegal(content: string): {
     const txt = para.join('\n');
     tokenizeLegalInline(txt).forEach(t => t.type === 'legal' && found.add(t.id));
 
-    // ✅ Spread des children au lieu de passer l'array
+    // Spread des children au lieu de passer l'array
     const inlineElements = renderInlineWithLegal(txt);
     acc.push(
       React.createElement(
@@ -283,7 +389,7 @@ function renderRichTextWithLegal(content: string): {
           key: `para-${keySeq++}`,
           className: 'mb-4 leading-relaxed text-gray-800 text-justify',
         },
-        ...inlineElements, // ✅ SPREAD !
+        ...inlineElements, // SPREAD !
       ),
     );
     para = [];
@@ -295,7 +401,7 @@ function renderRichTextWithLegal(content: string): {
       tokenizeLegalInline(li).forEach(t => t.type === 'legal' && found.add(t.id)),
     );
 
-    // ✅ Clé unique pour chaque élément de liste
+    // Clé unique pour chaque élément de liste
     const listChildren = listItems.map((li, i) => {
       const inlineElements = renderInlineWithLegal(li);
       return React.createElement(
@@ -304,7 +410,7 @@ function renderRichTextWithLegal(content: string): {
           key: `listitem-${keySeq}-${i}`,
           className: 'leading-relaxed text-gray-800 text-justify',
         },
-        ...inlineElements, // ✅ SPREAD !
+        ...inlineElements, // SPREAD !
       );
     });
 
@@ -315,7 +421,7 @@ function renderRichTextWithLegal(content: string): {
       React.createElement(
         listType,
         { key: `list-${keySeq++}`, className: listClass },
-        ...listChildren, // ✅ SPREAD !
+        ...listChildren, // SPREAD !
       ),
     );
 
@@ -340,7 +446,7 @@ function renderRichTextWithLegal(content: string): {
             key: `h2-${keySeq++}`,
             className: 'text-xl font-semibold mb-4 mt-8 text-gray-900',
           },
-          ...headerElements, // ✅ SPREAD !
+          ...headerElements, // SPREAD !
         ),
       );
       continue;
@@ -359,7 +465,7 @@ function renderRichTextWithLegal(content: string): {
             key: `h3-${keySeq++}`,
             className: 'text-lg font-semibold mb-3 mt-6 text-gray-900',
           },
-          ...headerElements, // ✅ SPREAD !
+          ...headerElements, // SPREAD !
         ),
       );
       continue;
@@ -396,12 +502,12 @@ function renderRichTextWithLegal(content: string): {
   flushPara();
   flushList();
 
-  // ✅ Retourner avec spread des éléments
+  // Retourner avec spread des éléments
   return {
     node: React.createElement(
       'div',
       { className: 'prose prose-gray max-w-none mb-6 text-justify' },
-      ...acc, // ✅ SPREAD !
+      ...acc, // SPREAD !
     ),
     found: Array.from(found),
   };
@@ -431,7 +537,7 @@ function splitStepsFromContent(sectionId: string, content: string) {
   return { introText: intro.join('\n').trim(), rawSteps };
 }
 
-/** ✅ CORRIGÉ : Rendu des sections avec gestion appropriée des éléments */
+/** CORRIGÉ : Rendu des sections avec gestion appropriée des éléments */
 function renderSection(section: YAMLSection): {
   node: React.ReactNode;
   found: LegalArticleId[];
@@ -465,18 +571,27 @@ function renderSection(section: YAMLSection): {
   }
 
   // ErrorAlert
+
   if (section.alert) {
     const ErrorAlert = require('@/components/ui/ErrorAlert').default;
+
+    // parse **bold**, *em*, links, legal refs inside the alert body
+    const inline = renderInlineWithLegal(section.alert.content || '');
+
     elements.push(
       React.createElement(
         ErrorAlert,
         {
           key: 'section-alert',
           type: section.alert.type,
-          title: section.alert.title,
+          title: section.alert.title, // avoids double icon
           className: 'mb-6',
         },
-        section.alert.content,
+        React.createElement(
+          'p',
+          { className: 'text-sm leading-relaxed' },
+          ...inline, // spread parsed nodes
+        ),
       ),
     );
   }
@@ -492,7 +607,7 @@ function renderSection(section: YAMLSection): {
           React.createElement(
             Badge,
             {
-              key: `badge-${i}`, // ✅ Clé unique
+              key: `badge-${i}`, // Clé unique
               variant:
                 badge.tone === 'blue'
                   ? 'primary'
@@ -537,7 +652,10 @@ function renderSection(section: YAMLSection): {
       }
 
       if (section.content) {
-        const { introText, rawSteps } = splitStepsFromContent(section.id, section.content);
+        const {
+          introText,
+          rawSteps,
+        } = splitStepsFromContent(section.id, section.content);
 
         if (introText) {
           const introParsed = renderRichTextWithLegal(introText);
@@ -709,11 +827,65 @@ function renderSection(section: YAMLSection): {
         className: 'mb-8 last:mb-0',
         'data-section-type': sectionType,
       },
-      ...elements, // ✅ SPREAD !
+      ...elements, // SPREAD !
     ),
     found: Array.from(foundInThis),
   };
 }
+
+const CATEGORY_REGISTRY = {
+  general: {
+    id: 'general',
+    name: 'Général',
+    description: 'Guides généraux sur vos droits de consommateur',
+    color: 'blue',
+  },
+  tech: {
+    id: 'tech',
+    name: 'Électronique & High-Tech',
+    description: 'Smartphones, ordinateurs, électronique grand public',
+    color: 'green',
+  },
+  automobile: {
+    id: 'automobile',
+    name: 'Automobile & Mobilité',
+    description: 'Voitures, motos, véhicules et garages',
+    color: 'red',
+  },
+  maison: {
+    id: 'maison',
+    name: 'Maison & Électroménager',
+    description: 'Électroménager, chauffage, équipements domestiques',
+    color: 'purple',
+  },
+  mode: {
+    id: 'mode',
+    name: 'Textile & Mode',
+    description: 'Vêtements, chaussures, accessoires',
+    color: 'yellow',
+  },
+  numerique: {
+    id: 'numerique',
+    name: 'Services & Numérique',
+    description: 'Logiciels, plateformes, réservations, abonnements, cloud, IA',
+    color: 'indigo',
+  },
+  commerce: {
+    id: 'commerce',
+    name: 'Grands commerces & Enseignes',
+    description: 'Achat en magasin, en ligne, marketplaces et SAV',
+    color: 'orange',
+  },
+} as const;
+
+type CategoryId = keyof typeof CATEGORY_REGISTRY;
+
+/** Résout une catégorie YAML vers l’objet d’affichage (fallback 'general') */
+function resolveCategory(raw?: string) {
+  const id = String(raw ?? '').trim().toLowerCase() as CategoryId;
+  return CATEGORY_REGISTRY[id];
+}
+
 
 // ============================================================================
 // Conversion principale
@@ -725,6 +897,7 @@ export function yamlToGuidePage(yamlContent: string): GuidePage {
     if (!data || !data.title || !data.sections) {
       throw new Error('YAML invalide: titre ou sections manquants');
     }
+    const categoryObj = resolveCategory(data.category);
 
     const metadata: GuideMetadata = {
       title: data.title,
@@ -733,9 +906,14 @@ export function yamlToGuidePage(yamlContent: string): GuidePage {
         description: data.seo?.description || data.description || '',
         keywords: data.seo?.keywords || [],
       },
+      // expose deux champs : l’ID brut + l’objet riche (pour UI/SEO/breadcrumbs)
+      categoryId: categoryObj.id,
+      category: categoryObj,
       breadcrumb: [
         { label: 'Accueil', href: '/' },
         { label: 'Guides', href: '/guides' },
+        // 👉 si tu veux injecter la catégorie au breadcrumb, dé-commente la ligne suivante :
+        // { label: categoryObj.name, href: `/guides?category=${categoryObj.id}` },
         { label: data.title, href: `/guides/${data.slug}` },
       ],
     } as any;
@@ -828,6 +1006,16 @@ export function validateGuideYAML(yamlContent: string): {
       errors.push('Sections manquantes ou vides');
     if (!data.legal) errors.push('Bloc legal manquant');
 
+    if (!data.category) {
+      errors.push('Catégorie manquante (champ "category")');
+    } else {
+      const resolved = resolveCategory(data.category);
+      if (!resolved) {
+        errors.push(`Catégorie inconnue: "${String(data.category)}"`);
+      }
+    }
+
+
     if (Array.isArray(data.sections)) {
       data.sections.forEach((s: any, i: number) => {
         if (!s.id) errors.push(`Section ${i + 1}: ID manquant`);
@@ -845,23 +1033,4 @@ export function validateGuideYAML(yamlContent: string): {
     errors.push(`Erreur parsing YAML: ${e instanceof Error ? e.message : 'inconnue'}`);
   }
   return { valid: errors.length === 0, errors };
-}
-
-// ============================================================================
-// Extraction méta rapide
-// ============================================================================
-export function extractYAMLMetadata(yamlContent: string): Partial<YAMLGuideConfig> | null {
-  try {
-    const data = yaml.load(yamlContent) as YAMLGuideConfig;
-    return {
-      title: data.title,
-      description: data.description,
-      category: data.category,
-      slug: data.slug,
-      seo: data.seo,
-    };
-  } catch (error) {
-    console.error('Erreur extraction métadonnées YAML:', error);
-    return null;
-  }
 }

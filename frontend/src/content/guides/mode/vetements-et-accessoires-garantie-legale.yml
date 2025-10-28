@@ -1,0 +1,130 @@
+title: 'Vêtements, chaussures, accessoires : vos droits en cas de défaut ou d’usure prématurée (Guide 2025)'
+description: 'Couture qui lâche, semelle décollée, fermeture cassée, couleur qui déteint… La garantie légale de conformité protège tous vos achats de textile et d’accessoires pendant 2 ans. Réparation, remplacement ou remboursement : suivez le guide.'
+category: 'mode'
+slug: 'vetements-et-accessoires-garantie-legale'
+
+seo:
+  title: 'Vêtement ou chaussure défectueux : réparation ou remboursement gratuit (Guide 2025)'
+  description: 'Couture déchirée, semelle décollée, accessoire abîmé ? Même sans garantie commerciale, la loi impose au vendeur de réparer, remplacer ou rembourser gratuitement pendant 2 ans. Tous vos droits selon les articles L.217-3 à L.217-14.'
+  keywords:
+    - 'vêtement défectueux garantie légale'
+    - 'chaussure semelle décollée remboursement'
+    - 'accessoire mode garantie conformité'
+    - 'couture lâchée réparation vendeur'
+    - 'L217-3 L217-4 L217-5 L217-13 garantie légale'
+    - 'droit de rétractation textile achat en ligne'
+    - 'bijou fantaisie défectueux échange'
+
+legal:
+  mainArticles:
+    - 'L.217-3'
+    - 'L.217-4'
+    - 'L.217-5'
+    - 'L.217-7'
+    - 'L.217-8'
+    - 'L.217-10'
+    - 'L.217-11'
+    - 'L.217-13'
+    - 'L.217-14'
+    - 'L.221-18'
+    - 'L.221-23'
+    - 'L.221-28'
+  disclaimer: true
+  lastUpdated: '2025-10-28'
+
+sections:
+  - id: 'intro'
+    title: 'L’essentiel en 30 secondes'
+    type: 'content'
+    content: |
+      Tout vêtement, chaussure ou accessoire acheté chez un **vendeur professionnel** doit être **conforme au contrat** L.217-3 L.217-4 L.217-5.  
+      S’il présente un **défaut de fabrication**, une **usure anormale** ou ne correspond pas à ce qui était annoncé, vous pouvez exiger **réparation, remplacement ou remboursement gratuit** L.217-8 L.217-10 L.217-11.  
+      La garantie légale s’applique pendant **2 ans après l’achat**, sans que vous ayez à prouver le défaut L.217-7.
+
+  - id: 'eligibilite'
+    title: 'Quand la garantie s’applique'
+    type: 'grid'
+    items:
+      - title: 'Produit non conforme'
+        description: 'Couture qui lâche, semelle qui se décolle, accessoire qui rouille ou déteint anormalement : le produit ne correspond pas aux qualités attendues L.217-4 L.217-5.'
+      - title: 'Défaut dans les 2 ans'
+        description: 'La panne ou l’usure prématurée apparaît dans les **24 mois** suivant l’achat : le défaut est **présumé exister à la livraison** L.217-7.'
+      - title: 'Usage normal'
+        description: 'Le défaut ne doit pas résulter d’un **mauvais entretien** ou d’une **utilisation inadaptée** (ex. lavage contraire aux consignes).'
+      - title: 'Vendeur responsable'
+        description: 'La garantie engage le **vendeur**, pas la marque ou le fabricant L.217-3. Vous n’avez aucune démarche à faire auprès de la marque.'
+
+  - id: 'procedure'
+    title: 'Procédure pas-à-pas'
+    type: 'timeline'
+    steps:
+      - title: 'Rassemblez vos preuves'
+        description: |
+          Conservez le **ticket de caisse**, l’étiquette du produit et, si possible, des **photos du défaut**.  
+          Mentionnez les **articles L.217-3 à L.217-14** dans votre courrier ou mail de réclamation.
+      - title: 'Contactez le vendeur'
+        description: |
+          Adressez une **réclamation écrite** demandant la **mise en conformité gratuite** (réparation ou remplacement) L.217-8 L.217-11.  
+          Si la boutique ou le site refuse, rappelez que la **preuve du défaut** ne vous incombe pas pendant 24 mois L.217-7.
+      - title: 'Délai de 30 jours maximum'
+        description: |
+          Le vendeur doit agir **sans frais et sans retard excessif**, dans un **délai maximum de 30 jours** L.217-10.  
+          Passé ce délai, vous pouvez exiger un **remboursement** ou une **réduction du prix** L.217-13 L.217-14.
+      - title: 'En cas de refus'
+        description: |
+          Si le vendeur **refuse** ou **n’agit pas**, adressez-lui une **mise en demeure** rappelant ses obligations légales L.217-8 à L.217-14, puis saisissez le **médiateur** ou la **DGCCRF**.
+
+  - id: 'achat-en-ligne'
+    title: 'Achat en ligne : droit de rétractation'
+    type: 'content'
+    content: |
+      Pour tout achat à distance, vous disposez d’un **délai de 14 jours** pour vous rétracter, même sans motif L.221-18.  
+      Le vendeur doit rembourser dans les **14 jours suivant votre retour** L.221-23.  
+      Ce droit ne s’applique pas aux produits **personnalisés**, **sur mesure** ou **descellés pour des raisons d’hygiène** (ex. maillots de bain, boucles d’oreilles) L.221-28.
+
+  - id: 'cas-frequents'
+    title: 'Cas fréquents'
+    type: 'faq'
+    faqItems:
+      - q: 'La semelle de mes baskets s’est décollée après 3 mois'
+        a: 'C’est une **usure anormale** couverte par la garantie légale L.217-3 à L.217-11. Le vendeur doit réparer ou remplacer gratuitement.'
+      - q: 'La couleur de mon jean a déteint après un lavage conforme'
+        a: 'Si les instructions d’entretien ont été respectées, c’est un **défaut de conformité** L.217-4 L.217-5. Vous pouvez exiger un échange ou un remboursement.'
+      - q: 'Le magasin me renvoie vers la marque'
+        a: 'C’est illégal : seul le **vendeur** est responsable envers vous L.217-3.'
+      - q: 'J’ai acheté un sac “cuir véritable” qui s’abîme anormalement'
+        a: 'Si la qualité réelle ne correspond pas à la description ou aux promesses commerciales, il y a **non-conformité** L.217-4 L.217-5.'
+
+  - id: 'reconditionne'
+    title: 'Articles d’occasion ou reconditionnés'
+    type: 'content'
+    content: |
+      Les produits d’occasion vendus par un **professionnel** bénéficient aussi de la garantie légale de conformité, mais la **présomption** est réduite à **12 mois** L.217-7.  
+      Vous pouvez demander **réparation, remplacement ou remboursement** selon la même procédure L.217-8 à L.217-14.  
+      Pour un achat entre particuliers, la garantie légale ne s’applique pas — seul un **vice caché** peut être invoqué (articles 1641 et suivants du Code civil).
+
+  - id: 'cta'
+    title: 'Faites valoir vos droits'
+    type: 'content'
+    content: |
+      Générez votre **réclamation ou mise en demeure** en ligne pour tout vêtement, chaussure ou accessoire défectueux.  
+      Le texte intègre automatiquement les **articles du Code de la consommation** adaptés à votre situation.  
+      Version **PDF professionnelle** et **envoi recommandé** disponibles.
+    cta:
+      label: 'Rédiger ma réclamation'
+      href: '/outils/mise-en-demeure'
+      variant: 'primary'
+      icon: 'FileText'
+
+  - id: 'contacts'
+    title: 'Contacts utiles'
+    type: 'contacts'
+
+  - id: 'disclaimer'
+    title: 'Important'
+    type: 'content'
+    content: |
+      Ce guide résume vos droits en matière de **textile, mode et accessoires** selon le Code de la consommation.  
+      Il **ne remplace pas** un avis juridique individualisé.  
+      En cas de litige persistant, contactez une **association de consommateurs** ou un **professionnel du droit**.
+

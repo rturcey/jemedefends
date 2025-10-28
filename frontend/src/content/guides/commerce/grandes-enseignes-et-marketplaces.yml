@@ -1,0 +1,156 @@
+title: 'Amazon, Fnac, Darty, Cdiscount… Vos droits face aux grandes enseignes (Guide 2025)'
+description: 'En cas de produit défectueux ou de refus de garantie, vos droits dépendent du vendeur réel, pas de la plateforme. Découvrez comment agir sur Amazon, Fnac, Darty, Cdiscount, Back Market, et autres marketplaces.'
+category: 'commerce'
+slug: 'grandes-enseignes-et-marketplaces'
+
+seo:
+  title: 'Amazon, Fnac, Darty, Cdiscount : garantie légale et vendeur réel (Guide 2025)'
+  description: 'Produit défectueux ou refus de prise en charge ? Le vendeur est légalement responsable, même sur une marketplace. Découvrez comment identifier le vendeur, réclamer réparation ou remboursement, et agir si la plateforme bloque.'
+  keywords:
+    - 'Amazon garantie légale'
+    - 'Fnac marketplace vendeur tiers'
+    - 'Cdiscount refus garantie'
+    - 'Darty réparation produit défectueux'
+    - 'Back Market smartphone reconditionné'
+    - 'vendeur tiers marketplace recours'
+    - 'L217-3 L217-5 L217-10 garantie conformité'
+    - 'marketplace DGCCRF signalement'
+
+legal:
+  mainArticles:
+    - 'L.217-3'
+    - 'L.217-4'
+    - 'L.217-5'
+    - 'L.217-7'
+    - 'L.217-8'
+    - 'L.217-10'
+    - 'L.217-11'
+    - 'L.217-13'
+    - 'L.221-5'
+    - 'L.221-18'
+    - 'L.221-23'
+    - 'L.221-28'
+    - 'L.242-3'
+    - 'L.242-4'
+  disclaimer: true
+  lastUpdated: '2025-10-24'
+
+sections:
+  - id: 'intro'
+    title: 'L’essentiel en 30 secondes'
+    type: 'content'
+    content: |
+      Sur une plateforme comme **Amazon, Fnac, Cdiscount, Darty ou Back Market**, votre **interlocuteur légal** est toujours le **vendeur réel**, qu’il s’agisse de la plateforme elle-même ou d’un **vendeur tiers**.  
+      Ce vendeur est tenu de livrer un produit **conforme au contrat** L.217-3 L.217-4 L.217-5.  
+      En cas de défaut, vous pouvez exiger **réparation, remplacement ou remboursement gratuit** L.217-8 L.217-10 L.217-11.  
+      La plateforme doit indiquer **clairement l’identité du vendeur** L.221-5 et faciliter la communication en cas de litige.
+
+  - id: 'identifier-vendeur'
+    title: 'Identifier le vendeur réel'
+    type: 'timeline'
+    steps:
+      - title: 'Vérifiez la fiche produit'
+        description: |
+          Sous le bouton d’achat, cherchez la mention “Vendu par…”.  
+          - Si c’est “Amazon” ou “Darty”, la **plateforme est le vendeur**.  
+          - Si c’est “XYZ Trading” ou “StorePro”, c’est un **vendeur tiers** hébergé sur la marketplace.  
+          Ce vendeur reste responsable de la conformité du produit L.217-3.
+      - title: 'Vérifiez le pays d’établissement'
+        description: |
+          Les vendeurs basés **hors de l’Union européenne** ne sont pas soumis aux mêmes obligations, mais la plateforme doit vous en informer clairement L.221-5.  
+          En cas de litige, cela peut compliquer la procédure — d’où l’intérêt d’acheter auprès d’un **vendeur établi en France ou dans l’UE**.
+      - title: 'Contactez le bon service'
+        description: |
+          - Si le vendeur est la plateforme elle-même : utilisez son **SAV officiel**.  
+          - Si c’est un vendeur tiers : contactez-le via la **messagerie interne** de la plateforme (Amazon, Fnac, Back Market, etc.).  
+          Mentionnez la **garantie légale de conformité** L.217-3 à L.217-14 et gardez une **preuve écrite** de vos échanges.
+
+  - id: 'droits'
+    title: 'Vos droits en cas de produit défectueux'
+    type: 'grid'
+    items:
+      - title: 'Garantie légale de conformité'
+        description: 'Applicable pendant **2 ans à compter de la livraison** L.217-3 L.217-7. Vous pouvez exiger **réparation ou remplacement gratuit** puis, à défaut, **réduction du prix ou remboursement** L.217-8 à L.217-11.'
+      - title: 'Garantie commerciale ou constructeur'
+        description: 'Offerte parfois par la marque, elle s’ajoute à la garantie légale mais ne la remplace pas. Elle doit être **écrite et claire** L.217-21. Vous êtes libre de choisir entre les deux.'
+      - title: 'Droit de rétractation'
+        description: 'Pour les achats à distance, vous pouvez **vous rétracter sous 14 jours** sans motif L.221-18, sauf produits personnalisés ou descellés L.221-28.'
+      - title: 'Frais de retour'
+        description: 'Si le produit est défectueux, **tous les frais de retour sont à la charge du vendeur** L.217-11. En cas de simple rétractation, ils peuvent être à votre charge si indiqué clairement L.221-23.'
+
+  - id: 'marketplaces'
+    title: 'Responsabilités des plateformes'
+    type: 'content'
+    content: |
+      Les marketplaces (Amazon, Fnac, Cdiscount, Back Market, etc.) doivent garantir une **information claire et loyale** L.221-5.  
+      Elles doivent notamment :
+      - indiquer **l’identité du vendeur tiers**,  
+      - préciser si celui-ci est un **professionnel ou un particulier**,  
+      - et afficher les **conditions de livraison, garantie et retour** avant l’achat.  
+      Si la plateforme **intervient activement** (stockage, expédition, paiement, service client), elle peut être considérée **codéfautrice** et **coresponsable** de la non-conformité L.242-3 L.242-4.
+
+  - id: 'procedure'
+    title: 'Procédure en cas de litige'
+    type: 'timeline'
+    steps:
+      - title: 'Réclamation au vendeur'
+        description: |
+          Commencez par une **réclamation écrite** via le service client ou la messagerie interne.  
+          Citez la **garantie légale de conformité** L.217-3 à L.217-14 et exigez une **mise en conformité sous 30 jours** L.217-10.  
+          Joignez la facture et des preuves (photos, description du défaut).
+      - title: 'Intervention de la plateforme'
+        description: |
+          Si le vendeur tiers ne répond pas, la plateforme doit faciliter la résolution du litige L.242-4.  
+          Sur Amazon, par exemple, le programme **A-to-Z Guarantee** peut vous rembourser directement.  
+          Sur Back Market, un **service de médiation interne** est disponible.
+      - title: 'Médiation ou tribunal'
+        description: |
+          Si le vendeur ou la plateforme refuse d’agir, vous pouvez saisir un **médiateur de la consommation** L.612-1 L.616-1 ou, en dernier recours, le **tribunal judiciaire** R.631-3.  
+          Vous pouvez y demander **remboursement, dommages et intérêts ou exécution forcée**.
+
+  - id: 'retractation'
+    title: 'Cas particuliers du droit de rétractation'
+    type: 'faq'
+    faqItems:
+      - q: 'J’ai ouvert le produit, puis-je encore me rétracter ?'
+        a: 'Oui, sauf si le produit est descellé pour des raisons d’hygiène ou de protection (ex. écouteurs, sous-vêtements) L.221-28.'
+      - q: 'Et pour un contenu numérique téléchargé ?'
+        a: 'Le droit de rétractation est **perdu dès le téléchargement**, si vous avez donné votre accord préalable explicite L.221-28.'
+      - q: 'Le vendeur me fait payer le retour alors que le produit est défectueux'
+        a: 'C’est illégal : les **frais de retour doivent être pris en charge par le vendeur** L.217-11.'
+      - q: 'La plateforme refuse de m’aider car c’est un vendeur tiers'
+        a: 'Rappelez qu’elle a un **devoir d’assistance et d’information loyale** L.242-3 L.242-4, surtout si elle gère la logistique ou le paiement.'
+
+  - id: 'reconditionne'
+    title: 'Cas du reconditionné'
+    type: 'content'
+    content: |
+      Les produits reconditionnés (Back Market, Fnac Seconde Vie, Amazon Renewed, etc.) bénéficient des **mêmes droits que les neufs**, mais la **présomption de conformité** est limitée à **12 mois** L.217-7.  
+      Vous conservez la garantie légale de conformité complète : **réparation, remplacement, réduction du prix ou remboursement** L.217-8 à L.217-11.  
+      Vérifiez que le vendeur indique bien “professionnel” et non “particulier”, car la loi ne protège pas les achats entre particuliers.
+
+  - id: 'cta'
+    title: 'Faites valoir vos droits en ligne'
+    type: 'content'
+    content: |
+      En quelques minutes, générez votre **réclamation ou mise en demeure** adaptée à Amazon, Fnac, Cdiscount, Darty ou Back Market.  
+      Le texte intègre automatiquement les **articles du Code de la consommation** et le nom du vendeur réel.  
+      Version **PDF** et **envoi recommandé** disponibles.
+    cta:
+      label: 'Générer ma réclamation'
+      href: '/outils/mise-en-demeure'
+      variant: 'primary'
+      icon: 'FileText'
+
+  - id: 'contacts'
+    title: 'Contacts utiles'
+    type: 'contacts'
+
+  - id: 'disclaimer'
+    title: 'Important'
+    type: 'content'
+    content: |
+      Ce guide présente les **droits des consommateurs sur les marketplaces et sites de vente en ligne**, selon le Code de la consommation.  
+      Il **ne remplace pas** un avis juridique individualisé.  
+      En cas de doute, contactez une **association agréée** ou un **professionnel du droit**.
+

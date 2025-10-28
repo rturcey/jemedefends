@@ -5,17 +5,13 @@ export const ELIGIBILITY_STEPS: EligibilityStep[] = [
   {
     id: 'seller',
     title: 'Type de vendeur',
-    question: "Avez-vous acheté auprès d'un vendeur professionnel ?",
-    description: "La garantie légale s'applique uniquement aux achats pro ↔ consommateur.",
+    question: 'Avez-vous acheté auprès d\'un vendeur professionnel ?',
+    description: 'La garantie légale s\'applique aux achats professionnel → consommateur.',
     legal: {
       article: 'L.217-3',
       explanation:
         'Garantie légale de conformité pour les ventes entre un professionnel et un consommateur.',
-      examples: [
-        '✅ Darty, Fnac, Apple Store',
-        '✅ Vendeur pro sur Amazon',
-        '❌ Particulier ↔ particulier',
-      ],
+      examples: ['Darty, Fnac, Apple Store', 'Vendeur pro sur Amazon', '❌ Particulier ↔ particulier'],
     },
     ui: {
       type: 'radio',
@@ -29,7 +25,7 @@ export const ELIGIBILITY_STEPS: EligibilityStep[] = [
         {
           value: 'individual',
           label: 'Vente entre particuliers',
-          description: 'ou aux enchères publiques',
+          description: 'ou enchères publiques',
         },
       ],
     },
@@ -43,11 +39,7 @@ export const ELIGIBILITY_STEPS: EligibilityStep[] = [
       article: 'Article liminaire (Code de la consommation)',
       explanation:
         'Le “consommateur” est une personne physique agissant à des fins non professionnelles.',
-      examples: [
-        '✅ Usage domestique',
-        '✅ Cadeau à un proche',
-        '❌ Achat pro / réutilisation commerciale',
-      ],
+      examples: ['Usage domestique', 'Cadeau à un proche', '❌ Achat pro / réutilisation commerciale'],
     },
     ui: {
       type: 'radio',
@@ -58,31 +50,96 @@ export const ELIGIBILITY_STEPS: EligibilityStep[] = [
       ],
     },
   },
+  // Étape 3 : Catégorie (bien vs service numérique)
   {
-    id: 'product',
-    title: 'Type de produit',
-    question: 'Quel est le type de produit ?',
-    description:
-      'Biens matériels et, selon les cas, contenus/services numériques. Sont exclus les biens immatériels purs (hors numérique), comme les travaux.',
+    id: 'itemCategory',
+    title: 'Catégorie de l\'achat',
+    question: 'Votre achat concerne-t-il un bien matériel, ou un contenu/service numérique ?',
+    description: 'Cette distinction détermine les règles de délai applicables.',
     legal: {
-      article: 'L.217-3 ; L.224-25-12',
+      article: 'L.217-3 ; L.224-25-12 et s.',
       explanation:
-        'Biens (L.217-3) et biens comportant des éléments numériques / contenus & services numériques (L.224-25-12 et s.).',
-      examples: [
-        '✅ Bien : smartphone, véhicule, électroménager, vêtement, etc.',
-        '✅ Numérique : app, SaaS, streaming, abonnement, etc.',
-        '❌ Travaux, électricité/gaz non consignés, etc.',
-      ],
+        'Biens matériels (L.217-3) ; biens comportant un élément numérique / contenus & services numériques (L.224-25-12 et suivants).',
+      examples: ['Bien : smartphone, électroménager, voiture', 'Numérique : application, SaaS, streaming'],
     },
     ui: {
       type: 'radio',
       required: true,
       options: [
-        { value: 'physical', label: 'Bien matériel' },
-        { value: 'digital', label: 'Contenu ou service numérique' },
+        {
+          value: 'good',
+          label: 'Bien matériel',
+          description: 'Objet physique, reconditionné inclus',
+        },
+        {
+          value: 'digital_service',
+          label: 'Contenu / Service numérique',
+          description: 'Appli, SaaS, plateforme de streaming…',
+        },
       ],
     },
   },
+  // Étape 4 : Précision (neuf/occasion OU ponctuel/abonnement) — contenu dynamique
+  {
+    id: 'itemDetail',
+    title: 'Précision',
+    question: 'Précisez votre type d’achat',
+    description: 'Nous adaptons ensuite la question de délai.',
+    legal: {
+      article: 'L.217-3 ; L.217-7 ; L.224-25-12',
+      explanation:
+        'Biens : neuf vs occasion (présomption 24/12 mois). Numérique : ponctuel vs abonnement.',
+      examples: ['Neuf / Occasion', 'Ponctuel / Abonnement'],
+    },
+    ui: {
+      type: 'radio',
+      required: true,
+      options: [
+        { value: 'new', label: 'Produit neuf' }, // écrasé si service numérique
+        { value: 'used', label: 'Produit d\'occasion / reconditionné' },
+      ],
+    },
+    dynamic: (data) => {
+      if (data.itemCategory === 'good') {
+        return {
+          title: 'État du bien',
+          question: 'Votre bien est-il neuf ou d\'occasion/reconditionné ?',
+          description: 'La présomption du défaut est de 24 mois pour le neuf, 12 mois pour l\'occasion (L.217-7).',
+          ui: {
+            type: 'radio',
+            required: true,
+            options: [
+              { value: 'new', label: 'Produit neuf' },
+              { value: 'used', label: 'Produit d\'occasion / reconditionné' },
+            ],
+          },
+        };
+      }
+      return {
+        title: 'Type de service',
+        question: 'Votre service est-il fourni une fois (ponctuel) ou en continu (abonnement) ?',
+        description:
+          'Ponctuel : action dans les 2 ans. Abonnement : obligation de conformité pendant toute la durée du contrat.',
+        ui: {
+          type: 'radio',
+          required: true,
+          options: [
+            {
+              value: 'one_off',
+              label: 'Fourniture ponctuelle',
+              description: 'ex. achat unique de contenu',
+            },
+            {
+              value: 'subscription',
+              label: 'Service par abonnement',
+              description: 'ex. SaaS, streaming',
+            },
+          ],
+        },
+      };
+    },
+  },
+  // Étape 5 : Territoire
   {
     id: 'territory',
     title: 'Zone géographique',
@@ -92,55 +149,116 @@ export const ELIGIBILITY_STEPS: EligibilityStep[] = [
       article: 'Conditions d’application territoriales (appréciation par indices)',
       explanation:
         'Le Code conso s’applique quand le contrat vise un consommateur en France et que l’activité du pro est dirigée vers la France (langue/€, livraison, SAV…).',
-      examples: ['✅ Site en français + €', '✅ Livraison France', '✅ SAV FR'],
+      examples: ['Site en français + €', 'Livraison France', 'SAV FR'],
     },
     ui: {
       type: 'radio',
       required: true,
       options: [
         { value: 'eu', label: 'UE/EEE ou activité dirigée vers la France' },
-        { value: 'non_eu', label: 'Hors UE/EEE (sans indices FR suffisants)' },
+        { value: 'non_eu', label: 'Hors UE/EEE (indices FR insuffisants)' },
       ],
     },
   },
+  // Étape 6 : Timing — dynamique selon la précision
   {
     id: 'timing',
-    title: "Ancienneté de l'achat",
+    title: 'Ancienneté / période d\'exécution',
     question: 'Votre achat a-t-il moins de 2 ans ?',
-    description:
-      "Garantie de 24 mois, présomption 24 mois (au vendeur de prouver la conformité du produit) pour le neuf et 12 mois pour l'occasion. " +
-      'Contenus/services numériques : garantie 2 ans (fourniture ponctuelle) ou toute la durée du contrat (abonnement), présomption valable pendant toute cette période.',
+    description: 'Question adaptée selon votre cas (neuf, occasion, ponctuel, abonnement).',
     legal: {
-      article: 'L.217-3 ; L.217-7',
+      article: 'L.217-3 ; L.217-7 ; L.224-25-12 et s.',
       explanation:
-        'Délai d’action de 2 ans (L.217-3). Présomption d’antériorité des défauts : 24 mois (12 mois pour l’occasion) — L.217-7.',
-      examples: ['✅ < 2 ans : éligible', '❌ > 2 ans : trop tard (biens)'],
+        'Biens : action dans les 2 ans (L.217-3). Présomption 24 mois (neuf) / 12 mois (occasion) - L.217-7. Numérique : 2 ans (ponctuel) ou pendant toute la durée de l’abonnement (continu).',
+      examples: ['Neuf : présomption 24 mois', 'Occasion : présomption 12 mois', 'Ponctuel : 2 ans', 'Abonnement : pendant le contrat'],
     },
     ui: {
       type: 'radio',
       required: true,
       options: [
-        { value: 'lt_2y', label: 'Oui' },
-        { value: 'gte_2y', label: 'Non' },
+        { value: 'ok', label: 'Oui' }, // écrasé si abonnement
+        { value: 'ko', label: 'Non' },
       ],
+    },
+    dynamic: (data) => {
+      const cat = data.itemCategory;
+      const det = data.itemDetail;
+
+      if (cat === 'good' && det === 'new') {
+        return {
+          title: 'Ancienneté',
+          question: 'Votre achat neuf date-t-il de moins de 2 ans ?',
+          description: 'Action 2 ans (L.217-3). Présomption d’antériorité 24 mois (L.217-7).',
+          ui: {
+            type: 'radio',
+            required: true,
+            options: [
+              { value: 'ok', label: 'Oui (< 2 ans)' },
+              { value: 'ko', label: 'Non (≥ 2 ans)' },
+            ],
+          },
+        };
+      }
+      if (cat === 'good' && det === 'used') {
+        return {
+          title: 'Ancienneté',
+          question: 'Votre achat d’occasion date-t-il de moins de 2 ans ?',
+          description: 'Action 2 ans (L.217-3). Présomption 12 mois (L.217-7).',
+          ui: {
+            type: 'radio',
+            required: true,
+            options: [
+              { value: 'ok', label: 'Oui (< 2 ans)' },
+              { value: 'ko', label: 'Non (≥ 2 ans)' },
+            ],
+          },
+        };
+      }
+      if (cat === 'digital_service' && det === 'one_off') {
+        return {
+          title: 'Ancienneté',
+          question: 'La fourniture ponctuelle date-t-elle de moins de 2 ans ?',
+          description: 'Contenu/Service numérique fourni en une fois : garantie 2 ans.',
+          ui: {
+            type: 'radio',
+            required: true,
+            options: [
+              { value: 'ok', label: 'Oui (< 2 ans)' },
+              { value: 'ko', label: 'Non (≥ 2 ans)' },
+            ],
+          },
+        };
+      }
+      if (cat === 'digital_service' && det === 'subscription') {
+        return {
+          title: 'Période',
+          question: 'Votre abonnement est-il en cours d’exécution ?',
+          description:
+            'Pour un service fourni en continu, la conformité est due pendant toute la durée du contrat.',
+          ui: {
+            type: 'radio',
+            required: true,
+            options: [
+              { value: 'during_contract', label: 'Oui, abonnement en cours' },
+              { value: 'after_contract', label: 'Non, abonnement terminé' },
+            ],
+          },
+        };
+      }
+      return {};
     },
   },
   {
     id: 'defect',
     title: 'Nature du problème',
-    question: 'Le produit présente-t-il un défaut de conformité ?',
+    question: 'Le produit ou service présente-t-il un défaut de conformité ?',
     description:
-      'Un défaut de conformité correspond à une panne, un dysfonctionnement ou une caractéristique non conforme aux spécifications prévues. Il ne doit pas résulter d’une mauvaise utilisation, d’une négligence ou d’une intervention de votre part.',
+      'Panne, dysfonctionnement, fonctionnalité manquante, absence de mises à jour requises… Pas un mauvais usage ou un dommage volontaire.',
     legal: {
       article: 'L.217-5',
       explanation:
-        'Critères de conformité : aux stipulations du contrat (usage spécial, accessoires, mises à jour) et critères objectifs (qualités attendues, déclarations publiques, etc.).',
-      examples: [
-        '✅ Panne prématurée',
-        '✅ Fonctionnalité manquante',
-        '❌ Usage anormal',
-        '❌ Dégât accidentel/volontaire',
-      ],
+        'Conformité : critères contractuels (usage spécial, accessoires, MAJ) + critères objectifs (qualités attendues, déclarations publiques, etc.).',
+      examples: ['Panne prématurée', 'Fonction manquante', '❌ Usage anormal', '❌ Dégât volontaire'],
     },
     ui: {
       type: 'radio',

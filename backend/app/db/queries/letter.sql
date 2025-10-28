@@ -2,6 +2,7 @@
 INSERT INTO letter (
     buyer_name,
     buyer_email,
+    buyer_phone,
     buyer_address_line_1,
     buyer_address_line_2,
     buyer_postal_code,
@@ -17,34 +18,36 @@ INSERT INTO letter (
     product_name,
     order_reference,
     product_price,
-    defect_type,
     defect_description,
+    remedy_preference,
     used,
     digital
 ) VALUES (
-    @buyer_name::text,
-    sqlc.narg(buyer_email)::text,
-    @buyer_address_line_1::text,
-    sqlc.narg(buyer_address_line_2)::text,
-    @buyer_postal_code::text,
-    @buyer_city::text,
-    @buyer_country::text,
-    @seller_name::text,
-    @seller_address_line_1::text,
-    sqlc.narg(seller_address_line_2)::text,
-    @seller_postal_code::text,
-    @seller_city::text,
-    @seller_country::text,
-    @purchase_date::date,
-    @product_name::text,
-    sqlc.narg(order_reference)::text,
-    @product_price::numeric,
-    @defect_type::defect_type_enum,
-    @defect_description::text,
-    @used::boolean,
-    @digital::boolean
-)
+             @buyer_name::text,
+             sqlc.narg(buyer_email)::text,
+             sqlc.narg(buyer_phone)::text,
+             @buyer_address_line_1::text,
+             sqlc.narg(buyer_address_line_2)::text,
+             @buyer_postal_code::text,
+             @buyer_city::text,
+             @buyer_country::text,
+             @seller_name::text,
+             @seller_address_line_1::text,
+             sqlc.narg(seller_address_line_2)::text,
+             @seller_postal_code::text,
+             @seller_city::text,
+             @seller_country::text,
+             @purchase_date::date,
+             @product_name::text,
+             sqlc.narg(order_reference)::text,
+             @product_price::numeric,
+             @defect_description::text,
+             @remedy_preference::remedy_preference_enum,
+             @used::boolean,
+             @digital::boolean
+         )
 RETURNING *;
+
 
 -- name: GetLetterById :one
 SELECT *

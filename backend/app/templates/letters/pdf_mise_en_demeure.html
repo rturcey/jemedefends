@@ -7,292 +7,167 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
-        :root {
-            --blue-600: #2563EB;
-            --blue-700: #1D4ED8;
-            --blue-50: #EFF6FF;
-            --blue-100: #DBEAFE;
-            --slate-900: #0F172A;
-            --slate-800: #1F2937;
-            --slate-700: #374151;
-            --slate-600: #475569;
-            --slate-300: #CBD5E1;
-            --slate-200: #E2E8F0;
-            --slate-50: #F8FAFC;
-            --green-50: #F0FDF4;
-            --green-600: #16A34A;
-            --orange-50: #FFF7ED;
-            --orange-600: #EA580C;
+        :root{
+            --blue-600:#2563EB; --blue-700:#1D4ED8;
+            --blue-50:#EFF6FF;  --blue-100:#DBEAFE;
+            --blue-accent-50:#E0F2FE; --bluegray-500:#64748B;
+            --slate-900:#0F172A; --slate-800:#1F2937; --slate-700:#374151; --slate-600:#475569; --slate-200:#E2E8F0;
+            --orange-600:#EA580C;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        @page { size: A4; margin: 0; }
+        *{margin:0;padding:0;box-sizing:border-box;}
+        @page{size:A4;margin:0;}
 
-        body {
-            font-family: 'Inter', system-ui, sans-serif;
-            color: var(--slate-900);
-            font-size: 9.6pt;
-            line-height: 1.45;
-            background: #fff;
-            -webkit-font-smoothing: antialiased;
+        body{
+            font-family:'Inter',system-ui,sans-serif; color:var(--slate-900);
+            font-size:9.6pt; line-height:1.45; background:#fff; -webkit-font-smoothing:antialiased;
         }
 
-        .page {
-            width: 210mm;
-            height: 297mm;
-            padding: 11mm 16mm 9mm; /* -1mm en haut/bas pour aider à tenir sur 1 page */
-            display: flex;
-            flex-direction: column;
+        .page{
+            position:relative; width:210mm; height:297mm;
+            padding:11mm 20mm 9mm; display:flex; flex-direction:column;
         }
 
-        .addresses {
-            position: relative;
-            display: flex;
-            align-items: flex-start;
-            gap: 8mm;
-            margin-bottom: 4.5mm;
-
-            /* réserve la place du bloc destinataire (50% + gap) pour éviter chevauchement */
-            padding-right: calc(50% + 8mm);
+        /* Ruban bleu gauche */
+        .page::before{
+            content:''; position:absolute; left:0; top:0; width:3mm; height:100%; background:var(--blue-600);
         }
 
-        .address { flex: 0 1 auto; min-width: 0; }
-
-        .address--recipient {
-            position: absolute;
-            right: 0;
-            top: 0;
-            max-width: 50%;
-            text-align: left;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
+        /* === ADRESSES — fiable, sans chevauchement, pas de vide inutile === */
+        .addresses{
+            display:flex;
+            justify-content: space-between;
+            margin-bottom:4.5mm;
+        }
+        .address{
+            display:flex;
+            flex-direction:column;
+            gap:1mm;
+        }
+        .address-name{
+            font-size:10.3pt;
+            font-weight:800;
+            margin-bottom:1mm;
+            color:var(--blue-700);
+        }
+        .address-line{
+            color:var(--slate-800); font-size:9pt; line-height:1.35;
+            white-space:normal;
+            word-break:normal; overflow-wrap:anywhere; hyphens:auto;
         }
 
-        /* lignes d’adresse */
-        .address-name {
-            font-size: 10.3pt;
-            font-weight: 800;
-            margin-bottom: 1px;
-            text-align: left;
-            width: 100%;
-        }
+        /* Sujet centré + filet */
+        .subject{position:relative;text-align:center;margin:4mm 0 3mm;padding-bottom:3mm;}
+        .subject::after{content:'';position:absolute;left:50%;transform:translateX(-50%);bottom:0;width:48mm;height:1.5px;background:var(--blue-accent-50);}
+        .subject-title{font-weight:800;color:var(--blue-700);font-size:16pt;text-transform:uppercase;letter-spacing:0.5px;}
+        .subject-sub{color:var(--bluegray-500);font-size:8.5pt;margin-top:2px;}
 
-        .address-line {
-            color: var(--slate-800);
-            font-size: 9pt;
-            line-height: 1.35;
-            white-space: normal;
-            width: 100%;
-        }
+        .body{flex:1;}
+        .body p{margin:6px 0;text-align:justify;}
+        .body strong{font-weight:800;color:var(--slate-900);}
 
+        /* Défaut : pas de fond/bordure */
+        .defect{display:flex;gap:8px;align-items:flex-start;text-align:justify;margin:6px 0;}
+        .defect-icon{width:6px;height:6px;border-radius:50%;background:var(--orange-600);margin-top:5px;flex-shrink:0;}
+        .defect-text{font-size:8.9pt;color:#9A3412;}
 
+        /* Titres de section */
+        .h3{
+            margin:7px 0 4px; padding-bottom:3px; font-weight:900; font-size:10.2pt; color:var(--blue-700);
+            border-bottom:1.3px solid var(--blue-accent-50); position:relative;
+        }
+        .h3::after{content:'';position:absolute;left:0;bottom:-1.3px;width:28px;height:1.3px;background:var(--blue-600);}
 
-        /* Subject */
-        .subject {
-            text-align: center;
-            padding: 6px 10px;
-            margin-bottom: 4.5mm;   /* -0.5mm */
-            margin-top: 4.5mm;   /* -0.5mm */
-            background: var(--blue-50);
-        }
-        .subject-title {
-            font-weight: 800;
-            color: var(--blue-700);
-            font-size: 16pt;
-            letter-spacing: 0.01em;
-        }
-        .subject-sub {
-            color: var(--slate-800);
-            font-size: 8.5pt;
-            margin-top: 1px;
-        }
+        /* Bloc légal (conteneur) sans fond/bordure */
+        .legal{margin:5px 0; text-align:justify;}
+        .legal-title{font-weight:900;color:var(--blue-700);margin-bottom:4px;font-size:9.5pt;}
 
-        /* Body */
-        .body { flex: 1; }
-        .body p { margin: 6px 0; text-align: justify; }
-        .body strong { color: var(--slate-900); font-weight: 800; }
-
-        /* Defect box */
-        .defect {
-            display: flex; gap: 8px; align-items: flex-start;
-            text-align: justify;
-            background: var(--orange-50);
-            padding: 7px 9px;        /* -1px */
-            margin: 6px 0;
+        /* Articles en deux colonnes robustes */
+        .legal-articles{column-count:2; column-gap:10px;}
+        .legal-article{
+            break-inside:avoid; -webkit-column-break-inside:avoid; page-break-inside:avoid;
+            font-size:8.4pt; line-height:1.45; color:var(--slate-800);
+            margin:0 0 6px 0; padding:0; background:none; border:none;
         }
-        .defect-icon {
-            width: 6px; height: 6px; border-radius: 50%;
-            background: var(--orange-600); margin-top: 5px; flex-shrink: 0;
-        }
-        .defect-text { color: #9A3412; font-size: 8.9pt; } /* -0.1pt */
-
-        /* Section titles */
-        .h3 {
-            margin: 7px 0 4px;       /* -1px en haut */
-            padding-bottom: 3px;
-            font-weight: 900;
-            font-size: 10.2pt;       /* -0.1pt */
-            color: var(--blue-700);
-            border-bottom: 1.3px solid var(--slate-200);
-            position: relative;
-        }
-        .h3::after {
-            content: '';
-            position: absolute; left: 0; bottom: -1.3px;
-            width: 28px; height: 1.3px; background: var(--blue-600);
-        }
-
-        /* Legal box */
-        .legal {
-            background: var(--blue-50);
-            padding: 6px 9px;        /* -1px */
-            margin: 5px 0;
-            text-align: justify;
-        }
-        .legal-title {
-            font-weight: 900; color: var(--blue-700);
-            margin-bottom: 3px;      /* -1px */
-            font-size: 9.5pt;        /* -0.1pt */
-        }
-        .legal-article {
-            font-size: 8.4pt;        /* -0.3pt pour compacter ce bloc long */
-            line-height: 1.45;       /* -0.05 */
-            margin: 2px 0;
-            color: var(--slate-800);
-        }
-        .legal-article strong { color: var(--blue-700); font-weight: 900; }
-
-        /* Demands */
-        .demands {
-            background: var(--green-50);
-            padding: 7px 9px;
-            margin: 5px 0 7mm; /* + marge basse pour éviter tout chevauchement avec la signature */
-        }
-        .demand { display: flex; gap: 7px; align-items: flex-start; margin: 3px 0; }
-        .bullet {
-            width: 5px; height: 5px; border-radius: 50%;
-            background: var(--green-600); margin-top: 5px; flex-shrink: 0;
-        }
-        .demand b { font-weight: 900; }
+        .legal-article strong{color:var(--blue-700);font-weight:800;}
 
         /* Signature */
-        .sign-wrap {
-            margin-top: 7mm;          /* +1.5mm vs avant */
-            display: flex;
-            justify-content: flex-end;
-            clear: both;              /* évite l'empiètement visuel des blocs précédents */
-            break-inside: avoid;      /* pas de coupure à l'impression */
-            page-break-inside: avoid; /* idem */
-        }
-        .sign-box {
-            min-width: 160px; background: var(--slate-50);
-            border: 1px solid var(--slate-200); border-radius: 8px;
-            padding: 9px; text-align: center;
-        }
-        .sign-label {
-            font-size: 7.1pt;
-            color: var(--slate-600); font-weight: 900;
-        }
-        .sign-name { margin: 5px 0 7px; font-weight: 900; color: var(--slate-900); font-size: 9.9pt; }
-        .sign-area {
-            min-height: 46px; border: 1.3px dashed var(--slate-300);
-            border-radius: 6px; display: grid; place-items: center; background: #fff;
-        }
-        .signature-img { max-width: 100%; max-height: 44px; object-fit: contain; }
-        .signature-placeholder { color: var(--slate-600); font-style: italic; font-size: 8.5pt; }
+        .sign-wrap{margin-top:7mm;display:flex;justify-content:flex-end;clear:both;break-inside:avoid;page-break-inside:avoid;}
+        .sign-box{min-width:160px;text-align:center;}
+        .sign-label{font-size:7.1pt;color:var(--slate-700);}
+        .sign-name{margin:5px 0 7px;font-weight:900;color:var(--slate-900);font-size:9.9pt;}
+        .sign-area{min-height:46px;display:grid;place-items:center;background:#fff;border-top:1px solid var(--blue-accent-50);}
+        .signature-img{max-width:100%;max-height:44px;object-fit:contain;}
+        .signature-placeholder{color:var(--slate-600);font-style:italic;font-size:8.5pt;}
 
+        /* Pied de page */
+        .footer{position:sticky;bottom:0;left:0;align-self:flex-start;margin-top:auto;padding-top:4mm;display:flex;gap:8px;align-items:center;}
+        .footer .brand{display:flex;align-items:center;gap:8px;}
+        .footer .logo{width:31px;height:31px;}
+        .footer .logo img{width:31px;height:32px;}
+        .footer .brand-text h1{font-size:11pt;font-weight:800;color:var(--blue-700);letter-spacing:-0.02em;line-height:1;}
+        .footer .brand-text p{font-size:7pt;color:var(--slate-600);font-weight:600;margin-top:1px;letter-spacing:0.01em;}
 
-
-        .footer{
-            position: sticky;        /* colle au bas de la fenêtre en scroll */
-            bottom: 0;
-            left: 0;
-            align-self: flex-start;  /* coin bas-gauche de .page */
-            margin-top: auto;        /* pousse le footer en bas si contenu court */
-            padding-top: 4mm;        /* petit souffle au-dessus */
-            border: none;            /* plus de trait */
-            display: flex;
-            justify-content: flex-start;
-            align-items: center;
-            gap: 8px;
+        /* Filigrane logo très léger */
+        .wm-logo{
+            position:fixed; top:50%; left:50%;
+            transform:translate(-50%,-50%);
+            opacity:0.05; width:70%; max-width:520px; z-index:0; pointer-events:none; filter:grayscale(100%);
         }
 
-        .footer .brand{
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .footer .logo{ width: 31px; height: 31px; }
-        .footer .logo img{ width: 31px; height: 32px; }
-
-        .footer .brand-text h1{
-            font-size: 11pt;         /* plus discret */
+        /* Filigrane d'aperçu */
+        .wm-preview {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-30deg);
+            z-index: 5;
             font-weight: 800;
             color: var(--blue-700);
-            letter-spacing: -0.02em;
-            line-height: 1;
-        }
-        .footer .brand-text p{
-            font-size: 7pt;          /* slogan discret */
-            color: var(--slate-600);
-            font-weight: 600;
-            margin-top: 1px;
-            letter-spacing: 0.01em;
+            font-size: 36pt;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.3;
+            white-space: nowrap;
         }
 
-        /* Impression : pas de sticky (certains moteurs l’ignorent ou l’impriment mal) */
         @media print{
-            .footer{
-                position: static;
-                margin-top: 8mm;       /* espace avant le bloc pour ne rien chevaucher */
-                padding-top: 0;
-            }
-        }
-
-        /* Watermark */
-        {% if add_watermark %}
-            .watermark {
-                position: fixed; top: 50%; left: 50%;
-                transform: translate(-50%, -50%) rotate(-22deg);
-                font-size: 34pt; font-weight: 900; color: rgba(37, 99, 235, 0.05);
-                letter-spacing: 0.15em; white-space: nowrap; pointer-events: none; z-index: 1;
-            }
-        {% endif %}
-
-        @media print {
-            body { -webkit-print-color-adjust: exact; }
-            .page { page-break-after: avoid; }
-            /* Lisibilité N/B renforcée */
-            .subject, .legal, .demands, .address { background: #fff; }
-            .defect { background: #fff; border-color: #666; }
-            .defect-text { color: #111; }
-            .bullet { background: #000; }
-            .doc-badge { background: #000; color: #fff; }
+            body{-webkit-print-color-adjust:exact;}
+            .footer{position:static;margin-top:8mm;padding-top:0;}
+            .page{page-break-after:avoid;}
         }
     </style>
 </head>
 <body>
-{% if add_watermark %}<div class="watermark">APERÇU</div>{% endif %}
+{% if logo_src %}
+    <img src="{{ logo_src }}" alt="Je me défends" class="wm-logo">
+{% else %}
+    <img src="frontend/public/images/logo_jemedefends.png" alt="Je me défends" class="wm-logo">
+{% endif %}
+
+{% if add_watermark %}
+    <div class="wm-preview">
+        APERÇU DE VOTRE LETTRE
+    </div>
+{% endif %}
 
 <div class="page">
     <!-- Addresses -->
     <section class="addresses">
         <div class="address">
             <div class="address-name">{{ letter.buyer_name }}</div>
-            <div class="address-line">{{ letter.buyer_address.line1 }}</div>
-            {% if letter.buyer_address.line2 %}<div class="address-line">{{ letter.buyer_address.line2 }}</div>{% endif %}
+            <div class="address-line">{{ letter.buyer_address.line1 | replace('\n',' ') | replace('\r',' ') }}</div>
+            {% if letter.buyer_address.line2 %}<div class="address-line">{{ letter.buyer_address.line2 | replace('\n',' ') | replace('\r',' ') }}</div>{% endif %}
             <div class="address-line">{{ letter.buyer_address.postal_code }} {{ letter.buyer_address.city }}</div>
             <div class="address-line">{{ letter.buyer_address.country }}</div>
             {% if letter.buyer_email %}<div class="address-line">{{ letter.buyer_email }}</div>{% endif %}
             {% if letter.buyer_phone %}<div class="address-line">{{ letter.buyer_phone }}</div>{% endif %}
         </div>
 
-        <div class="address address--recipient">
+        <div class="address">
             <div class="address-name">{{ letter.seller_name }}</div>
-            <div class="address-line">{{ letter.seller_address.line1 }}</div>
-            {% if letter.seller_address.line2 %}<div class="address-line">{{ letter.seller_address.line2 }}</div>{% endif %}
+            <div class="address-line">{{ letter.seller_address.line1 | replace('\n',' ') | replace('\r',' ') }}</div>
+            {% if letter.seller_address.line2 %}<div class="address-line">{{ letter.seller_address.line2 | replace('\n',' ') | replace('\r',' ') }}</div>{% endif %}
             <div class="address-line">{{ letter.seller_address.postal_code }} {{ letter.seller_address.city }}</div>
             <div class="address-line">{{ letter.seller_address.country }}</div>
             {% if letter.seller_email %}<div class="address-line">{{ letter.seller_email }}</div>{% endif %}
@@ -303,7 +178,13 @@
     <!-- Subject -->
     <section class="subject">
         <div class="subject-title">Mise en demeure</div>
-        <div class="subject-sub">Application de la garantie légale de conformité</div>
+        <div class="subject-sub">
+            {% if letter.digital %}
+                Application de la garantie légale de conformité (contenus et services numériques)
+            {% else %}
+                Application de la garantie légale de conformité
+            {% endif %}
+        </div>
     </section>
 
     <!-- Body -->
@@ -311,10 +192,26 @@
         <p>Madame, Monsieur,</p>
 
         <p>
-            J’ai fait l’acquisition le <strong>{{ purchase_date_formatted }}</strong> d’un
-            <strong>{{ letter.product_name }}</strong> au prix de <strong>{{ product_price_formatted }}</strong>
-            {% if letter.order_reference %}, référence <strong>{{ letter.order_reference }}</strong>{% endif %}
-            {% if letter.serial_or_imei %}, n° série/IMEI <strong>{{ letter.serial_or_imei }}</strong>{% endif %}.
+            {% set pn = letter.product_name or '' %}
+            {% set pn_l = pn|lower %}
+            {% if letter.digital %}
+                {# Service numérique : formulation dédiée #}
+                J’ai souscrit le <strong>{{ purchase_date_formatted }}</strong> <strong>{{ pn }}</strong>
+            {% else %}
+                {# Bien : “faire l’acquisition de …” avec préposition correcte #}
+                {% if pn_l.startswith("l’") or pn_l.startswith("l'") %}
+                    {% set prep = "de " %}
+                {% elif pn_l.startswith("des ") %}
+                    {% set prep = "" %}
+                {% elif pn_l.startswith("un ") or pn_l.startswith("une ") %}
+                    {% set prep = "d’" %}
+                {% else %}
+                    {% set prep = "de " %}
+                {% endif %}
+                J’ai fait l’acquisition le <strong>{{ purchase_date_formatted }}</strong> {{ prep }}<strong>{{ pn }}</strong>
+            {% endif %}
+            au prix de <strong>{{ product_price_formatted }}</strong>
+            {% if letter.order_reference %}, référence <strong>{{ letter.order_reference }}</strong>.{% else %}.{% endif %}
         </p>
 
         <div class="defect">
@@ -323,58 +220,89 @@
         </div>
 
         <h3 class="h3">Fondements juridiques</h3>
-        <p>
-            En application des <strong>articles L.217-3 à L.217-14 du Code de la consommation</strong>, vous êtes tenu de livrer un bien conforme au contrat et répondez des défauts de conformité existant lors de la délivrance.
-        </p>
+
+        {% if letter.digital %}
+            <p>En application des <strong>articles L.224-25-13 à L.224-25-32 du Code de la consommation</strong>, vous êtes tenu de fournir un service numérique conforme au contrat et répondez des défauts de conformité existant lors de la fourniture ou apparaissant pendant la période de fourniture.</p>
+        {% else %}
+            <p>En application des <strong>articles L.217-3 à L.217-14 du Code de la consommation</strong>, vous êtes tenu de livrer un bien conforme au contrat et répondez des défauts de conformité existant lors de la délivrance.</p>
+        {% endif %}
 
         <div class="legal">
             <div class="legal-title">Articles de référence</div>
-            <div class="legal-article">
-                <strong>L.217-7 :</strong>
-                Le défaut de conformité apparaissant dans un délai de
-                {% if letter.used %}douze mois (bien d’occasion){% else %}vingt-quatre mois{% endif %}
-                à compter de la délivrance du bien est présumé exister au jour de la délivrance.
-            </div>
-            <div class="legal-article">
-                <strong>L.217-9 :</strong>
-                Le consommateur choisit entre réparation et remplacement, sauf si l’option choisie entraîne un coût manifestement disproportionné pour le vendeur.
-            </div>
-            <div class="legal-article">
-                <strong>L.217-10 :</strong>
-                La mise en conformité intervient dans un délai raisonnable n’excédant pas 30 jours à compter de la demande et sans inconvénient majeur pour le consommateur.
-            </div>
-            <div class="legal-article">
-                <strong>L.217-11 :</strong>
-                La mise en conformité a lieu sans aucun coût pour le consommateur (pièces, main-d’œuvre, diagnostic, enlèvement, transport, réexpédition).
+            <div class="legal-articles">
+                {% if letter.digital %}
+                    <div class="legal-article">
+                        <strong>L.224-25-16 :</strong> Le défaut de conformité apparu dans les douze mois suivant la fourniture est présumé exister à cette date, sauf preuve contraire.
+                    </div>
+                    <div class="legal-article">
+                        <strong>L.224-25-18 :</strong> Mise en conformité <em>sans frais</em>, <em>sans retard injustifié</em> et <em>sans inconvénient majeur</em> pour le consommateur.
+                    </div>
+                    <div class="legal-article">
+                        <strong>L.224-25-20 à L.224-25-22 :</strong> À défaut de mise en conformité, réduction du prix proportionnelle ou résolution du contrat, selon les cas.
+                    </div>
+                    <div class="legal-article">
+                        <strong>L.224-25-25 à L.224-25-26 :</strong> Mises à jour nécessaires au maintien de la conformité ; droit de refuser une mise à jour non nécessaire ayant un effet négatif.
+                    </div>
+                    <div class="legal-article">
+                        <strong>L.224-25-32 :</strong> Dispositions d’ordre public.
+                    </div>
+                {% else %}
+                    <div class="legal-article">
+                        <strong>L.217-7 :</strong>
+                        Le défaut de conformité apparaissant dans un délai de
+                        {% if letter.used %}douze mois (bien d’occasion){% else %}vingt-quatre mois{% endif %}
+                        à compter de la délivrance du bien est présumé exister au jour de la délivrance.
+                    </div>
+                    <div class="legal-article">
+                        <strong>L.217-9 :</strong>
+                        Le consommateur choisit entre réparation et remplacement, sauf si l’option choisie entraîne un coût manifestement disproportionné.
+                    </div>
+                    <div class="legal-article">
+                        <strong>L.217-10 :</strong>
+                        La mise en conformité intervient dans un délai raisonnable n’excédant pas <strong>30 jours</strong> à compter de la demande et sans inconvénient majeur.
+                    </div>
+                    <div class="legal-article">
+                        <strong>L.217-11 :</strong>
+                        La mise en conformité a lieu sans aucun coût pour le consommateur (pièces, main-d’œuvre, diagnostic, enlèvement, transport, réexpédition).
+                    </div>
+                {% endif %}
             </div>
         </div>
 
         <h3 class="h3">Mes demandes</h3>
         <p>
             Par la présente, je vous mets en demeure de procéder à la
-            <strong>mise en conformité gratuite</strong> du bien selon les modalités légales suivantes&nbsp;:
-            {% if letter.repairs %}
-                <strong>réparation</strong>
+            <strong>mise en conformité gratuite</strong>
+            {% if letter.digital %}du service{% else %}du bien{% endif %}
+            selon les modalités légales suivantes&nbsp;:
+            {% if letter.digital %}
+                <strong>mise en conformité</strong> du service défaillant,
+                <em>sans retard injustifié</em>,
+                sans inconvénient majeur, et <strong>sans aucun frais</strong> à ma charge
+                (incluant diagnostic, assistance et intervention).
             {% else %}
-                <strong>remplacement</strong>
+                {% if letter.remedy_preference.value == 'replacement' %}
+                    <strong>remplacement</strong>
+                {% elif letter.remedy_preference.value == 'termination' %}
+                    <strong>résolution</strong>
+                {% else %}
+                    <strong>réparation</strong>
+                {% endif %}
+                du produit défaillant,
+                dans un délai maximum de <strong>30&nbsp;jours</strong>,
+                sans inconvénient majeur, et <strong>sans aucun frais</strong> à ma charge
+                (incluant diagnostic, enlèvement, transport et réexpédition).
             {% endif %}
-            du produit défaillant, dans un délai maximum de <strong>30&nbsp;jours</strong>,
-            sans inconvénient majeur, et <strong>sans aucun frais</strong> à ma charge
-            (incluant diagnostic, enlèvement, transport et réexpédition).
         </p>
-
 
         <h3 class="h3">Délai et conséquences</h3>
         <p>
-            À défaut de votre part de rendre le bien conforme dans les conditions ci-dessus, je solliciterai une réduction du prix ou la résolution de la vente, conformément aux textes applicables.
+            À défaut de votre part de rendre le
+            {% if letter.digital %}service{% else %}bien{% endif %}
+            conforme dans les conditions ci-dessus, je solliciterai une <strong>réduction du prix</strong> ou la <strong>résolution du {% if letter.digital %}contrat{% else %}contrat de vente{% endif %}</strong>, conformément aux textes applicables.
         </p>
-        <p>
-            Sans réponse satisfaisante sous <strong>quinze (15) jours</strong> à compter de la réception de ce courrier, j’engagerai les suites utiles.
-        </p>
-
-        <p>
-            Dans l’attente de votre retour rapide, je vous prie d’agréer, Madame, Monsieur, l’expression de mes salutations distinguées.
-        </p>
+        <p>Sans réponse satisfaisante sous <strong>quinze (15) jours</strong> à compter de la réception de ce courrier, j’engagerai les suites utiles.</p>
+        <p>Dans l’attente de votre retour rapide, je vous prie d’agréer, Madame, Monsieur, l’expression de mes salutations distinguées.</p>
     </section>
 
     <!-- Signature -->

@@ -1,17 +1,27 @@
 'use client';
-
 import { Menu, X, ChevronDown } from 'lucide-react';
 import React, { useState, useEffect, useCallback } from 'react';
-
 import { useScrollOffset } from '@/hooks/useScrollOffset';
 import { useTableOfContents } from '@/hooks/useTableOfContents';
+import type { GuideTOCProps } from '@/types/guide-components';
 
-type TOCItem = { id: string; title: string; level: number };
-type TOCNode = { id: string; title: string; children: TOCItem[] };
+// Définition des types pour les éléments du TOC
+interface TOCItem {
+  id: string;
+  title: string;
+  level: number;
+}
+
+interface TOCNode {
+  id: string;
+  title: string;
+  children: TOCItem[];
+}
 
 function buildTree(items: TOCItem[], topLevel = 2): TOCNode[] {
   const tree: TOCNode[] = [];
   let current: TOCNode | null = null;
+
   for (const it of items) {
     if (it.level <= topLevel) {
       current = { id: it.id, title: it.title, children: [] };
@@ -20,29 +30,39 @@ function buildTree(items: TOCItem[], topLevel = 2): TOCNode[] {
       current.children.push(it);
     }
   }
+
   return tree;
 }
 
-interface GuideTOCMobileProps {
+interface GuideTOCMobileProps extends GuideTOCProps {
   className?: string;
 }
 
-export default function GuideTOCMobile({ className = '' }: GuideTOCMobileProps) {
+export default function GuideTOCMobile({
+                                         className = '',
+                                         selector = 'main article',
+                                         activeId: controlledActiveId,
+                                         onNavigate,
+                                       }: GuideTOCMobileProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
-  const { items, activeId } = useTableOfContents();
-  const { scrollToElement } = useScrollOffset();
+  // Utilise le hook useTableOfContents pour obtenir les éléments du sommaire
+  const { items, activeId: hookActiveId } = useTableOfContents();
+
+  // Construit l'arbre de navigation
   const tree = React.useMemo(() => buildTree(items, 2), [items]);
 
-  // Ouverture/fermeture du panneau (pas d'événement global)
+  // Combine l'ID actif du hook avec celui passé en props
+  const currentActiveId = controlledActiveId !== undefined ? controlledActiveId : hookActiveId;
+
+  // Ouverture/fermeture du panneau
   const toggleTOC = useCallback((open: boolean) => {
     setIsOpen(open);
   }, []);
 
   // Afficher/masquer le header mobile selon le scroll
-  // + émettre "toc:header" (visible = true/false) pour la barre de progression mobile
   useEffect(() => {
     let ticking = false;
 
@@ -76,22 +96,36 @@ export default function GuideTOCMobile({ className = '' }: GuideTOCMobileProps) 
 
   // Auto-open sur la section active
   useEffect(() => {
-    if (!activeId || tree.length === 0) return;
-    if (tree.some(n => n.id === activeId)) setExpandedId(activeId);
-    else {
-      const parent = tree.find(n => n.children.some(c => c.id === activeId));
+    if (!currentActiveId || tree.length === 0) return;
+
+    if (tree.some(n => n.id === currentActiveId)) {
+      setExpandedId(currentActiveId);
+    } else {
+      const parent = tree.find(n => n.children.some(c => c.id === currentActiveId));
       if (parent) setExpandedId(parent.id);
     }
-  }, [activeId, tree]);
+  }, [currentActiveId, tree]);
 
   const jump = useCallback(
     (id: string) => {
-      scrollToElement(id);
+      // Utilise useScrollOffset pour le scroll
+      // Note: Si useScrollOffset n'existe pas, on utilise le scroll direct
+      try {
+        const element = document.getElementById(id);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      } catch (e) {
+        // Fallback au scroll normal
+        window.location.hash = `#${id}`;
+      }
       toggleTOC(false);
+      onNavigate?.(id);
     },
-    [scrollToElement, toggleTOC],
+    [toggleTOC, onNavigate],
   );
 
+  // Ne pas afficher si aucun item n'est disponible
   if (!tree.length) return null;
 
   return (
@@ -117,9 +151,9 @@ export default function GuideTOCMobile({ className = '' }: GuideTOCMobileProps) 
           </button>
 
           <div className="text-xs text-gray-500 truncate max-w-[120px]">
-            {activeId &&
-              (tree.find(n => n.id === activeId)?.title ||
-                tree.find(n => n.children.some(c => c.id === activeId))?.title)}
+            {currentActiveId &&
+              (tree.find(n => n.id === currentActiveId)?.title ||
+                tree.find(n => n.children.some(c => c.id === currentActiveId))?.title)}
           </div>
         </div>
       </div>
@@ -140,7 +174,7 @@ export default function GuideTOCMobile({ className = '' }: GuideTOCMobileProps) 
             <ul className="divide-y divide-gray-100">
               {tree.map(node => {
                 const isExpanded = expandedId === node.id;
-                const isParentActive = node.id === activeId;
+                const isParentActive = node.id === currentActiveId;
 
                 return (
                   <li key={node.id} className="px-2">
@@ -174,7 +208,8 @@ export default function GuideTOCMobile({ className = '' }: GuideTOCMobileProps) 
                       >
                         <ul className="pb-2 pl-3">
                           {node.children.map(child => {
-                            const isChildActive = child.id === activeId;
+                            const isChildActive = child.id === currentActiveId;
+
                             return (
                               <li key={child.id}>
                                 <button

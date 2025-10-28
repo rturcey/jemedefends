@@ -38,7 +38,8 @@ export default function EligibilityFlow() {
   return (
     <div className="relative">
       {/* Le formulaire reste TOUJOURS monté, donc pas de skeleton visible */}
-      <EligibilityForm onComplete={handleComplete} onStepChange={() => {}} />
+      <EligibilityForm onComplete={handleComplete} onStepChange={() => {
+      }} />
 
       {/* Overlay résultat au-dessus du form */}
       <AnimatePresence>
@@ -64,7 +65,8 @@ export default function EligibilityFlow() {
               transition={{ duration: 0.22, ease: 'easeOut' }}
               className="fixed inset-0 z-[80] overflow-auto"
             >
-              <div className="min-h-full flex items-start md:items-center justify-center pt-6 md:pt-10 px-4">
+              <div
+                className="min-h-full flex items-start md:items-center justify-center pt-6 md:pt-10 px-4">
                 <ResultPanel
                   result={result}
                   onRestart={handleRestart}

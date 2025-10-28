@@ -1,0 +1,148 @@
+title: 'Téléphonie, forfaits et opérateurs : vos droits en cas de problème (Guide 2025)'
+description: 'Facture abusive, panne de réseau, refus de résiliation ou problème de portabilité ? Ce guide vous explique vos droits face à votre opérateur téléphonique, mobile ou internet, et les démarches pour obtenir réparation.'
+category: 'numerique'
+slug: 'operateurs-telephonie-et-internet'
+
+seo:
+  title: 'Problème avec un opérateur téléphonique : vos droits et recours (Guide 2025)'
+  description: 'Panne, surfacturation, ligne coupée ou refus de résiliation ? Découvrez vos droits légaux face aux opérateurs téléphoniques et fournisseurs d’accès : obligations de service, remboursement, médiation, résiliation sans frais.'
+  keywords:
+    - 'opérateur téléphonique litige'
+    - 'forfait mobile résiliation sans frais'
+    - 'panne internet remboursement'
+    - 'facture abusive téléphone'
+    - 'portabilité numéro problème'
+    - 'service client opérateur refus'
+    - 'médiateur des communications électroniques'
+    - 'L224-33 L224-39 L121-84'
+
+legal:
+  mainArticles:
+    - 'L.121-84'
+    - 'L.121-84-2'
+    - 'L.224-33'
+    - 'L.224-34'
+    - 'L.224-39'
+    - 'L.224-42'
+    - 'L.224-44'
+    - 'L.612-1'
+    - 'L.616-1'
+    - 'R.631-3'
+    - 'L.34-8'
+    - 'L.34-9'
+  disclaimer: true
+  lastUpdated: '2025-10-25'
+
+sections:
+  - id: 'intro'
+    title: 'L’essentiel en 30 secondes'
+    type: 'content'
+    content: |
+      Que vous soyez client **mobile, fixe ou internet**, votre opérateur doit vous fournir un service **conforme au contrat** et **fonctionnel en continu** L.224-33 L.224-39.  
+      En cas de panne, coupure ou facturation abusive, vous pouvez obtenir **réparation**, **remboursement** ou **résiliation sans frais** L.121-84 L.224-42.  
+      Si le service client refuse, un **médiateur spécialisé** peut trancher gratuitement L.612-1 L.616-1.
+
+  - id: 'problemes-courants'
+    title: 'Problèmes les plus fréquents'
+    type: 'grid'
+    items:
+      - title: 'Coupures de réseau ou panne prolongée'
+        description: 'L’opérateur doit assurer un **service continu**. Une panne prolongée justifie un **remboursement ou un geste commercial** L.224-33 L.224-39.'
+      - title: 'Facture anormale ou surconsommation inexpliquée'
+        description: 'Vous pouvez contester toute facturation manifestement erronée. L’opérateur doit **justifier les sommes réclamées** et suspendre le recouvrement en cas de contestation L.224-33.'
+      - title: 'Résiliation impossible ou facturée à tort'
+        description: 'Tout contrat peut être **résilié à tout moment après l’engagement**, ou sans frais en cas de **modification unilatérale** du contrat L.224-39 L.224-42.'
+      - title: 'Numéro non transféré (portabilité bloquée)'
+        description: 'La portabilité doit être réalisée en **1 jour ouvrable**. Tout retard injustifié donne droit à **indemnisation** L.34-8 L.34-9 du Code des postes et communications électroniques.'
+
+  - id: 'procedure'
+    title: 'Procédure pas-à-pas'
+    type: 'timeline'
+    steps:
+      - title: 'Contactez le service client'
+        description: |
+          Expliquez le problème, précisez vos **numéro de contrat** et **dates concernées**, et gardez une **preuve écrite** (mail, chat, courrier).  
+          Mentionnez vos droits à un **service conforme et continu** L.224-33 L.224-39.  
+          L’opérateur doit répondre dans un **délai raisonnable**.
+      - title: 'Réclamation écrite au service consommateurs'
+        description: |
+          En cas d’absence de réponse sous 30 jours, envoyez une **réclamation écrite** au **service consommateurs** de votre opérateur.  
+          Citez les **articles L.224-33 et L.224-39** et précisez votre demande : remboursement, réparation, résiliation sans frais ou indemnisation.  
+          Conservez l’accusé de réception.
+      - title: 'Saisine du médiateur des communications électroniques'
+        description: |
+          Si aucune réponse sous 2 mois, saisissez gratuitement le **médiateur des communications électroniques** L.612-1 L.616-1.  
+          Formulaire disponible sur [www.mediateur-telecom.fr](https://www.mediateur-telecom.fr).  
+          Le médiateur rend un **avis motivé sous 90 jours**.  
+          Cette démarche suspend toute procédure judiciaire.
+      - title: 'Tribunal judiciaire en dernier recours'
+        description: |
+          Si le litige persiste, saisissez le **tribunal judiciaire de votre domicile** R.631-3.  
+          Vous pouvez y demander **dommages et intérêts** en cas de coupure prolongée ou facturation abusive.
+
+  - id: 'resiliation'
+    title: 'Résiliation sans frais : vos cas de droit'
+    type: 'content'
+    content: |
+      Vous pouvez résilier **sans pénalité** dans plusieurs situations prévues par la loi :
+      - **Modification unilatérale du contrat** (tarif, conditions) L.224-39 L.224-42  
+      - **Service non conforme ou coupure durable** L.224-33  
+      - **Déménagement hors zone de couverture** si l’opérateur ne peut assurer le service  
+      - **Force majeure ou décès du titulaire**  
+      La résiliation doit être **effective sous 10 jours** après réception de votre demande L.224-42.  
+      En cas de refus ou de facturation abusive, saisissez le **médiateur des communications électroniques** L.612-1.
+
+  - id: 'facturation'
+    title: 'Facturation et remboursement'
+    type: 'content'
+    content: |
+      Toute facturation doit correspondre à un **service rendu** L.224-33.  
+      En cas d’erreur, l’opérateur doit procéder au **remboursement intégral** sans frais ni délai excessif.  
+      Si une coupure de réseau dure plusieurs jours, vous pouvez réclamer un **avoir au prorata** ou des **dommages et intérêts**.  
+      Aucune **pénalité de retard** ne peut être appliquée pendant un litige en cours.
+
+  - id: 'exemples'
+    title: 'Cas concrets'
+    type: 'content'
+    content: |
+      - **Résiliation après hausse de tarif** : l’opérateur doit vous prévenir **au moins 30 jours à l’avance** et vous pouvez refuser la modification en résiliant sans frais L.224-39 L.224-42.  
+      - **Facturation après résiliation** : l’opérateur doit arrêter toute facturation dès la **date effective de résiliation**, sous peine de remboursement automatique L.121-84-2.  
+      - **Réseau inopérant plusieurs jours** : la panne justifie un **remboursement partiel** ou une **résiliation anticipée sans frais** L.224-33.  
+      - **Portabilité ratée** : vous pouvez exiger **indemnisation immédiate** selon le Code des postes et communications électroniques L.34-8 L.34-9.
+
+  - id: 'faq'
+    title: 'Questions fréquentes'
+    type: 'faq'
+    faqItems:
+      - q: 'Puis-je contester une facture après paiement ?'
+        a: 'Oui. Vous disposez d’un **délai de 12 mois** pour contester une facturation abusive L.224-33. L’opérateur doit fournir les justificatifs précis.'
+      - q: 'Mon opérateur refuse de me rembourser une panne nationale'
+        a: 'C’est illégal : la continuité du service est une **obligation légale** L.224-33. Vous pouvez exiger un remboursement au prorata de la période d’interruption.'
+      - q: 'Je veux résilier mais mon opérateur me réclame des frais'
+        a: 'Si vous êtes **hors période d’engagement**, tout frais est abusif L.121-84. Si vous êtes encore engagé, vérifiez si le motif entre dans les cas de résiliation légale sans frais L.224-42.'
+
+  - id: 'cta'
+    title: 'Passez à l’action'
+    type: 'content'
+    content: |
+      Notre générateur de **réclamation télécom** vous aide à formuler votre demande : remboursement, résiliation, portabilité ou compensation.  
+      Les textes du **Code de la consommation** et du **Code des postes et communications électroniques** sont insérés automatiquement.  
+      Version **PDF** et **envoi recommandé** disponibles.
+    cta:
+      label: 'Rédiger ma réclamation opérateur'
+      href: '/outils/reclamation-operateur'
+      variant: 'primary'
+      icon: 'FileText'
+
+  - id: 'contacts'
+    title: 'Contacts utiles'
+    type: 'contacts'
+
+  - id: 'disclaimer'
+    title: 'Important'
+    type: 'content'
+    content: |
+      Ce guide expose vos droits face aux **opérateurs de téléphonie et fournisseurs d’accès internet** selon le Code de la consommation et le Code des postes et communications électroniques.  
+      Il **ne remplace pas** un avis juridique individualisé.  
+      En cas de litige complexe, contactez le **Médiateur des communications électroniques** ou une **association agréée**.
+

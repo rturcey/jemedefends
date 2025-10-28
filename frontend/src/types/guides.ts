@@ -1,3 +1,5 @@
+// frontend/src/types/guides.ts
+import type React from 'react';
 import type { LegalArticleId } from '@/legal/registry';
 
 export interface GuidePage {
@@ -6,22 +8,26 @@ export interface GuidePage {
   legal: GuideLegal;
 }
 
+export interface GuideCategory {
+  id: string;
+  name: string;
+  description: string;
+  color: string;
+}
+
 export interface GuideMetadata {
   title: string;
-  seo?: {
-    title: string;
-    description: string;
-    keywords: string[];
-  };
-  breadcrumb?: Array<{
-    name: string;
-    url: string;
-  }>;
+  seo?: { title: string; description: string; keywords: string[] };
+  // ⬇️ on aligne avec le converter (label/href)
+  breadcrumb?: Array<{ label: string; href: string }>;
+  category: GuideCategory;
+  // (optionnel si tu veux garder l’id brut)
+  categoryId?: string;
 }
 
 export interface GuideSection {
   id: string;
-  title: string;
+  title?: string;
   content?: string | React.ReactNode;
   type?: 'timeline' | 'table' | 'faq' | 'grid' | 'alternatives' | 'contacts' | 'content';
 
@@ -43,6 +49,7 @@ export interface GuideSection {
   }>;
 
   legalReferences?: LegalArticleId[];
+  wordCount?: number;
 }
 
 export interface GuideLegal {
@@ -55,9 +62,5 @@ export interface EnrichedGuide extends GuidePage {
   slug: string;
   readingTime: number;
   relatedGuides: string[];
-  category: {
-    name: string;
-    color: string;
-    emoji: string;
-  };
+  category: GuideCategory;
 }

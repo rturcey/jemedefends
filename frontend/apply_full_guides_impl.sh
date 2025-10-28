@@ -273,4 +273,4 @@ TSX
   ok "JSON-LD ajouté"
 fi
 
-say "Terminé ✅ — build recommandé (npm run build / pnpm build)"
+say "Terminé — build recommandé (npm run build / pnpm build)"

@@ -55,7 +55,7 @@ sections:
 
     alert:
       type: 'info'
-      title: '💡 Conseil pratique'
+      title: 'Conseil pratique'
       content: "Ce guide couvre tous les aspects de la garantie légale de conformité. Vous pouvez naviguer directement vers la section qui vous intéresse ou le lire dans l'ordre pour une compréhension complète."
 
     badges:
@@ -97,7 +97,7 @@ sections:
 
     alert:
       type: 'success'
-      title: '✅ Important à retenir'
+      title: 'Important à retenir'
       content: 'Contrairement à la garantie commerciale, la garantie légale est **gratuite**, **automatique** et ne peut pas être refusée par le vendeur.'
 
   - id: 'droits'
@@ -126,7 +126,6 @@ sections:
       ### Cas particuliers
 
       - **Biens numériques :** Droit aux mises à jour pendant la durée d'usage attendue L.217-19
-      - **Valeur d'usage :** En cas de remboursement, le vendeur peut déduire la valeur d'usage L.217-11
 
     cta:
       label: 'Créer ma lettre de mise en demeure'
@@ -139,7 +138,7 @@ sections:
     icon: 'CheckSquare'
     type: 'timeline'
     content: |
-      ### Étape 1 : Rassembler les preuves
+      ### Rassembler les preuves
 
       **Documents indispensables :**
       - Facture ou preuve d'achat
@@ -152,13 +151,13 @@ sections:
       - Devis de réparation d'un professionnel
       - Documentation technique du constructeur
 
-      ### Étape 2 : Première demande amiable
+      ### Première demande amiable
 
       - **Privilégier l'écrit :** Email ou courrier simple en recommandé
       - **Délai de réponse :** Laisser 15 jours ouvrés
       - **Ton :** Ferme mais courtois
 
-      ### Étape 3 : Mise en demeure formelle
+      ### Mise en demeure formelle
 
       Si le vendeur refuse ou ne répond pas :
 
@@ -171,7 +170,7 @@ sections:
 
       **Envoi :** Lettre recommandée avec accusé de réception
 
-      ### Étape 4 : Recours en cas d'échec
+      ### Recours en cas d'échec
 
       - **Médiation de la consommation** (gratuite)
       - **Tribunal judiciaire** pour les litiges > 5 000 €
@@ -179,7 +178,7 @@ sections:
 
     alert:
       type: 'warning'
-      title: '⚠️ Attention aux délais'
+      title: 'Attention aux délais'
       content: "La garantie légale s'exerce dans un délai de **2 ans** (1 an pour l'occasion) à compter de la délivrance du bien. Ne tardez pas à agir !"
 
   - id: 'outils'

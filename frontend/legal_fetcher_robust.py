@@ -142,9 +142,9 @@ class LegifranceAPIClient:
         if self.client_id and self.client_secret:
             ok = self._authenticate()
             if not ok:
-                print("⚠️  Auth PISTE échouée : tentative en mode 'public' (limitations possibles)")
+                print(" Auth PISTE échouée : tentative en mode 'public' (limitations possibles)")
         else:
-            print("⚠️  Clés API non configurées (LEGIFRANCE_CLIENT_ID/SECRET). Mode public limité + fallback.")
+            print(" Clés API non configurées (LEGIFRANCE_CLIENT_ID/SECRET). Mode public limité + fallback.")
 
     # ---- Auth
 
@@ -173,7 +173,7 @@ class LegifranceAPIClient:
             self.token_expiry = datetime.now(timezone.utc) + timedelta(seconds=exp - 120)
             self.session.headers["Authorization"] = f"Bearer {token}"
             if self.verbose:
-                print("✅ Auth OK")
+                print("Auth OK")
             return True
         except Exception as e:
             print(f"❌ Exception auth PISTE: {e}")
@@ -324,7 +324,7 @@ class LegifranceAPIClient:
         text = self._extract_text_from_api(art)
         if not text or len(text) < 20:
             if self.verbose:
-                print("⚠️ Texte trop court/invalide (consult/getArticle)")
+                print("Texte trop court/invalide (consult/getArticle)")
             return None
         etat = (art.get("etat") or "VIGUEUR").upper()
         date_debut = art.get("dateDebut") or art.get("dateDebutVersion")
@@ -615,7 +615,7 @@ class LegalUpdater:
                     continue
 
                 if self.verbose:
-                    print("⚠️ API: pas de résultat → fallback scraping…")
+                    print("API: pas de résultat → fallback scraping…")
                 url = self.fallback.search_legifrance(aid)
                 if url:
                     fb = self.fallback.get_article_from_url(url)
@@ -725,15 +725,15 @@ Config:
             hint = _guess_code_name_for(aid)
             item = updater.api.get_article(aid, hint, at_date_ms)
             if item and item.get("text"):
-                print(f"✅ OK {aid} — {item.get('wordCount', 0)} mots")
+                print(f"OK {aid} — {item.get('wordCount', 0)} mots")
                 print(f"URL: {item.get('url')}")
                 return 0
-            print("⚠️ API: échec, essai fallback scraping…")
+            print("API: échec, essai fallback scraping…")
             url = updater.fallback.search_legifrance(aid)
             if url:
                 fb = updater.fallback.get_article_from_url(url)
                 if fb and fb.get("text"):
-                    print(f"✅ Fallback OK {aid} — {fb.get('wordCount', 0)} mots")
+                    print(f"Fallback OK {aid} — {fb.get('wordCount', 0)} mots")
                     print(f"URL: {fb.get('url')}")
                     return 0
             print("❌ Échec total")
@@ -743,7 +743,7 @@ Config:
         if not results:
             print("❌ Aucun article récupéré")
             return 1
-        print("\n✅ Mise à jour terminée")
+        print("\nMise à jour terminée")
         return 0
 
     except KeyboardInterrupt:

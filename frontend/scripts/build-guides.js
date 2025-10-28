@@ -17,12 +17,12 @@ async function buildGuidesRegistry() {
   try {
     // Vérifier que le dossier guides existe
     if (!fs.existsSync(GUIDES_BASE_PATH)) {
-      console.warn(`⚠️  Dossier guides non trouvé: ${GUIDES_BASE_PATH}`);
+      console.warn(` Dossier guides non trouvé: ${GUIDES_BASE_PATH}`);
       console.log('📁 Création du dossier guides...');
       fs.mkdirSync(GUIDES_BASE_PATH, { recursive: true });
 
       // Créer les sous-dossiers
-      ['general', 'tech', 'auto', 'home'].forEach(category => {
+      ['general', 'tech', 'automobile', 'commerce', 'maison', 'mode', 'numerique'].forEach(category => {
         const categoryPath = path.join(GUIDES_BASE_PATH, category);
         fs.mkdirSync(categoryPath, { recursive: true });
         console.log(`   ✓ Dossier créé: ${category}/`);
@@ -41,7 +41,7 @@ async function buildGuidesRegistry() {
       try {
         // Lire tous les fichiers .yaml de ce dossier
         const files = fs.readdirSync(categoryPath);
-        const yamlFiles = files.filter(file => file.endsWith('.yaml'));
+        const yamlFiles = files.filter(file => file.endsWith('.yaml') || file.endsWith('.yml'));
 
         for (const yamlFile of yamlFiles) {
           const filePath = path.join(categoryPath, yamlFile);
@@ -127,7 +127,7 @@ ${Object.keys(registry)
 if (require.main === module) {
   buildGuidesRegistry()
     .then(result => {
-      console.log('✅ Build terminé avec succès');
+      console.log('Build terminé avec succès');
       process.exit(0);
     })
     .catch(error => {

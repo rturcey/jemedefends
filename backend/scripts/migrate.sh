@@ -15,7 +15,7 @@ until pg_isready -d "$DATABASE_URL" &> /dev/null; do
     sleep 1
 done
 
-echo "✅ Database is ready"
+echo "Database is ready"
 
 # Run migrations in order
 echo "📝 Applying schema..."
@@ -24,4 +24,4 @@ psql "$DATABASE_URL" -f app/db/schema/schema.sql
 echo "🎯 Generating SQLc code..."
 sqlc generate -f app/db/sqlc.yaml
 
-echo "✅ Migrations completed successfully!"
+echo "Migrations completed successfully!"

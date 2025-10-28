@@ -9,14 +9,6 @@ from typing import Any, Optional
 import uuid
 
 
-class DefectTypeEnum(str, enum.Enum):
-    MALFUNCTION = "malfunction"
-    NON_CONFORMITY = "non_conformity"
-    DELIVERY_ISSUE = "delivery_issue"
-    WARRANTY_REFUSAL = "warranty_refusal"
-    OTHER = "other"
-
-
 class LetterStatusEnum(str, enum.Enum):
     DRAFT = "draft"
     GENERATED = "generated"
@@ -45,6 +37,12 @@ class ProcessingStatusEnum(str, enum.Enum):
     PROCESSING = "processing"
     COMPLETED = "completed"
     FAILED = "failed"
+
+
+class RemedyPreferenceEnum(str, enum.Enum):
+    REPAIRS = "repairs"
+    REPLACEMENT = "replacement"
+    TERMINATION = "termination"
 
 
 class ServiceTypeEnum(str, enum.Enum):
@@ -77,6 +75,7 @@ class Letter:
     id: uuid.UUID
     buyer_name: str
     buyer_email: Optional[str]
+    buyer_phone: Optional[str]
     buyer_address_line_1: str
     buyer_address_line_2: Optional[str]
     buyer_postal_code: str
@@ -95,8 +94,8 @@ class Letter:
     order_reference: Optional[str]
     used: bool
     digital: bool
-    defect_type: DefectTypeEnum
     defect_description: str
+    remedy_preference: RemedyPreferenceEnum
     content: Optional[str]
     status: LetterStatusEnum
     created_at: datetime.datetime

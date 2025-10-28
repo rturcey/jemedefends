@@ -4,34 +4,31 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 -- Extension for timestamps
 CREATE EXTENSION IF NOT EXISTS btree_gist;
 
--- Enums for better type safety and constraints
--- IMPORTANT: Les enums DOIVENT être créés AVANT les tables qui les utilisent
-CREATE TYPE defect_type_enum AS ENUM (
-    'malfunction',
-    'non_conformity',
-    'delivery_issue',
-    'warranty_refusal',
-    'other'
-);
+-- Nouveau : Enum pour le choix réparation/remplacement
+CREATE TYPE remedy_preference_enum AS ENUM (
+    'repairs',
+    'replacement',
+    'termination'
+    );
 
 CREATE TYPE letter_status_enum AS ENUM (
     'draft',
     'generated',
     'pdf_created',
     'sent'
-);
+    );
 
 CREATE TYPE processing_status_enum AS ENUM (
     'pending',
     'processing',
     'completed',
     'failed'
-);
+    );
 
 CREATE TYPE service_type_enum AS ENUM (
     'pdf_only',
     'pdf_and_postal'
-);
+    );
 
 CREATE TYPE payment_status_enum AS ENUM (
     'pending',
@@ -39,7 +36,7 @@ CREATE TYPE payment_status_enum AS ENUM (
     'succeeded',
     'failed',
     'canceled'
-);
+    );
 
 CREATE TYPE postal_status_enum AS ENUM (
     'pending',
@@ -47,43 +44,44 @@ CREATE TYPE postal_status_enum AS ENUM (
     'in_transit',
     'delivered',
     'failed'
-);
+    );
 
 -- Letter table - Core entity for demand letters
 CREATE TABLE letter (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+                        id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
 
-    buyer_name VARCHAR(255) NOT NULL,
-    buyer_email VARCHAR(255),
-    buyer_address_line_1 VARCHAR(255) NOT NULL,
-    buyer_address_line_2 VARCHAR(255),
-    buyer_postal_code VARCHAR(20) NOT NULL,
-    buyer_city VARCHAR(100) NOT NULL,
-    buyer_country VARCHAR(100) NOT NULL,
+                        buyer_name VARCHAR(255) NOT NULL,
+                        buyer_email VARCHAR(255), -- Facultatif
+                        buyer_phone VARCHAR(20), -- NOUVEAU : Facultatif
+                        buyer_address_line_1 VARCHAR(255) NOT NULL,
+                        buyer_address_line_2 VARCHAR(255),
+                        buyer_postal_code VARCHAR(20) NOT NULL,
+                        buyer_city VARCHAR(100) NOT NULL,
+                        buyer_country VARCHAR(100) NOT NULL,
 
-    seller_name VARCHAR(255) NOT NULL,
-    seller_email VARCHAR(255),
-    seller_address_line_1 VARCHAR(255) NOT NULL,
-    seller_address_line_2 VARCHAR(255),
-    seller_postal_code VARCHAR(20) NOT NULL,
-    seller_city VARCHAR(100) NOT NULL,
-    seller_country VARCHAR(100) NOT NULL,
+                        seller_name VARCHAR(255) NOT NULL,
+                        seller_email VARCHAR(255),
+                        seller_address_line_1 VARCHAR(255) NOT NULL,
+                        seller_address_line_2 VARCHAR(255),
+                        seller_postal_code VARCHAR(20) NOT NULL,
+                        seller_city VARCHAR(100) NOT NULL,
+                        seller_country VARCHAR(100) NOT NULL,
 
-    purchase_date DATE NOT NULL,
-    product_name VARCHAR(500) NOT NULL,
-    product_price DECIMAL(10, 2) NOT NULL CHECK (product_price > 0),
-    order_reference VARCHAR(100),
-    used BOOLEAN NOT NULL DEFAULT FALSE,
-    digital BOOLEAN NOT NULL DEFAULT FALSE,
+                        purchase_date DATE NOT NULL,
+                        product_name VARCHAR(500) NOT NULL,
+                        product_price DECIMAL(10, 2) NOT NULL CHECK (product_price > 0),
+                        order_reference VARCHAR(100),
+                        used BOOLEAN NOT NULL DEFAULT FALSE,
+                        digital BOOLEAN NOT NULL DEFAULT FALSE,
 
-    defect_type DEFECT_TYPE_ENUM NOT NULL,
-    defect_description TEXT NOT NULL,
+                        defect_description TEXT NOT NULL,
+                        remedy_preference REMEDY_PREFERENCE_ENUM NOT NULL, -- NOUVEAU : Obligatoire
 
-    content TEXT,
-    status LETTER_STATUS_ENUM NOT NULL DEFAULT 'draft',
+                        content TEXT,
+                        status LETTER_STATUS_ENUM NOT NULL DEFAULT 'draft',
 
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL
+                        created_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,
+                        updated_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL
 );
 
 CREATE INDEX idx_letter_created_at ON letter (created_at);
@@ -91,7 +89,7 @@ CREATE INDEX idx_letter_status ON letter (status);
 
 -- Trigger function for automatic updated_at timestamps
 CREATE OR REPLACE FUNCTION trigger_set_timestamp()
-RETURNS TRIGGER AS $$
+    RETURNS TRIGGER AS $$
 BEGIN
     NEW.updated_at = NOW();
     RETURN NEW;
@@ -99,8 +97,8 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER set_timestamp_letter
-BEFORE UPDATE ON letter
-FOR EACH ROW
+    BEFORE UPDATE ON letter
+    FOR EACH ROW
 EXECUTE FUNCTION trigger_set_timestamp();
 
 -- 1. Créer le type enum pour les événements de draft (funnel)

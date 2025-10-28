@@ -1,0 +1,139 @@
+title: 'Ordinateurs, téléviseurs, consoles : vos droits en cas de panne (Guide 2025)'
+description: 'PC, TV, console, tablette, appareil photo ou objet connecté en panne ? La garantie légale de conformité couvre la réparation, le remplacement ou le remboursement gratuit pendant 2 ans. Guide complet et modèles.'
+category: 'tech'
+slug: 'high-tech-garantie-legale'
+
+seo:
+  title: 'Ordinateur, TV ou console défectueux : garantie légale, 2 ans, remboursement (Guide 2025)'
+  description: 'Votre appareil high-tech tombe en panne ? Vous avez droit à la réparation, au remplacement ou au remboursement gratuit selon la garantie légale de conformité. Découvrez la procédure complète et les modèles de lettres.'
+  keywords:
+    - 'ordinateur panne garantie légale'
+    - 'TV défectueuse remplacement gratuit'
+    - 'console de jeux garantie légale'
+    - 'appareil photo problème conformité'
+    - 'objet connecté dysfonctionnement garantie'
+    - 'réparation remplacement remboursement 2 ans'
+    - 'L217-3 L217-10 L217-13 garantie conformité'
+    - 'vendeur refus prise en charge'
+
+legal:
+  mainArticles:
+    - 'L.217-3'
+    - 'L.217-4'
+    - 'L.217-5'
+    - 'L.217-7'
+    - 'L.217-8'
+    - 'L.217-9'
+    - 'L.217-10'
+    - 'L.217-11'
+    - 'L.217-13'
+    - 'L.217-14'
+    - 'L.217-16'
+    - 'L.217-19'
+  disclaimer: true
+  lastUpdated: '2025-10-27'
+
+sections:
+  - id: 'intro'
+    title: 'L’essentiel en 30 secondes'
+    type: 'content'
+    content: |
+      Qu’il s’agisse d’un **ordinateur, téléviseur, console, tablette ou appareil connecté**, votre vendeur doit livrer un produit **conforme au contrat** L.217-3 L.217-4 L.217-5.  
+      En cas de panne ou de dysfonctionnement dans les **2 ans suivant l’achat**, vous avez droit à une **mise en conformité gratuite** : **réparation ou remplacement** L.217-8 L.217-11.  
+      Si le problème persiste ou dépasse **30 jours**, vous pouvez demander une **réduction du prix** ou un **remboursement intégral** L.217-10 L.217-13 L.217-14.
+
+  - id: 'eligibilite'
+    title: 'Quand la garantie s’applique'
+    type: 'grid'
+    items:
+      - title: 'Défaut de conformité'
+        description: 'Le produit ne fonctionne pas comme prévu, ne correspond pas à la description ou présente un défaut de performance L.217-4 L.217-5.'
+      - title: 'Délai de 2 ans'
+        description: 'Le défaut apparaît dans les **24 mois** suivant la livraison (12 mois pour l’occasion) L.217-7. Le vendeur doit prouver une mauvaise utilisation pour refuser la prise en charge.'
+      - title: 'Réparation ou remplacement gratuit'
+        description: 'Le vendeur choisit la solution la plus adaptée mais **sans frais pour le consommateur** et **dans les 30 jours maximum** L.217-10 L.217-11.'
+      - title: 'Logiciels et mises à jour inclus'
+        description: 'Le vendeur doit fournir les **mises à jour nécessaires** au maintien de la conformité du produit L.217-19.'
+
+  - id: 'procedure'
+    title: 'Procédure pas-à-pas'
+    type: 'timeline'
+    steps:
+      - title: 'Décrivez précisément la panne'
+        description: |
+          Notez les symptômes (ex. : écran noir, surchauffe, redémarrages, bruit, perte de Wi-Fi…) et les conditions d’apparition.  
+          Ces éléments faciliteront la **preuve du défaut de conformité** L.217-4 L.217-5.
+      - title: 'Contactez le vendeur'
+        description: |
+          Envoyez une réclamation claire demandant la **mise en conformité** par **réparation ou remplacement** L.217-8 L.217-11.  
+          Mentionnez que le défaut est **présumé exister à la livraison** s’il apparaît dans les 24 mois L.217-7.
+      - title: 'Respect du délai de 30 jours'
+        description: |
+          La mise en conformité doit être effectuée **dans un délai raisonnable n’excédant pas 30 jours** L.217-10.  
+          Pendant la réparation, la garantie est **suspendue** L.217-16.
+      - title: 'Échec ou refus du vendeur'
+        description: |
+          Si le vendeur **refuse**, tarde trop ou si la réparation est **impossible ou disproportionnée**, exigez une **réduction du prix** ou la **résolution du contrat** L.217-9 L.217-13 L.217-14.
+
+  - id: 'reparations'
+    title: 'Réparations et pièces détachées'
+    type: 'content'
+    content: |
+      Le vendeur doit garantir la **disponibilité des pièces détachées** ou vous informer de leur absence avant l’achat L.111-4.  
+      Depuis 2021, les fabricants doivent aussi fournir les **informations de réparabilité** et un **indice de durabilité**.  
+      En cas d’indisponibilité non annoncée, vous pouvez invoquer la **non-conformité** L.217-5.
+
+  - id: 'connectes'
+    title: 'Objets connectés et logiciels embarqués'
+    type: 'content'
+    content: |
+      Si votre appareil contient un logiciel ou nécessite des mises à jour, le vendeur doit **assurer leur maintien** pendant une période adaptée à la nature du bien L.217-19.  
+      Si une mise à jour rend l’appareil inutilisable ou retire des fonctions essentielles, cela constitue une **non-conformité** L.217-5 L.217-19.  
+      Vous pouvez exiger la **restauration du fonctionnement initial**, un **remplacement** ou un **remboursement**.
+
+  - id: 'cas-frequents'
+    title: 'Cas fréquents'
+    type: 'faq'
+    faqItems:
+      - q: 'L’écran de ma TV s’éteint tout seul après 18 mois'
+        a: 'Le défaut est **présumé antérieur** L.217-7. Le vendeur doit réparer ou remplacer gratuitement L.217-8 L.217-11.'
+      - q: 'Ma console affiche un message d’erreur système'
+        a: 'C’est une **non-conformité logicielle** si la panne empêche l’usage normal L.217-4 L.217-5 L.217-19.'
+      - q: 'Le vendeur m’envoie vers le constructeur'
+        a: 'C’est interdit : la **garantie légale** engage le **vendeur**, pas la marque L.217-3. Vous pouvez refuser d’être redirigé.'
+      - q: 'Mon ordinateur réparé retombe en panne 3 mois plus tard'
+        a: 'La garantie est **prolongée** de la durée d’immobilisation du produit L.217-16. Le vendeur doit intervenir à nouveau sans frais.'
+
+  - id: 'reconditionne'
+    title: 'Produits reconditionnés ou d’occasion'
+    type: 'content'
+    content: |
+      Les appareils reconditionnés bénéficient de la **garantie légale de conformité**, mais la **présomption** est réduite à **12 mois** L.217-7.  
+      Vous avez toujours droit à la **mise en conformité gratuite** et, à défaut, à la **réduction du prix** ou au **remboursement** L.217-8 à L.217-14.  
+      Vérifiez que le vendeur est bien un **professionnel**, car la garantie légale **ne s’applique pas entre particuliers**.
+
+  - id: 'cta'
+    title: 'Faites valoir vos droits'
+    type: 'content'
+    content: |
+      Générez gratuitement votre **réclamation ou mise en demeure** pour ordinateur, TV, console, tablette ou produit connecté.  
+      Le courrier inclut automatiquement les **articles du Code de la consommation** adaptés à votre cas.  
+      Version **PDF professionnelle** et **envoi recommandé** disponibles.
+    cta:
+      label: 'Générer ma réclamation'
+      href: '/outils/mise-en-demeure'
+      variant: 'primary'
+      icon: 'FileText'
+
+  - id: 'contacts'
+    title: 'Contacts utiles'
+    type: 'contacts'
+
+  - id: 'disclaimer'
+    title: 'Important'
+    type: 'content'
+    content: |
+      Ce guide présente les droits du consommateur en matière de **produits électroniques et high-tech** selon le Code de la consommation.  
+      Il **ne constitue pas un conseil juridique individualisé**.  
+      En cas de litige complexe, contactez une **association de consommateurs** ou un **professionnel du droit**.
+
