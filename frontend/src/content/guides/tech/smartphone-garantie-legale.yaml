@@ -40,13 +40,13 @@ sections:
     type: 'content'
     content: |
       Votre vendeur doit vous livrer un téléphone conforme, c’est-à-dire qui fonctionne comme prévu L.217-3 L.217-4 L.217-5.
-      
+
       Si une panne ou un défaut apparaît dans les 2 ans, vous pouvez exiger réparation ou remplacement gratuit L.217-8 L.217-11.
-      
+
       En cas d’échec, de refus ou de dépassement du délai maximal de 30 jours, vous pouvez obtenir une réduction du prix ou un remboursement intégral L.217-10 L.217-13 L.217-14.
-      
+
       Le défaut est présumé exister dès la livraison s’il apparaît dans les 24 mois (12 mois pour un produit d’occasion) L.217-7.
-      
+
       Ces droits sont garantis par la loi et aucune preuve technique ne vous est demandée.
 
   - id: 'eligibilite'

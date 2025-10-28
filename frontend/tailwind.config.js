@@ -34,6 +34,15 @@ module.exports = {
         surface: {
           soft: '#F8FAFC', // Fond gris très clair pour alternance
         },
+        animation: {
+          shimmer: 'shimmer 2s linear infinite',
+        },
+        keyframes: {
+          shimmer: {
+            '0%': { transform: 'translateX(-100%)' },
+            '100%': { transform: 'translateX(100%)' },
+          },
+        },
       },
 
       // ✅ Espacements cohérents mobile-first

@@ -1,4 +1,4 @@
-// frontend/src/types/form.tsx - ValidationManager corrigé
+// frontend/src/types/form.tsx - Types mis à jour avec les nouveaux champs
 export interface ValidationRule {
   type: 'required' | 'email' | 'minLength' | 'maxLength' | 'pattern' | 'number';
   value?: string | number;
@@ -24,6 +24,7 @@ export interface FormData {
   buyer_first_name?: string;
   buyer_last_name?: string;
   buyer_email?: string;
+  buyer_phone?: string;
   buyer_address_line_1?: string;
   buyer_postal_code?: string;
   buyer_city?: string;
@@ -41,9 +42,10 @@ export interface FormData {
   purchase_date?: string;
   product_price?: string;
   product_condition?: string;
+  remedy_preference?: 'réparation' | 'remplacement' | 'résiliation';
+  digital?: boolean;
 
   // Problem info
-  defect_type?: string;
   defect_description?: string;
 
   // Computed fields
@@ -77,7 +79,7 @@ export const STEPS: Step[] = [
   {
     id: 'problem_info',
     title: 'Description du problème',
-    fields: ['defect_type', 'defect_description'],
+    fields: ['remedy_preference', 'defect_description'],
   },
 ];
 
@@ -85,15 +87,14 @@ export const STEPS: Step[] = [
 export class ValidationManager {
   private hasInteracted = new Set<string>();
   private validationCache = new Map<string, ValidationResult>();
-  private isValidating = new Set<string>(); // Prévenir la récursion
+  private isValidating = new Set<string>();
 
   private validators = {
     required: (value: string) => value?.trim()?.length > 0,
     email: (value: string) => !value || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
     minLength: (value: string, min: number) => (value?.length || 0) >= min,
     maxLength: (value: string, max: number) => (value?.length || 0) <= max,
-    pattern: (value: string, pattern: string) => new RegExp(pattern).test(value || ''),
-    number: (value: string) => !isNaN(Number(value)) && value?.trim() !== '',
+    pattern: (value: string, pattern: RegExp) => !value || pattern.test(value),
   };
 
   markInteracted(fieldName: string): void {
@@ -104,35 +105,46 @@ export class ValidationManager {
     return this.hasInteracted.has(fieldName);
   }
 
-  // ✅ Validation d'un champ SANS récursion
-  validateField(fieldName: string, value: any, rules: ValidationRule[] = []): ValidationResult {
-    // Clé de cache unique
-    const cacheKey = `${fieldName}-${JSON.stringify(value)}-${JSON.stringify(rules)}`;
-
-    // Vérifier le cache d'abord
-    if (this.validationCache.has(cacheKey)) {
-      return this.validationCache.get(cacheKey)!;
+  validateField(fieldName: string, value: any, rules?: ValidationRule[]): ValidationResult {
+    if (this.isValidating.has(fieldName)) {
+      return { valid: true, message: '' };
     }
 
-    // Prévenir la récursion
-    if (this.isValidating.has(fieldName)) {
-      const defaultResult = { valid: true, message: '' };
-      this.validationCache.set(cacheKey, defaultResult);
-      return defaultResult;
+    const cacheKey = `${fieldName}:${JSON.stringify(value)}`;
+    if (this.validationCache.has(cacheKey)) {
+      return this.validationCache.get(cacheKey)!;
     }
 
     this.isValidating.add(fieldName);
 
     try {
-      // Validation séquentielle simple
+      if (!rules || rules.length === 0) {
+        const result = { valid: true, message: '' };
+        this.validationCache.set(cacheKey, result);
+        return result;
+      }
+
       for (const rule of rules) {
-        const validator = this.validators[rule.type];
-        if (!validator) continue;
+        let isValid = true;
+        switch (rule.type) {
+          case 'required':
+            isValid = this.validators.required(value);
+            break;
+          case 'email':
+            isValid = this.validators.email(value);
+            break;
+          case 'minLength':
+            isValid = this.validators.minLength(value, rule.value as number);
+            break;
+          case 'maxLength':
+            isValid = this.validators.maxLength(value, rule.value as number);
+            break;
+          case 'pattern':
+            isValid = this.validators.pattern(value, new RegExp(rule.value as string));
+            break;
+        }
 
-        const valid =
-          rule.value !== undefined ? validator(value, rule.value as any) : validator(value);
-
-        if (!valid) {
+        if (!isValid) {
           const result = { valid: false, message: rule.message };
           this.validationCache.set(cacheKey, result);
           return result;
@@ -143,95 +155,97 @@ export class ValidationManager {
       this.validationCache.set(cacheKey, result);
       return result;
     } finally {
-      // ✅ TOUJOURS nettoyer après validation
       this.isValidating.delete(fieldName);
     }
   }
 
-  // ✅ Validation d'étape simple - SANS récursion
-  validateStep(stepFields: string[], formData: Record<string, any>): boolean {
-    // Validation simple sans appels récursifs
-    return stepFields.every(fieldName => {
-      const value = formData[fieldName];
+  getFieldRules(fieldName: string, config: any): ValidationRule[] {
+    const rules: ValidationRule[] = [];
 
-      // Règles de validation basiques
-      if (fieldName.includes('email') && value) {
-        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-      }
+    if (config.required) {
+      rules.push({
+        type: 'required',
+        message: 'Ce champ est requis',
+      });
+    }
 
-      if (fieldName.includes('postal_code') && value) {
-        return /^\d{5}$/.test(value);
-      }
+    if (config.email) {
+      rules.push({
+        type: 'email',
+        message: 'Format email invalide',
+      });
+    }
 
-      // Champ requis : doit être non vide
-      return value && (typeof value !== 'string' || value.trim().length > 0);
-    });
+    if (config.minLength) {
+      rules.push({
+        type: 'minLength',
+        value: config.minLength,
+        message: `Minimum ${config.minLength} caractères`,
+      });
+    }
+
+    if (config.maxLength) {
+      rules.push({
+        type: 'maxLength',
+        value: config.maxLength,
+        message: `Maximum ${config.maxLength} caractères`,
+      });
+    }
+
+    if (config.pattern) {
+      rules.push({
+        type: 'pattern',
+        value: config.pattern,
+        message: config.patternMessage || 'Format invalide',
+      });
+    }
+
+    return rules;
   }
 
-  // ✅ Nettoyage du cache (utile pour les performances)
+  validateStep(stepId: StepId, data: FormData): boolean {
+    const step = STEPS.find(s => s.id === stepId);
+    if (!step) return false;
+
+    // Validation spécifique par étape
+    switch (stepId) {
+      case 'buyer_info':
+        return !!(
+          data.buyer_name &&
+          data.buyer_address_line_1 &&
+          data.buyer_postal_code &&
+          data.buyer_city
+        );
+
+      case 'seller_info':
+        return !!(
+          data.seller_name &&
+          data.seller_address_line_1 &&
+          data.seller_postal_code &&
+          data.seller_city
+        );
+
+      case 'purchase_info':
+        return !!(
+          data.product_name &&
+          data.purchase_date &&
+          data.product_price &&
+          data.product_condition
+        );
+
+      case 'problem_info':
+        return !!(
+          data.remedy_preference && // ✅ NOUVEAU : obligatoire
+          data.defect_description &&
+          data.defect_description.length >= 20
+        );
+
+      default:
+        return false;
+    }
+  }
+
   clearCache(): void {
     this.validationCache.clear();
-    this.isValidating.clear();
   }
-
-  // ✅ Reset complet
-  reset(): void {
-    this.hasInteracted.clear();
-    this.clearCache();
-  }
-}
-
-export interface AddressSearchResponse {
-  type: string;
-  version: string;
-  features: AddressFeature[];
-}
-
-/** Une feature de l'API adresse */
-export interface AddressFeature {
-  type: 'Feature';
-  geometry: {
-    type: string;
-    coordinates: [number, number]; // [lon, lat]
-  };
-  properties: {
-    label: string; // "8 Boulevard du Port, 95000 Cergy"
-    score?: number;
-    housenumber?: string;
-    id?: string;
-    name?: string;
-    postcode?: string;
-    city?: string;
-    district?: string;
-    street?: string;
-    context?: string; // "95, Val-d'Oise, Île-de-France"
-    type?: string;
-    importance?: number;
-    country?: string;
-    country_code?: string; // "fr"
-    [key: string]: any; // pour tolérer d’autres propriétés
-  };
-}
-
-export interface ValidationAPI {
-  validateField?: (value: any, rules?: any) => { valid?: boolean; message?: string } | boolean;
-  getFieldRules?: (name: string, rules: any) => any;
-  validateStep?: (idOrFields: StepId | string[], data: FormData) => boolean;
-  markInteracted?: (field: string) => void;
-  isInteracted?: (field: string) => boolean;
-}
-
-// Callback standard pour mettre à jour un champ
-export type OnFieldChange = (field: keyof FormData | string, value: string) => void;
-
-// ✅ Props communes à toutes les étapes
-export interface StepProps {
-  data: FormData;
-  validation: ValidationAPI; // simpleValidation ou ValidationManager
-  onFieldChange: OnFieldChange;
-  onNext?: () => void;
-  onPrev?: () => void;
-  onSubmit?: () => void;
-  registerBeforeSubmit?: (fn: () => boolean | void) => void;
-  isSubmitting?: boolean;
 }
