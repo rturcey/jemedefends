@@ -71,17 +71,21 @@ const INELIGIBILITY_MESSAGES: Record<
         message:
             "La garantie légale de conformité couvre uniquement les achats auprès de professionnels (B2C).",
     },
-    not_consumer: {
+    not_consumer_use: {
         title: 'Usage professionnel',
         message: 'La protection est réservée aux achats pour un usage personnel.',
     },
-    territory_outside: {
+    territory_out_of_scope: {
         title: 'Vendeur hors UE/EEE',
         message: "Hors champ, sauf activité dirigée vers la France (indices suffisants).",
     },
-    timing_too_old: {
+    time_barred_2y: {
         title: 'Délai dépassé',
         message: "Le délai de la garantie légale (2 ans) est écoulé.",
+    },
+    subscription_ended: {
+        title: 'Abonnement terminé',
+        message: 'Le service n’est plus en cours, la garantie ne s’applique plus.',
     },
     no_defect: {
         title: 'Aucun défaut de conformité établi',

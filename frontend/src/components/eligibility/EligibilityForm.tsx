@@ -2,7 +2,7 @@
 'use client';
 
 import {AnimatePresence, motion} from 'framer-motion';
-import React, {useCallback, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {BadgeEuro, Earth, LucideIcon} from 'lucide-react';
 import {
     User,
@@ -17,7 +17,6 @@ import {
     Globe,
     Clock,
     AlertTriangle,
-    ChevronDown,
     Info,
     Scale,
     BookOpen,
@@ -28,11 +27,16 @@ import {
     Repeat,
     PlayCircle,
     PauseCircle,
+    ArrowLeft,
+    ShieldCheck,
 } from 'lucide-react';
 
-import RadioGroup from '@/components/form/RadioGroup';
-import BackOnlyNavigation from '@/components/form/BackOnlyNavigation';
-import Container from '@/components/ui/Container';
+import {Badge} from '@/components/ui/badge';
+import {Button} from '@/components/ui/button';
+import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
+import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from '@/components/ui/accordion';
+import {Progress} from '@/components/ui/progress';
+import {RadioGroup, RadioGroupItem} from '@/components/ui/radio-group';
 import ValidationMessage from '@/components/ui/ValidationMessage';
 import LegalReference from '@/components/ui/LegalReference';
 import {ELIGIBILITY_STEPS} from '@/constants/eligibilitySteps';
@@ -92,7 +96,6 @@ const OPTION_ICON_MAP: Record<string, LucideIcon> = {
     'product-physical': Package,
     'product-digital': Monitor,
 };
-
 
 // Helpers d’instanciation dans le render
 function StepIcon({stepId, className = 'w-6 h-6'}: {
@@ -154,13 +157,15 @@ const EligibilityForm: React.FC<EligibilityFormProps> = ({
         [data],
     );
 
+    useEffect(() => {
+        if (currentStep >= visibleSteps.length) {
+            setCurrentStep(Math.max(visibleSteps.length - 1, 0));
+        }
+    }, [currentStep, setCurrentStep, visibleSteps.length]);
+
+    if (!visibleSteps.length) return null;
+
     const step = visibleSteps[currentStep];
-    if (!step) {
-        React.useEffect(() => {
-            setCurrentStep(0);
-        }, [setCurrentStep]);
-        return null;
-    }
 
     const getCurrentStepData = useCallback(() => {
         const fieldName = FIELD_BY_ID[step.id];
@@ -185,7 +190,12 @@ const EligibilityForm: React.FC<EligibilityFormProps> = ({
                 const fieldName = FIELD_BY_ID[step.id];
                 if (!fieldName) return;
 
-                const newData = {...data, [fieldName]: value} as EligibilityData;
+                const normalizedValue =
+                    step.id === 'defect'
+                        ? value === true || value === 'yes'
+                        : value;
+
+                const newData = {...data, [fieldName]: normalizedValue} as EligibilityData;
                 setData(newData);
 
                 const isIneligibleChoice =
@@ -230,282 +240,188 @@ const EligibilityForm: React.FC<EligibilityFormProps> = ({
     }));
 
     const value = getCurrentStepData();
+    const radioValue =
+        step.id === 'defect' && typeof value === 'boolean'
+            ? value
+                ? 'yes'
+                : 'no'
+            : (value as string);
     const stepValidation = validations[currentStep];
+    const progressValue = Math.round(((currentStep + 1) / visibleSteps.length) * 100);
 
     return (
-        <div
-            className={`min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 ${className}`}>
-            <Container variant="form" className="py-6 md:py-12">
-                {/* Progression */}
-                <div className="mb-6 md:mb-8">
-                    <div
-                        className="flex items-center justify-between text-sm text-gray-600 mb-3">
-                        <span>Étape {currentStep + 1} sur {visibleSteps.length}</span>
-                        <span>{Math.round(((currentStep + 1) / visibleSteps.length) * 100)}%</span>
-                    </div>
-                    <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-                        <motion.div
-                            className="h-full bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full"
-                            initial={{width: '0%'}}
-                            animate={{width: `${((currentStep + 1) / visibleSteps.length) * 100}%`}}
-                            transition={{duration: 0.5, ease: 'easeInOut'}}
-                        />
-                    </div>
+        <div className={`min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 ${className}`}>
+            <div className="mx-auto max-w-3xl px-4 py-8 md:py-12">
+                <div className="mb-4 flex items-center justify-between text-sm text-gray-600">
+                    <span className="flex items-center gap-2 font-semibold text-gray-900">
+                        <ShieldCheck className="h-4 w-4 text-blue-600" />
+                        Diagnostic en {visibleSteps.length} étapes
+                    </span>
+                    <span className="rounded-full bg-white/70 px-3 py-1 text-xs font-semibold text-blue-700 shadow-sm">
+                        {progressValue}%
+                    </span>
                 </div>
+                <Progress value={progressValue} className="mb-6 shadow-inner" />
 
                 <AnimatePresence mode="wait">
-                    <motion.div key={currentStep} variants={stepVariants}
-                                initial="initial"
-                                animate="animate" exit="exit">
-                        <div
-                            className="bg-white rounded-2xl md:rounded-3xl shadow-lg border border-gray-100 overflow-hidden">
-                            <div className="p-4 md:p-6 pb-0">
-                                <div className="flex items-start gap-3 md:gap-4">
-                                    <div
-                                        className="flex-shrink-0 p-2.5 md:p-3 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl md:rounded-2xl text-white shadow-lg">
-                                        <StepIcon stepId={step.id}/>
-                                    </div>
-                                    <div className="flex-1 min-w-0">
-                                        <h2
-                                            className="text-lg md:text-xl lg:text-2xl font-bold text-gray-900 mb-1.5 md:mb-2">
-                                            {step.title}
-                                        </h2>
-                                        <p
-                                            className="text-sm md:text-base lg:text-lg text-gray-700 leading-relaxed">
-                                            {step.question}
-                                        </p>
-                                        {step.description && (
-                                            <p className="text-xs md:text-sm text-gray-500 mt-1.5 md:mt-2">
-                                                {step.description}
-                                            </p>
-                                        )}
-                                    </div>
+                    <motion.div key={currentStep} variants={stepVariants} initial="initial" animate="animate" exit="exit">
+                        <Card className="border-blue-100 shadow-xl">
+                            <CardHeader className="flex flex-row items-start gap-4 pb-4">
+                                <div className="rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 p-3 text-white shadow-lg">
+                                    <StepIcon stepId={step.id} />
                                 </div>
+                                <div className="space-y-1">
+                                    <CardTitle className="text-xl md:text-2xl leading-tight">{step.title}</CardTitle>
+                                    <CardDescription className="text-base text-gray-700">{step.question}</CardDescription>
+                                    {step.description && (
+                                        <p className="text-sm text-gray-500 leading-relaxed">{step.description}</p>
+                                    )}
+                                    <Badge className="mt-2 w-fit bg-blue-50 text-blue-700">Étape {currentStep + 1}</Badge>
+                                </div>
+                            </CardHeader>
 
-                                {/* En savoir plus */}
-                                <div className="mt-3 md:mt-6">
-                                    <button
-                                        onClick={() => setShowLegalNote(!showLegalNote)}
-                                        className="flex items-center gap-2 text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors"
-                                        type="button"
-                                    >
-                                        <Info className="w-4 h-4"/>
-                                        <span>En savoir plus</span>
-                                        <ChevronDown
-                                            className={`w-4 h-4 transition-transform ${showLegalNote ? 'rotate-180' : ''}`}/>
-                                    </button>
-
-                                    <AnimatePresence>
-                                        {showLegalNote && (
-                                            <motion.div
-                                                initial={{opacity: 0, height: 0}}
-                                                animate={{opacity: 1, height: 'auto'}}
-                                                exit={{opacity: 0, height: 0}}
-                                                transition={{duration: 0.3}}
-                                                className="mt-3 md:mt-4 overflow-hidden"
-                                            >
-                                                <div
-                                                    className="p-3 md:p-4 bg-blue-50 border border-blue-200 rounded-xl space-y-3 md:space-y-4">
-                                                    {/* Base légale */}
-                                                    <div className="space-y-2">
-                                                        <div
-                                                            className="flex items-center gap-2 text-xs md:text-sm font-medium text-blue-900">
-                                                            <Scale className="w-4 h-4"/>
-                                                            <span>Base légale</span>
-                                                        </div>
-                                                        {/* Références */}
-                                                        {step.id === 'seller' && (
-                                                            <LegalReference
-                                                                code="L.217-3"
-                                                                variant="badge"
-                                                                size="sm"/>
-                                                        )}
-                                                        {step.id === 'usage' && (
-                                                            <LegalReference
-                                                                code="LIMINAIRE"
-                                                                variant="badge"
-                                                                size="sm"/>
-                                                        )}
-                                                        {step.id === 'itemCategory' && (
-                                                            <div
-                                                                className="flex flex-wrap gap-2">
-                                                                <LegalReference
-                                                                    code="L.217-3"
-                                                                    variant="badge"
-                                                                    size="sm"/>
-                                                                <LegalReference
-                                                                    code="L.224-25-12"
-                                                                    variant="badge"
-                                                                    size="sm"/>
-                                                            </div>
-                                                        )}
-                                                        {step.id === 'itemDetail' && (
-                                                            <div
-                                                                className="flex flex-wrap gap-2">
-                                                                <LegalReference
-                                                                    code="L.217-3"
-                                                                    variant="badge"
-                                                                    size="sm"/>
-                                                                <LegalReference
-                                                                    code="L.217-7"
-                                                                    variant="badge"
-                                                                    size="sm"/>
-                                                                <LegalReference
-                                                                    code="L.224-25-12"
-                                                                    variant="badge"
-                                                                    size="sm"/>
-                                                            </div>
-                                                        )}
-                                                        {step.id === 'territory' && (
-                                                            <p className="text-xs md:text-sm text-blue-800 italic">
-                                                                {step.legal.article}
-                                                            </p>
-                                                        )}
-                                                        {step.id === 'timing' && (
-                                                            <div
-                                                                className="flex flex-wrap gap-2">
-                                                                <LegalReference
-                                                                    code="L.217-3"
-                                                                    variant="badge"
-                                                                    size="sm"/>
-                                                                <LegalReference
-                                                                    code="L.217-7"
-                                                                    variant="badge"
-                                                                    size="sm"/>
-                                                                <LegalReference
-                                                                    code="L.224-25-12"
-                                                                    variant="badge"
-                                                                    size="sm"/>
-                                                            </div>
-                                                        )}
-                                                        {step.id === 'defect' && (
-                                                            <LegalReference
-                                                                code="L.217-5"
-                                                                variant="badge"
-                                                                size="sm"/>
-                                                        )}
-                                                    </div>
-
-                                                    {/* Explication */}
-                                                    {step.legal.explanation && (
-                                                        <div className="space-y-1.5">
-                                                            <div
-                                                                className="flex items-center gap-2 text-xs md:text-sm font-medium text-blue-900">
-                                                                <BookOpen
-                                                                    className="w-4 h-4"/>
-                                                                <span>Explication</span>
-                                                            </div>
-                                                            <p
-                                                                className="text-xs md:text-sm text-blue-800 leading-relaxed">
-                                                                {step.legal.explanation}
-                                                            </p>
-                                                        </div>
-                                                    )}
-
-                                                    {/* Exemples */}
-                                                    {step.legal.examples && step.legal.examples.length > 0 && (
-                                                        <div className="space-y-2">
-                                                            <div
-                                                                className="flex items-center gap-2 text-xs md:text-sm font-medium text-blue-900">
-                                                                <Lightbulb
-                                                                    className="w-4 h-4"/>
-                                                                <span>Exemples</span>
-                                                            </div>
-                                                            <ul className="space-y-1.5">
-                                                                {step.legal.examples.map((example, idx) => {
-                                                                    const isPositive = example.trim().startsWith('✅');
-                                                                    const isNegative = example.trim().startsWith('❌');
-                                                                    const cleanExample = example.replace(/^[✅❌]\s*/, '');
-                                                                    return (
-                                                                        <li key={idx}
-                                                                            className="flex items-start gap-2 text-xs md:text-sm text-blue-800 leading-relaxed">
-                                                                            {isPositive &&
-                                                                                <CheckCircle
-                                                                                    className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5"/>}
-                                                                            {isNegative &&
-                                                                                <XCircle
-                                                                                    className="w-4 h-4 text-red-600 flex-shrink-0 mt-0.5"/>}
-                                                                            {!isPositive && !isNegative &&
-                                                                                <div
-                                                                                    className="w-1 h-1 rounded-full bg-blue-600 flex-shrink-0 mt-1.5"/>}
-                                                                            <span>{cleanExample}</span>
-                                                                        </li>
-                                                                    );
-                                                                })}
-                                                            </ul>
-                                                        </div>
-                                                    )}
+                            <CardContent className="pt-0 space-y-4">
+                                <Accordion
+                                    type="single"
+                                    collapsible
+                                    value={showLegalNote ? 'legal' : ''}
+                                    onValueChange={(val) => setShowLegalNote(Boolean(val))}
+                                >
+                                    <AccordionItem value="legal">
+                                        <AccordionTrigger className="text-sm text-blue-700">
+                                            <span className="flex items-center gap-2">
+                                                <Info className="h-4 w-4" /> En savoir plus (bases légales)
+                                            </span>
+                                        </AccordionTrigger>
+                                        <AccordionContent className="bg-white">
+                                            <div className="space-y-3 text-sm text-gray-800">
+                                                <div className="flex items-center gap-2 font-semibold text-blue-900">
+                                                    <Scale className="h-4 w-4" /> Base légale
                                                 </div>
-                                            </motion.div>
-                                        )}
-                                    </AnimatePresence>
-                                </div>
-                            </div>
+                                                <div className="flex flex-wrap gap-2">
+                                                    {step.id === 'seller' && <LegalReference code="L.217-3" variant="badge" size="sm" />}
+                                                    {step.id === 'usage' && <LegalReference code="LIMINAIRE" variant="badge" size="sm" />}
+                                                    {step.id === 'itemCategory' && (
+                                                        <>
+                                                            <LegalReference code="L.217-3" variant="badge" size="sm" />
+                                                            <LegalReference code="L.224-25-12" variant="badge" size="sm" />
+                                                        </>
+                                                    )}
+                                                    {step.id === 'itemDetail' && (
+                                                        <>
+                                                            <LegalReference code="L.217-3" variant="badge" size="sm" />
+                                                            <LegalReference code="L.217-7" variant="badge" size="sm" />
+                                                            <LegalReference code="L.224-25-12" variant="badge" size="sm" />
+                                                        </>
+                                                    )}
+                                                    {step.id === 'territory' && step.legal.article && (
+                                                        <span className="text-xs italic text-blue-800">{step.legal.article}</span>
+                                                    )}
+                                                    {step.id === 'timing' && (
+                                                        <>
+                                                            <LegalReference code="L.217-3" variant="badge" size="sm" />
+                                                            <LegalReference code="L.217-7" variant="badge" size="sm" />
+                                                            <LegalReference code="L.224-25-12" variant="badge" size="sm" />
+                                                        </>
+                                                    )}
+                                                    {step.id === 'defect' && <LegalReference code="L.217-5" variant="badge" size="sm" />}
+                                                </div>
 
-                            {/* Form */}
-                            <div className="p-4 md:p-6 pt-4 md:pt-6">
+                                                {step.legal.explanation && (
+                                                    <div className="space-y-1">
+                                                        <div className="flex items-center gap-2 font-semibold text-blue-900">
+                                                            <BookOpen className="h-4 w-4" /> Explication
+                                                        </div>
+                                                        <p className="leading-relaxed text-gray-700">{step.legal.explanation}</p>
+                                                    </div>
+                                                )}
+
+                                                {step.legal.examples && step.legal.examples.length > 0 && (
+                                                    <div className="space-y-2">
+                                                        <div className="flex items-center gap-2 font-semibold text-blue-900">
+                                                            <Lightbulb className="h-4 w-4" /> Exemples
+                                                        </div>
+                                                        <ul className="space-y-1 text-gray-700">
+                                                            {step.legal.examples.map((example, idx) => {
+                                                                const isPositive = example.trim().startsWith('✅');
+                                                                const isNegative = example.trim().startsWith('❌');
+                                                                const cleanExample = example.replace(/^[✅❌]\s*/, '');
+                                                                return (
+                                                                    <li key={idx} className="flex items-start gap-2">
+                                                                        {isPositive && <CheckCircle className="h-4 w-4 text-green-600" />}
+                                                                        {isNegative && <XCircle className="h-4 w-4 text-orange-500" />}
+                                                                        {!isPositive && !isNegative && <div className="mt-1 h-1 w-1 rounded-full bg-blue-600" />}
+                                                                        <span>{cleanExample}</span>
+                                                                    </li>
+                                                                );
+                                                            })}
+                                                        </ul>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </AccordionContent>
+                                    </AccordionItem>
+                                </Accordion>
+
                                 <RadioGroup
-                                    inputRef={firstFieldRef as any}
-                                    name={String(step.id)}
-                                    onChange={handleChoice}
-                                    options={enrichedOptions || step.ui.options}
-                                    value={value}
-                                    required={step.ui.required}
-                                    variant="card"
-                                />
+                                    ref={firstFieldRef as any}
+                                    value={radioValue}
+                                    onValueChange={(val) => handleChoice(val)}
+                                    className="space-y-3"
+                                >
+                                    {(enrichedOptions || step.ui.options)?.map((option) => (
+                                        <RadioGroupItem
+                                            key={`${step.id}-${option.value}`}
+                                            value={String(option.value)}
+                                            label={option.label}
+                                            description={option.description}
+                                            icon={getOptionIcon(step.id, option.value)}
+                                        />
+                                    ))}
+                                </RadioGroup>
 
                                 {stepValidation && !stepValidation.isValid && (
-                                    <motion.div initial={{opacity: 0, y: 10}}
-                                                animate={{opacity: 1, y: 0}}
-                                                className="mt-4 md:mt-6">
+                                    <motion.div initial={{opacity: 0, y: 10}} animate={{opacity: 1, y: 0}} className="mt-2">
                                         <ValidationMessage
                                             type="error"
                                             message={stepValidation.error}
-                                            className="bg-red-50 border-red-200 text-red-800 rounded-xl p-3 md:p-4"
+                                            className="rounded-xl border border-red-200 bg-red-50 text-red-800"
                                         />
                                     </motion.div>
                                 )}
-                            </div>
-                        </div>
+                            </CardContent>
+
+                            <CardContent className="pt-0">
+                                <div className="flex flex-col gap-3 rounded-2xl border border-gray-100 bg-gradient-to-r from-slate-50 to-white p-4 shadow-inner md:flex-row md:items-center md:justify-between">
+                                    {['RGPD compliant', 'Simple & rapide', 'Service gratuit'].map((title) => (
+                                        <div key={title} className="flex items-center gap-2">
+                                            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-green-50 text-green-700">
+                                                <CheckCircle className="h-5 w-5" />
+                                            </div>
+                                            <div className="text-sm font-semibold text-gray-800">{title}</div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </CardContent>
+
+                            <CardContent className="pt-0 pb-6">
+                                <div className="flex items-center justify-between gap-3">
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        className="w-fit"
+                                        onClick={handlePrevious}
+                                        disabled={currentStep === 0}
+                                    >
+                                        <ArrowLeft className="h-4 w-4" /> Retour
+                                    </Button>
+                                    <span className="text-xs text-gray-500">Répondez en moins de 60 secondes</span>
+                                </div>
+                            </CardContent>
+                        </Card>
                     </motion.div>
                 </AnimatePresence>
-
-                {/* Barre de confiance */}
-                <div className="mt-4 md:mt-6">
-                    <div
-                        className="bg-white/80 backdrop-blur-sm border border-gray-200 rounded-xl md:rounded-2xl shadow-sm p-4 md:p-5">
-                        <div
-                            className="flex flex-col md:flex-row md:items-center md:justify-center gap-3 md:gap-8">
-                            {['RGPD compliant', 'Simple & rapide', 'Service gratuit'].map((title) => (
-                                <div key={title} className="flex items-center gap-2.5">
-                                    <div
-                                        className="flex-shrink-0 w-8 h-8 md:w-9 md:h-9 bg-green-50 rounded-lg flex items-center justify-center">
-                                        <CheckCircle
-                                            className="w-4.5 h-4.5 md:w-5 md:h-5 text-green-600"/>
-                                    </div>
-                                    <div className="flex-1 min-w-0">
-                                        <div
-                                            className="text-sm md:text-base font-semibold text-gray-900">{title}</div>
-                                        <div className="text-xs text-gray-500">
-                                            {title === 'RGPD compliant' ? 'Conforme aux réglementations' : title === 'Simple & rapide' ? 'Sans inscription' : 'Aucun engagement'}
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-
-                {/* Navigation */}
-                <div className="mt-6 md:mt-8">
-                    <BackOnlyNavigation
-                        canGoPrev={currentStep > 0}
-                        onPrev={handlePrevious}
-                        currentStep={currentStep}
-                        totalSteps={visibleSteps.length}
-                    />
-                </div>
-            </Container>
+            </div>
         </div>
     );
 };

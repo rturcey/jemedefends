@@ -2,21 +2,23 @@
 'use client';
 
 import React from 'react';
-import { motion } from 'framer-motion';
+import {motion} from 'framer-motion';
 import {
-  CheckCircle,
-  XCircle,
-  ArrowRight,
-  RefreshCw,
-  Info,
-  ExternalLink,
-  Shield,
-  Clock,
-  Scale,
-  ShieldCheck,
-  MessageSquareWarning,
+    CheckCircle,
+    XCircle,
+    ArrowRight,
+    RefreshCw,
+    Info,
+    ExternalLink,
+    Shield,
+    Clock,
+    Scale,
+    ShieldCheck,
+    MessageSquareWarning,
 } from 'lucide-react';
-import Badge from '@/components/ui/Badge';
+
+import {Button} from '@/components/ui/button';
+import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
 
 interface ResultPanelProps {
   result: {
@@ -70,11 +72,10 @@ const cardVariants = {
   }),
 };
 
-const ContainerCard: React.FC<React.PropsWithChildren<{
-  className?: string
-}>> = ({ className = '', children }) => (
-  <div
-    className={`bg-white rounded-xl shadow-lg border border-gray-100 p-6 ${className}`}>{children}</div>
+const ContainerCard: React.FC<React.PropsWithChildren<{className?: string}>> = ({className = '', children}) => (
+  <Card className={`border-blue-50 shadow-md ${className}`}>
+    <CardContent className="p-6">{children}</CardContent>
+  </Card>
 );
 
 const SectionTitle: React.FC<React.PropsWithChildren<{
@@ -225,45 +226,53 @@ const IneligibleCards: React.FC<{ reasons?: string[] }> = ({ reasons }) => {
   );
 };
 
-const EligibleCTAs: React.FC<{
-  onContinue: () => void;
-  onRestart: () => void
-}> = ({ onContinue, onRestart }) => (
+const EligibleCTAs: React.FC<{ onContinue: () => void; onRestart: () => void }> = ({onContinue, onRestart}) => (
   <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-    <button
-      onClick={onContinue}
-      className="h-14 w-full sm:w-64 rounded-xl bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold px-6 transition-all transform hover:scale-[1.02] active:scale-[0.99]"
-    >
-      <ArrowRight className="w-4 h-4 mr-2 inline" />
+    <Button className="w-full sm:w-64" size="lg" onClick={onContinue}>
+      <ArrowRight className="w-4 h-4" />
       Générer ma lettre
-    </button>
-    <button
-      onClick={onRestart}
-      className="h-14 w-full sm:w-64 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium px-6 transition-colors"
-    >
-      <RefreshCw className="w-4 h-4 mr-2 inline" />
+    </Button>
+    <Button className="w-full sm:w-64" variant="outline" size="lg" onClick={onRestart}>
+      <RefreshCw className="w-4 h-4" />
       Recommencer
-    </button>
+    </Button>
   </div>
 );
 
-const IneligibleCTAs: React.FC<{ onRestart: () => void }> = ({ onRestart }) => (
+const IneligibleCTAs: React.FC<{ onRestart: () => void }> = ({onRestart}) => (
   <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-    <a
-      href="http://localhost:3000/guides/recours-non-eligible.yml"
-      className="h-14 w-full sm:w-64 rounded-xl bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white font-bold px-6 transition-all text-center flex items-center justify-center"
-    >
-      <ExternalLink className="w-4 h-4 mr-2" />
-      Voir le guide dédié
-    </a>
-    <button
-      onClick={onRestart}
-      className="h-14 w-full sm:w-64 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium px-6 transition-colors"
-    >
-      <RefreshCw className="w-4 h-4 mr-2 inline" />
+    <Button className="w-full sm:w-72" size="lg" variant="destructive" asChild>
+      <a href="/guides/recours-non-eligible.yml" target="_blank" rel="noreferrer">
+        <ExternalLink className="w-4 h-4" />
+        Guide des alternatives
+      </a>
+    </Button>
+    <Button className="w-full sm:w-64" variant="outline" size="lg" onClick={onRestart}>
+      <RefreshCw className="w-4 h-4" />
       Recommencer
-    </button>
+    </Button>
   </div>
+);
+
+const AlternativesBanner = () => (
+  <Card className="mb-6 border-orange-100 bg-gradient-to-r from-orange-50 via-white to-amber-50">
+    <CardHeader className="gap-1 pb-3">
+      <CardTitle className="text-lg flex items-center gap-2 text-orange-800">
+        <MessageSquareWarning className="h-5 w-5" />
+        Besoin d'alternatives rapides ?
+      </CardTitle>
+      <CardDescription className="text-sm text-orange-700">
+        Accédez directement au guide des solutions (SignalConso, médiation, assistance gratuite) pour passer à l'action.
+      </CardDescription>
+    </CardHeader>
+    <CardContent className="pt-0">
+      <Button variant="destructive" asChild className="w-full md:w-auto">
+        <a href="/guides/recours-non-eligible.yml" target="_blank" rel="noreferrer">
+          <ExternalLink className="h-4 w-4" /> Consulter le guide des alternatives
+        </a>
+      </Button>
+    </CardContent>
+  </Card>
 );
 
 const InfoFooter: React.FC<{
@@ -341,6 +350,8 @@ const ResultPanel: React.FC<ResultPanelProps> = ({ result, onRestart, onClose })
       ) : (
         <IneligibleCTAs onRestart={onRestart} />
       )}
+
+      <AlternativesBanner />
 
       {/* Info footer (cohérent avec skeleton “Additional info”) */}
       <InfoFooter tone={result.isEligible ? 'green' : 'blue'} />

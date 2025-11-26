@@ -3,10 +3,11 @@ import type {EligibilityData} from '@/types/eligibility';
 
 export type EligibilityReason =
     | 'seller_not_professional'
-    | 'not_consumer'
-    | 'territory_outside'
+    | 'not_consumer_use'
+    | 'territory_out_of_scope'
     | 'no_defect'
-    | 'timing_too_old';
+    | 'time_barred_2y'
+    | 'subscription_ended';
 
 export type EligibilityTiming = {
     monthsSincePurchase?: number;
@@ -20,14 +21,6 @@ export type EligibilityResult = {
     timing?: EligibilityTiming;
 };
 
-function monthsBetween(from?: Date, to = new Date()): number | undefined {
-    if (!from) return undefined;
-    const ms = to.getTime() - from.getTime();
-    if (Number.isNaN(ms)) return undefined;
-    const days = ms / (1000 * 60 * 60 * 24);
-    return Math.floor(days / 30.4375);
-}
-
 // FONCTION CORRIGÉE AVEC VÉRIFICATIONS DE SÉCURITÉ
 export function calculateEligibilityEngine(
     data: EligibilityData | undefined | null,
@@ -36,47 +29,55 @@ export function calculateEligibilityEngine(
     if (!data) {
         return {
             isEligible: false,
-            reasons: ['seller_not_professional', 'not_consumer', 'territory_outside', 'no_defect'],
+            reasons: [
+                'seller_not_professional',
+                'not_consumer_use',
+                'territory_out_of_scope',
+                'no_defect',
+            ],
             timing: {},
         };
     }
 
     const reasons: EligibilityReason[] = [];
 
+    // Normalisation des nouvelles clés (avec compat héritée)
+    const itemCategory = data.itemCategory ?? (data.productType === 'digital' ? 'digital_service' : data.productType === 'physical' ? 'good' : undefined);
+    const itemDetail = data.itemDetail;
+    const timingAnswer = data.timingAnswer ?? (typeof data.withinTwoYears === 'boolean' ? (data.withinTwoYears ? 'ok' : 'ko') : undefined);
+
     // VÉRIFICATIONS SÉCURISÉES AVEC VALEURS PAR DÉFAUT
     const sellerIsProfessional = data.sellerType === 'professional';
     const isConsumer = data.usage === 'personal';
-    const isDigital = data.productType === 'digital';
     const isEUorDirectedToFR = data.territory === 'eu';
-    const hasDefect = data.hasDefect === 'yes';
+    const hasDefect = data.hasDefect === true || data.hasDefect === 'yes';
 
-    // Évaluation des critères d'éligibilité
     if (!sellerIsProfessional) reasons.push('seller_not_professional');
-    if (!isConsumer) reasons.push('not_consumer');
-    if (!isEUorDirectedToFR) reasons.push('territory_outside');
+    if (!isConsumer) reasons.push('not_consumer_use');
+    if (!isEUorDirectedToFR) reasons.push('territory_out_of_scope');
     if (!hasDefect) reasons.push('no_defect');
 
     let timing: EligibilityTiming = {};
 
-    // Gestion du timing pour les biens physiques
-    if (!isDigital) {
-        // Priorité à withinTwoYears si l'utilisateur a répondu "±2 ans"
-        if (typeof data.withinTwoYears === 'boolean') {
-            timing.withinTwoYears = data.withinTwoYears;
-            // On ne peut pas déduire la présomption sans mois exacts -> undefined
-            if (data.withinTwoYears === false) reasons.push('timing_too_old');
-        } else {
-            // fallback sur une vraie date si disponible
-            const months = monthsBetween(data.purchaseDate);
-            const withinTwoYears = months !== undefined ? months <= 24 : undefined;
-            const presumptionSellerBurden = months !== undefined ? months <= 12 : undefined;
+    // Gestion du timing avec les nouvelles réponses unifiées
+    if (timingAnswer) {
+        const isSubscription = itemCategory === 'digital_service' && itemDetail === 'subscription';
 
-            timing = {
-                monthsSincePurchase: months,
-                withinTwoYears,
-                presumptionSellerBurden
-            };
-            if (withinTwoYears === false) reasons.push('timing_too_old');
+        if (isSubscription) {
+            timing.withinTwoYears = timingAnswer === 'during_contract';
+            if (timingAnswer === 'after_contract') reasons.push('subscription_ended');
+        } else {
+            timing.withinTwoYears = timingAnswer === 'ok';
+            if (timingAnswer === 'ko') reasons.push('time_barred_2y');
+        }
+
+        if (itemCategory === 'good') {
+            // Présomption : 24 mois (neuf) / 12 mois (occasion) si dans le délai
+            if (timing.withinTwoYears) {
+                timing.presumptionSellerBurden = itemDetail === 'new' ? true : itemDetail === 'used' ? false : undefined;
+            } else {
+                timing.presumptionSellerBurden = undefined;
+            }
         }
     }
 
@@ -89,22 +90,22 @@ export function validateEligibilityData(data: Partial<EligibilityData>): {
     isValid: boolean;
     missingFields: string[];
 } {
-    const requiredFields: (keyof EligibilityData)[] = [
-        'sellerType',
-        'usage',
-        'productType',
-        'territory',
-        'hasDefect',
-    ];
+    const missingFields: string[] = [];
 
-    const missingFields = requiredFields.filter(
-        field => data[field] === undefined || data[field] === null,
-    );
+    if (!data.sellerType) missingFields.push('sellerType');
+    if (!data.usage) missingFields.push('usage');
+    if (!data.territory) missingFields.push('territory');
+    if (data.hasDefect === undefined || data.hasDefect === null) missingFields.push('hasDefect');
 
-    // Pour les biens physiques, timing est requis
-    if (data.productType === 'physical' && data.withinTwoYears === undefined && !data.purchaseDate) {
-        missingFields.push('withinTwoYears or purchaseDate');
-    }
+    // Nouveau découpage : itemCategory + itemDetail sont attendus
+    if (!data.itemCategory) missingFields.push('itemCategory');
+    if (!data.itemDetail) missingFields.push('itemDetail');
+
+    // Timing : soit timingAnswer, soit l'ancien withinTwoYears
+    const hasTiming =
+        data.timingAnswer !== undefined && data.timingAnswer !== null
+        || typeof data.withinTwoYears === 'boolean';
+    if (!hasTiming) missingFields.push('timingAnswer');
 
     return {
         isValid: missingFields.length === 0,
