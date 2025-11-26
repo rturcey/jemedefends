@@ -58,7 +58,7 @@ export default function StickyMobileCTA() {
         >
           <div className="flex items-center gap-3 max-w-sm mx-auto">
             <Link
-              href="/eligibilite#start"
+              href="/eligibilite"
               className="flex-1 inline-flex items-center justify-center gap-2 rounded-full px-6 py-4 font-bold text-white
                          bg-gradient-to-r from-blue-600 to-indigo-600
                          hover:from-blue-700 hover:to-indigo-700

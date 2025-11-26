@@ -34,11 +34,9 @@ export const HeroSkeleton: React.FC = () => {
       aria-busy="true"
     >
       <Container className="h-full flex items-center py-4 md:py-6">
-        <div
-          className="relative z-10 flex flex-col lg:flex-row items-center lg:justify-center gap-6 lg:gap-10 w-full">
+        <div className="relative z-10 flex flex-col lg:flex-row items-center lg:justify-center gap-6 lg:gap-10 w-full">
           {/* Hero Left - flex-1 max-w-xl */}
-          <div
-            className="flex-1 max-w-xl w-full text-center lg:text-left space-y-6">
+          <div className="flex-1 max-w-xl w-full text-center lg:text-left space-y-6">
             {/* Badge gratuit */}
             <Skeleton className="h-10 w-64 rounded-full mx-auto lg:mx-0" />
 
@@ -59,12 +57,10 @@ export const HeroSkeleton: React.FC = () => {
 
             {/* Éléments de confiance - Mobile (grid 2 cols) */}
             <div className="md:hidden grid grid-cols-2 gap-4 mt-8">
-              {[1, 2, 3, 4].map((i) => (
-                <div key={i}
-                     className="bg-white rounded-xl p-4 border border-gray-200">
+              {[1, 2, 3, 4].map(i => (
+                <div key={i} className="bg-white rounded-xl p-4 border border-gray-200">
                   <div className="flex items-start gap-3">
-                    <Skeleton
-                      className="h-10 w-10 rounded-lg flex-shrink-0" />
+                    <Skeleton className="h-10 w-10 rounded-lg flex-shrink-0" />
                     <div className="flex-1 space-y-2">
                       <Skeleton className="h-4 w-full" />
                       <Skeleton className="h-3 w-3/4" />
@@ -75,9 +71,8 @@ export const HeroSkeleton: React.FC = () => {
             </div>
 
             {/* Éléments de confiance - Desktop (flex horizontal) */}
-            <div
-              className="hidden md:flex flex-wrap items-center gap-5 lg:gap-7">
-              {[1, 2, 3, 4].map((i) => (
+            <div className="hidden md:flex flex-wrap items-center gap-5 lg:gap-7">
+              {[1, 2, 3, 4].map(i => (
                 <div key={i} className="flex items-center gap-3">
                   <Skeleton className="h-10 w-10 rounded-lg" />
                   <Skeleton className="h-5 w-40" />
@@ -88,8 +83,7 @@ export const HeroSkeleton: React.FC = () => {
 
           {/* Hero Right FAQ - hidden lg:block lg:w-[22rem] */}
           <div className="hidden lg:block lg:w-[22rem] lg:flex-shrink-0">
-            <div
-              className="rounded-2xl border border-gray-200/70 bg-white/70 backdrop-blur-md shadow-md p-5">
+            <div className="rounded-2xl border border-gray-200/70 bg-white/70 backdrop-blur-md shadow-md p-5">
               {/* Header FAQ */}
               <div className="flex items-center gap-2 mb-4">
                 <Skeleton className="h-8 w-8 rounded-full" />
@@ -98,11 +92,9 @@ export const HeroSkeleton: React.FC = () => {
 
               {/* Questions FAQ */}
               <div className="space-y-2">
-                {[1, 2, 3].map((i) => (
-                  <div key={i}
-                       className="p-3 bg-gray-50/50 rounded-lg">
-                    <div
-                      className="flex items-center justify-between">
+                {[1, 2, 3].map(i => (
+                  <div key={i} className="p-3 bg-gray-50/50 rounded-lg">
+                    <div className="flex items-center justify-between">
                       <Skeleton className="h-5 w-36" />
                       <Skeleton className="h-4 w-4 rounded-full" />
                     </div>
@@ -150,8 +142,7 @@ export const SectionSkeleton: React.FC<{
       {variant === 'problems' && (
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {[1, 2, 3, 4, 5, 6].map(i => (
-            <div key={i}
-                 className="bg-white rounded-xl p-6 border border-gray-200">
+            <div key={i} className="bg-white rounded-xl p-6 border border-gray-200">
               <Skeleton className="h-12 w-12 rounded-lg mb-4" />
               <Skeleton className="h-6 w-3/4 mb-3" />
               <Skeleton className="h-4 w-full mb-2" />
@@ -208,8 +199,7 @@ export const FAQSkeleton: React.FC = () => (
         {/* Questions FAQ */}
         <div className="space-y-4">
           {[1, 2, 3, 4, 5].map(i => (
-            <div key={i}
-                 className="bg-white rounded-xl border border-gray-200 p-5 md:p-6">
+            <div key={i} className="bg-white rounded-xl border border-gray-200 p-5 md:p-6">
               <div className="flex items-center justify-between">
                 <Skeleton className="h-6 w-3/4" />
                 <Skeleton className="h-6 w-6 rounded-full" />
@@ -229,8 +219,7 @@ export const CTASkeleton: React.FC = () => (
   <section className="py-16 md:py-20">
     <Container>
       <div className="max-w-4xl mx-auto">
-        <div
-          className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-8 md:p-12 text-center border border-blue-200">
+        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-8 md:p-12 text-center border border-blue-200">
           {/* Titre CTA */}
           <Skeleton className="h-10 w-3/4 md:w-1/2 mx-auto mb-4" />
 
@@ -258,11 +247,10 @@ export const CTASkeleton: React.FC = () => (
  */
 export const FooterSkeleton: React.FC = () => {
   return (
-    <footer className="w-full bg-gray-900 text-white py-12 md:py-16"
-            aria-busy="true">
+    <footer className="w-full bg-gray-900 text-white py-12 md:py-16" aria-busy="true">
       <Container>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-          {[1, 2, 3, 4].map((i) => (
+          {[1, 2, 3, 4].map(i => (
             <div key={i}>
               <Skeleton className="h-6 w-32 mb-4 bg-gray-700" />
               <div className="space-y-2">
@@ -310,8 +298,7 @@ export const EligibilitySkeleton: React.FC = () => {
           <span>16%</span>
         </div>
         <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-          <div
-            className="h-full bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full w-1/6 animate-pulse"></div>
+          <div className="h-full bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full w-1/6 animate-pulse"></div>
         </div>
       </div>
 
@@ -362,7 +349,7 @@ export const ResultsSkeleton: React.FC = () => {
       {/* Liste (remplace les grosses cards) */}
       <div className="rounded-xl border border-gray-200 bg-white">
         <div className="divide-y divide-gray-100">
-          {[0, 1, 2].map((i) => (
+          {[0, 1, 2].map(i => (
             <div key={i} className="p-4 md:p-5">
               <div className="flex items-start gap-3">
                 <Skeleton className="h-5 w-5 rounded" />
@@ -386,6 +373,80 @@ export const ResultsSkeleton: React.FC = () => {
       {/* Note discrète */}
       <div className="mt-4 p-3 rounded-lg border border-gray-200 bg-gray-50">
         <Skeleton className="h-4 w-2/3 rounded" />
+      </div>
+    </div>
+  );
+};
+
+// ==========================================
+// FORM SKELETON (Formulaire) — structure alignée sur FormLayout + Step 1
+// ==========================================
+export const FormSkeleton: React.FC = () => {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+      <div className="max-w-[640px] mx-auto px-4 sm:px-6 py-8 md:py-12">
+        {/* Progress bar (comme FormLayout / EligibilitySkeleton) */}
+        <div className="mb-8">
+          <div className="flex items-center justify-between text-sm text-gray-600 mb-3">
+            <Skeleton className="h-4 w-28" />
+            <Skeleton className="h-4 w-10" />
+          </div>
+          <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+            <div className="h-full bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full w-1/4 animate-pulse" />
+          </div>
+        </div>
+
+        {/* Step card */}
+        <div className="rounded-3xl border border-gray-100 bg-white/90 shadow-[0_8px_30px_rgba(0,0,0,0.06)] p-5 md:p-7">
+          {/* Header de step (icône + titre + sous-titre) */}
+          <div className="flex items-center gap-3 mb-6">
+            <Skeleton className="h-11 w-11 rounded-2xl" />
+            <div className="space-y-2 flex-1">
+              <Skeleton className="h-5 w-40" />
+              <Skeleton className="h-4 w-56" />
+            </div>
+          </div>
+
+          {/* Champs (pattern BuyerInfoStep / SellerInfoStep) */}
+          <div className="space-y-5">
+            {[1, 2, 3].map(i => (
+              <div key={i} className="space-y-2">
+                <Skeleton className="h-4 w-32" />
+                <Skeleton className="h-12 w-full rounded-xl" />
+              </div>
+            ))}
+
+            {/* Bloc "Adresse" avec sous-champs */}
+            <div className="space-y-2">
+              <Skeleton className="h-4 w-44" />
+              <Skeleton className="h-12 w-full rounded-xl" />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <Skeleton className="h-12 w-full rounded-xl" />
+                <Skeleton className="h-12 w-full rounded-xl" />
+              </div>
+            </div>
+
+            {/* Deux champs côte à côte (email/tel etc.) */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {[1, 2].map(i => (
+                <div key={i} className="space-y-2">
+                  <Skeleton className="h-4 w-24" />
+                  <Skeleton className="h-12 w-full rounded-xl" />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* CTA desktop dans les steps */}
+          <div className="hidden sm:flex justify-end mt-8">
+            <Skeleton className="h-11 w-48 rounded-xl" />
+          </div>
+        </div>
+
+        {/* Placeholder navigation mobile (MobileNavigation fixed) */}
+        <div className="sm:hidden mt-6">
+          <Skeleton className="h-14 w-full rounded-2xl" />
+        </div>
       </div>
     </div>
   );

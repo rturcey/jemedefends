@@ -1,6 +1,6 @@
 // src/lib/performance.tsx
 'use client';
-import { useEffect, useCallback, useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 // ==========================================
 // DÉTECTION DE L'ENVIRONNEMENT

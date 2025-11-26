@@ -33,9 +33,9 @@ function collectLegalRefs(guide: EnrichedGuide): LegalArticleId[] {
 
 /* --------------------- Sidebar --------------------- */
 export default function GuideRightSidebar({
-                                            guide,
-                                            className = '',
-                                          }: {
+  guide,
+  className = '',
+}: {
   guide: EnrichedGuide;
   className?: string;
 }) {

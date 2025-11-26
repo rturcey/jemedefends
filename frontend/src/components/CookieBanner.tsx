@@ -65,15 +65,13 @@ export default function CookieBanner() {
       timestamp: new Date().toISOString(),
       version: CONSENT_VERSION,
     };
-    
+
     try {
       localStorage.setItem(CONSENT_KEY, JSON.stringify(finalConsent));
-      
+
       // Déclencher un événement pour notifier les autres composants
-      window.dispatchEvent(
-        new CustomEvent('cookieConsentUpdate', { detail: finalConsent })
-      );
-      
+      window.dispatchEvent(new CustomEvent('cookieConsentUpdate', { detail: finalConsent }));
+
       // Fermer le banner
       setIsVisible(false);
     } catch (e) {
@@ -113,7 +111,7 @@ export default function CookieBanner() {
         className={cn(
           'fixed bottom-0 left-0 right-0 z-[9999]',
           'bg-white shadow-2xl border-t border-gray-200',
-          'safe-bottom' // Pour les iPhones avec encoche
+          'safe-bottom', // Pour les iPhones avec encoche
         )}
       >
         {/* Version mobile compacte */}
@@ -125,16 +123,16 @@ export default function CookieBanner() {
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm text-gray-700 leading-tight">
-                  Nous utilisons des cookies pour améliorer votre expérience. 
+                  Nous utilisons des cookies pour améliorer votre expérience.
                   <button
                     onClick={() => setShowDetails(!showDetails)}
                     className="text-blue-600 font-medium ml-1 inline-flex items-center"
                   >
                     Détails
-                    <ChevronDown 
+                    <ChevronDown
                       className={cn(
                         'h-3 w-3 ml-0.5 transition-transform',
-                        showDetails && 'rotate-180'
+                        showDetails && 'rotate-180',
                       )}
                     />
                   </button>
@@ -174,14 +172,12 @@ export default function CookieBanner() {
                       <input
                         type="checkbox"
                         checked={consent.analytics}
-                        onChange={(e) => setConsent({ ...consent, analytics: e.target.checked })}
+                        onChange={e => setConsent({ ...consent, analytics: e.target.checked })}
                         className="mt-0.5 h-4 w-4 text-blue-600"
                       />
                       <div className="flex-1">
                         <div className="font-medium text-gray-900">Statistiques</div>
-                        <div className="text-gray-600 mt-0.5">
-                          Nous aident à améliorer le site
-                        </div>
+                        <div className="text-gray-600 mt-0.5">Nous aident à améliorer le site</div>
                       </div>
                     </label>
 
@@ -190,14 +186,12 @@ export default function CookieBanner() {
                       <input
                         type="checkbox"
                         checked={consent.marketing}
-                        onChange={(e) => setConsent({ ...consent, marketing: e.target.checked })}
+                        onChange={e => setConsent({ ...consent, marketing: e.target.checked })}
                         className="mt-0.5 h-4 w-4 text-blue-600"
                       />
                       <div className="flex-1">
                         <div className="font-medium text-gray-900">Marketing</div>
-                        <div className="text-gray-600 mt-0.5">
-                          Publicités personnalisées
-                        </div>
+                        <div className="text-gray-600 mt-0.5">Publicités personnalisées</div>
                       </div>
                     </label>
                   </div>
@@ -251,17 +245,17 @@ export default function CookieBanner() {
                   <Cookie className="h-6 w-6 text-blue-600" />
                 </div>
               </div>
-              
+
               <div className="flex-1">
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">
                   Nous respectons votre vie privée
                 </h3>
                 <p className="text-gray-600 text-sm mb-4">
-                  Je me défends utilise des cookies pour vous garantir la meilleure expérience. 
-                  Certains cookies sont essentiels au fonctionnement du site, d'autres nous aident 
-                  à l'améliorer et à mieux comprendre vos besoins.
+                  Je me défends utilise des cookies pour vous garantir la meilleure expérience.
+                  Certains cookies sont essentiels au fonctionnement du site, d'autres nous aident à
+                  l'améliorer et à mieux comprendre vos besoins.
                 </p>
-                
+
                 {/* Options détaillées desktop */}
                 {showDetails && (
                   <div className="grid grid-cols-3 gap-4 mb-4">
@@ -281,13 +275,13 @@ export default function CookieBanner() {
                         </div>
                       </label>
                     </div>
-                    
+
                     <div className="bg-gray-50 p-3 rounded-lg">
                       <label className="flex items-start gap-2">
                         <input
                           type="checkbox"
                           checked={consent.analytics}
-                          onChange={(e) => setConsent({ ...consent, analytics: e.target.checked })}
+                          onChange={e => setConsent({ ...consent, analytics: e.target.checked })}
                           className="mt-1 h-4 w-4 text-blue-600"
                         />
                         <div>
@@ -298,13 +292,13 @@ export default function CookieBanner() {
                         </div>
                       </label>
                     </div>
-                    
+
                     <div className="bg-gray-50 p-3 rounded-lg">
                       <label className="flex items-start gap-2">
                         <input
                           type="checkbox"
                           checked={consent.marketing}
-                          onChange={(e) => setConsent({ ...consent, marketing: e.target.checked })}
+                          onChange={e => setConsent({ ...consent, marketing: e.target.checked })}
                           className="mt-1 h-4 w-4 text-blue-600"
                         />
                         <div>
@@ -317,7 +311,7 @@ export default function CookieBanner() {
                     </div>
                   </div>
                 )}
-                
+
                 {/* Boutons desktop */}
                 <div className="flex items-center gap-3">
                   <button
@@ -326,7 +320,7 @@ export default function CookieBanner() {
                   >
                     Accepter tout
                   </button>
-                  
+
                   {showDetails ? (
                     <button
                       onClick={acceptSelected}
@@ -350,7 +344,7 @@ export default function CookieBanner() {
                       </button>
                     </>
                   )}
-                  
+
                   <a
                     href="/politique-confidentialite"
                     className="ml-auto text-sm text-gray-500 hover:text-gray-700"

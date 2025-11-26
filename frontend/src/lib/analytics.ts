@@ -35,6 +35,12 @@ export const trackEligibilityEvents = {
       label: source,
     }),
 
+  testRestarted: () =>
+    trackEvent({
+      action: 'test_restarted',
+      category: 'engagement',
+    }),
+
   stepCompleted: (step: number, timeSpent?: number) =>
     trackEvent({
       action: 'step_completed',
@@ -43,39 +49,11 @@ export const trackEligibilityEvents = {
       value: timeSpent,
     }),
 
-  stepAbandoned: (step: number, reason?: string) =>
-    trackEvent({
-      action: 'step_abandoned',
-      category: 'abandonment',
-      label: `step_${step}_${reason || 'unknown'}`,
-    }),
-
-  validationError: (field: string, errorType: string) =>
-    trackEvent({
-      action: 'validation_error',
-      category: 'form_error',
-      label: `${field}_${errorType}`,
-    }),
-
   testCompleted: (result: string, totalTime?: number) =>
     trackEvent({
       action: 'test_completed',
       category: 'conversion',
       label: result,
       value: totalTime,
-    }),
-
-  exitIntentTriggered: (step: number) =>
-    trackEvent({
-      action: 'exit_intent_triggered',
-      category: 'retention',
-      label: `step_${step}`,
-    }),
-
-  helpRequested: (step: number, helpType: string) =>
-    trackEvent({
-      action: 'help_requested',
-      category: 'engagement',
-      label: `step_${step}_${helpType}`,
     }),
 };

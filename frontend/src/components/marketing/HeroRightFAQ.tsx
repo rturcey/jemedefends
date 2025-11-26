@@ -1,164 +1,157 @@
-// src/components/marketing/HeroRightFAQ.tsx
 'use client';
-import {ArrowRight, HelpCircle, ChevronDown, CheckCircle, Shield} from 'lucide-react';
+
 import * as React from 'react';
+import Link from 'next/link';
+import { ArrowRight, HelpCircle, CheckCircle, Shield } from 'lucide-react';
 
 import LegalReference from '@/components/ui/LegalReference';
-import MobileFAQItem from '@/components/marketing/MobileFAQItem';
-import Button from '@/components/ui/Button';
+import { Button } from '@/components/ui/button';
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from '@/components/ui/accordion';
 
-type FAQItem = { q: string; a: React.ReactNode };
+type FAQItem = { id: string; q: string; a: React.ReactNode };
 
 const FAQ_ITEMS: FAQItem[] = [
-    {
-        q: 'Est-ce gratuit ?',
-        a: (
-            <>
-                Oui, vous obtenez <strong>gratuitement</strong> le contenu complet de la
-                lettre avec les
-                <strong> articles pertinents</strong> du Code de la consommation.
-            </>
-        ),
-    },
-    {
-        q: 'Combien de temps ?',
-        a: (
-            <>
-                Moins de <strong>3 minutes</strong> : diagnostic d'éligibilité puis
-                génération immédiate de
-                la lettre.
-            </>
-        ),
-    },
-    {
-        q: 'Base juridique ?',
-        a: (
-            <>
-                Uniquement les <strong>articles pertinents</strong> du Code de la
-                consommation :
-                <br/>
-                <LegalReference code="L.217-3"/>
-                <br/>
-                <LegalReference code="L.217-8"/>
-                <br/>
-                <LegalReference code="L.217-10"/>
-                <br/>
-                Aucune invention, que du droit applicable.
-            </>
-        ),
-    },
+  {
+    id: 'gratuit',
+    q: 'Est-ce gratuit ?',
+    a: (
+      <>
+        Oui, vous obtenez <strong>gratuitement</strong> le contenu complet de la lettre avec les{' '}
+        <strong>articles pertinents</strong> du Code de la consommation.
+      </>
+    ),
+  },
+  {
+    id: 'temps',
+    q: 'Combien de temps ?',
+    a: (
+      <>
+        Moins de <strong>3 minutes</strong> : diagnostic d'éligibilité puis génération immédiate de
+        la lettre.
+      </>
+    ),
+  },
+  {
+    id: 'base',
+    q: 'Base juridique ?',
+    a: (
+      <>
+        Uniquement les <strong>articles pertinents</strong> du Code de la consommation :
+        <br />
+        <LegalReference code="L.217-3" />
+        <br />
+        <LegalReference code="L.217-8" />
+        <br />
+        <LegalReference code="L.217-10" />
+        <br />
+        Aucune invention, que du droit applicable.
+      </>
+    ),
+  },
 ];
 
 export default function HeroRightFAQ() {
-    const [openFAQIndex, setOpenFAQIndex] = React.useState<number | null>(null);
+  const DesktopFAQ = () => (
+    <div className="hidden lg:block w-[22rem] max-w-full lg:ml-8 xl:ml-12">
+      <Card className="bg-white/70 backdrop-blur-md border border-gray-200 shadow-sm">
+        <CardHeader className="pb-2">
+          <CardTitle className="flex items-center gap-2 text-base font-extrabold tracking-tight">
+            <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 text-blue-700">
+              <HelpCircle className="h-4 w-4" />
+            </span>
+            FAQ express
+          </CardTitle>
+        </CardHeader>
 
-    // Version Desktop
-    const DesktopFAQ = () => (
-        <div className="hidden lg:block w-[22rem] max-w-full lg:ml-8 xl:ml-12">
-            <div
-                className="rounded-2xl border border-gray-200/70 bg-white/70 backdrop-blur-md shadow-md p-5">
-                <div className="flex items-center gap-2">
-          <span
-              className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 text-blue-700">
-            <HelpCircle className="h-4 w-4"/>
-          </span>
-                    <h3 className="text-base font-extrabold tracking-tight">FAQ
-                        express</h3>
-                </div>
+        <CardContent>
+          <Accordion type="single" collapsible className="w-full">
+            {FAQ_ITEMS.map(it => (
+              <AccordionItem key={it.id} value={it.id} className="border-b last:border-b-0">
+                <AccordionTrigger className="text-left text-sm font-semibold">
+                  {it.q}
+                </AccordionTrigger>
+                <AccordionContent className="text-sm text-gray-700">{it.a}</AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+        </CardContent>
 
-                <div className="mt-3">
-                    <ul className="divide-y divide-gray-200/80">
-                        {FAQ_ITEMS.map((item, i) => (
-                            <li key={i} className="py-1.5">
-                                <details className="group open:bg-white/60 rounded-lg">
-                                    <summary
-                                        className="flex w-full items-center justify-between gap-3 cursor-pointer select-none px-3 py-2.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40 rounded-lg">
-                    <span className="text-[15px] font-semibold text-gray-900 leading-6">
-                      {item.q}
-                    </span>
-                                        <ChevronDown
-                                            className="h-4 w-4 text-gray-500 transition-transform group-open:rotate-180"
-                                            aria-hidden="true"
-                                        />
-                                    </summary>
-                                    <div
-                                        className="px-3 pb-3 -mt-1 text-[13px] leading-6 text-gray-700">
-                                        {item.a}
-                                    </div>
-                                </details>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
+        <CardFooter>
+          <Button
+            asChild
+            variant="ghost"
+            size="md"
+            className="gap-2"
+            data-umami-event="hero-faq-cta"
+          >
+            <Link href="/eligibilite#start">
+              Vérifier mon éligibilité
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </Button>
+        </CardFooter>
+      </Card>
 
-                <div className="mt-4 flex">
-                    <Button
-                        href="/eligibilite#start"
-                        size="sm"
-                        icon={<ArrowRight className="w-3.5 h-3.5"/>}
-                        data-umami-event="hero-faq-cta"
-                    >
-                        Vérifier mon éligibilité
-                    </Button>
-                </div>
-            </div>
-
-            <div className="mt-5 space-y-1.5 text-sm text-gray-700">
-                <div className="flex items-center gap-2">
-                    <CheckCircle className="h-4 w-4 text-green-600"/>
-                    <span>
+      <div className="mt-5 space-y-1.5 text-sm text-gray-700">
+        <div className="flex items-center gap-2">
+          <CheckCircle className="h-4 w-4 text-green-600" />
+          <span>
             Basé sur le <strong>Code de la consommation</strong>
           </span>
-                </div>
-                <div className="flex items-center gap-2">
-                    <Shield className="h-4 w-4 text-blue-600"/>
-                    <span>
+        </div>
+        <div className="flex items-center gap-2">
+          <Shield className="h-4 w-4 text-blue-600" />
+          <span>
             Données minimales & <strong>hébergement 🇫🇷</strong>
           </span>
-                </div>
-            </div>
         </div>
-    );
+      </div>
+    </div>
+  );
 
-    // Version Mobile avec MobileFAQItem
-    const MobileFAQ = () => (
-        <div className="lg:hidden w-full mt-8">
-            <div className="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm">
-                <h3 className="text-lg font-bold mb-4 text-center flex items-center justify-center gap-2">
-                    <HelpCircle className="w-5 h-5 text-blue-600"/>
-                    Questions fréquentes
-                </h3>
+  const MobileFAQ = () => (
+    <div className="lg:hidden w-full mt-8">
+      <Card className="border border-gray-200 shadow-sm">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-lg font-bold text-center flex items-center justify-center gap-2">
+            <HelpCircle className="w-5 h-5 text-blue-600" />
+            Questions fréquentes
+          </CardTitle>
+        </CardHeader>
 
-                <div className="space-y-3">
-                    {FAQ_ITEMS.map((item, i) => (
-                        <MobileFAQItem
-                            key={i}
-                            question={item.q}
-                            answer={item.a}
-                            isOpen={openFAQIndex === i}
-                            onToggle={() => setOpenFAQIndex(openFAQIndex === i ? null : i)}
-                        />
-                    ))}
-                </div>
+        <CardContent>
+          <Accordion type="single" collapsible className="w-full">
+            {FAQ_ITEMS.map(it => (
+              <AccordionItem key={it.id} value={it.id} className="border-b last:border-b-0">
+                <AccordionTrigger className="text-left">{it.q}</AccordionTrigger>
+                <AccordionContent className="text-sm text-gray-700">{it.a}</AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+        </CardContent>
 
-                <div className="mt-6">
-                    <Button
-                        href="/eligibilite#start"
-                        className="w-full"
-                        icon={<ArrowRight className="w-4 h-4"/>}
-                        data-umami-event="hero-mobile-faq-cta"
-                    >
-                        Tester gratuitement
-                    </Button>
-                </div>
-            </div>
-        </div>
-    );
+        <CardFooter>
+          <Button asChild className="w-full gap-2" data-umami-event="hero-mobile-faq-cta">
+            <Link href="/eligibilite#start">
+              Tester gratuitement
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </Button>
+        </CardFooter>
+      </Card>
+    </div>
+  );
 
-    return (
-        <>
-            <DesktopFAQ/>
-            <MobileFAQ/>
-        </>
-    );
+  return (
+    <>
+      <DesktopFAQ />
+      <MobileFAQ />
+    </>
+  );
 }

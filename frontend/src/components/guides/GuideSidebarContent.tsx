@@ -37,14 +37,10 @@ export default function GuideSidebarContent({
           </div>
         </div>
       </div>
-      
+
       {/* Guides connexes */}
       {relatedGuides && relatedGuides.length > 0 && (
-        <RelatedGuides
-          guides={relatedGuides}
-          variant="sidebar"
-          maxItems={3}
-        />
+        <RelatedGuides guides={relatedGuides} variant="sidebar" maxItems={3} />
       )}
     </div>
   );

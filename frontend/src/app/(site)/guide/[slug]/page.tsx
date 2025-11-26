@@ -21,8 +21,8 @@ import type { GuideSection as GuideSectionType } from '@/types/guides';
 
 // Définir les métadonnées dynamiques
 export async function generateMetadata({
-                                         params,
-                                       }: {
+  params,
+}: {
   params: { slug: string };
 }): Promise<Metadata> {
   const guide = await getGuideData(params.slug);
@@ -36,7 +36,8 @@ export async function generateMetadata({
 
   return {
     title: `${guide.metadata.title} | Je me défends`,
-    description: guide.metadata.seo?.description || `Guide pratique pour défendre vos droits de consommateur.`,
+    description:
+      guide.metadata.seo?.description || `Guide pratique pour défendre vos droits de consommateur.`,
     keywords: guide.metadata.seo?.keywords || [],
     alternates: {
       canonical: `/guide/${guide.slug}`,
@@ -60,11 +61,7 @@ export async function generateMetadata({
 }
 
 // Composant principal
-export default function GuidePage({
-                                    params,
-                                  }: {
-  params: { slug: string };
-}) {
+export default function GuidePage({ params }: { params: { slug: string } }) {
   const guide = useGuide(params.slug);
 
   if (!guide) {
@@ -103,25 +100,17 @@ export default function GuidePage({
       />
 
       {/* Navigation */}
-      <GuideNavigation
-        currentSlug={guide.slug}
-        relatedGuides={relatedGuides}
-      />
+      <GuideNavigation currentSlug={guide.slug} relatedGuides={relatedGuides} />
 
       {/* Contenu principal */}
       <div className="flex flex-col lg:flex-row gap-8 py-8">
         <div className="lg:flex-1 px-4">
           {sections.map((section, index) => (
-            <GuideSection
-              key={section.id || index}
-              section={section}
-            />
+            <GuideSection key={section.id || index} section={section} />
           ))}
 
           {/* Disclaimer */}
-          <GuideDisclaimer
-            lastUpdated={new Date(guide.legal.lastUpdated)}
-          />
+          <GuideDisclaimer lastUpdated={new Date(guide.legal.lastUpdated)} />
         </div>
 
         {/* Sidebar droite (desktop) */}

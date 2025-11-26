@@ -6,11 +6,12 @@
 import { Zap, CheckCircle, AlertTriangle, ArrowRight, MessageSquare, Scale } from 'lucide-react';
 import React from 'react';
 
-import Badge from '@/components/ui/Badge';
-import Button from '@/components/ui/Button';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import LegalReference from '@/components/ui/LegalReference';
 import type { LegalArticleId } from '@/legal/registry';
 import type { GuidePage } from '@/types/guides';
+import Link from 'next/link';
 
 interface GuideEssentialsProps {
   guide: GuidePage & { slug: string };
@@ -143,9 +144,11 @@ export default function GuideEssentials({ guide }: GuideEssentialsProps) {
 
           {/* CTA immédiat */}
           <div className="flex flex-col sm:flex-row gap-3">
-            <Button href="/eligibilite" className="flex-1 bg-blue-600 hover:bg-blue-700 text-white">
-              <ArrowRight className="w-4 h-4 mr-2" />
-              Créer ma lettre maintenant
+            <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white">
+              <Link href="/eligibilite">
+                <ArrowRight className="w-4 h-4 mr-2" />
+                Créer ma lettre maintenant
+              </Link>
             </Button>
             <Button variant="outline" className="flex-1 sm:flex-auto">
               <MessageSquare className="w-4 h-4 mr-2" />

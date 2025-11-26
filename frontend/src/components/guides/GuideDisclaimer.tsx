@@ -5,10 +5,10 @@ import React from 'react';
 import type { GuideDisclaimerProps } from '@/types/guide-components';
 
 export default function GuideDisclaimer({
-                                          variant = 'default',
-                                          className = '',
-                                          lastUpdated,
-                                        }: GuideDisclaimerProps) {
+  variant = 'default',
+  className = '',
+  lastUpdated,
+}: GuideDisclaimerProps) {
   const formatDate = (date: Date) => {
     return date.toLocaleDateString('fr-FR', {
       day: 'numeric',
@@ -50,10 +50,8 @@ export default function GuideDisclaimer({
       <div className="text-sm leading-relaxed">
         <p className="font-medium">Disclaimer</p>
         <p className="mt-1">
-          Les informations de ce guide sont fournies à titre général et ne constituent
-          pas un
-          conseil juridique. Chaque situation est unique : si besoin, rapprochez-vous
-          d’un
+          Les informations de ce guide sont fournies à titre général et ne constituent pas un
+          conseil juridique. Chaque situation est unique : si besoin, rapprochez-vous d’un
           professionnel du droit (avocat, association de consommateurs, etc.).
         </p>
         {lastUpdated && (

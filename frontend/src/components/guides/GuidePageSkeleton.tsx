@@ -89,8 +89,7 @@ export default function GuidePageSkeleton() {
         <div className="hidden lg:block lg:w-80 lg:shrink-0 px-4">
           <div className="sticky top-24 space-y-6">
             {/* Sommaire */}
-            <div
-              className="bg-white/80 backdrop-blur-sm rounded-xl border border-gray-200 p-4 shadow-sm">
+            <div className="bg-white/80 backdrop-blur-sm rounded-xl border border-gray-200 p-4 shadow-sm">
               <div className="flex items-center gap-2 mb-4">
                 <Skeleton className="h-4 w-4" />
                 <Skeleton className="h-5 w-20" />
@@ -98,7 +97,7 @@ export default function GuidePageSkeleton() {
               </div>
 
               <div className="space-y-2">
-                {[1, 2, 3, 4].map((i) => (
+                {[1, 2, 3, 4].map(i => (
                   <div key={i} className="space-y-1">
                     <Skeleton className="h-8 w-full" />
                     {i % 2 === 0 && (
@@ -120,7 +119,7 @@ export default function GuidePageSkeleton() {
               </div>
 
               <div className="space-y-3">
-                {[1, 2, 3].map((i) => (
+                {[1, 2, 3].map(i => (
                   <div key={i}>
                     <Skeleton className="h-5 w-3/4" />
                     <Skeleton className="h-4 w-full" />

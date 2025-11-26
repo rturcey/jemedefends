@@ -22,11 +22,13 @@ async function buildGuidesRegistry() {
       fs.mkdirSync(GUIDES_BASE_PATH, { recursive: true });
 
       // Créer les sous-dossiers
-      ['general', 'tech', 'automobile', 'commerce', 'maison', 'mode', 'numerique'].forEach(category => {
-        const categoryPath = path.join(GUIDES_BASE_PATH, category);
-        fs.mkdirSync(categoryPath, { recursive: true });
-        console.log(`   ✓ Dossier créé: ${category}/`);
-      });
+      ['general', 'tech', 'automobile', 'commerce', 'maison', 'mode', 'numerique'].forEach(
+        category => {
+          const categoryPath = path.join(GUIDES_BASE_PATH, category);
+          fs.mkdirSync(categoryPath, { recursive: true });
+          console.log(`   ✓ Dossier créé: ${category}/`);
+        },
+      );
     }
 
     // Lire tous les sous-dossiers

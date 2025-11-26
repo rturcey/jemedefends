@@ -3,7 +3,8 @@ import clsx from 'clsx';
 import { ExternalLink, MessageSquareWarning, Scale, Handshake, ShieldCheck } from 'lucide-react';
 import * as React from 'react';
 
-import Button from './Button';
+import { Button } from './button';
+import Link from 'next/link';
 
 export type AltKind = 'signalconso' | 'mediation' | 'conciliation' | 'assistance' | 'assurance';
 
@@ -49,18 +50,13 @@ export default function AlternativeOptions({
     >
       {options.map(o =>
         o.href ? (
-          <a key={o.label} href={o.href} target="_blank" rel="noreferrer">
-            <Button variant={o.primary ? 'primary' : 'secondary'} className="whitespace-nowrap">
+          <Link key={o.label} href={o.href} target="_blank" rel="noreferrer">
+            <Button className="whitespace-nowrap">
               {iconFor[o.kind]} {o.label} <ExternalLink className="h-3.5 w-3.5" aria-hidden />
             </Button>
-          </a>
+          </Link>
         ) : (
-          <Button
-            key={o.label}
-            onClick={o.onClick}
-            variant={o.primary ? 'primary' : 'secondary'}
-            className="whitespace-nowrap"
-          >
+          <Button key={o.label} onClick={o.onClick} className="whitespace-nowrap">
             {iconFor[o.kind]} {o.label}
           </Button>
         ),

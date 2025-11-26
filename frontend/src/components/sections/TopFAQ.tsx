@@ -1,159 +1,158 @@
 'use client';
 
-import {ChevronDown, ChevronUp, FileQuestion} from 'lucide-react';
-import React, {useState} from 'react';
+import * as React from 'react';
+import Link from 'next/link';
+import { FileQuestion, ShieldCheck, Sparkles, Clock3 } from 'lucide-react';
 
-import {Badge, Button, Reveal} from '@/components/ui';
-import {useMobileOptimization} from '@/hooks/useMobileOptimization';
-import {getContextualIcon} from '@/lib/icon-utils';
+import { useMobileOptimization } from '@/hooks/useMobileOptimization';
+import { getContextualIcon } from '@/lib/icon-utils';
+
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from '@/components/ui/accordion';
 
 const FAQ_ITEMS = [
-    {
-        id: 'service-gratuit',
-        question: 'Pourquoi ce service est-il gratuit ?',
-        answer:
-            'Nous proposons un outil gratuit, clair et juridiquement sourcé pour enclencher vos droits sans barrière financière. Les options payantes ajoutent du confort (PDF mis en forme, recommandé en ligne).',
-        category: 'Service',
-        iconType: 'gratuit',
-    },
-    {
-        id: 'garantie-duree',
-        question: 'Combien de temps dure la garantie légale ?',
-        answer:
-            "La garantie légale de conformité dure <strong>2 ans</strong> pour les biens neufs, <strong>1 an</strong> pour les biens d'occasion achetés auprès d'un professionnel.",
-        category: 'Juridique',
-        iconType: 'temps',
-    },
-    {
-        id: 'donnees',
-        question: 'Où sont mes données ?',
-        answer:
-            'Collecte minimale, hébergement en France (Scaleway), paiements Stancer, envoi Merci Facteur. Transparence totale, aucune revente.',
-        category: 'Service',
-        iconType: 'france',
-    },
-    {
-        id: 'remboursement',
-        question: "Puis-je d'abord demander un remboursement ?",
-        answer:
-            "La loi impose d'abord la <strong>mise en conformité</strong>. En cas d'échec dans un délai raisonnable : réduction du prix ou remboursement.",
-        category: 'Juridique',
-        iconType: 'remboursement',
-    },
-    {
-        id: 'envoi-recommande',
-        question: 'Pouvez-vous envoyer la lettre en recommandé ?',
-        answer:
-            "Oui, avec la formule Premium. La version gratuite et la version PDF ne comprennent pas l'envoi : vous récupérez le document et l'envoyez vous-même.",
-        category: 'Service',
-        iconType: 'courrier',
-    },
-    {
-        id: 'occasion',
-        question: "Les produits d'occasion sont-ils couverts ?",
-        answer:
-            "Oui, s'ils sont achetés auprès d'un professionnel : garantie légale au moins 1 an. Entre particuliers : pas de garantie légale, mais recours possible pour vices cachés (Code civil).",
-        category: 'Juridique',
-        iconType: 'occasion',
-    },
-    {
-        id: 'disclaimer',
-        question: 'Est-ce un conseil juridique personnalisé ?',
-        answer:
-            "Non. C'est un outil d'assistance et d'informations générales. Pour un avis personnalisé, il faut consulter un professionnel du droit.",
-        category: 'Service',
-        iconType: 'juridique',
-    },
-    {
-        id: 'prix',
-        question: 'Combien ça coûte ?',
-        answer:
-            'Version gratuite : 0€. PDF mis en forme : quelques euros. Premium (avec envoi recommandé) : prix modique pour le service complet.',
-        category: 'Service',
-        iconType: 'prix',
-    },
+  {
+    id: 'service-gratuit',
+    question: 'Pourquoi ce service est-il gratuit ?',
+    answer:
+      'Nous proposons un outil gratuit, clair et juridiquement sourcé pour enclencher vos droits sans barrière financière. Les options payantes ajoutent du confort (PDF mis en forme, recommandé en ligne).',
+    iconType: 'gratuit',
+  },
+  {
+    id: 'garantie-duree',
+    question: 'Combien de temps dure la garantie légale ?',
+    answer:
+      "La garantie légale de conformité dure <strong>2 ans</strong> pour les biens neufs, <strong>2 ans</strong> (la charge de la preuve n'est au vendeur que la première année) pour les biens d'occasion achetés auprès d'un professionnel.",
+    iconType: 'temps',
+  },
+  {
+    id: 'donnees',
+    question: 'Où sont mes données ?',
+    answer:
+      'Collecte minimale, hébergement en France (Scaleway), paiements Stancer, envoi Merci Facteur. Transparence totale, aucune revente.',
+    iconType: 'france',
+  },
+  {
+    id: 'remboursement',
+    question: "Puis-je d'abord demander un remboursement ?",
+    answer:
+      "La loi impose d'abord la <strong>mise en conformité</strong>. En cas d'échec dans un délai raisonnable : réduction du prix ou remboursement.",
+    iconType: 'remboursement',
+  },
+  {
+    id: 'envoi-recommande',
+    question: 'Pouvez-vous envoyer la lettre en recommandé ?',
+    answer:
+      "Oui, avec la formule Premium. La version gratuite et la version PDF ne comprennent pas l'envoi : vous récupérez le document et l'envoyez vous-même.",
+    iconType: 'courrier',
+  },
 ];
 
 export default function TopFAQ() {
-    const [expandedId, setExpandedId] = useState<string | null>(null);
-    const {isMobile} = useMobileOptimization();
+  const { isMobile } = useMobileOptimization();
+  const displayedItems = isMobile ? FAQ_ITEMS.slice(0, 4) : FAQ_ITEMS;
 
-    // Sur mobile, limiter à 4 questions - sur desktop, afficher les 6
-    const displayedItems = isMobile ? FAQ_ITEMS.slice(0, 4) : FAQ_ITEMS;
+  return (
+    <section className="relative py-8 md:py-12 lg:py-14">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-br from-blue-50/50 via-white to-indigo-50/40"
+      />
 
-    return (
-        <div className="py-6 md:py-12 lg:py-16 border-t border-gray-100">
-            <div className="max-w-6xl mx-auto px-4">
-                <div className="text-center mb-6 md:mb-8 lg:mb-10">
-                    <div className="mb-8 md:mb-10 lg:mb-12">
-                        <Badge variant="secondary">FAQ</Badge>
-                    </div>
-                    <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-2">
-                        Questions fréquentes
-                    </h2>
-                    <p className="text-xs sm:text-sm md:text-base text-gray-600 text-center">
-                        Les réponses claires aux questions que l'on nous pose le plus
-                    </p>
-                </div>
-
-                {/* Grille adaptative : 1 col mobile, 2 cols à partir de sm */}
-                <div
-                    className="grid gap-2 sm:gap-3 md:gap-4 grid-cols-1 sm:grid-cols-2 items-start">
-                    {displayedItems.map((item, index) => (
-                        <div key={item.id}>
-                            <div
-                                className="rounded-xl border border-gray-200 p-2 sm:p-3 md:p-4 hover:border-blue-300 hover:shadow-sm transition-all">
-                                <button
-                                    onClick={() => setExpandedId(expandedId === item.id ? null : item.id)}
-                                    className="w-full text-left"
-                                    aria-expanded={expandedId === item.id}
-                                >
-                                    <div
-                                        className="flex items-start justify-between gap-2">
-                                        <div
-                                            className="flex items-start gap-2 flex-1 min-w-0">
-                                            {/* Icône uniformisée au format ProblemsSection */}
-                                            <div
-                                                className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600 flex-shrink-0">
-                                                {React.cloneElement(getContextualIcon(item.iconType, 'default'), {
-                                                    className: 'w-4 h-4 sm:w-5 sm:h-5',
-                                                    strokeWidth: 1.5,
-                                                })}
-                                            </div>
-                                            <span
-                                                className="text-xs sm:text-sm md:text-base font-semibold text-gray-900 leading-snug">
-                        {item.question}
-                      </span>
-                                        </div>
-                                        <div className="flex-shrink-0 mt-1">
-                                            {expandedId === item.id ? (
-                                                <ChevronUp
-                                                    className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400"/>
-                                            ) : (
-                                                <ChevronDown
-                                                    className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400"/>
-                                            )}
-                                        </div>
-                                    </div>
-                                </button>
-                                {expandedId === item.id && (
-                                    <div
-                                        className="mt-2 text-xs sm:text-sm md:text-base text-gray-600 leading-relaxed pl-12"
-                                        dangerouslySetInnerHTML={{__html: item.answer}}
-                                    />
-                                )}
-                            </div>
-                        </div>
-                    ))}
-                </div>
-
-                {/* Lien vers la page FAQ complète - DESKTOP UNIQUEMENT */}
-                <div className="hidden md:flex justify-center mt-8">
-                    <Button href="/faq" variant="outline" icon={<FileQuestion/>}>
-                        Voir toutes les questions
-                    </Button>
-                </div>
-            </div>
+      <div className="max-w-6xl mx-auto px-4">
+        {/* Header */}
+        <div className="text-center mb-6 md:mb-8">
+          <Badge className="mb-3">FAQ</Badge>
+          <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-2">
+            Questions fréquentes
+          </h2>
+          <p className="text-xs sm:text-sm md:text-base text-gray-600">
+            Les réponses claires aux questions que l'on nous pose le plus.
+          </p>
         </div>
-    );
+
+        {/* Content grid desktop */}
+        <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_320px] gap-6 lg:gap-8 items-start">
+          {/* Accordion */}
+          <Accordion type="single" collapsible className="space-y-2">
+            {displayedItems.map(it => (
+              <AccordionItem
+                key={it.id}
+                value={it.id}
+                className="rounded-2xl border border-gray-200 bg-white shadow-sm px-2"
+              >
+                <AccordionTrigger className="px-3 py-4 text-left hover:no-underline">
+                  <div className="flex items-center gap-3">
+                    {/* icône bleue */}
+                    <span className="text-blue-600">
+                      {getContextualIcon(it.iconType, 'md', 'w-4 h-4 sm:w-5 sm:h-5 text-blue-600')}
+                    </span>
+                    <span className="font-semibold text-gray-900">{it.question}</span>
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent className="px-3 pb-4 text-sm text-gray-700 leading-relaxed">
+                  <div dangerouslySetInnerHTML={{ __html: it.answer }} />
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+
+          {/* Right “trust/cta” desktop only */}
+          {!isMobile && (
+            <div className="space-y-3">
+              <Card className="border border-blue-100 bg-blue-50/70 shadow-sm">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-base font-bold flex items-center gap-2">
+                    <ShieldCheck className="w-4 h-4 text-blue-700" />
+                    100% sourcé Code conso
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="text-sm text-blue-900/90">
+                  Pas d’invention : seulement les articles pertinents, intégrés automatiquement.
+                </CardContent>
+              </Card>
+
+              <Card className="shadow-sm">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-base font-bold flex items-center gap-2">
+                    <Clock3 className="w-4 h-4 text-blue-700" />3 minutes en moyenne
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="text-sm text-gray-700">
+                  Diagnostic + génération immédiate de ta lettre.
+                </CardContent>
+                <CardFooter>
+                  <Button asChild className="w-full gap-2">
+                    <Link href="/faq">
+                      Voir toute la FAQ
+                      <FileQuestion className="w-4 h-4" />
+                    </Link>
+                  </Button>
+                </CardFooter>
+              </Card>
+            </div>
+          )}
+        </div>
+
+        {/* CTA mobile */}
+        {isMobile && (
+          <div className="mt-6 flex justify-center">
+            <Button asChild variant="outline" className="gap-2">
+              <Link href="/faq">
+                Voir toutes les questions
+                <FileQuestion className="w-4 h-4" />
+              </Link>
+            </Button>
+          </div>
+        )}
+      </div>
+    </section>
+  );
 }

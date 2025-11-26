@@ -35,39 +35,39 @@ export default function Analytics() {
     };
 
     const hasConsent = checkConsent();
-    
+
     if (hasConsent && GA_MEASUREMENT_ID) {
       // Initialiser dataLayer si nécessaire
       window.dataLayer = window.dataLayer || [];
-      
+
       // Fonction gtag
       function gtag(...args: any[]) {
         window.dataLayer?.push(arguments);
       }
-      
+
       window.gtag = gtag;
-      
+
       // Configuration par défaut
       gtag('js', new Date());
       gtag('config', GA_MEASUREMENT_ID, {
         page_path: window.location.pathname,
         anonymize_ip: true, // RGPD : anonymisation IP
         cookie_flags: 'SameSite=Strict;Secure', // Sécurité cookies
-        storage: 'none' // Pas de stockage local si pas de consentement cookies
+        storage: 'none', // Pas de stockage local si pas de consentement cookies
       });
 
       // Tracker la performance (Core Web Vitals)
       if (typeof window !== 'undefined' && 'performance' in window) {
         // LCP (Largest Contentful Paint)
         try {
-          const observer = new PerformanceObserver((list) => {
+          const observer = new PerformanceObserver(list => {
             for (const entry of list.getEntries()) {
               if (entry.entryType === 'largest-contentful-paint') {
                 gtag('event', 'web_vitals', {
                   event_category: 'Web Vitals',
                   event_label: 'LCP',
                   value: Math.round((entry as any).startTime),
-                  non_interaction: true
+                  non_interaction: true,
                 });
               }
             }
@@ -79,7 +79,7 @@ export default function Analytics() {
 
         // FID (First Input Delay)
         try {
-          const fidObserver = new PerformanceObserver((list) => {
+          const fidObserver = new PerformanceObserver(list => {
             for (const entry of list.getEntries()) {
               if (entry.entryType === 'first-input') {
                 const fid = (entry as any).processingStart - entry.startTime;
@@ -87,7 +87,7 @@ export default function Analytics() {
                   event_category: 'Web Vitals',
                   event_label: 'FID',
                   value: Math.round(fid),
-                  non_interaction: true
+                  non_interaction: true,
                 });
               }
             }
@@ -106,7 +106,7 @@ export default function Analytics() {
             if (!newConsent.analytics) {
               // Désactiver le tracking
               gtag('consent', 'update', {
-                'analytics_storage': 'denied'
+                analytics_storage: 'denied',
               });
             }
           } catch (err) {
@@ -116,7 +116,7 @@ export default function Analytics() {
       };
 
       window.addEventListener('storage', handleConsentChange);
-      
+
       return () => {
         window.removeEventListener('storage', handleConsentChange);
       };
@@ -124,16 +124,17 @@ export default function Analytics() {
   }, []);
 
   // Ne charger les scripts que si on a le consentement
-  const consent = typeof window !== 'undefined' 
-    ? (() => {
-        try {
-          const stored = localStorage.getItem('cookie-consent');
-          return stored ? JSON.parse(stored).analytics === true : false;
-        } catch {
-          return false;
-        }
-      })()
-    : false;
+  const consent =
+    typeof window !== 'undefined'
+      ? (() => {
+          try {
+            const stored = localStorage.getItem('cookie-consent');
+            return stored ? JSON.parse(stored).analytics === true : false;
+          } catch {
+            return false;
+          }
+        })()
+      : false;
 
   if (!consent || !GA_MEASUREMENT_ID) {
     return null;

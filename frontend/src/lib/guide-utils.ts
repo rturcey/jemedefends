@@ -3,10 +3,7 @@ import yaml from 'js-yaml';
 import { yamlToGuidePage } from '@/lib/yaml-guide-converter';
 import { buildRelatedGuidesSmart } from '@/lib/guide-relations';
 import type { EnrichedGuide } from '@/types/guides';
-import {
-  GENERATED_GUIDES_REGISTRY,
-  GENERATION_META,
-} from './generated-guides';
+import { GENERATED_GUIDES_REGISTRY, GENERATION_META } from './generated-guides';
 
 // ---------------------------------------------------------------------------
 // Fallback catégorie (au cas très rare où le YAML serait incomplet)
@@ -59,8 +56,8 @@ function countWords(text: string): number {
   if (!cleaned) return 0;
   return cleaned
     .split(/\s+/)
-    .filter((w) => w.length > 0)
-    .filter((w) => !/^\W+$/.test(w)).length;
+    .filter(w => w.length > 0)
+    .filter(w => !/^\W+$/.test(w)).length;
 }
 
 function calculateReadingTimeFromYAML(yamlContent: string): number {
@@ -92,7 +89,7 @@ function calculateReadingTimeFromYAML(yamlContent: string): number {
       }
       if (s.cta?.label) total += countWords(s.cta.label);
       (s.tableData ?? []).forEach((row: Record<string, any>) => {
-        Object.values(row).forEach((val) => {
+        Object.values(row).forEach(val => {
           if (typeof val === 'string') total += countWords(val);
         });
       });
@@ -152,8 +149,8 @@ export function getFullGuide(slug: string): EnrichedGuide | null {
     } catch {
       // Fallback basique si le ranking “smart” plante
       enriched.relatedGuides = Object.keys(GENERATED_GUIDES_REGISTRY)
-        .filter((s) => s !== slug)
-        .filter((s) => {
+        .filter(s => s !== slug)
+        .filter(s => {
           const raw = GENERATED_GUIDES_REGISTRY[s];
           if (!raw) return false;
           const parsed = yaml.load(raw) as { category?: string };
@@ -180,7 +177,6 @@ export function formatDate(dateStr?: string): string {
     day: 'numeric',
   });
 }
-
 
 // Helper pour les couleurs de catégorie
 export const getCategoryColors = (color: string, isSelected?: boolean) => {

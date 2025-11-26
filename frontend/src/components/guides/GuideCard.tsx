@@ -46,16 +46,16 @@ const getCategoryColors = (color: string) => {
 };
 
 const GuideCard: React.FC<GuideCardProps> = ({
-                                               slug,
-                                               title,
-                                               description,
-                                               category,
-                                               readingTime,
-                                               lastUpdated,
-                                               image,
-                                               viewCount,
-                                               className = '',
-                                             }) => {
+  slug,
+  title,
+  description,
+  category,
+  readingTime,
+  lastUpdated,
+  image,
+  viewCount,
+  className = '',
+}) => {
   const { isMobile, shouldUseSimpleAnimations } = useMobileOptimization();
 
   return (
@@ -94,14 +94,12 @@ const GuideCard: React.FC<GuideCardProps> = ({
           >
             {/* UTILISE LA NOUVELLE FONCTION CENTRALISÉE */}
             {getIconFromCategoryId(category.id, 'sm')}
-            <span
-              className="truncate max-w-24 sm:max-w-none">{category.name}</span>
+            <span className="truncate max-w-24 sm:max-w-none">{category.name}</span>
           </div>
         </div>
 
         {/* Titre */}
-        <h3
-          className="font-bold text-gray-900 text-lg sm:text-xl leading-tight line-clamp-2 group-hover:text-blue-600 transition-colors">
+        <h3 className="font-bold text-gray-900 text-lg sm:text-xl leading-tight line-clamp-2 group-hover:text-blue-600 transition-colors">
           {title}
         </h3>
 
@@ -111,8 +109,7 @@ const GuideCard: React.FC<GuideCardProps> = ({
         </p>
 
         {/* Métadonnées */}
-        <div
-          className="flex flex-wrap items-center gap-3 text-xs sm:text-sm text-gray-500">
+        <div className="flex flex-wrap items-center gap-3 text-xs sm:text-sm text-gray-500">
           <div className="flex items-center gap-1">
             <Clock className="w-4 h-4" />
             <span>{readingTime} min</span>
@@ -129,17 +126,13 @@ const GuideCard: React.FC<GuideCardProps> = ({
         </div>
 
         {/* Footer avec date et CTA */}
-        <div
-          className="flex items-center justify-between pt-2 border-t border-gray-100">
+        <div className="flex items-center justify-between pt-2 border-t border-gray-100">
           {/* UTILISE formatDate EXISTANT */}
-          <span
-            className="text-xs text-gray-500">{formatDate(lastUpdated)}</span>
+          <span className="text-xs text-gray-500">{formatDate(lastUpdated)}</span>
 
-          <div
-            className="flex items-center gap-1 text-blue-600 group-hover:text-blue-700 font-medium text-xs sm:text-sm">
+          <div className="flex items-center gap-1 text-blue-600 group-hover:text-blue-700 font-medium text-xs sm:text-sm">
             <span className="hidden sm:inline">Lire</span>
-            <ArrowRight
-              className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+            <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
           </div>
         </div>
       </div>
@@ -153,8 +146,7 @@ export default GuideCard;
 export const GuideCardSkeleton: React.FC<{
   className?: string;
 }> = ({ className = '' }) => (
-  <div
-    className={`bg-white border border-gray-200 rounded-xl overflow-hidden ${className}`}>
+  <div className={`bg-white border border-gray-200 rounded-xl overflow-hidden ${className}`}>
     {/* Image skeleton */}
     <div className="h-32 sm:h-40 bg-gray-200 animate-pulse" />
 

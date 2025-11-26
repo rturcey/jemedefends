@@ -2,36 +2,53 @@ import { Shield } from 'lucide-react';
 import Link from 'next/link';
 
 import Container from '@/components/ui/Container';
+import { NAV_ITEMS } from '@/components/layout/nav.config';
 
-function Footer() {
+export default function Footer() {
+  const footerNav = NAV_ITEMS.filter(it => !it.mobileOnly);
+
   return (
-    <footer className="site-footer hidden md:block border-t border-gray-200 py-10 text-sm bg-white">
+    <footer className="hidden md:block border-t border-gray-200 py-10 text-sm bg-white">
       <Container className="flex flex-col sm:flex-row items-center justify-between gap-4">
         <div className="flex items-center gap-3 text-gray-600">
           <Shield className="w-4 h-4" aria-hidden="true" />
           Base juridique solide • Hébergement 🇫🇷
         </div>
 
-        <nav className="flex items-center gap-4">
-          <Link className="hover:text-blue-700" href="/mentions-legales">
+        <nav className="flex flex-wrap items-center gap-x-4 gap-y-2">
+          {footerNav.map(item => (
+            <Link
+              key={item.href}
+              className="text-gray-700 hover:text-blue-700 transition-colors"
+              href={item.href}
+            >
+              {item.label}
+            </Link>
+          ))}
+
+          <Link
+            className="text-gray-700 hover:text-blue-700 transition-colors"
+            href="/mentions-legales"
+          >
             Mentions légales
           </Link>
-          <Link className="hover:text-blue-700" href="/politique-confidentialite">
+          <Link
+            className="text-gray-700 hover:text-blue-700 transition-colors"
+            href="/politique-confidentialite"
+          >
             Confidentialité
           </Link>
-          <Link className="hover:text-blue-700" href="/conditions-generales">
+          <Link
+            className="text-gray-700 hover:text-blue-700 transition-colors"
+            href="/conditions-generales"
+          >
             CGU
           </Link>
-          <Link className="hover:text-blue-700" href="/contact">
+          <Link className="text-gray-700 hover:text-blue-700 transition-colors" href="/contact">
             Contact
-          </Link>
-          <Link className="hover:text-blue-700" href="/faq">
-            FAQ
           </Link>
         </nav>
       </Container>
     </footer>
   );
 }
-
-export default Footer;

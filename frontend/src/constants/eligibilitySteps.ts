@@ -5,13 +5,17 @@ export const ELIGIBILITY_STEPS: EligibilityStep[] = [
   {
     id: 'seller',
     title: 'Type de vendeur',
-    question: 'Avez-vous acheté auprès d\'un vendeur professionnel ?',
-    description: 'La garantie légale s\'applique aux achats professionnel → consommateur.',
+    question: "Avez-vous acheté auprès d'un vendeur professionnel ?",
+    description: "La garantie légale s'applique aux achats professionnel → consommateur.",
     legal: {
       article: 'L.217-3',
       explanation:
         'Garantie légale de conformité pour les ventes entre un professionnel et un consommateur.',
-      examples: ['Darty, Fnac, Apple Store', 'Vendeur pro sur Amazon', '❌ Particulier ↔ particulier'],
+      examples: [
+        '✅ Darty, Fnac, Apple Store',
+        '✅ Vendeur pro sur Amazon',
+        '❌ Particulier ↔ particulier',
+      ],
     },
     ui: {
       type: 'radio',
@@ -39,7 +43,11 @@ export const ELIGIBILITY_STEPS: EligibilityStep[] = [
       article: 'Article liminaire (Code de la consommation)',
       explanation:
         'Le “consommateur” est une personne physique agissant à des fins non professionnelles.',
-      examples: ['Usage domestique', 'Cadeau à un proche', '❌ Achat pro / réutilisation commerciale'],
+      examples: [
+        '✅ Usage domestique',
+        '✅ Cadeau à un proche',
+        '❌ Achat pro / réutilisation commerciale',
+      ],
     },
     ui: {
       type: 'radio',
@@ -53,14 +61,17 @@ export const ELIGIBILITY_STEPS: EligibilityStep[] = [
   // Étape 3 : Catégorie (bien vs service numérique)
   {
     id: 'itemCategory',
-    title: 'Catégorie de l\'achat',
+    title: "Catégorie de l'achat",
     question: 'Votre achat concerne-t-il un bien matériel, ou un contenu/service numérique ?',
     description: 'Cette distinction détermine les règles de délai applicables.',
     legal: {
       article: 'L.217-3 ; L.224-25-12 et s.',
       explanation:
         'Biens matériels (L.217-3) ; biens comportant un élément numérique / contenus & services numériques (L.224-25-12 et suivants).',
-      examples: ['Bien : smartphone, électroménager, voiture', 'Numérique : application, SaaS, streaming'],
+      examples: [
+        'Bien : smartphone, électroménager, voiture',
+        'Numérique : application, SaaS, streaming',
+      ],
     },
     ui: {
       type: 'radio',
@@ -96,21 +107,22 @@ export const ELIGIBILITY_STEPS: EligibilityStep[] = [
       required: true,
       options: [
         { value: 'new', label: 'Produit neuf' }, // écrasé si service numérique
-        { value: 'used', label: 'Produit d\'occasion / reconditionné' },
+        { value: 'used', label: "Produit d'occasion / reconditionné" },
       ],
     },
-    dynamic: (data) => {
+    dynamic: data => {
       if (data.itemCategory === 'good') {
         return {
           title: 'État du bien',
-          question: 'Votre bien est-il neuf ou d\'occasion/reconditionné ?',
-          description: 'La présomption du défaut est de 24 mois pour le neuf, 12 mois pour l\'occasion (L.217-7).',
+          question: "Votre bien est-il neuf ou d'occasion/reconditionné ?",
+          description:
+            "La présomption du défaut est de 24 mois pour le neuf, 12 mois pour l'occasion (L.217-7).",
           ui: {
             type: 'radio',
             required: true,
             options: [
               { value: 'new', label: 'Produit neuf' },
-              { value: 'used', label: 'Produit d\'occasion / reconditionné' },
+              { value: 'used', label: "Produit d'occasion / reconditionné" },
             ],
           },
         };
@@ -163,14 +175,19 @@ export const ELIGIBILITY_STEPS: EligibilityStep[] = [
   // Étape 6 : Timing — dynamique selon la précision
   {
     id: 'timing',
-    title: 'Ancienneté / période d\'exécution',
+    title: "Ancienneté / période d'exécution",
     question: 'Votre achat a-t-il moins de 2 ans ?',
     description: 'Question adaptée selon votre cas (neuf, occasion, ponctuel, abonnement).',
     legal: {
       article: 'L.217-3 ; L.217-7 ; L.224-25-12 et s.',
       explanation:
         'Biens : action dans les 2 ans (L.217-3). Présomption 24 mois (neuf) / 12 mois (occasion) - L.217-7. Numérique : 2 ans (ponctuel) ou pendant toute la durée de l’abonnement (continu).',
-      examples: ['Neuf : présomption 24 mois', 'Occasion : présomption 12 mois', 'Ponctuel : 2 ans', 'Abonnement : pendant le contrat'],
+      examples: [
+        'Neuf : présomption 24 mois',
+        'Occasion : présomption 12 mois',
+        'Ponctuel : 2 ans',
+        'Abonnement : pendant le contrat',
+      ],
     },
     ui: {
       type: 'radio',
@@ -180,7 +197,7 @@ export const ELIGIBILITY_STEPS: EligibilityStep[] = [
         { value: 'ko', label: 'Non' },
       ],
     },
-    dynamic: (data) => {
+    dynamic: data => {
       const cat = data.itemCategory;
       const det = data.itemDetail;
 
@@ -258,7 +275,12 @@ export const ELIGIBILITY_STEPS: EligibilityStep[] = [
       article: 'L.217-5',
       explanation:
         'Conformité : critères contractuels (usage spécial, accessoires, MAJ) + critères objectifs (qualités attendues, déclarations publiques, etc.).',
-      examples: ['Panne prématurée', 'Fonction manquante', '❌ Usage anormal', '❌ Dégât volontaire'],
+      examples: [
+        '✅ Panne prématurée',
+        '✅ Fonction manquante',
+        '❌ Usage anormal',
+        '❌ Dégât volontaire',
+      ],
     },
     ui: {
       type: 'radio',

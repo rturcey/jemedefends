@@ -56,37 +56,38 @@ export function useConsent(): UseConsentReturn {
   }, []);
 
   // Mettre à jour le consentement
-  const updateConsent = useCallback((newConsent: Partial<CookieConsent>) => {
-    const finalConsent: CookieConsent = {
-      necessary: true, // Toujours true
-      analytics: false,
-      marketing: false,
-      ...consent,
-      ...newConsent,
-      timestamp: new Date().toISOString(),
-      version: CONSENT_VERSION,
-    };
+  const updateConsent = useCallback(
+    (newConsent: Partial<CookieConsent>) => {
+      const finalConsent: CookieConsent = {
+        necessary: true, // Toujours true
+        analytics: false,
+        marketing: false,
+        ...consent,
+        ...newConsent,
+        timestamp: new Date().toISOString(),
+        version: CONSENT_VERSION,
+      };
 
-    try {
-      localStorage.setItem(CONSENT_KEY, JSON.stringify(finalConsent));
-      setConsentState(finalConsent);
+      try {
+        localStorage.setItem(CONSENT_KEY, JSON.stringify(finalConsent));
+        setConsentState(finalConsent);
 
-      // Notifier les autres composants
-      window.dispatchEvent(
-        new CustomEvent('cookieConsentUpdate', { detail: finalConsent })
-      );
+        // Notifier les autres composants
+        window.dispatchEvent(new CustomEvent('cookieConsentUpdate', { detail: finalConsent }));
 
-      // Mettre à jour Google Analytics si présent
-      if (window.gtag) {
-        window.gtag('consent', 'update', {
-          'analytics_storage': finalConsent.analytics ? 'granted' : 'denied',
-          'ad_storage': finalConsent.marketing ? 'granted' : 'denied',
-        });
+        // Mettre à jour Google Analytics si présent
+        if (window.gtag) {
+          window.gtag('consent', 'update', {
+            analytics_storage: finalConsent.analytics ? 'granted' : 'denied',
+            ad_storage: finalConsent.marketing ? 'granted' : 'denied',
+          });
+        }
+      } catch (error) {
+        console.error('Erreur sauvegarde consentement:', error);
       }
-    } catch (error) {
-      console.error('Erreur sauvegarde consentement:', error);
-    }
-  }, [consent]);
+    },
+    [consent],
+  );
 
   // Révoquer tout consentement (sauf essentiels)
   const revokeAll = useCallback(() => {
@@ -110,9 +111,9 @@ export function useConsent(): UseConsentReturn {
  */
 export function useHasConsent(level: ConsentLevel): boolean {
   const { consent } = useConsent();
-  
+
   if (!consent) return false;
-  
+
   switch (level) {
     case 'necessary':
       return true; // Toujours true
@@ -133,12 +134,12 @@ export function useConsentGate(requiredLevel: ConsentLevel): {
   requestConsent: () => void;
 } {
   const hasConsent = useHasConsent(requiredLevel);
-  
+
   const requestConsent = useCallback(() => {
     // Déclencher l'ouverture du cookie banner
     // Vous pouvez implémenter une logique custom ici
-    const event = new CustomEvent('requestConsent', { 
-      detail: { level: requiredLevel } 
+    const event = new CustomEvent('requestConsent', {
+      detail: { level: requiredLevel },
     });
     window.dispatchEvent(event);
   }, [requiredLevel]);
@@ -152,20 +153,20 @@ export function useConsentGate(requiredLevel: ConsentLevel): {
 /**
  * Composant pour afficher du contenu uniquement si consentement donné
  */
-export function ConsentGate({ 
-  level, 
-  children, 
-  fallback 
+export function ConsentGate({
+  level,
+  children,
+  fallback,
 }: {
   level: ConsentLevel;
   children: React.ReactNode;
   fallback?: React.ReactNode;
 }) {
   const { hasConsent } = useConsentGate(level);
-  
+
   if (hasConsent) {
     return <>{children}</>;
   }
-  
+
   return <>{fallback || null}</>;
 }

@@ -26,7 +26,7 @@ setup: install db-up
 # 🗄️ COMMANDES BASE DE DONNÉES
 db-up:
 	@echo "🗄️ Starting PostgreSQL database..."
-	cd backend && docker-compose up -d postgres
+	cd backend && docker compose up -d postgres
 	@echo "⏳ Waiting for database to be ready..."
 	@echo "   Database will be available on localhost:5433"
 	@sleep 3
@@ -34,7 +34,7 @@ db-up:
 
 db-down:
 	@echo "🛑 Stopping database..."
-	cd backend && docker-compose down
+	cd backend && docker compose down
 	@echo "Database stopped"
 
 db-migrate:
@@ -49,9 +49,9 @@ db-reset:
 	@read -p "Are you sure? (y/N): " -n 1 -r; \
 	echo; \
 	if [[ $$REPLY =~ ^[Yy]$$ ]]; then \
-		cd backend && docker-compose down -v; \
+		cd backend && docker compose down -v; \
 		echo "🗄️ Starting fresh database..."; \
-		cd backend && docker-compose up -d postgres; \
+		cd backend && docker compose up -d postgres; \
 		sleep 5; \
 		$(MAKE) db-migrate; \
 		echo "Database reset completed"; \
@@ -61,17 +61,17 @@ db-reset:
 
 db-logs:
 	@echo "📋 Showing database logs..."
-	cd backend && docker-compose logs -f postgres
+	cd backend && docker compose logs -f postgres
 
 db-shell:
 	@echo "🔧 Opening database shell..."
 	@echo "Default connection: postgresql://postgres:password@localhost:5433/je_me_defends"
-	cd backend && docker-compose exec postgres psql -U postgres -d je_me_defends
+	cd backend && docker compose exec postgres psql -U postgres -d je_me_defends
 
 # Vérification database (RÈGLE MANQUANTE AJOUTÉE)
 db-check:
 	@echo "🔍 Checking database status..."
-	@if ! cd backend && docker-compose ps postgres 2>/div/null | grep -q "Up"; then \
+	@if ! cd backend && docker compose ps postgres 2>/div/null | grep -q "Up"; then \
 		echo "Database not running. Starting it..."; \
 		$(MAKE) db-up; \
 	else \

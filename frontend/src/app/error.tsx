@@ -3,7 +3,8 @@
 import { AlertTriangle, RefreshCw, MessageCircle } from 'lucide-react';
 import React from 'react';
 
-import { Container, Button } from '@/components/ui';
+import { Container } from '@/components/ui';
+import { Button } from '@/components/ui/button';
 
 export default function Error({
   error,

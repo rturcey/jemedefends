@@ -1,8 +1,6 @@
 import type { Metadata } from 'next';
-
 import FAQClientPage from './client-page';
 
-// Métadonnées SEO (côté serveur)
 export const metadata: Metadata = {
   title: 'FAQ - Foire aux questions - Je me défends',
   description:
@@ -27,7 +25,6 @@ export const metadata: Metadata = {
   },
 };
 
-// Composant serveur qui wrap le composant client
 export default function FAQPage() {
   return <FAQClientPage />;
 }

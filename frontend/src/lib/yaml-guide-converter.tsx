@@ -1,22 +1,21 @@
 // ============================================================================
-// yaml-guide-converter.tsx — CORRIGÉ COMPLET
-// Conversion YAML -> GuidePage (server-safe) avec corrections des erreurs React
+// yaml-guide-converter.tsx — MIGRÉ SHADCN (safe)
+// Conversion YAML -> GuidePage (server-safe)
 // ============================================================================
 
 import React from 'react';
 import yaml from 'js-yaml';
+import Link from 'next/link';
 
 // UI existants (util only / server-safe)
 import { getSectionIcon } from '@/lib/icon-utils';
 
-import type {
-  GuidePage,
-  GuideMetadata,
-  GuideSection,
-  GuideLegal,
-} from '@/types/guides';
+import type { GuidePage, GuideMetadata, GuideSection, GuideLegal } from '@/types/guides';
 import { isValidLegalArticleId, type LegalArticleId } from '@/legal/registry';
-import { Smartphone } from 'lucide-react';
+
+// shadcn (déjà en place dans la convo)
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 
 // ============================================================================
 // Types YAML d'entrée
@@ -24,7 +23,15 @@ import { Smartphone } from 'lucide-react';
 interface YAMLGuideConfig {
   title: string;
   description?: string;
-  category: 'general' | 'tech' | 'automobile' | 'commerce' | 'maison' | 'mode' | 'numerique' | string;
+  category:
+    | 'general'
+    | 'tech'
+    | 'automobile'
+    | 'commerce'
+    | 'maison'
+    | 'mode'
+    | 'numerique'
+    | string;
   slug: string;
   seo?: {
     title?: string;
@@ -93,37 +100,32 @@ function wordsOf(s?: string) {
 
 // utils: détecter liens markdown & URLs nues et produire des <a>
 function tokenizeLinksInline(input: string): Array<{
-  type: 'text' | 'link',
-  value: string,
-  href?: string
+  type: 'text' | 'link';
+  value: string;
+  href?: string;
 }> {
-  const out: Array<{ type: 'text' | 'link', value: string, href?: string }> = [];
+  const out: Array<{ type: 'text' | 'link'; value: string; href?: string }> = [];
   if (!input) return out;
 
-  // 1) protéger d’abord les URLs nues (http/https) pour éviter qu’elles soient cassées
   const URL_RE = /(https?:\/\/[^\s)]+)(?=[\s)|]|$)/gi;
-
-  // 2) on split sur markdown links en conservant le reste
-  //    [texte](url) – pas gourmand, tolère espaces dans texte
   const MD_RE = /\[([^\]]+)]\(([^)\s]+)\)/g;
 
   let cursor = 0;
   const src = input;
 
-  // d’abord traiter les markdown links
   let m: RegExpExecArray | null;
   while ((m = MD_RE.exec(src)) !== null) {
-    if (m.index > cursor) out.push({
-      type: 'text',
-      value: src.slice(cursor, m.index),
-    });
+    if (m.index > cursor)
+      out.push({
+        type: 'text',
+        value: src.slice(cursor, m.index),
+      });
     out.push({ type: 'link', value: m[1], href: m[2] });
     cursor = m.index + m[0].length;
   }
   if (cursor < src.length) out.push({ type: 'text', value: src.slice(cursor) });
 
-  // puis transformer les URLs nues dans les segments texte
-  const final: Array<{ type: 'text' | 'link', value: string, href?: string }> = [];
+  const final: Array<{ type: 'text' | 'link'; value: string; href?: string }> = [];
   for (const seg of out) {
     if (seg.type === 'link') {
       final.push(seg);
@@ -132,21 +134,22 @@ function tokenizeLinksInline(input: string): Array<{
     let last = 0;
     let mm: RegExpExecArray | null;
     while ((mm = URL_RE.exec(seg.value)) !== null) {
-      if (mm.index > last) final.push({
-        type: 'text',
-        value: seg.value.slice(last, mm.index),
-      });
+      if (mm.index > last)
+        final.push({
+          type: 'text',
+          value: seg.value.slice(last, mm.index),
+        });
       final.push({ type: 'link', value: mm[1], href: mm[1] });
       last = mm.index + mm[0].length;
     }
-    if (last < seg.value.length) final.push({
-      type: 'text',
-      value: seg.value.slice(last),
-    });
+    if (last < seg.value.length)
+      final.push({
+        type: 'text',
+        value: seg.value.slice(last),
+      });
   }
   return final;
 }
-
 
 function estimateSectionWords(section: any): number {
   let n = 0;
@@ -196,13 +199,10 @@ function detectSectionType(section: YAMLSection): YAMLSection['type'] {
 function normalizeTypo(s: string): string {
   if (!s) return '';
   return s
-    .replace(/[\u00A0\u202F\u2009]/g, ' ')     // NBSP → espace normal
-    .replace(/[\u2011\u2013\u2014]/g, '-')     // tirets spéciaux → '-'
-    // ne pas toucher aux \n ; on ne “compacte” que les espaces horizontaux
+    .replace(/[\u00A0\u202F\u2009]/g, ' ')
+    .replace(/[\u2011\u2013\u2014]/g, '-')
     .replace(/[ \t]+/g, ' ');
-  // pas de .trim() ici (on laisse la mise en forme au parseur markdown)
 }
-
 
 /** Normalise "art. L 217-3" / "L.217-3" / "l 217-3" -> "L.217-3" si supporté */
 function normalizeLegalId(raw: string): LegalArticleId | null {
@@ -215,24 +215,14 @@ function normalizeLegalId(raw: string): LegalArticleId | null {
   return isValidLegalArticleId(id) ? (id as LegalArticleId) : null;
 }
 
-/** CORRIGÉ : Tokenise un texte en segments {text|legal} pour insertion de spans server-safe */
-function tokenizeLegalInline(text: string): Array<
-  | { type: 'text'; value: string }
-  | {
-  type: 'legal';
-  id: LegalArticleId;
-  raw: string;
-}
-> {
+/** Tokenise un texte en segments {text|legal} */
+function tokenizeLegalInline(
+  text: string,
+): Array<{ type: 'text'; value: string } | { type: 'legal'; id: LegalArticleId; raw: string }> {
   const t = normalizeTypo(text);
   const re = /(?:art\.?\s*)?[LRD]\s*\.?\s*\d{1,4}\s*[-]\s*\d{1,3}/gi;
   const out: Array<
-    | { type: 'text'; value: string }
-    | {
-    type: 'legal';
-    id: LegalArticleId;
-    raw: string;
-  }
+    { type: 'text'; value: string } | { type: 'legal'; id: LegalArticleId; raw: string }
   > = [];
   let last = 0;
   let m: RegExpExecArray | null;
@@ -252,27 +242,26 @@ function tokenizeLegalInline(text: string): Array<
 function renderInlineWithLegal(text: string): React.ReactNode[] {
   let key = 0;
 
-  // 1) code spans first to freeze content
-  const codeSplit = String(text).split(/`([^`]+)`/g).map((chunk, i) => {
-    if (i % 2 === 1) {
-      return React.createElement('code', {
-        key: `code-${key++}`,
-        className: 'bg-gray-100 px-1 rounded',
-        children: chunk,
-      });
-    }
-    return chunk;
-  });
+  const codeSplit = String(text)
+    .split(/`([^`]+)`/g)
+    .map((chunk, i) => {
+      if (i % 2 === 1) {
+        return React.createElement('code', {
+          key: `code-${key++}`,
+          className: 'bg-gray-100 px-1 rounded',
+          children: chunk,
+        });
+      }
+      return chunk;
+    });
 
   const out: React.ReactNode[] = [];
 
-  // helper: push either string or array of nodes
   const push = (node: React.ReactNode | React.ReactNode[]) => {
     if (Array.isArray(node)) out.push(...node);
     else out.push(node);
   };
 
-  // 2) process each segment that is not a <code>
   for (const seg of codeSplit) {
     if (React.isValidElement(seg)) {
       push(seg);
@@ -280,14 +269,12 @@ function renderInlineWithLegal(text: string): React.ReactNode[] {
     }
     const s = String(seg);
 
-    // 2.a links: [label](url)
-    // keep them as single nodes so further styling doesn't break URLs
     const linkParts: (string | React.ReactElement)[] = [];
     let last = 0;
     const linkRe = /\[([^\]]+)\]\(([^)\s]+)\)/g;
     let m: RegExpExecArray | null;
     while ((m = linkRe.exec(s))) {
-      if (m.index > last) linkParts.push(s.slice(last, m.index));         // text before
+      if (m.index > last) linkParts.push(s.slice(last, m.index));
       linkParts.push(
         React.createElement(
           'a',
@@ -299,19 +286,17 @@ function renderInlineWithLegal(text: string): React.ReactNode[] {
             className:
               'underline decoration-dotted underline-offset-2 hover:text-blue-700 focus-visible:text-blue-700',
           },
-          ...renderInlineWithLegal(m[1]), // allow **bold** inside label
+          ...renderInlineWithLegal(m[1]),
         ),
       );
       last = m.index + m[0].length;
     }
     if (last < s.length) linkParts.push(s.slice(last));
 
-    // 2.b bold & em on *non-link* strings only
     const applyBoldEm = (frag: string | React.ReactElement): React.ReactNode[] => {
-      if (React.isValidElement(frag)) return [frag]; // link/other element
+      if (React.isValidElement(frag)) return [frag];
       if (!frag) return [];
 
-      // bold (**...**), supports punctuation/accents and multiline
       const boldSplit = frag.split(/\*\*([\s\S]+?)\*\*/g);
       const nodesAfterBold: React.ReactNode[] = [];
       boldSplit.forEach((b, bi) => {
@@ -320,7 +305,6 @@ function renderInlineWithLegal(text: string): React.ReactNode[] {
             React.createElement('strong', { key: `b-${key++}` }, ...renderInlineWithLegal(b)),
           );
         } else {
-          // em (*...*)
           const emSplit = b.split(/\*([\s\S]+?)\*/g);
           emSplit.forEach((e, ei) => {
             if (ei % 2 === 1) {
@@ -328,13 +312,13 @@ function renderInlineWithLegal(text: string): React.ReactNode[] {
                 React.createElement('em', { key: `i-${key++}` }, ...renderInlineWithLegal(e)),
               );
             } else {
-              // 2.c finally: legal refs inside the remaining plain text
               const tokens = tokenizeLegalInline(e);
               tokens.forEach(t => {
                 if (t.type === 'text') {
-                  if (t.value) nodesAfterBold.push(
-                    React.createElement(React.Fragment, { key: `t-${key++}` }, t.value),
-                  );
+                  if (t.value)
+                    nodesAfterBold.push(
+                      React.createElement(React.Fragment, { key: `t-${key++}` }, t.value),
+                    );
                 } else {
                   nodesAfterBold.push(
                     React.createElement('span', {
@@ -353,15 +337,13 @@ function renderInlineWithLegal(text: string): React.ReactNode[] {
       return nodesAfterBold;
     };
 
-    // run bold/em/legal on each non-link chunk
     linkParts.forEach(part => push(applyBoldEm(part)));
   }
 
   return out;
 }
 
-
-/** CORRIGÉ : Rendu riche avec références légales - SPREAD CHILDREN */
+/** Rendu riche avec références légales */
 function renderRichTextWithLegal(content: string): {
   node: React.ReactNode;
   found: LegalArticleId[];
@@ -380,7 +362,6 @@ function renderRichTextWithLegal(content: string): {
     const txt = para.join('\n');
     tokenizeLegalInline(txt).forEach(t => t.type === 'legal' && found.add(t.id));
 
-    // Spread des children au lieu de passer l'array
     const inlineElements = renderInlineWithLegal(txt);
     acc.push(
       React.createElement(
@@ -389,7 +370,7 @@ function renderRichTextWithLegal(content: string): {
           key: `para-${keySeq++}`,
           className: 'mb-4 leading-relaxed text-gray-800 text-justify',
         },
-        ...inlineElements, // SPREAD !
+        ...inlineElements,
       ),
     );
     para = [];
@@ -401,7 +382,6 @@ function renderRichTextWithLegal(content: string): {
       tokenizeLegalInline(li).forEach(t => t.type === 'legal' && found.add(t.id)),
     );
 
-    // Clé unique pour chaque élément de liste
     const listChildren = listItems.map((li, i) => {
       const inlineElements = renderInlineWithLegal(li);
       return React.createElement(
@@ -410,7 +390,7 @@ function renderRichTextWithLegal(content: string): {
           key: `listitem-${keySeq}-${i}`,
           className: 'leading-relaxed text-gray-800 text-justify',
         },
-        ...inlineElements, // SPREAD !
+        ...inlineElements,
       );
     });
 
@@ -421,7 +401,7 @@ function renderRichTextWithLegal(content: string): {
       React.createElement(
         listType,
         { key: `list-${keySeq++}`, className: listClass },
-        ...listChildren, // SPREAD !
+        ...listChildren,
       ),
     );
 
@@ -429,11 +409,9 @@ function renderRichTextWithLegal(content: string): {
     listItems = [];
   };
 
-  // Traitement des lignes
   for (const raw of lines) {
     const line = raw;
 
-    // H2
     if (/^##\s+/.test(line)) {
       flushPara();
       flushList();
@@ -446,13 +424,12 @@ function renderRichTextWithLegal(content: string): {
             key: `h2-${keySeq++}`,
             className: 'text-xl font-semibold mb-4 mt-8 text-gray-900',
           },
-          ...headerElements, // SPREAD !
+          ...headerElements,
         ),
       );
       continue;
     }
 
-    // H3
     if (/^###\s+/.test(line)) {
       flushPara();
       flushList();
@@ -465,13 +442,12 @@ function renderRichTextWithLegal(content: string): {
             key: `h3-${keySeq++}`,
             className: 'text-lg font-semibold mb-3 mt-6 text-gray-900',
           },
-          ...headerElements, // SPREAD !
+          ...headerElements,
         ),
       );
       continue;
     }
 
-    // UL
     if (/^\s*[-*]\s+/.test(line)) {
       if (listType === 'ol') flushList();
       listType = 'ul';
@@ -479,7 +455,6 @@ function renderRichTextWithLegal(content: string): {
       continue;
     }
 
-    // OL
     if (/^\s*\d+\.\s+/.test(line)) {
       if (listType === 'ul') flushList();
       listType = 'ol';
@@ -487,14 +462,12 @@ function renderRichTextWithLegal(content: string): {
       continue;
     }
 
-    // Ligne vide
     if (line.trim() === '') {
       flushPara();
       flushList();
       continue;
     }
 
-    // Paragraphe
     flushList();
     para.push(line);
   }
@@ -502,12 +475,11 @@ function renderRichTextWithLegal(content: string): {
   flushPara();
   flushList();
 
-  // Retourner avec spread des éléments
   return {
     node: React.createElement(
       'div',
       { className: 'prose prose-gray max-w-none mb-6 text-justify' },
-      ...acc, // SPREAD !
+      ...acc,
     ),
     found: Array.from(found),
   };
@@ -537,7 +509,7 @@ function splitStepsFromContent(sectionId: string, content: string) {
   return { introText: intro.join('\n').trim(), rawSteps };
 }
 
-/** CORRIGÉ : Rendu des sections avec gestion appropriée des éléments */
+/** Rendu des sections */
 function renderSection(section: YAMLSection): {
   node: React.ReactNode;
   found: LegalArticleId[];
@@ -546,7 +518,6 @@ function renderSection(section: YAMLSection): {
   const sectionType = detectSectionType(section);
   const foundInThis: Set<LegalArticleId> = new Set();
 
-  // Header
   if (section.title) {
     const rawIcon = getSectionIcon(
       section.icon,
@@ -570,12 +541,9 @@ function renderSection(section: YAMLSection): {
     );
   }
 
-  // ErrorAlert
-
   if (section.alert) {
+    // on garde ErrorAlert (custom) pour ne rien casser
     const ErrorAlert = require('@/components/ui/ErrorAlert').default;
-
-    // parse **bold**, *em*, links, legal refs inside the alert body
     const inline = renderInlineWithLegal(section.alert.content || '');
 
     elements.push(
@@ -584,48 +552,49 @@ function renderSection(section: YAMLSection): {
         {
           key: 'section-alert',
           type: section.alert.type,
-          title: section.alert.title, // avoids double icon
+          title: section.alert.title,
           className: 'mb-6',
         },
-        React.createElement(
-          'p',
-          { className: 'text-sm leading-relaxed' },
-          ...inline, // spread parsed nodes
-        ),
+        React.createElement('p', { className: 'text-sm leading-relaxed' }, ...inline),
       ),
     );
   }
 
-  // Badges
+  // Badges (shadcn)
   if (section.badges?.length) {
-    const Badge = require('@/components/ui/Badge').default;
+    const toneClass = (tone?: YAMLSection['badges'][number]['tone']) => {
+      switch (tone) {
+        case 'green':
+        case 'emerald':
+          return 'bg-green-50 text-green-800 border border-green-200';
+        case 'purple':
+        case 'indigo':
+          return 'bg-purple-50 text-purple-800 border border-purple-200';
+        case 'yellow':
+          return 'bg-yellow-50 text-yellow-900 border border-yellow-200';
+        case 'red':
+          return 'bg-red-50 text-red-800 border border-red-200';
+        case 'gray':
+          return 'bg-gray-100 text-gray-800 border border-gray-200';
+        case 'blue':
+        default:
+          return 'bg-blue-50 text-blue-800 border border-blue-200';
+      }
+    };
+
     elements.push(
       React.createElement(
         'div',
         { key: 'section-badges', className: 'flex flex-wrap gap-2 mb-6' },
-        ...section.badges.map((badge, i) =>
-          React.createElement(
-            Badge,
-            {
-              key: `badge-${i}`, // Clé unique
-              variant:
-                badge.tone === 'blue'
-                  ? 'primary'
-                  : badge.tone === 'green'
-                    ? 'success'
-                    : badge.tone === 'red'
-                      ? 'danger'
-                      : 'secondary',
-              className: 'text-xs',
-            },
-            badge.text,
-          ),
-        ),
+        ...section.badges.map((badge, i) => (
+          <Badge key={`badge-${i}`} className={`text-xs ${toneClass(badge.tone)}`}>
+            {badge.text}
+          </Badge>
+        )),
       ),
     );
   }
 
-  // Corps selon type
   switch (sectionType) {
     case 'timeline': {
       if (section.steps?.length) {
@@ -652,10 +621,7 @@ function renderSection(section: YAMLSection): {
       }
 
       if (section.content) {
-        const {
-          introText,
-          rawSteps,
-        } = splitStepsFromContent(section.id, section.content);
+        const { introText, rawSteps } = splitStepsFromContent(section.id, section.content);
 
         if (introText) {
           const introParsed = renderRichTextWithLegal(introText);
@@ -690,7 +656,6 @@ function renderSection(section: YAMLSection): {
 
     case 'table': {
       if (section.tableData?.length) {
-        // Transformer les données du tableau pour OptionsTable
         const optionsData = section.tableData.map(row => {
           const keys = Object.keys(row);
           return {
@@ -702,7 +667,6 @@ function renderSection(section: YAMLSection): {
           };
         });
 
-        // Le composant utilise TextWithLegalRefs pour traiter automatiquement les legal refs
         const OptionsTable = require('@/components/guides/OptionsTable').default;
         elements.push(
           React.createElement(OptionsTable, {
@@ -731,7 +695,6 @@ function renderSection(section: YAMLSection): {
 
     case 'grid': {
       if (section.items?.length) {
-        // Filtrer et préparer les items pour EligibilityChecklist
         const eligibilityItems = section.items
           .filter(item => item && typeof item === 'object' && typeof item.title === 'string')
           .map(item => ({
@@ -739,7 +702,6 @@ function renderSection(section: YAMLSection): {
             description: item.description || '',
           }));
 
-        // Le composant utilise TextWithLegalRefs pour traiter automatiquement les legal refs
         const EligibilityChecklist = require('@/components/guides/EligibilityChecklist').default;
         elements.push(
           React.createElement(EligibilityChecklist, {
@@ -785,36 +747,31 @@ function renderSection(section: YAMLSection): {
     }
   }
 
-  // CTA
+  // CTA (shadcn Button)
   if (section.cta) {
     const variant =
       section.cta.variant === 'primary'
-        ? 'primary'
+        ? 'default'
         : section.cta.variant === 'secondary'
           ? 'secondary'
           : section.cta.variant === 'outline'
             ? 'outline'
             : 'ghost';
 
-    const Button = require('@/components/ui/Button').default;
+    const iconNode = section.cta.icon
+      ? getSectionIcon(section.cta.icon, undefined, undefined, 'sm', 'text-blue-600')
+      : null;
 
     elements.push(
       React.createElement(
         'div',
         { key: 'cta', className: 'mt-6 text-center' },
-        React.createElement(
-          Button,
-          {
-            href: section.cta.href,
-            variant,
-            size: 'lg',
-            icon: section.cta.icon
-              ? getSectionIcon(section.cta.icon, undefined, undefined, 'sm')
-              : undefined,
-            className: 'touch-manipulation',
-          },
-          section.cta.label,
-        ),
+        <Button asChild variant={variant as any} size="lg" className="touch-manipulation">
+          <Link href={section.cta.href} className="inline-flex items-center gap-2">
+            {iconNode}
+            {section.cta.label}
+          </Link>
+        </Button>,
       ),
     );
   }
@@ -827,7 +784,7 @@ function renderSection(section: YAMLSection): {
         className: 'mb-8 last:mb-0',
         'data-section-type': sectionType,
       },
-      ...elements, // SPREAD !
+      ...elements,
     ),
     found: Array.from(foundInThis),
   };
@@ -880,12 +837,12 @@ const CATEGORY_REGISTRY = {
 
 type CategoryId = keyof typeof CATEGORY_REGISTRY;
 
-/** Résout une catégorie YAML vers l’objet d’affichage (fallback 'general') */
 function resolveCategory(raw?: string) {
-  const id = String(raw ?? '').trim().toLowerCase() as CategoryId;
+  const id = String(raw ?? '')
+    .trim()
+    .toLowerCase() as CategoryId;
   return CATEGORY_REGISTRY[id];
 }
-
 
 // ============================================================================
 // Conversion principale
@@ -906,19 +863,15 @@ export function yamlToGuidePage(yamlContent: string): GuidePage {
         description: data.seo?.description || data.description || '',
         keywords: data.seo?.keywords || [],
       },
-      // expose deux champs : l’ID brut + l’objet riche (pour UI/SEO/breadcrumbs)
       categoryId: categoryObj.id,
       category: categoryObj,
       breadcrumb: [
         { label: 'Accueil', href: '/' },
         { label: 'Guides', href: '/guides' },
-        // 👉 si tu veux injecter la catégorie au breadcrumb, dé-commente la ligne suivante :
-        // { label: categoryObj.name, href: `/guides?category=${categoryObj.id}` },
         { label: data.title, href: `/guides/${data.slug}` },
       ],
     } as any;
 
-    // Sections + refs trouvées
     const allFound = new Set<LegalArticleId>();
     const sections: GuideSection[] = data.sections.map((section, index) => {
       try {
@@ -955,7 +908,6 @@ export function yamlToGuidePage(yamlContent: string): GuidePage {
       }
     });
 
-    // Legal
     const yamlMain = (data.legal?.mainArticles || [])
       .map(s => (typeof s === 'string' ? normalizeLegalId(s) : null))
       .filter(Boolean) as LegalArticleId[];
@@ -966,7 +918,6 @@ export function yamlToGuidePage(yamlContent: string): GuidePage {
       lastUpdated: data.legal?.lastUpdated || new Date().toISOString().split('T')[0],
     } as GuideLegal;
 
-    // Fusion YAML + détectées
     const merged = new Set<LegalArticleId>(legal.mainArticles);
     for (const id of allFound) merged.add(id);
     legal.mainArticles = Array.from(merged);
@@ -1014,7 +965,6 @@ export function validateGuideYAML(yamlContent: string): {
         errors.push(`Catégorie inconnue: "${String(data.category)}"`);
       }
     }
-
 
     if (Array.isArray(data.sections)) {
       data.sections.forEach((s: any, i: number) => {

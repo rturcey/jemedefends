@@ -48,7 +48,8 @@ import {
   Search,
   Settings,
   Shield,
-  Shirt, ShoppingCart,
+  Shirt,
+  ShoppingCart,
   Signal,
   Smartphone,
   Star,
@@ -235,7 +236,6 @@ export function getContextualIcon(
 
   return contextMap[context] ?? React.createElement(BookOpen, { className: classes });
 }
-
 
 /**
  * Vérifie si une icône est supportée

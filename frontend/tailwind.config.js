@@ -64,6 +64,9 @@ module.exports = {
         'touch-lg': '56px',
       },
 
+      fontFamily: {
+        sans: ['var(--font-sans)', 'Inter', 'sans-serif'],
+      },
       // Typography mobile-first
       fontSize: {
         '2xs': ['0.625rem', { lineHeight: '0.875rem' }], // 10px

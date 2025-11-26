@@ -76,8 +76,7 @@ export default function GuidePage({ params }: GuidePageProps) {
 
       {/* Layout principal en 3 colonnes : TOC gauche / contenu / sidebar droite */}
       <div className="max-w-7xl mx-auto px-4 py-6 lg:py-8">
-        <div
-          className="grid grid-cols-1 lg:[grid-template-columns:16rem_minmax(0,1fr)_20rem] gap-6 lg:gap-8">
+        <div className="grid grid-cols-1 lg:[grid-template-columns:16rem_minmax(0,1fr)_20rem] gap-6 lg:gap-8">
           {/* TOC gauche sticky */}
           <aside className="hidden lg:block">
             <div className="sticky top-[6rem]">
@@ -90,8 +89,7 @@ export default function GuidePage({ params }: GuidePageProps) {
               <div className="p-6 lg:p-8">
                 <div className="prose prose-lg max-w-none">
                   {guide.sections.map((section: any, index: number) => (
-                    <div key={section.id || `section-${index}`}
-                         className="mb-8 last:mb-0">
+                    <div key={section.id || `section-${index}`} className="mb-8 last:mb-0">
                       {section.content}
                     </div>
                   ))}
@@ -135,7 +133,7 @@ export async function generateMetadata({ params }: GuidePageProps) {
   if (!guide) {
     return {
       title: 'Guide non trouvé',
-      description: 'Ce guide n\'existe pas ou n\'est plus disponible.',
+      description: "Ce guide n'existe pas ou n'est plus disponible.",
     };
   }
 

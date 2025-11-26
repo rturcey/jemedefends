@@ -3,7 +3,8 @@
 import { CheckCircle, Download } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
 
-import { Container, Section, Button } from '@/components/ui';
+import { Container, Section } from '@/components/ui';
+import { Button } from '@/components/ui/button';
 
 const ConfirmationPage: React.FC = () => {
   const [paymentData, setPaymentData] = useState<any>(null);

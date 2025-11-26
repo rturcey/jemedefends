@@ -38,13 +38,13 @@ EOF
 
 # Build and deploy
 echo "🏗️ Building production images..."
-docker-compose -f deployment/docker/docker-compose.prod.yml build
+docker compose -f deployment/docker/docker compose.prod.yml build
 
 echo "🛑 Stopping existing services..."
-docker-compose -f deployment/docker/docker-compose.prod.yml down
+docker compose -f deployment/docker/docker compose.prod.yml down
 
 echo "🚀 Starting production services..."
-docker-compose -f deployment/docker/docker-compose.prod.yml up -d
+docker compose -f deployment/docker/docker compose.prod.yml up -d
 
 # Wait for services to be healthy
 echo "⏳ Waiting for services to be healthy..."
@@ -57,9 +57,9 @@ if curl -f http://localhost/health > /dev/null 2>&1; then
 else
     echo "❌ Health check failed"
     echo "📋 Checking service status..."
-    docker-compose -f deployment/docker/docker-compose.prod.yml ps
+    docker compose -f deployment/docker/docker compose.prod.yml ps
     echo "📋 Checking logs..."
-    docker-compose -f deployment/docker/docker-compose.prod.yml logs app
+    docker compose -f deployment/docker/docker compose.prod.yml logs app
     exit 1
 fi
 
@@ -73,8 +73,8 @@ echo "  http://localhost/docs   # API documentation (if DEBUG=true)"
 echo "  http://localhost/health # Health check"
 echo ""
 echo "📋 Management commands:"
-echo "  docker-compose -f deployment/docker/docker-compose.prod.yml logs app     # View app logs"
-echo "  docker-compose -f deployment/docker/docker-compose.prod.yml logs nginx   # View nginx logs"
-echo "  docker-compose -f deployment/docker/docker-compose.prod.yml ps           # Service status"
-echo "  docker-compose -f deployment/docker/docker-compose.prod.yml down         # Stop services"
+echo "  docker compose -f deployment/docker/docker compose.prod.yml logs app     # View app logs"
+echo "  docker compose -f deployment/docker/docker compose.prod.yml logs nginx   # View nginx logs"
+echo "  docker compose -f deployment/docker/docker compose.prod.yml ps           # Service status"
+echo "  docker compose -f deployment/docker/docker compose.prod.yml down         # Stop services"
 echo ""

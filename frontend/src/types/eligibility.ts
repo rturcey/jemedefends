@@ -4,8 +4,8 @@
 export type StepId =
   | 'seller'
   | 'usage'
-  | 'itemCategory'  // Bien matériel / Contenu-Service numérique
-  | 'itemDetail'    // Neuf / Occasion OU Ponctuel / Abonnement
+  | 'itemCategory' // Bien matériel / Contenu-Service numérique
+  | 'itemDetail' // Neuf / Occasion OU Ponctuel / Abonnement
   | 'territory'
   | 'timing'
   | 'defect';
@@ -49,12 +49,7 @@ export interface EligibilityStep {
    */
   dynamic?: (
     data: EligibilityData,
-  ) => Partial<
-    Pick<
-      EligibilityStep,
-      'title' | 'question' | 'description' | 'ui' | 'legal'
-    >
-  >;
+  ) => Partial<Pick<EligibilityStep, 'title' | 'question' | 'description' | 'ui' | 'legal'>>;
 }
 
 // --- Données du formulaire ---
@@ -64,8 +59,8 @@ export interface EligibilityData {
   usage?: 'personal' | 'professional';
 
   // ✅ Nouveau découpage en 2 niveaux
-  itemCategory?: ItemCategory;   // Bien matériel / Contenu/Service numérique
-  itemDetail?: ItemDetail;       // Neuf / Occasion // Ponctuel / Abonnement
+  itemCategory?: ItemCategory; // Bien matériel / Contenu/Service numérique
+  itemDetail?: ItemDetail; // Neuf / Occasion // Ponctuel / Abonnement
 
   territory?: 'eu' | 'non_eu';
 

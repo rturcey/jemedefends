@@ -25,23 +25,22 @@ export default function GuideErrorFallback({
             <AlertCircle className="w-6 h-6 text-red-600" />
           </div>
         </div>
-        
+
         <div className="flex-1">
-          <h3 className="text-lg font-semibold text-red-900 mb-2">
-            Une erreur est survenue
-          </h3>
-          
+          <h3 className="text-lg font-semibold text-red-900 mb-2">Une erreur est survenue</h3>
+
           <div className="space-y-3">
             <p className="text-red-800 leading-relaxed">
-              {error.message || 'Une erreur inattendue s\'est produite lors du chargement du guide.'}
+              {error.message || "Une erreur inattendue s'est produite lors du chargement du guide."}
             </p>
-            
+
             <div className="bg-red-50 border border-red-200 rounded-lg p-3">
               <p className="text-sm text-red-700">
-                <strong>Cause probable :</strong> Problème de connexion ou contenu temporairement indisponible.
+                <strong>Cause probable :</strong> Problème de connexion ou contenu temporairement
+                indisponible.
               </p>
             </div>
-            
+
             {onRetry && (
               <button
                 onClick={onRetry}

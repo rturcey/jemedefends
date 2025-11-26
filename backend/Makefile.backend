@@ -41,17 +41,17 @@ clean:
 
 # Database commands
 db-up:
-	docker-compose up -d postgres
+	docker compose up -d postgres
 
 db-down:
-	docker-compose down
+	docker compose down
 
 db-migrate:
 	./scripts/migrate.sh
 
 db-reset:
-	docker-compose down -v
-	docker-compose up -d postgres
+	docker compose down -v
+	docker compose up -d postgres
 	sleep 3
 	make db-up
 	make db-migrate
@@ -104,19 +104,19 @@ health-check:
 
 # Production commands
 prod-build:
-	docker-compose -f deployment/docker/docker-compose.prod.yml build
+	docker compose -f deployment/docker/docker compose.prod.yml build
 
 prod-deploy:
 	./scripts/deploy.sh
 
 prod-logs:
-	docker-compose -f deployment/docker/docker-compose.prod.yml logs -f app
+	docker compose -f deployment/docker/docker compose.prod.yml logs -f app
 
 prod-status:
-	docker-compose -f deployment/docker/docker-compose.prod.yml ps
+	docker compose -f deployment/docker/docker compose.prod.yml ps
 
 prod-stop:
-	docker-compose -f deployment/docker/docker-compose.prod.yml down
+	docker compose -f deployment/docker/docker compose.prod.yml down
 
 backup-db:
 	./scripts/backup-db.sh

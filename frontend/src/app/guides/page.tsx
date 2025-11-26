@@ -7,7 +7,7 @@ import GuidesClientPage from './client-page';
 export const metadata: Metadata = {
   title: 'Guides pratiques - Garantie légale de conformité - Je me défends',
   description:
-    'Découvrez tous nos guides pour faire valoir vos droits de consommateur. Garantie légale, réparation, remboursement : tout ce qu\'il faut savoir.',
+    "Découvrez tous nos guides pour faire valoir vos droits de consommateur. Garantie légale, réparation, remboursement : tout ce qu'il faut savoir.",
   keywords: [
     'guides consommateur',
     'garantie légale conformité',

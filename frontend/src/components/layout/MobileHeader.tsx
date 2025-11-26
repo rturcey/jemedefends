@@ -1,59 +1,36 @@
 'use client';
 
-import { Menu, X, Home, FileText, HelpCircle, BookOpen, Shield } from 'lucide-react';
+import { Menu, X, FileText } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+
+import { NAV_ITEMS } from '@/components/layout/nav.config';
+import { Button } from '@/components/ui/button';
 
 export default function MobileHeader() {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
-  // Détecter le scroll pour ajouter une ombre
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
-    };
-
+    const handleScroll = () => setIsScrolled(window.scrollY > 10);
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Fermer le menu au clic sur un lien
   const closeMenu = () => setIsOpen(false);
 
-  // Empêcher le scroll du body quand le menu est ouvert
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-
+    document.body.style.overflow = isOpen ? 'hidden' : '';
     return () => {
       document.body.style.overflow = '';
     };
   }, [isOpen]);
 
-  const menuItems = [
-    {
-      href: '/#problemes',
-      label: 'Problèmes courants',
-      icon: <Shield className="w-5 h-5" />,
-    },
-    {
-      href: '/#process',
-      label: 'Comment ça marche',
-      icon: <FileText className="w-5 h-5" />,
-    },
-    { href: '/#fiabilite', label: 'Confiance', icon: <Shield className="w-5 h-5" /> },
-    { href: '/guides', label: 'Guides', icon: <BookOpen className="w-5 h-5" /> },
-    { href: '/faq', label: 'FAQ', icon: <HelpCircle className="w-5 h-5" /> },
-  ];
+  const menuItems = useMemo(() => NAV_ITEMS.filter(it => !it.desktopOnly), []);
 
   return (
     <>
-      {/* Header fixe mobile uniquement */}
       <header
         className={`md:hidden fixed top-0 left-0 right-0 z-50 bg-white transition-shadow duration-300 ${
           isScrolled ? 'shadow-md' : 'shadow-sm'
@@ -61,7 +38,6 @@ export default function MobileHeader() {
         style={{ height: '64px' }}
       >
         <div className="h-full px-4 flex items-center justify-between">
-          {/* Logo à gauche */}
           <Link href="/" className="flex items-center" onClick={closeMenu}>
             <Image
               src="/images/logo_jemedefends.png"
@@ -73,26 +49,25 @@ export default function MobileHeader() {
             />
           </Link>
 
-          {/* Bouton menu à droite */}
-          <button
-            onClick={() => setIsOpen(!isOpen)}
-            className="flex items-center justify-center w-12 h-12 rounded-lg hover:bg-gray-100 active:bg-gray-200 transition-colors"
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setIsOpen(v => !v)}
             aria-label={isOpen ? 'Fermer le menu' : 'Ouvrir le menu'}
             aria-expanded={isOpen}
+            className="h-12 w-12 rounded-lg"
           >
             {isOpen ? (
               <X className="w-6 h-6 text-gray-900" />
             ) : (
               <Menu className="w-6 h-6 text-gray-900" />
             )}
-          </button>
+          </Button>
         </div>
       </header>
 
-      {/* Overlay du menu mobile */}
       {isOpen && (
         <>
-          {/* Backdrop */}
           <div
             className="md:hidden fixed inset-0 bg-black/50 z-40 backdrop-blur-sm"
             style={{ top: '64px' }}
@@ -100,13 +75,11 @@ export default function MobileHeader() {
             aria-hidden="true"
           />
 
-          {/* Menu panel */}
           <nav
             className="md:hidden fixed top-16 left-0 right-0 bottom-0 z-50 bg-white overflow-y-auto"
             aria-label="Menu mobile"
           >
             <div className="px-4 py-6 space-y-2">
-              {/* Liens de navigation */}
               {menuItems.map(item => (
                 <Link
                   key={item.href}
@@ -123,22 +96,17 @@ export default function MobileHeader() {
                 </Link>
               ))}
 
-              {/* Séparateur */}
               <div className="py-4">
                 <div className="h-px bg-gray-200" />
               </div>
 
-              {/* CTA Principal */}
-              <Link
-                href="/eligibilite#start"
-                onClick={closeMenu}
-                className="flex items-center justify-center gap-2 w-full px-6 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-xl shadow-lg active:scale-95 transition-all"
-              >
-                <FileText className="w-5 h-5" />
-                Créer ma lettre gratuite
-              </Link>
+              <Button asChild size="lg" className="w-full min-h-[56px] gap-2 shadow-lg">
+                <Link href="/eligibilite" onClick={closeMenu}>
+                  <FileText className="w-5 h-5" />
+                  Créer ma lettre gratuite
+                </Link>
+              </Button>
 
-              {/* Informations additionnelles */}
               <div className="mt-8 pt-6 border-t border-gray-200">
                 <div className="flex flex-wrap gap-2 justify-center text-xs text-gray-500">
                   <span className="flex items-center gap-1">

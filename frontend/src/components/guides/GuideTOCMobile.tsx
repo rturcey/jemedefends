@@ -39,11 +39,11 @@ interface GuideTOCMobileProps extends GuideTOCProps {
 }
 
 export default function GuideTOCMobile({
-                                         className = '',
-                                         selector = 'main article',
-                                         activeId: controlledActiveId,
-                                         onNavigate,
-                                       }: GuideTOCMobileProps) {
+  className = '',
+  selector = 'main article',
+  activeId: controlledActiveId,
+  onNavigate,
+}: GuideTOCMobileProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [expandedId, setExpandedId] = useState<string | null>(null);

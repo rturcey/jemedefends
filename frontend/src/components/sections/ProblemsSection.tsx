@@ -1,12 +1,13 @@
 'use client';
 
-import { ArrowRight, Book, BookOpen, ChevronDown, ChevronUp } from 'lucide-react';
+import { ArrowRight, BookOpen } from 'lucide-react';
 import Link from 'next/link';
-import React, { useState } from 'react';
+import * as React from 'react';
 
-import { Container, Reveal, Badge, Button } from '@/components/ui';
-import { getIconFromCategoryId, getIconFromName } from '@/lib/icon-utils';
-import { useMobileOptimization } from '@/hooks/useMobileOptimization';
+import { Container } from '@/components/ui';
+import { Button } from '@/components/ui/button';
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
+import { getIconFromName } from '@/lib/icon-utils';
 
 const PROBLEMS = [
   {
@@ -54,101 +55,7 @@ const PROBLEMS = [
     href: '/guides/ordinateurs-defectueux',
     legalHint: 'Garantie légale 2 ans',
   },
-];
-
-const ProblemCard = ({ problem }: { problem: (typeof PROBLEMS)[0] }) => {
-  const { isMobile } = useMobileOptimization();
-  const [isExpanded, setIsExpanded] = useState(false);
-
-  // Sur desktop, toujours en lien
-  if (!isMobile) {
-    return (
-      <Link
-        href={problem.href}
-        className="group flex flex-col p-3 sm:p-4 md:p-6 bg-white rounded-2xl border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all duration-300 h-full min-h-[44px]"
-      >
-        <div
-          className="flex items-start gap-2 sm:gap-3 md:gap-4 mb-2 sm:mb-3 md:mb-4">
-          <div
-            className="flex h-10 w-10 md:h-12 md:w-12 items-center justify-center rounded-xl bg-blue-50 text-blue-600 flex-shrink-0">
-            {
-              getIconFromName(problem.icon, 'lg', 'w-5 h-5')
-            }
-          </div>
-          <div className="flex-1 min-w-0">
-            <h3
-              className="font-bold text-sm sm:text-base md:text-lg text-gray-900 mb-0 group-hover:text-blue-600 transition leading-tight">
-              {problem.title}
-            </h3>
-            {problem.legalHint && (
-              <p
-                className="hidden xs:block text-[10px] sm:text-xs text-gray-500 mt-0.5">
-                {problem.legalHint}
-              </p>
-            )}
-          </div>
-        </div>
-
-        <p
-          className="text-xs sm:text-sm md:text-base text-gray-600 flex-1 leading-relaxed">
-          {problem.desc}
-        </p>
-
-        <div
-          className="flex items-center justify-between mt-2 sm:mt-3 md:mt-4 pt-2 sm:pt-3 border-t border-gray-100">
-          <span
-            className="text-xs sm:text-sm font-medium text-blue-600">Voir le guide</span>
-          <ArrowRight
-            className="w-4 h-4 text-blue-600 group-hover:translate-x-0.5 transition" />
-        </div>
-      </Link>
-    );
-  }
-
-  // Sur mobile : card déroulable
-  return (
-    <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
-      <button
-        onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full p-3 flex items-center justify-between gap-2 text-left"
-      >
-        <div className="flex items-center gap-2 flex-1 min-w-0">
-          <div
-            className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600 flex-shrink-0">
-            {
-              getIconFromName(problem.icon, 'lg', 'w-5 h-5')
-            }
-          </div>
-          <div className="flex-1 min-w-0">
-            <h3
-              className="font-bold text-sm text-gray-900 leading-tight">{problem.title}</h3>
-            {problem.legalHint && (
-              <p className="text-[10px] text-gray-500 mt-0.5">{problem.legalHint}</p>
-            )}
-          </div>
-        </div>
-        {isExpanded ? (
-          <ChevronUp className="w-5 h-5 text-gray-400 flex-shrink-0" />
-        ) : (
-          <ChevronDown className="w-5 h-5 text-gray-400 flex-shrink-0" />
-        )}
-      </button>
-
-      {isExpanded && (
-        <div className="px-3 pb-3 space-y-3 border-t border-gray-100 pt-3">
-          <p className="text-xs text-gray-600 leading-relaxed">{problem.desc}</p>
-          <Link
-            href={problem.href}
-            className="flex items-center justify-between text-xs font-medium text-blue-600 hover:text-blue-700"
-          >
-            <span>Voir le guide complet</span>
-            <ArrowRight className="w-4 h-4" />
-          </Link>
-        </div>
-      )}
-    </div>
-  );
-};
+] as const;
 
 export default function ProblemsSection() {
   return (
@@ -158,29 +65,54 @@ export default function ProblemsSection() {
     >
       <Container>
         <div className="text-center mb-4 md:mb-8 lg:mb-10">
-          <h2
-            className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 mb-4">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 mb-4">
             Votre produit vous pose problème ?
           </h2>
-          <p
-            className="text-sm md:text-base lg:text-lg text-slate-600 max-w-2xl mx-auto">
+          <p className="text-sm md:text-base lg:text-lg text-slate-600 max-w-2xl mx-auto">
             Découvrez nos guides spécialisés pour chaque type de produit
           </p>
         </div>
 
-        {/* Grille adaptative : 1→2→3 colonnes */}
-        <div
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6">
-          {PROBLEMS.map((problem, index) => (
-            <div key={problem.href}>
-              <ProblemCard problem={problem} />
-            </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6">
+          {PROBLEMS.map(p => (
+            <Card
+              key={p.href}
+              className="group rounded-2xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-shadow"
+            >
+              <CardHeader className="flex flex-row items-start gap-3">
+                <div className="mt-0.5 flex items-center justify-center w-10 h-10 rounded-xl bg-blue-50 text-blue-700">
+                  {getIconFromName(p.icon, 'lg', 'w-5 h-5')}
+                </div>
+
+                <div className="min-w-0">
+                  <CardTitle className="text-base font-bold text-gray-900">{p.title}</CardTitle>
+                  {p.legalHint && (
+                    <div className="mt-1 text-xs text-blue-700 font-medium">{p.legalHint}</div>
+                  )}
+                </div>
+              </CardHeader>
+
+              <CardContent className="text-sm text-gray-600">{p.desc}</CardContent>
+
+              <CardFooter className="pt-0">
+                <Link
+                  href={p.href}
+                  className="w-full inline-flex items-center justify-between text-sm font-medium text-blue-700 hover:text-blue-800"
+                >
+                  Voir le guide
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition" />
+                </Link>
+              </CardFooter>
+            </Card>
           ))}
         </div>
 
         <div className="hidden md:flex justify-center mt-8">
-          <Button href="/guides" variant="outline" icon={<BookOpen />}>
-            Voir tous les guides
+          <Button asChild variant="outline">
+            <Link href="/guides" className="inline-flex items-center gap-2">
+              <BookOpen className="w-4 h-4" />
+              Voir tous les guides
+            </Link>
           </Button>
         </div>
       </Container>

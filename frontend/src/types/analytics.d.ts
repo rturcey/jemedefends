@@ -42,9 +42,9 @@ declare global {
     gtag?: GtagEvent;
     dataLayer?: any[];
   }
-  
+
   interface WindowEventMap {
-    'cookieConsentUpdate': ConsentUpdateEvent;
+    cookieConsentUpdate: ConsentUpdateEvent;
   }
 }
 

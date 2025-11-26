@@ -6,7 +6,8 @@
 import { Zap, FileText, ArrowRight, Phone, Download, AlertTriangle } from 'lucide-react';
 import React from 'react';
 
-import Button from '@/components/ui/Button';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 
 interface ContextualCTAProps {
   position: 'early-guide' | 'mid-guide' | 'late-guide';
@@ -119,12 +120,11 @@ export default function ContextualCTA({ position, urgency }: ContextualCTAProps)
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           {/* CTA Principal */}
           {config.primary.href ? (
-            <Button
-              href={config.primary.href}
-              className="sm:w-auto bg-blue-600 hover:bg-blue-700 text-white"
-            >
-              <config.primary.icon className="w-4 h-4 mr-2" />
-              {config.primary.text}
+            <Button className="sm:w-auto bg-blue-600 hover:bg-blue-700 text-white">
+              <Link href={config.primary.href}>
+                <config.primary.icon className="w-4 h-4 mr-2" />
+                {config.primary.text}
+              </Link>
             </Button>
           ) : (
             <Button
