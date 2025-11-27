@@ -2,28 +2,29 @@
 
 import * as React from 'react';
 
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Label } from '@/components/ui/label';
-import { Alert } from '@/components/ui/alert';
-import { Badge } from '@/components/ui/badge';
+import LegalReference from '@/components/ui/LegalReference';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Separator } from '@/components/ui/separator';
-import { getSectionIcon } from '@/lib/icon-utils';
 import { ELIGIBILITY_STEPS } from '@/constants/eligibilitySteps';
-import { useEligibilityForm } from '@/hooks/useEligibilityForm';
-import type { EligibilityData, TimingAnswer } from '@/types/eligibility';
 import type { EligibilityResult } from '@/eligibility/engine';
+import { useEligibilityForm } from '@/hooks/useEligibilityForm';
+import { getSectionIcon } from '@/lib/icon-utils';
 import { cn } from '@/lib/utils';
-import { Clock, ShieldCheck, Sparkles, Zap } from 'lucide-react';
+import type { EligibilityData, TimingAnswer } from '@/types/eligibility';
+import { Clock, ShieldCheck, Sparkles } from 'lucide-react';
 
 type Props = {
   onCompleteAction: (result: EligibilityResult, data: EligibilityData) => void;
   onStepChange?: (stepIndex: number) => void;
+  onBlockingAnswer?: (reason: string) => void;
 };
 
-export default function EligibilityForm({ onCompleteAction, onStepChange }: Props) {
+export default function EligibilityForm({ onCompleteAction, onStepChange, onBlockingAnswer }: Props) {
   const {
     currentStep,
     data,
@@ -104,6 +105,12 @@ export default function EligibilityForm({ onCompleteAction, onStepChange }: Prop
     const result = validateStep(currentStep, value);
     setValidations?.(prev => ({ ...prev, [currentStep]: result }));
 
+    if (result.blocking) {
+      onBlockingAnswer?.(
+        result.error ?? "Cette réponse vous oriente vers les alternatives à la garantie légale de conformité.",
+      );
+    }
+
     if (!result.isValid) return;
 
     if (currentStep === stepCount - 1) {
@@ -126,53 +133,41 @@ export default function EligibilityForm({ onCompleteAction, onStepChange }: Prop
   };
 
   const progress = Math.round(((currentStep + 1) / stepCount) * 100);
+  const legalReferences = stepContent.legal?.references ?? [];
+  const options = ((stepContent.ui as any).options ?? []) as {
+    value: string;
+    label: string;
+    description?: string;
+    icon?: string;
+  }[];
 
   return (
-    <section className="relative isolate overflow-hidden bg-gradient-to-b from-[#eef4ff] via-white to-white px-4 py-8 sm:py-12">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_10%_-10%,rgba(59,130,246,0.12),transparent_35%),radial-gradient(circle_at_90%_0%,rgba(99,102,241,0.12),transparent_32%)]" />
-      <div className="relative mx-auto flex w-full max-w-5xl flex-col gap-4">
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm text-slate-600">
-            <Badge variant="outline" className="rounded-full border-blue-200 bg-blue-50 text-blue-900">
-              Parcours garantie légale
-            </Badge>
-            <Badge variant="outline" className="rounded-full border-slate-200 bg-white text-slate-800">
-              Test gratuit
-            </Badge>
-            <div className="flex items-center gap-1 rounded-full bg-slate-900 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-white">
-              <Zap className="h-3.5 w-3.5" /> 2 min chrono
-            </div>
+    <section className="relative isolate bg-slate-50 px-4 py-8 sm:py-12">
+      <div className="relative mx-auto flex w-full max-w-4xl flex-col gap-6">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+          <div className="space-y-2">
+            <p className="text-xs font-semibold uppercase tracking-[0.08em] text-blue-700">Parcours garantie légale</p>
+            <h1 className="text-2xl font-extrabold leading-tight text-slate-900 sm:text-3xl">
+              Vérifiez votre éligibilité
+            </h1>
+            <p className="text-sm text-slate-600 sm:text-base">
+              Un diagnostic guidé pour confirmer si la garantie légale vous protège.
+            </p>
           </div>
-          <div className="flex items-center gap-2 text-xs text-slate-500">
+          <div className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-600 shadow-sm">
             <ShieldCheck className="h-4 w-4 text-blue-600" />
             Vos réponses restent privées
           </div>
         </div>
 
-        <Card className="relative overflow-hidden rounded-3xl border-slate-100 shadow-[0_18px_70px_rgba(15,23,42,0.08)]">
-          <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-r from-blue-50 via-white to-indigo-50" />
-          <CardHeader className="relative space-y-4 pb-3">
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-              <div className="space-y-2">
-                <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm text-slate-600">
-                  <Badge variant="secondary" className="rounded-full bg-white text-slate-900 shadow-sm">
-                    Étape {currentStep + 1} / {stepCount}
-                  </Badge>
-                  <Badge variant="outline" className="rounded-full border-blue-200 bg-blue-50 text-blue-900">
-                    {stepContent.title}
-                  </Badge>
-                </div>
-                <div className="space-y-1">
-                  <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900">
-                    Vérifiez votre éligibilité
-                  </h1>
-                  <p className="text-sm sm:text-base text-slate-600">
-                    Un diagnostic guidé pour confirmer si la garantie légale vous protège.
-                  </p>
-                </div>
+        <Card className="overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-[0_18px_70px_rgba(15,23,42,0.06)]">
+          <CardHeader className="space-y-5 border-b border-slate-100 bg-white/80 px-4 pb-4 pt-6 backdrop-blur sm:px-6">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex flex-wrap items-center gap-2 text-xs font-semibold text-blue-700">
+                <span className="rounded-full bg-blue-50 px-3 py-1 text-blue-800">Étape {currentStep + 1} / {stepCount}</span>
+                <span className="rounded-full bg-slate-100 px-3 py-1 text-slate-800">{stepContent.title}</span>
               </div>
-
-              <div className="flex items-center gap-3 rounded-2xl border border-slate-100 bg-white/80 px-3 py-2 text-sm font-semibold text-slate-800 shadow-sm">
+              <div className="flex items-center gap-3 rounded-2xl border border-slate-100 bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-800 shadow-inner">
                 <Clock className="h-4 w-4 text-blue-600" />
                 <div className="leading-tight">
                   <div>Progression</div>
@@ -181,81 +176,102 @@ export default function EligibilityForm({ onCompleteAction, onStepChange }: Prop
               </div>
             </div>
 
-            <Progress value={progress} className="h-2 rounded-full bg-slate-100" />
+            <div className="space-y-2">
+              <Progress
+                value={progress}
+                className="h-2 rounded-full bg-blue-100"
+                indicatorClassName="bg-gradient-to-r from-blue-600 to-indigo-600"
+              />
+              <div className="flex items-center justify-between text-xs text-slate-500">
+                <span>Un diagnostic guidé, étape par étape</span>
+                <span className="font-semibold text-blue-700">{progress}%</span>
+              </div>
+            </div>
 
             {stepContent.description && (
-              <div className="flex items-start gap-2 rounded-2xl border border-blue-100 bg-blue-50/80 px-3 py-2 text-sm text-slate-800 shadow-inner">
-                <Sparkles className="h-4 w-4 text-blue-500" />
-                <p className="leading-relaxed">{stepContent.description}</p>
+              <div className="flex items-start gap-3 rounded-2xl border border-blue-100 bg-blue-50/80 px-4 py-3 text-sm text-slate-800 shadow-inner">
+                <Sparkles className="mt-0.5 h-4 w-4 text-blue-600" />
+                <p className="leading-relaxed text-slate-800">{stepContent.description}</p>
               </div>
             )}
           </CardHeader>
 
-          <CardContent className="relative space-y-6 pb-6">
+          <CardContent className="space-y-6 px-4 pb-6 pt-4 sm:px-6">
             {stepContent.legal && (
-              <Alert className="border-blue-200 bg-blue-50/80 text-sm text-blue-900 rounded-2xl shadow-sm">
-                <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-                  <div className="font-semibold">{stepContent.legal.article}</div>
-                  <Badge variant="outline" className="rounded-full border-white/40 bg-white/80 text-blue-900">
-                    Garantie légale = vendeur pro → consommateur
-                  </Badge>
-                </div>
-                <div className="mt-2 text-blue-900/90 leading-relaxed">{stepContent.legal.explanation}</div>
-                {stepContent.legal.examples?.length ? (
-                  <ul className="mt-2 list-disc space-y-1 pl-5 text-blue-900/90">
-                    {stepContent.legal.examples.map((e, i) => (
-                      <li key={i}>{e}</li>
-                    ))}
-                  </ul>
-                ) : null}
-              </Alert>
+              <Accordion
+                type="single"
+                collapsible
+                className="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-[0_8px_30px_rgba(15,23,42,0.05)]"
+              >
+                <AccordionItem value="legal" className="border-0">
+                  <AccordionTrigger className="px-4 text-left text-sm font-semibold text-slate-900">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <ShieldCheck className="h-4 w-4 text-blue-700" />
+                      <span>En savoir plus</span>
+                      {legalReferences.map(code => (
+                        <LegalReference key={code} code={code} variant="badge" size="sm" className="ml-1" />
+                      ))}
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="px-4 text-sm leading-relaxed text-slate-700">
+                    <p className="mb-3 text-slate-700">{stepContent.legal.explanation}</p>
+                    {stepContent.legal.examples?.length ? (
+                      <ul className="space-y-1 text-slate-700">
+                        {stepContent.legal.examples.map((e, i) => (
+                          <li key={i} className="flex items-start gap-2">
+                            <span className="mt-0.5 h-1 w-1 rounded-full bg-blue-600" />
+                            <span>{e}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : null}
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
             )}
 
-            <div className="space-y-4 rounded-2xl border border-slate-100 bg-white/80 p-4 shadow-[0_10px_40px_rgba(15,23,42,0.04)]">
+            <div className="space-y-4 rounded-2xl border border-slate-100 bg-slate-50/70 p-4 sm:p-5 shadow-[0_10px_40px_rgba(15,23,42,0.04)]">
               <div className="space-y-1">
-                <h2 className="text-lg sm:text-xl font-bold text-slate-900">{stepContent.question}</h2>
-                {validation.error && (
-                  <p className="text-sm font-medium text-red-600">{validation.error}</p>
-                )}
+                <h2 className="text-lg font-bold text-slate-900 sm:text-xl">{stepContent.question}</h2>
+                {validation.error && <p className="text-sm font-semibold text-red-600">{validation.error}</p>}
               </div>
 
-              <RadioGroup
-                value={selected as string | undefined}
-                onValueChange={handleSelect}
-                className="grid gap-3"
-              >
-                {((stepContent.ui as any).options ?? []).map((opt: any) => {
-                  const icon = getSectionIcon(opt.icon, stepContent.id, 'radio', 'sm');
+              <RadioGroup value={selected as string | undefined} onValueChange={handleSelect} className="grid gap-3">
+                {options.map(opt => {
+                  const icon = getSectionIcon(opt.icon, stepContent.id, 'radio', 'sm', 'h-5 w-5 text-blue-700');
                   const isSelected = selected === opt.value;
+                  const optionId = `${stepContent.id}-${opt.value}`;
                   return (
-                    <Label
-                      key={opt.value}
-                      className={cn(
-                        'group relative flex items-start gap-3 rounded-2xl border p-4 transition-all duration-200',
-                        'cursor-pointer bg-white/90 shadow-sm hover:shadow-md backdrop-blur',
-                        isSelected ? 'border-blue-300 ring-2 ring-blue-100' : 'border-slate-200 hover:border-blue-200',
-                      )}
-                    >
-                      <RadioGroupItem value={opt.value} className="mt-0.5" />
-                      <div className="flex-1 space-y-1">
-                        <div className="flex items-center gap-2 font-semibold text-slate-900">
-                          {icon}
-                          {opt.label}
-                        </div>
-                        {opt.description && (
-                          <div className="text-sm text-slate-600 leading-relaxed">{opt.description}</div>
+                    <div key={opt.value} className="relative">
+                      <RadioGroupItem value={opt.value} id={optionId} className="peer sr-only" />
+                      <Label
+                        htmlFor={optionId}
+                        className={cn(
+                          'group relative flex items-start gap-3 rounded-2xl border p-4 transition-all duration-200',
+                          'cursor-pointer bg-white/90 shadow-sm hover:shadow-md backdrop-blur',
+                          isSelected
+                            ? 'border-blue-500 ring-2 ring-blue-100'
+                            : 'border-slate-200 hover:border-blue-200',
                         )}
-                      </div>
-                      <div className="absolute inset-y-3 right-4 hidden sm:flex items-center text-xs font-semibold text-blue-700 opacity-0 transition-opacity group-hover:opacity-100">
-                        Choisir →
-                      </div>
-                    </Label>
+                      >
+                        <span className="mt-0.5 flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-700">
+                          {icon}
+                        </span>
+                        <div className="flex-1 space-y-1">
+                          <div className="flex items-center gap-2 font-semibold text-slate-900">{opt.label}</div>
+                          {opt.description && <div className="text-sm leading-relaxed text-slate-600">{opt.description}</div>}
+                        </div>
+                        <div className="absolute inset-y-3 right-4 hidden items-center text-xs font-semibold text-blue-700 opacity-0 transition-opacity group-hover:opacity-100 sm:flex">
+                          Choisir →
+                        </div>
+                      </Label>
+                    </div>
                   );
                 })}
               </RadioGroup>
             </div>
 
-            <div className="space-y-3 rounded-2xl border border-slate-100 bg-white/80 p-4 sm:p-5 shadow-[0_8px_30px_rgba(15,23,42,0.05)]">
+            <div className="space-y-3 rounded-2xl border border-slate-100 bg-white/90 p-4 sm:p-5 shadow-[0_8px_30px_rgba(15,23,42,0.05)]">
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-slate-600">
                   <Sparkles className="h-4 w-4 text-blue-600" /> Navigation rapide
@@ -273,12 +289,13 @@ export default function EligibilityForm({ onCompleteAction, onStepChange }: Prop
 
                   <Button
                     type="button"
-                    variant="brand"
+                    variant="primary"
                     onClick={submitIfLast}
                     disabled={!canNext}
                     className={cn(
-                      'rounded-xl font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 px-5',
-                      'hover:from-blue-700 hover:to-indigo-700 disabled:opacity-60',
+                      'rounded-xl px-5 text-white',
+                      'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700',
+                      'disabled:opacity-60',
                     )}
                   >
                     {currentStep === stepCount - 1 ? 'Voir le résultat →' : 'Continuer'}

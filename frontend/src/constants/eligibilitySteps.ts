@@ -11,6 +11,7 @@ export const ELIGIBILITY_STEPS: EligibilityStep[] = [
       article: 'L.217-3',
       explanation:
         'Garantie légale de conformité pour les ventes entre un professionnel et un consommateur.',
+      references: ['L.217-3'],
       examples: [
         '✅ Darty, Fnac, Apple Store',
         '✅ Vendeur pro sur Amazon',
@@ -25,11 +26,13 @@ export const ELIGIBILITY_STEPS: EligibilityStep[] = [
           value: 'professional',
           label: 'Acheté à un professionnel',
           description: 'Magasin, e-commerce, marketplace pro',
+          icon: 'Building',
         },
         {
           value: 'individual',
           label: 'Vente entre particuliers',
           description: 'ou enchères publiques',
+          icon: 'Users',
         },
       ],
     },
@@ -43,6 +46,7 @@ export const ELIGIBILITY_STEPS: EligibilityStep[] = [
       article: 'Article liminaire (Code de la consommation)',
       explanation:
         'Le “consommateur” est une personne physique agissant à des fins non professionnelles.',
+      references: ['LIMINAIRE'],
       examples: [
         '✅ Usage domestique',
         '✅ Cadeau à un proche',
@@ -53,8 +57,8 @@ export const ELIGIBILITY_STEPS: EligibilityStep[] = [
       type: 'radio',
       required: true,
       options: [
-        { value: 'personal', label: 'Usage personnel (consommateur)' },
-        { value: 'professional', label: 'Usage professionnel' },
+        { value: 'personal', label: 'Usage personnel (consommateur)', icon: 'Heart' },
+        { value: 'professional', label: 'Usage professionnel', icon: 'Briefcase' },
       ],
     },
   },
@@ -68,6 +72,7 @@ export const ELIGIBILITY_STEPS: EligibilityStep[] = [
       article: 'L.217-3 ; L.224-25-12 et s.',
       explanation:
         'Biens matériels (L.217-3) ; biens comportant un élément numérique / contenus & services numériques (L.224-25-12 et suivants).',
+      references: ['L.217-3', 'L.224-25-12'],
       examples: [
         'Bien : smartphone, électroménager, voiture',
         'Numérique : application, SaaS, streaming',
@@ -81,11 +86,13 @@ export const ELIGIBILITY_STEPS: EligibilityStep[] = [
           value: 'good',
           label: 'Bien matériel',
           description: 'Objet physique, reconditionné inclus',
+          icon: 'Archive',
         },
         {
           value: 'digital_service',
           label: 'Contenu / Service numérique',
           description: 'Appli, SaaS, plateforme de streaming…',
+          icon: 'Laptop',
         },
       ],
     },
@@ -100,14 +107,15 @@ export const ELIGIBILITY_STEPS: EligibilityStep[] = [
       article: 'L.217-3 ; L.217-7 ; L.224-25-12',
       explanation:
         'Biens : neuf vs occasion (présomption 24/12 mois). Numérique : ponctuel vs abonnement.',
+      references: ['L.217-3', 'L.217-7', 'L.224-25-12'],
       examples: ['Neuf / Occasion', 'Ponctuel / Abonnement'],
     },
     ui: {
       type: 'radio',
       required: true,
       options: [
-        { value: 'new', label: 'Produit neuf' }, // écrasé si service numérique
-        { value: 'used', label: "Produit d'occasion / reconditionné" },
+        { value: 'new', label: 'Produit neuf', icon: 'Star' }, // écrasé si service numérique
+        { value: 'used', label: "Produit d'occasion / reconditionné", icon: 'RefreshCw' },
       ],
     },
     dynamic: data => {
@@ -121,8 +129,8 @@ export const ELIGIBILITY_STEPS: EligibilityStep[] = [
             type: 'radio',
             required: true,
             options: [
-              { value: 'new', label: 'Produit neuf' },
-              { value: 'used', label: "Produit d'occasion / reconditionné" },
+              { value: 'new', label: 'Produit neuf', icon: 'Star' },
+              { value: 'used', label: "Produit d'occasion / reconditionné", icon: 'RefreshCw' },
             ],
           },
         };
@@ -133,22 +141,24 @@ export const ELIGIBILITY_STEPS: EligibilityStep[] = [
         description:
           'Ponctuel : action dans les 2 ans. Abonnement : obligation de conformité pendant toute la durée du contrat.',
         ui: {
-          type: 'radio',
-          required: true,
-          options: [
-            {
-              value: 'one_off',
-              label: 'Fourniture ponctuelle',
-              description: 'ex. achat unique de contenu',
-            },
-            {
-              value: 'subscription',
-              label: 'Service par abonnement',
-              description: 'ex. SaaS, streaming',
-            },
-          ],
-        },
-      };
+            type: 'radio',
+            required: true,
+            options: [
+              {
+                value: 'one_off',
+                label: 'Fourniture ponctuelle',
+                description: 'ex. achat unique de contenu',
+                icon: 'Download',
+              },
+              {
+                value: 'subscription',
+                label: 'Service par abonnement',
+                description: 'ex. SaaS, streaming',
+                icon: 'RefreshCw',
+              },
+            ],
+          },
+        };
     },
   },
   // Étape 5 : Territoire
@@ -167,8 +177,8 @@ export const ELIGIBILITY_STEPS: EligibilityStep[] = [
       type: 'radio',
       required: true,
       options: [
-        { value: 'eu', label: 'UE/EEE ou activité dirigée vers la France' },
-        { value: 'non_eu', label: 'Hors UE/EEE (indices FR insuffisants)' },
+        { value: 'eu', label: 'UE/EEE ou activité dirigée vers la France', icon: 'Globe' },
+        { value: 'non_eu', label: 'Hors UE/EEE (indices FR insuffisants)', icon: 'MapPin' },
       ],
     },
   },
@@ -182,6 +192,7 @@ export const ELIGIBILITY_STEPS: EligibilityStep[] = [
       article: 'L.217-3 ; L.217-7 ; L.224-25-12 et s.',
       explanation:
         'Biens : action dans les 2 ans (L.217-3). Présomption 24 mois (neuf) / 12 mois (occasion) - L.217-7. Numérique : 2 ans (ponctuel) ou pendant toute la durée de l’abonnement (continu).',
+      references: ['L.217-3', 'L.217-7', 'L.224-25-12'],
       examples: [
         'Neuf : présomption 24 mois',
         'Occasion : présomption 12 mois',
@@ -193,8 +204,8 @@ export const ELIGIBILITY_STEPS: EligibilityStep[] = [
       type: 'radio',
       required: true,
       options: [
-        { value: 'ok', label: 'Oui' }, // écrasé si abonnement
-        { value: 'ko', label: 'Non' },
+        { value: 'ok', label: 'Oui', icon: 'Clock' }, // écrasé si abonnement
+        { value: 'ko', label: 'Non', icon: 'AlertTriangle' },
       ],
     },
     dynamic: data => {
@@ -210,8 +221,8 @@ export const ELIGIBILITY_STEPS: EligibilityStep[] = [
             type: 'radio',
             required: true,
             options: [
-              { value: 'ok', label: 'Oui (< 2 ans)' },
-              { value: 'ko', label: 'Non (≥ 2 ans)' },
+              { value: 'ok', label: 'Oui (< 2 ans)', icon: 'Clock' },
+              { value: 'ko', label: 'Non (≥ 2 ans)', icon: 'AlertTriangle' },
             ],
           },
         };
@@ -225,8 +236,8 @@ export const ELIGIBILITY_STEPS: EligibilityStep[] = [
             type: 'radio',
             required: true,
             options: [
-              { value: 'ok', label: 'Oui (< 2 ans)' },
-              { value: 'ko', label: 'Non (≥ 2 ans)' },
+              { value: 'ok', label: 'Oui (< 2 ans)', icon: 'Clock' },
+              { value: 'ko', label: 'Non (≥ 2 ans)', icon: 'AlertTriangle' },
             ],
           },
         };
@@ -240,8 +251,8 @@ export const ELIGIBILITY_STEPS: EligibilityStep[] = [
             type: 'radio',
             required: true,
             options: [
-              { value: 'ok', label: 'Oui (< 2 ans)' },
-              { value: 'ko', label: 'Non (≥ 2 ans)' },
+              { value: 'ok', label: 'Oui (< 2 ans)', icon: 'Clock' },
+              { value: 'ko', label: 'Non (≥ 2 ans)', icon: 'AlertTriangle' },
             ],
           },
         };
@@ -256,8 +267,8 @@ export const ELIGIBILITY_STEPS: EligibilityStep[] = [
             type: 'radio',
             required: true,
             options: [
-              { value: 'during_contract', label: 'Oui, abonnement en cours' },
-              { value: 'after_contract', label: 'Non, abonnement terminé' },
+              { value: 'during_contract', label: 'Oui, abonnement en cours', icon: 'RefreshCw' },
+              { value: 'after_contract', label: 'Non, abonnement terminé', icon: 'AlertTriangle' },
             ],
           },
         };
@@ -275,6 +286,7 @@ export const ELIGIBILITY_STEPS: EligibilityStep[] = [
       article: 'L.217-5',
       explanation:
         'Conformité : critères contractuels (usage spécial, accessoires, MAJ) + critères objectifs (qualités attendues, déclarations publiques, etc.).',
+      references: ['L.217-5'],
       examples: [
         '✅ Panne prématurée',
         '✅ Fonction manquante',
@@ -286,8 +298,8 @@ export const ELIGIBILITY_STEPS: EligibilityStep[] = [
       type: 'radio',
       required: true,
       options: [
-        { value: 'yes', label: 'Oui, défaut de conformité' },
-        { value: 'no', label: 'Non, pas de défaut' },
+        { value: 'yes', label: 'Oui, défaut de conformité', icon: 'Wrench' },
+        { value: 'no', label: 'Non, pas de défaut', icon: 'AlertCircle' },
       ],
     },
   },
