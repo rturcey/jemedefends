@@ -3,9 +3,10 @@
 import * as React from 'react';
 import { UnifiedDialog } from '@/components/form/UnifiedDialog';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
-import { AlertTriangle, CheckCircle2, XCircle } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, Sparkles, XCircle } from 'lucide-react';
 
 type Tone = 'success' | 'error' | 'warning' | 'info';
 
@@ -20,6 +21,8 @@ export type ResultsOverlayProps = {
   primaryCtaHref?: string;
   secondaryCtaLabel?: string;
 };
+
+const ALTERNATIVES_GUIDE_HREF = '/guide/telephonie-garantie-legale#alternatives';
 
 function ResultsOverlayInner({
                                open,
@@ -88,6 +91,24 @@ function ResultsOverlayInner({
             <Link href={primaryCtaHref}>{primaryCtaLabel}</Link>
           </Button>
         ) : null}
+      </div>
+
+      <div className="mt-6 space-y-3 rounded-xl border border-amber-200 bg-amber-50 p-4">
+        <div className="flex items-center gap-2 text-amber-900 font-semibold text-sm">
+          <Sparkles className="h-4 w-4" />
+          <span>Guide des alternatives</span>
+          <Badge variant="outline" className="border-amber-300 text-amber-900 bg-white/60">Conseils experts</Badge>
+        </div>
+        <p className="text-sm text-amber-900 leading-relaxed">
+          Comparez réparation, remplacement, remboursement et autres recours avant d'envoyer votre lettre. Le guide vous
+          donne les réflexes rapides et les arguments prêts à l'emploi.
+        </p>
+        <Button
+          asChild
+          className="w-full sm:w-auto rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow hover:from-amber-600 hover:to-orange-600"
+        >
+          <Link href={ALTERNATIVES_GUIDE_HREF}>Découvrir le guide des alternatives</Link>
+        </Button>
       </div>
     </UnifiedDialog>
   );

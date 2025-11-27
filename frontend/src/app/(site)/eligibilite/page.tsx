@@ -9,10 +9,12 @@ import type { EligibilityData } from '@/types/eligibility';
 export default function EligibilityPage() {
   const [result, setResult] = React.useState<EligibilityResult | null>(null);
   const [data, setData] = React.useState<EligibilityData | null>(null);
+  const [formRun, setFormRun] = React.useState(0);
 
   return (
     <>
       <EligibilityForm
+        key={formRun}
         onCompleteAction={(r, d) => {
           setResult(r);
           setData(d);
@@ -21,7 +23,11 @@ export default function EligibilityPage() {
 
       <ResultsOverlay
         open={!!result}
-        onRestart={() => setResult(null)}
+        onRestart={() => {
+          setResult(null);
+          setData(null);
+          setFormRun(prev => prev + 1);
+        }}
         tone={result?.isEligible ? 'success' : 'error'}
         title={result?.isEligible ? 'Bonne nouvelle !' : 'Pas éligible'}
         subtitle={
