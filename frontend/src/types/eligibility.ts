@@ -55,7 +55,9 @@ export interface EligibilityStep {
 // --- Données du formulaire ---
 // NOTE: on conserve les anciens champs (dépréciés) pour compat descendante.
 export interface EligibilityData {
-  sellerType?: 'professional' | 'individual';
+  // Champs alignés sur les étapes du flow
+  seller?: 'professional' | 'individual';
+  sellerType?: 'professional' | 'individual'; // compat
   usage?: 'personal' | 'professional';
 
   // ✅ Nouveau découpage en 2 niveaux
@@ -67,15 +69,19 @@ export interface EligibilityData {
   // ✅ Nouveau timing unifié
   // - Biens & service ponctuel : 'ok' (<2 ans) | 'ko' (≥2 ans)
   // - Abonnement : 'during_contract' | 'after_contract'
-  timingAnswer?: TimingAnswer;
+  timing?: TimingAnswer;
+  timingAnswer?: TimingAnswer; // compat
 
-  hasDefect?: boolean;
+  defect?: 'yes' | 'no';
+  hasDefect?: boolean; // compat (historique boolean)
 
   // ❗ Dépréciés : à retirer une fois le refactor terminé
   /** @deprecated Utiliser itemCategory à la place */
   productType?: 'physical' | 'digital';
-  /** @deprecated Utiliser timingAnswer à la place */
+  /** @deprecated Utiliser timing/timingAnswer à la place */
   withinTwoYears?: boolean;
+  /** @deprecated Utiliser timing unifié */
+  purchaseDate?: Date;
 }
 
 // --- Validation par étape (inchangé) ---
