@@ -33,6 +33,22 @@ export const useEligibilityForm = (opts: UseEligibilityFormOptions = {}) => {
   const [data, setData] = useState<EligibilityData>({});
   const [validations, setValidations] = useState<Record<number, ValidationResult>>({});
 
+  const getValueForStep = useCallback(
+    (stepId: string): unknown => {
+      switch (stepId) {
+        case 'seller':
+          return data.seller ?? data.sellerType;
+        case 'timing':
+          return data.timing ?? data.timingAnswer ?? data.withinTwoYears;
+        case 'defect':
+          return data.defect ?? data.hasDefect;
+        default:
+          return (data as any)[stepId as keyof EligibilityData];
+      }
+    },
+    [data],
+  );
+
   const attachRef = useCallback(
     (base: ValidationResult, ctx: { stepId?: string; stepIndex: number; value: unknown; data: EligibilityData; error?: string }): ValidationResult => {
       if (base.isValid) return base;
@@ -50,13 +66,13 @@ export const useEligibilityForm = (opts: UseEligibilityFormOptions = {}) => {
       switch (stepId) {
         case 'seller': {
           if (!value) {
-            const res = { isValid: false, error: 'Veuillez sélectionner une option.' };
+            const res = { isValid: false, error: 'Sélectionnez le type de vendeur.' };
             return attachRef(res, { stepId, stepIndex, value, data });
           }
           if (value === 'individual') {
             const res = {
               isValid: false,
-              error: "La garantie légale s'applique uniquement pour un achat auprès d'un professionnel.",
+              error: "La garantie légale ne couvre pas les ventes entre particuliers.",
             };
             return attachRef(res, { stepId, stepIndex, value, data, error: res.error });
           }
@@ -65,22 +81,23 @@ export const useEligibilityForm = (opts: UseEligibilityFormOptions = {}) => {
 
         case 'usage': {
           if (!value) {
-            const res = { isValid: false, error: "Veuillez préciser l'usage." };
+            const res = { isValid: false, error: "Précisez si l'achat est personnel." };
             return attachRef(res, { stepId, stepIndex, value, data });
           }
           if (value === 'professional') {
             const res = {
               isValid: false,
-              error: "La garantie légale s'applique uniquement aux consommateurs.",
+              error: 'La garantie légale est réservée au consommateur (usage personnel).',
             };
             return attachRef(res, { stepId, stepIndex, value, data, error: res.error });
           }
           return { isValid: true };
         }
 
-        case 'product': {
+        case 'itemCategory':
+        case 'itemDetail': {
           if (!value) {
-            const res = { isValid: false, error: 'Veuillez sélectionner le type de produit.' };
+            const res = { isValid: false, error: 'Choisissez une option pour continuer.' };
             return attachRef(res, { stepId, stepIndex, value, data });
           }
           return { isValid: true };
@@ -88,14 +105,13 @@ export const useEligibilityForm = (opts: UseEligibilityFormOptions = {}) => {
 
         case 'territory': {
           if (!value) {
-            const res = { isValid: false, error: 'Veuillez préciser la localisation du vendeur.' };
+            const res = { isValid: false, error: 'Précisez la zone du vendeur.' };
             return attachRef(res, { stepId, stepIndex, value, data });
           }
           if (value === 'non_eu') {
             const res = {
               isValid: false,
-              error:
-                "La garantie s'applique si le vendeur est en UE/EEE ou cible le marché français.",
+              error: "La garantie s'applique si le vendeur est en UE/EEE ou vise clairement le marché français.",
             };
             return attachRef(res, { stepId, stepIndex, value, data, error: res.error });
           }
@@ -104,13 +120,13 @@ export const useEligibilityForm = (opts: UseEligibilityFormOptions = {}) => {
 
         case 'timing': {
           if (value === undefined || value === null) {
-            const res = { isValid: false, error: "Veuillez préciser la date d'achat." };
+            const res = { isValid: false, error: 'Indiquez le délai.' };
             return attachRef(res, { stepId, stepIndex, value, data });
           }
-          if (value === false) {
+          if (value === 'ko' || value === 'after_contract') {
             const res = {
               isValid: false,
-              error: 'Le délai de garantie légale de 2 ans est dépassé.',
+              error: 'Le délai légal semble dépassé pour la garantie.',
             };
             return attachRef(res, { stepId, stepIndex, value, data, error: res.error });
           }
@@ -119,13 +135,13 @@ export const useEligibilityForm = (opts: UseEligibilityFormOptions = {}) => {
 
         case 'defect': {
           if (value === undefined || value === null) {
-            const res = { isValid: false, error: "Veuillez préciser s'il y a un défaut." };
+            const res = { isValid: false, error: "Précisez s'il y a un défaut de conformité." };
             return attachRef(res, { stepId, stepIndex, value, data });
           }
-          if (value === false) {
+          if (value === 'no' || value === false) {
             const res = {
               isValid: false,
-              error: "La garantie légale ne s'applique qu'en cas de défaut de conformité.",
+              error: "La garantie légale s'active uniquement en présence d'un défaut de conformité.",
             };
             return attachRef(res, { stepId, stepIndex, value, data, error: res.error });
           }
