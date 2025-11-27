@@ -12,6 +12,8 @@ export type ValidationResult = {
   error?: string;
   /** Code d'article légal à afficher côté UI via <LegalReference /> */
   legalRef?: LegalArticleId;
+  /** Indique qu'une réponse bloque l'éligibilité et doit déclencher la modale alternatives */
+  blocking?: boolean;
 };
 
 type UseEligibilityFormOptions = {
@@ -73,6 +75,7 @@ export const useEligibilityForm = (opts: UseEligibilityFormOptions = {}) => {
             const res = {
               isValid: false,
               error: "La garantie légale ne couvre pas les ventes entre particuliers.",
+              blocking: true,
             };
             return attachRef(res, { stepId, stepIndex, value, data, error: res.error });
           }
@@ -88,6 +91,7 @@ export const useEligibilityForm = (opts: UseEligibilityFormOptions = {}) => {
             const res = {
               isValid: false,
               error: 'La garantie légale est réservée au consommateur (usage personnel).',
+              blocking: true,
             };
             return attachRef(res, { stepId, stepIndex, value, data, error: res.error });
           }
@@ -112,6 +116,7 @@ export const useEligibilityForm = (opts: UseEligibilityFormOptions = {}) => {
             const res = {
               isValid: false,
               error: "La garantie s'applique si le vendeur est en UE/EEE ou vise clairement le marché français.",
+              blocking: true,
             };
             return attachRef(res, { stepId, stepIndex, value, data, error: res.error });
           }
@@ -127,6 +132,7 @@ export const useEligibilityForm = (opts: UseEligibilityFormOptions = {}) => {
             const res = {
               isValid: false,
               error: 'Le délai légal semble dépassé pour la garantie.',
+              blocking: true,
             };
             return attachRef(res, { stepId, stepIndex, value, data, error: res.error });
           }
@@ -142,6 +148,7 @@ export const useEligibilityForm = (opts: UseEligibilityFormOptions = {}) => {
             const res = {
               isValid: false,
               error: "La garantie légale s'active uniquement en présence d'un défaut de conformité.",
+              blocking: true,
             };
             return attachRef(res, { stepId, stepIndex, value, data, error: res.error });
           }

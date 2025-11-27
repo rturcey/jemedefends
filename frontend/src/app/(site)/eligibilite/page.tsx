@@ -10,6 +10,9 @@ export default function EligibilityPage() {
   const [result, setResult] = React.useState<EligibilityResult | null>(null);
   const [data, setData] = React.useState<EligibilityData | null>(null);
   const [formRun, setFormRun] = React.useState(0);
+  const [blockingReason, setBlockingReason] = React.useState<string | null>(null);
+
+  const ALTERNATIVES_GUIDE_HREF = '/guide/telephonie-garantie-legale#alternatives';
 
   return (
     <>
@@ -18,6 +21,10 @@ export default function EligibilityPage() {
         onCompleteAction={(r, d) => {
           setResult(r);
           setData(d);
+        }}
+        onBlockingAnswer={reason => {
+          setBlockingReason(reason);
+          setResult(null);
         }}
       />
 
@@ -38,6 +45,18 @@ export default function EligibilityPage() {
         bullets={result?.reasons}
         primaryCtaLabel={result?.isEligible ? 'Créer ma lettre' : undefined}
         primaryCtaHref={result?.isEligible ? '/formulaire' : undefined}
+      />
+
+      <ResultsOverlay
+        open={!!blockingReason}
+        onRestart={() => setBlockingReason(null)}
+        tone="error"
+        title="Parcours alternatif recommandé"
+        subtitle="Cette réponse ne permet pas d'activer la garantie légale. Consultez le guide des alternatives."
+        bullets={blockingReason ? [blockingReason] : undefined}
+        primaryCtaLabel="Voir le guide des alternatives"
+        primaryCtaHref={ALTERNATIVES_GUIDE_HREF}
+        secondaryCtaLabel="Modifier mes réponses"
       />
     </>
   );

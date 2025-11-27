@@ -1,5 +1,7 @@
 // src/types/eligibility.ts
 
+import type { LegalArticleId } from '@/legal/registry';
+
 // --- Étapes du flow (7 étapes fixes) ---
 export type StepId =
   | 'seller'
@@ -14,7 +16,7 @@ export type StepId =
 export type RadioUI = {
   type: 'radio';
   required?: boolean;
-  options: { value: string; label: string; description?: string }[];
+  options: { value: string; label: string; description?: string; icon?: string }[];
 };
 export type DateUI = { type: 'date'; required?: boolean };
 export type StepUI = RadioUI | DateUI;
@@ -24,6 +26,7 @@ export interface StepLegal {
   article: string;
   explanation: string;
   examples?: string[];
+  references?: LegalArticleId[];
 }
 
 // --- Nouvelles catégories & détails (2 niveaux) ---
